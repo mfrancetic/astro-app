@@ -6,5 +6,6 @@
     <string name="velocity_label">Velocity: </string>
     <string name="read_more_button">Read more</string>
     <string name="asteroid_hazardous_button">Asteroid hazardous indication</string>
-
+    <string name="observatory_content_description">Observatory photo</string>
+    <string name="observatory_visit_homepage_button">Visit homepage</string>
 </resources>

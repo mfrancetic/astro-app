@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.ObservatoryActivity" />
+        <activity android:name=".activities.AsteroidActivity" />
     </application>
 
 </manifest>

@@ -6,19 +6,19 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.udacity.astroapp.R;
-import com.udacity.astroapp.fragments.ObservatoryListFragment;
+import com.udacity.astroapp.fragments.AsteroidFragment;
 
-public class ObservatoryActivity extends AppCompatActivity {
+public class AsteroidActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_observatory);
+        setContentView(R.layout.activity_asteroid);
 
-        ObservatoryListFragment observatoryListFragment = new ObservatoryListFragment();
+        AsteroidFragment asteroidFragment = new AsteroidFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.observatory_fragment_container, observatoryListFragment)
+                .replace(R.id.asteroid_fragment_container, asteroidFragment)
                 .commit();
     }
 }

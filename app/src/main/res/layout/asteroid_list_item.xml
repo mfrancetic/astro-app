@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/asteroid_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="?android:actionBarSize"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/asteroid_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toRightOf="@id/asteroid_image_view"
+        app:layout_constraintTop_toTopOf="@id/asteroid_image_view"
+        tools:text="2015 TX237" />
+
+    <TextView
+        android:id="@+id/asteroid_diameter_label_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/diameter_label"
+        app:layout_constraintLeft_toLeftOf="@id/asteroid_name_text_view"
+        app:layout_constraintTop_toBottomOf="@id/asteroid_name_text_view" />
+
+    <TextView
+        android:id="@+id/asteroid_diameter_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/asteroid_diameter_label_text_view"
+        app:layout_constraintTop_toTopOf="@id/asteroid_diameter_label_text_view"
+        tools:text="58 - 130 m" />
+
+    <TextView
+        android:id="@+id/asteroid_approach_date_label_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/approach_date_label"
+        app:layout_constraintLeft_toLeftOf="@id/asteroid_diameter_label_text_view"
+        app:layout_constraintTop_toBottomOf="@id/asteroid_diameter_label_text_view" />
+
+    <TextView
+        android:id="@+id/asteroid_approach_date_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/asteroid_approach_date_label_text_view"
+        app:layout_constraintTop_toTopOf="@id/asteroid_approach_date_label_text_view"
+        tools:text="2018-Sep-06  12:05" />
+
+    <TextView
+        android:id="@+id/asteroid_velocity_label_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/velocity_label"
+        app:layout_constraintLeft_toLeftOf="@id/asteroid_approach_date_label_text_view"
+        app:layout_constraintTop_toBottomOf="@id/asteroid_approach_date_label_text_view" />
+
+    <TextView
+        android:id="@+id/asteroid_velocity_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/asteroid_velocity_label_text_view"
+        app:layout_constraintTop_toTopOf="@id/asteroid_velocity_label_text_view"
+        tools:text="13715,74 km/h" />
+
+    <Button
+        android:id="@+id/asteroid_read_more_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/read_more_button"
+        app:layout_constraintLeft_toLeftOf="@id/asteroid_velocity_label_text_view"
+        app:layout_constraintTop_toBottomOf="@id/asteroid_velocity_label_text_view" />
+
+    <ImageButton
+        android:id="@+id/asteroid_hazardous_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginRight="16dp"
+        android:contentDescription="@string/asteroid_hazardous_button"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/asteroid_name_text_view"
+        android:src="@mipmap/ic_launcher" />
+
+</android.support.constraint.ConstraintLayout>

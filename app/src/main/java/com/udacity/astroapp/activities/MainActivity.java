@@ -1,7 +1,9 @@
-package com.udacity.astroapp;
+package com.udacity.astroapp.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.udacity.astroapp.R;
 
 public class MainActivity extends AppCompatActivity {
 

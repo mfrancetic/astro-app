@@ -8,4 +8,6 @@
     <string name="asteroid_hazardous_button">Asteroid hazardous indication</string>
     <string name="observatory_content_description">Observatory photo</string>
     <string name="observatory_visit_homepage_button">Visit homepage</string>
+    <string name="widget_image_content_description">Photo of the day image</string>
+    <string name="widget_photo_of_the_day">Photo of the day</string>
 </resources>

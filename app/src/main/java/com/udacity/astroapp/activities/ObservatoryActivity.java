@@ -20,5 +20,8 @@ public class ObservatoryActivity extends AppCompatActivity {
         fragmentManager.beginTransaction()
                 .replace(R.id.observatory_fragment_container, observatoryListFragment)
                 .commit();
+
+        setTitle("Observatory");
+
     }
 }

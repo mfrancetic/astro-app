@@ -15,13 +15,16 @@ public class Observatory implements Parcelable {
 
     private String observatoryUrl;
 
+    private String observatoryPhotoUrl;
+
     Observatory (int observatoryId, String observatoryName, String observatoryAddress,
-                 String observatoryOpeningHours, String observatoryUrl){
+                 String observatoryOpeningHours, String observatoryUrl, String observatoryPhotoUrl){
         this.observatoryId = observatoryId;
         this.observatoryName = observatoryName;
         this.observatoryAddress = observatoryAddress;
         this.observatoryOpeningHours = observatoryOpeningHours;
         this.observatoryUrl = observatoryUrl;
+        this.observatoryPhotoUrl = observatoryPhotoUrl;
     }
 
     Observatory(Parcel in) {
@@ -30,6 +33,7 @@ public class Observatory implements Parcelable {
         observatoryAddress = in.readString();
         observatoryOpeningHours = in.readString();
         observatoryUrl = in.readString();
+        observatoryPhotoUrl = in.readString();
     }
 
     public int getObservatoryId() {
@@ -52,6 +56,10 @@ public class Observatory implements Parcelable {
         return observatoryUrl;
     }
 
+    public String getObservatoryPhotoUrl() {
+        return observatoryPhotoUrl;
+    }
+
     public void setObservatoryId(int observatoryId) {
         this.observatoryId = observatoryId;
     }
@@ -70,6 +78,10 @@ public class Observatory implements Parcelable {
 
     public void setObservatoryUrl(String observatoryUrl) {
         this.observatoryUrl = observatoryUrl;
+    }
+
+    public void setObservatoryPhotoUrl(String observatoryPhotoUrl) {
+        this.observatoryPhotoUrl = observatoryPhotoUrl;
     }
 
     public static final Creator<Observatory> CREATOR = new Creator<Observatory>() {
@@ -96,5 +108,6 @@ public class Observatory implements Parcelable {
         dest.writeString(observatoryAddress);
         dest.writeString(observatoryOpeningHours);
         dest.writeString(observatoryUrl);
+        dest.writeString(observatoryPhotoUrl);
     }
 }

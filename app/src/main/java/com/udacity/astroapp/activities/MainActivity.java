@@ -3,6 +3,9 @@ package com.udacity.astroapp.activities;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,9 +18,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.fragments.AsteroidFragment;
+import com.udacity.astroapp.fragments.ObservatoryFragment;
+import com.udacity.astroapp.fragments.ObservatoryListFragment;
+import com.udacity.astroapp.fragments.PhotoFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +47,14 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+
         navigationView.setNavigationItemSelectedListener(this);
+
+        navigationView.setCheckedItem(R.id.nav_photo);
+        Fragment fragment = new PhotoFragment();
+        displayFragment(fragment);
+
     }
 
     @Override
@@ -79,16 +94,16 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        Fragment fragment = null;
         if (id == R.id.nav_photo) {
-            setTitle(R.string.menu_photo);
+            fragment = new PhotoFragment();
+            displayFragment(fragment);
         } else if (id == R.id.nav_asteroids) {
-            setTitle(R.string.menu_asteroids);
-
+            fragment = new AsteroidFragment();
+            displayFragment(fragment);
         } else if (id == R.id.nav_observatories) {
-            setTitle(R.string.menu_observatories);
-
-
+            fragment = new ObservatoryListFragment();
+            displayFragment(fragment);
         } else if (id == R.id.nav_share) {
             setTitle(R.string.menu_share);
 
@@ -97,5 +112,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void displayFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+                .commit();
     }
 }

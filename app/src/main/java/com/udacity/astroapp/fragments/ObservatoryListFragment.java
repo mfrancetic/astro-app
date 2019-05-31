@@ -11,6 +11,15 @@ import com.udacity.astroapp.R;
 
 
 public class ObservatoryListFragment extends Fragment {
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getActivity()!= null) {
+            getActivity().setTitle(R.string.menu_observatories);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

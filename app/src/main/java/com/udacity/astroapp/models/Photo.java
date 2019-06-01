@@ -9,18 +9,18 @@ public class Photo implements Parcelable {
 
     private String photoTitle;
 
-    private String photoAuthor;
+    private String photoDate;
 
     private String photoDescription;
 
     private String photoUrl;
 
 
-    Photo(int photoId, String photoTitle, String photoAuthor,
+   public Photo(int photoId, String photoTitle, String photoDate,
           String photoDescription, String photoUrl) {
         this.photoId = photoId;
         this.photoTitle = photoTitle;
-        this.photoAuthor = photoAuthor;
+        this.photoDate = photoDate;
         this.photoDescription = photoDescription;
         this.photoUrl = photoUrl;
     }
@@ -28,7 +28,7 @@ public class Photo implements Parcelable {
      Photo(Parcel in) {
          in.writeInt(photoId);
          in.writeString(photoTitle);
-         in.writeString(photoAuthor);
+         in.writeString(photoDate);
          in.writeString(photoDescription);
          in.writeString(photoUrl);
     }
@@ -41,8 +41,8 @@ public class Photo implements Parcelable {
         return photoTitle;
     }
 
-    public String getPhotoAuthor() {
-        return photoAuthor;
+    public String getPhotoDate() {
+        return photoDate;
     }
 
     public String getPhotoDescription() {
@@ -61,8 +61,8 @@ public class Photo implements Parcelable {
         this.photoTitle = photoTitle;
     }
 
-    public void setPhotoAuthor(String photoAuthor) {
-        this.photoAuthor = photoAuthor;
+    public void setPhotoDate(String photoDate) {
+        this.photoDate = photoDate;
     }
 
     public void setPhotoDescription(String photoDescription) {
@@ -94,7 +94,7 @@ public class Photo implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(photoId);
         dest.writeString(photoTitle);
-        dest.writeString(photoAuthor);
+        dest.writeString(photoDate);
         dest.writeString(photoDescription);
         dest.writeString(photoUrl);
     }

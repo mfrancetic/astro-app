@@ -9,31 +9,41 @@ public class Asteroid implements Parcelable {
 
     private String asteroidName;
 
-    private float asteroidDiameter;
+    private double asteroidDiameterMin;
+
+    private double asteroidDiameterMax;
 
     private String asteroidApproachDate;
 
-    private float asteroidVelocity;
+    private String asteroidVelocity;
 
     private boolean asteroidIsHazardous;
 
-    Asteroid (int asteroidId, String asteroidName, float asteroidDiameter,
-              String asteroidApproachDate, float asteroidVelocity, boolean asteroidIsHazardous) {
+    private String asteroidUrl;
+
+   public Asteroid (int asteroidId, String asteroidName, double asteroidDiameterMin,
+              double asteroidDiameterMax,
+              String asteroidApproachDate, String asteroidVelocity, boolean asteroidIsHazardous,
+                    String asteroidUrl) {
         this.asteroidId = asteroidId;
         this.asteroidName = asteroidName;
-        this.asteroidDiameter = asteroidDiameter;
+        this.asteroidDiameterMin = asteroidDiameterMin;
+        this.asteroidDiameterMax = asteroidDiameterMax;
         this.asteroidApproachDate = asteroidApproachDate;
         this.asteroidVelocity = asteroidVelocity;
         this.asteroidIsHazardous = asteroidIsHazardous;
+        this.asteroidUrl = asteroidUrl;
     }
 
      Asteroid(Parcel in) {
         asteroidId = in.readInt();
         asteroidName = in.readString();
-        asteroidDiameter = in.readFloat();
+        asteroidDiameterMin = in.readDouble();
+        asteroidDiameterMax = in.readDouble();
         asteroidApproachDate = in.readString();
-        asteroidVelocity = in.readFloat();
+        asteroidVelocity = in.readString();
         asteroidIsHazardous = in.readByte() != 0;
+        asteroidUrl = in.readString();
     }
 
     public int getAsteroidId() {
@@ -44,20 +54,28 @@ public class Asteroid implements Parcelable {
         return asteroidName;
     }
 
-    public float getAsteroidDiameter() {
-        return asteroidDiameter;
+    public double getAsteroidDiameterMin() {
+        return asteroidDiameterMin;
+    }
+
+    public double getAsteroidDiameterMax() {
+        return asteroidDiameterMax;
     }
 
     public String getAsteroidApproachDate() {
         return asteroidApproachDate;
     }
 
-    public float getAsteroidVelocity() {
+    public String getAsteroidVelocity() {
         return asteroidVelocity;
     }
 
     public boolean getAsteroidIsHazardous() {
         return asteroidIsHazardous;
+    }
+
+    public String getAsteroidUrl() {
+        return asteroidUrl;
     }
 
     public void setAsteroidId(int asteroidId) {
@@ -68,15 +86,19 @@ public class Asteroid implements Parcelable {
         this.asteroidName = asteroidName;
     }
 
-    public void setAsteroidDiameter(float asteroidDiameter) {
-        this.asteroidDiameter = asteroidDiameter;
+    public void setAsteroidDiameterMin(double asteroidDiameterMin) {
+        this.asteroidDiameterMin = asteroidDiameterMin;
+    }
+
+    public void setAsteroidDiameterMax(double asteroidDiameterMax) {
+        this.asteroidDiameterMax = asteroidDiameterMax;
     }
 
     public void setAsteroidApproachDate(String asteroidApproachDate) {
         this.asteroidApproachDate = asteroidApproachDate;
     }
 
-    public void setAsteroidVelocity(float asteroidVelocity) {
+    public void setAsteroidVelocity(String asteroidVelocity) {
         this.asteroidVelocity = asteroidVelocity;
     }
 
@@ -84,14 +106,20 @@ public class Asteroid implements Parcelable {
         this.asteroidIsHazardous = asteroidIsHazardous;
     }
 
+    public void setAsteroidUrl(String asteroidUrl) {
+        this.asteroidUrl = asteroidUrl;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(asteroidId);
         dest.writeString(asteroidName);
-        dest.writeFloat(asteroidDiameter);
+        dest.writeDouble(asteroidDiameterMin);
+        dest.writeDouble(asteroidDiameterMax);
         dest.writeString(asteroidApproachDate);
-        dest.writeFloat(asteroidVelocity);
+        dest.writeString(asteroidVelocity);
         dest.writeByte((byte) (asteroidIsHazardous ? 1 : 0));
+        dest.writeString(asteroidUrl);
     }
 
     @Override

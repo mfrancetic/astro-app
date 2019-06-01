@@ -64,7 +64,7 @@ public class QueryUtils {
         return url;
     }
 
-    static String makeHttpRequest(URL url) throws IOException {
+    public static String makeHttpRequest(URL url) throws IOException {
 
         /* Define the read time out, connect time out, success response code and request method */
         int READ_TIME_OUT = 10000;

@@ -50,6 +50,9 @@ public class AsteroidFragment extends Fragment {
 
 //       LocalDate localDate = LocalDate.now();
 
+        new AsteroidAsyncTask().execute();
+
+
 
         return rootView;
     }
@@ -73,7 +76,7 @@ public class AsteroidFragment extends Fragment {
 
 //                JSONArray asteroidArray = asteroidBaseArray.getJSONArray("2019-06-01");
 
-                JSONArray asteroidArray = asteroidBaseArray.getJSONArray(0);
+                JSONArray asteroidArray = asteroidBaseArray.getJSONArray(2);
 
 
                 for (int i = 0; i < asteroidArray.length(); i++) {

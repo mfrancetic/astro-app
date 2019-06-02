@@ -27,6 +27,8 @@ public class QueryUtils {
 
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
+    private static final String api_key = Secret.api_key;
+
     private QueryUtils() {
     }
 
@@ -36,7 +38,7 @@ public class QueryUtils {
         Uri baserUri = Uri.parse(PHOTO_BASE_URL);
 
         Uri.Builder uriBuilder = baserUri.buildUpon();
-        uriBuilder.appendQueryParameter(API_PARAM, "")
+        uriBuilder.appendQueryParameter(API_PARAM, api_key)
                 .build();
         try {
             url = new URL(uriBuilder.toString());
@@ -54,7 +56,7 @@ public class QueryUtils {
         uriBuilder
                 .appendQueryParameter(START_DATE_PARAM, startDate)
                 .appendQueryParameter(END_DATE_PARAM, endDate)
-                .appendQueryParameter(API_PARAM, "")
+                .appendQueryParameter(API_PARAM, api_key)
                 .build();
         try {
             url = new URL(uriBuilder.toString());

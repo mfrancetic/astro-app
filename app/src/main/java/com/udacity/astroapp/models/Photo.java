@@ -15,14 +15,17 @@ public class Photo implements Parcelable {
 
     private String photoUrl;
 
+    private String photoMediaType;
+
 
    public Photo(int photoId, String photoTitle, String photoDate,
-          String photoDescription, String photoUrl) {
+          String photoDescription, String photoUrl, String photoMediaType) {
         this.photoId = photoId;
         this.photoTitle = photoTitle;
         this.photoDate = photoDate;
         this.photoDescription = photoDescription;
         this.photoUrl = photoUrl;
+        this.photoMediaType = photoMediaType;
     }
 
      Photo(Parcel in) {
@@ -31,6 +34,7 @@ public class Photo implements Parcelable {
          in.writeString(photoDate);
          in.writeString(photoDescription);
          in.writeString(photoUrl);
+         in.writeString(photoMediaType);
     }
 
     public int getPhotoId() {
@@ -53,6 +57,10 @@ public class Photo implements Parcelable {
         return photoUrl;
     }
 
+    public String getPhotoMediaType() {
+        return photoMediaType;
+    }
+
     public void setPhotoId(int photoId) {
         this.photoId = photoId;
     }
@@ -71,6 +79,10 @@ public class Photo implements Parcelable {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public void setPhotoMediaType(String photoMediaType) {
+        this.photoMediaType = photoMediaType;
     }
 
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
@@ -97,5 +109,6 @@ public class Photo implements Parcelable {
         dest.writeString(photoDate);
         dest.writeString(photoDescription);
         dest.writeString(photoUrl);
+        dest.writeString(photoMediaType);
     }
 }

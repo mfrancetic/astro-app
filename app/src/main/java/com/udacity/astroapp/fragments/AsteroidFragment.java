@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.adapters.AsteroidAdapter;
 import com.udacity.astroapp.models.Asteroid;
 import com.udacity.astroapp.utils.QueryUtils;
 
@@ -34,6 +35,10 @@ public class AsteroidFragment extends Fragment {
 
     private String date;
 
+    private AsteroidAdapter asteroidAdapter;
+
+    private List<Asteroid> asteroidList;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +52,8 @@ public class AsteroidFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_asteroid, container, false);
+
+        asteroidList = new ArrayList<>();
 
 //       LocalDate localDate = LocalDate.now();
 
@@ -72,12 +79,21 @@ public class AsteroidFragment extends Fragment {
 
                 JSONObject baseAsteroidResponse = new JSONObject(asteroidJson);
 
-                JSONArray asteroidBaseArray = baseAsteroidResponse.getJSONArray("near_earth_objects");
+//                JSONArray asteroidBaseArray = new JSONArray(asteroidJson);
+
+                JSONObject asteroidBaseObject = baseAsteroidResponse.getJSONObject("near_earth_objects");
+
+//                JSONArray asteroidBaseArray = baseAsteroidResponse.getJSONArray("near_earth_objects");
 
 //                JSONArray asteroidArray = asteroidBaseArray.getJSONArray("2019-06-01");
 
-                JSONArray asteroidArray = asteroidBaseArray.getJSONArray(2);
+//                JSONObject asteroidBaseObject = asteroidBaseArray.getJSONObject()
 
+//                JSONArray asteroidArray = asteroidBaseArray.getJSONArray(2);
+
+//                JSONObject dateObject = asteroidBaseObject.getJSONObject("2019-06-03");
+
+                JSONArray asteroidArray = asteroidBaseObject.getJSONArray("2019-06-01");
 
                 for (int i = 0; i < asteroidArray.length(); i++) {
 
@@ -91,48 +107,52 @@ public class AsteroidFragment extends Fragment {
 
                     String asteroidUrl = asteroidObject.getString("nasa_jpl_url");
 
-                    JSONArray diameterArray = asteroidObject.getJSONArray("estimated_diameter");
+                    JSONObject diameterObject = asteroidObject.getJSONObject("estimated_diameter");
+
 
 //                    JSONObject diameterObject = diameterArray.getJSONObject(i);
 
 //                    JSONArray diameterMetersArray = diameterArray.getJSONArray("");
 
-                    JSONArray diameterKilometersArray = diameterArray.getJSONArray(0);
+                    JSONObject diameterKilometersObject = diameterObject.getJSONObject("kilometers");
 
-                    JSONObject asteroidDiameterObject = diameterKilometersArray.getJSONObject(0);
 
-                    double asteroidDiameterMin = asteroidDiameterObject.getDouble("estimated_diameter_min");
+                    double asteroidDiameterMin = diameterKilometersObject.getDouble("estimated_diameter_min");
 
-                    double asteroidDiameterMax = asteroidDiameterObject.getDouble("estimated_diameter_max");
+                    double asteroidDiameterMax = diameterKilometersObject.getDouble("estimated_diameter_max");
 
-//
 //                    String asteroidDiameterMinString = String.valueOf(asteroidDiameterMin);
 //
 //                    String asteroidDiameterMaxString = String.valueOf(asteroidDiameterMax);
 
 //                    String asteroidDiameter = asteroidDiameterMinString + " - " + asteroidDiameterMaxString + " m";
 
+//                    JSONObject approachDateObject = asteroidObject.getJSONObject("close_approach_data");
 
-                    JSONArray approachDateArray = asteroidObject.getJSONArray("close_approach_date");
+                    JSONArray approachDateArray = asteroidObject.getJSONArray("close_approach_data");
 
                     String asteroidApproachDate = null;
 
                     String asteroidVelocity = null;
 
-                    for (int j = 0; i < approachDateArray.length(); j++) {
+                    for (int j = 0; j < approachDateArray.length(); j++) {
 
-                        JSONObject approachDataObject = approachDateArray.getJSONObject(i);
+                        JSONObject approachDataObject = approachDateArray.getJSONObject(j);
 
                         asteroidApproachDate = approachDataObject.getString("close_approach_date_full");
 
-                        JSONArray velocityArray = approachDataObject.getJSONArray("relative_velocity");
+                        JSONObject velocityObject = approachDataObject.getJSONObject("relative_velocity");
 
-                        for (int k = 0; i < velocityArray.length(); k++) {
-                            JSONObject velocityObject = velocityArray.getJSONObject(i);
+                        asteroidVelocity = velocityObject.getString("kilometers_per_second");
 
-                            asteroidVelocity = velocityObject.getString("kilometers_per_second");
-//                            asteroidVelocityString = String.valueOf(asteroidVelocity);
-                        }
+
+//                        JSONArray velocityArray = approachDataObject.getJSONArray("relative_velocity");
+
+//                        for (int k = 0; k < velocityArray.length(); k++) {
+//                            JSONObject velocityObject = velocityArray.getJSONObject(i);
+
+////                            asteroidVelocityString = String.valueOf(asteroidVelocity);
+//                        }
                     }
 
                     Asteroid asteroid = new Asteroid(id, asteroidName, asteroidDiameterMin, asteroidDiameterMax,
@@ -161,7 +181,17 @@ public class AsteroidFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Asteroid> asteroids) {
-            super.onPostExecute(asteroids);
+            if (asteroids.size() == 0) {
+
+            } else {
+                populateAsteroids(asteroids);
+            }
         }
     }
+
+    private void populateAsteroids(List<Asteroid> asteroids) {
+
+//        asteroidAdapter.setAsteroidList(asteroids);
+    }
+
 }

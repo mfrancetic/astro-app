@@ -80,7 +80,7 @@
         app:layout_constraintLeft_toLeftOf="@id/asteroid_velocity_label_text_view"
         app:layout_constraintTop_toBottomOf="@id/asteroid_velocity_label_text_view" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/asteroid_hazardous_button"
         android:layout_width="48dp"
         android:layout_height="48dp"

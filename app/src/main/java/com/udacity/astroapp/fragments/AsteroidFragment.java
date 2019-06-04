@@ -39,6 +39,7 @@ public class AsteroidFragment extends Fragment {
 
     private List<Asteroid> asteroidList;
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +55,10 @@ public class AsteroidFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_asteroid, container, false);
 
         asteroidList = new ArrayList<>();
+
+        asteroidAdapter = new AsteroidAdapter(asteroidList);
+
+
 
 //       LocalDate localDate = LocalDate.now();
 

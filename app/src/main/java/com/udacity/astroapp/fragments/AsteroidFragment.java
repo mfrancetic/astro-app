@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +41,8 @@ public class AsteroidFragment extends Fragment {
 
     private List<Asteroid> asteroidList;
 
+    private RecyclerView asteroidRecyclerView;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,8 +59,13 @@ public class AsteroidFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_asteroid, container, false);
 
         asteroidList = new ArrayList<>();
+        asteroidRecyclerView = rootView.findViewById(R.id.asteroid_recycler_view);
 
         asteroidAdapter = new AsteroidAdapter(asteroidList);
+        asteroidRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        asteroidRecyclerView.setAdapter(asteroidAdapter);
+
+
 
 
 
@@ -84,19 +93,7 @@ public class AsteroidFragment extends Fragment {
 
                 JSONObject baseAsteroidResponse = new JSONObject(asteroidJson);
 
-//                JSONArray asteroidBaseArray = new JSONArray(asteroidJson);
-
                 JSONObject asteroidBaseObject = baseAsteroidResponse.getJSONObject("near_earth_objects");
-
-//                JSONArray asteroidBaseArray = baseAsteroidResponse.getJSONArray("near_earth_objects");
-
-//                JSONArray asteroidArray = asteroidBaseArray.getJSONArray("2019-06-01");
-
-//                JSONObject asteroidBaseObject = asteroidBaseArray.getJSONObject()
-
-//                JSONArray asteroidArray = asteroidBaseArray.getJSONArray(2);
-
-//                JSONObject dateObject = asteroidBaseObject.getJSONObject("2019-06-03");
 
                 JSONArray asteroidArray = asteroidBaseObject.getJSONArray("2019-06-01");
 
@@ -126,14 +123,6 @@ public class AsteroidFragment extends Fragment {
 
                     double asteroidDiameterMax = diameterKilometersObject.getDouble("estimated_diameter_max");
 
-//                    String asteroidDiameterMinString = String.valueOf(asteroidDiameterMin);
-//
-//                    String asteroidDiameterMaxString = String.valueOf(asteroidDiameterMax);
-
-//                    String asteroidDiameter = asteroidDiameterMinString + " - " + asteroidDiameterMaxString + " m";
-
-//                    JSONObject approachDateObject = asteroidObject.getJSONObject("close_approach_data");
-
                     JSONArray approachDateArray = asteroidObject.getJSONArray("close_approach_data");
 
                     String asteroidApproachDate = null;
@@ -149,15 +138,6 @@ public class AsteroidFragment extends Fragment {
                         JSONObject velocityObject = approachDataObject.getJSONObject("relative_velocity");
 
                         asteroidVelocity = velocityObject.getString("kilometers_per_second");
-
-
-//                        JSONArray velocityArray = approachDataObject.getJSONArray("relative_velocity");
-
-//                        for (int k = 0; k < velocityArray.length(); k++) {
-//                            JSONObject velocityObject = velocityArray.getJSONObject(i);
-
-////                            asteroidVelocityString = String.valueOf(asteroidVelocity);
-//                        }
                     }
 
                     Asteroid asteroid = new Asteroid(id, asteroidName, asteroidDiameterMin, asteroidDiameterMax,
@@ -195,8 +175,8 @@ public class AsteroidFragment extends Fragment {
     }
 
     private void populateAsteroids(List<Asteroid> asteroids) {
-
-//        asteroidAdapter.setAsteroidList(asteroids);
+        asteroidAdapter.setAsteroids(asteroids);
+        asteroidRecyclerView.setVisibility(View.VISIBLE);
     }
 
 }

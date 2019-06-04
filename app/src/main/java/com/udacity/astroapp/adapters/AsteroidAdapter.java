@@ -46,6 +46,7 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
             asteroidHazardousImageView = itemView.findViewById(R.id.asteroid_hazardous_button);
             asteroidImageView = itemView.findViewById(R.id.asteroid_image_view);
             asteroidVelocityTextView = itemView.findViewById(R.id.asteroid_velocity_text_view);
+            readMoreButton = itemView.findViewById(R.id.asteroid_read_more_button);
         }
     }
 
@@ -80,8 +81,12 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
 
         asteroidNameTextView.setText(asteroid.getAsteroidName());
 
-        String asteroidDiameter = asteroid.getAsteroidDiameterMin() + " - " + asteroid.getAsteroidDiameterMax() + " m";
+        String asteroidDiameter = asteroid.getAsteroidDiameterMin() + " - " + asteroid.getAsteroidDiameterMax() + " km";
         asteroidDiameterTextView.setText(asteroidDiameter);
+
+        String asteroidVelocity = asteroid.getAsteroidVelocity() + " km/s";
+
+        asteroidVelocityTextView.setText(asteroidVelocity);
 
         asteroidApproachDateTextView.setText(asteroid.getAsteroidApproachDate());
 

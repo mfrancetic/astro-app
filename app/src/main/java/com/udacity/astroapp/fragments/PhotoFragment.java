@@ -32,8 +32,12 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.dash.DashMediaSource;
+import com.google.android.exoplayer2.source.hls.DefaultHlsDataSourceFactory;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 import com.udacity.astroapp.R;
@@ -141,12 +145,6 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
 
                 JSONObject photoObject = new JSONObject(photoJson);
 
-//                JSONArray photoArray = baseJsonResponse.getJSONArray(baseJsonResponse);
-
-//                for (int i=0; i <baseJsonResponse.length(); i++) {
-
-//                JSONObject photoObject = baseJsonResponse.getJSONObject();
-
                 String photoTitle = photoObject.getString("title");
 
                 String photoDate = photoObject.getString("date");
@@ -189,30 +187,22 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
             photoTitleTextView.setText(photo.getPhotoTitle());
             photoDateTextView.setText(photo.getPhotoDate());
             photoDescriptionTextView.setText(photo.getPhotoDescription());
-//
-//            videoUrl = "https://www.ustream.tv/embed/17074538?v=3&wmode=direct&autoplay=true";
 
-//            videoUrl = "https://d17h27t6h515a5.cloudfront.net/topher/2017/April/58ffde36_2-mix-all-wet-ingredients-yellow-cake/2-mix-all-wet-ingredients-yellow-cake.mp4";
-
-//            videoUrl = "https://www.ustream.tv/embed/17074538?v=3&wmode=direct";
+            videoUrl = "https://www.ustream.tv/embed/17074538?v=3&wmode=direct";
 
 
-//            videoUrl = "https://www.youtube.com/watch?v=Ltr4OLoDDOM";
-
-
-            if (photo.getPhotoMediaType().equals("video")) {
-                videoUrl = photo.getPhotoUrl();
+//            if (photo.getPhotoMediaType().equals("video")) {
+//                videoUrl = photo.getPhotoUrl();
                 videoUri = Uri.parse(videoUrl);
                 initializePlayer(videoUri);
-            } else if (photo.getPhotoMediaType().equals("image")) {
-                photoUri = Uri.parse(photo.getPhotoUrl());
-
-                Picasso.get().load(photoUri)
-                        .into(photoImageView);
-            }
+                //TODO return
+//            } else if (photo.getPhotoMediaType().equals("image")) {
+//                photoUri = Uri.parse(photo.getPhotoUrl());
+//
+//                Picasso.get().load(photoUri)
+//                        .into(photoImageView);
+//            }
         }
-
-
 
 //        private void populateVideo() {
 //            releasePlayer();
@@ -297,14 +287,28 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
 
                 exoPlayer.addListener(this);
 
-
                 String userAgent = Util.getUserAgent(context, getString(R.string.app_name));
+
+                DefaultHttpDataSourceFactory httpDataSourceFactory = new DefaultHttpDataSourceFactory(userAgent);
+                DefaultHlsDataSourceFactory hlsDataSourceFactory = new DefaultHlsDataSourceFactory(httpDataSourceFactory);
 
                 ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
 
-                MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultDataSourceFactory(context, userAgent))
-                        .setExtractorsFactory(extractorsFactory).createMediaSource(videoUri);
+//);
 
+                HlsMediaSource mediaSource = new HlsMediaSource.Factory(hlsDataSourceFactory)
+                        .createMediaSource(videoUri);
+
+//                DashMediaSource mediaSource = new DashMediaSource.Factory(httpDataSourceFactory)
+//                        .createMediaSource(videoUri);
+
+
+//                ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+
+//                MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultDataSourceFactory(context, userAgent))
+//                        .setExtractorsFactory(extractorsFactory).createMediaSource(videoUri);
+
+//                exoPlayer.prepare(exoPlayer.Create);
                 exoPlayer.prepare(mediaSource);
                 exoPlayer.setPlayWhenReady(true);
             }

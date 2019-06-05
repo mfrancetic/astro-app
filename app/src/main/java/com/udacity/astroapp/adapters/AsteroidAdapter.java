@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,8 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
 
     private String asteroidFullName;
 
+    private Date approachDateObject;
+
     public AsteroidAdapter(List<Asteroid> asteroids) {
         this.asteroids = asteroids;
     }
@@ -118,22 +121,30 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
 
         String approachDate = asteroid.getAsteroidApproachDate();
 
-        LocalDateTime formattedAproachDate = getFormattedApproachDate(approachDate);
-
-        if (formattedAproachDate != null) {
-            approachDate = formattedAproachDate.toString();
-        }
-
         if (Build.VERSION.SDK_INT >= 26) {
+            LocalDateTime formattedAproachDate = getFormattedApproachDate(approachDate);
+            if (formattedAproachDate != null) {
+                approachDate = formattedAproachDate.toString();
+            }
+
             DateTimeFormatter sourceFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
             DateTimeFormatter targetFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime dateTime = LocalDateTime.parse(approachDate, sourceFormat);
             approachDate = dateTime.atZone(ZoneId.of("UTC")).format(targetFormat);
+        } else {
+            try {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm");
+                Date date = simpleDateFormat.parse(approachDate);
+
+                SimpleDateFormat simpleDateFormatNew = new SimpleDateFormat("yyyy-MM-dd HH:mm",
+                        Locale.getDefault());
+               approachDate = simpleDateFormatNew.format(date);
+
+//                approachDate = simpleDateFormat.format(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
-//        else {
-//            approachDate = formatedDateTime.substring(formatedDateTime.indexOf("T"));
-////            return asteroidFullName.substring(asteroidFullName.indexOf("(") + 1, asteroidFullName.indexOf(")"));
-//        }
 
         asteroidApproachDateTextView.setText(approachDate);
 
@@ -183,8 +194,7 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
     private LocalDateTime getFormattedApproachDate(String asteroidApproachDate) {
         if (Build.VERSION.SDK_INT >= 26) {
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm");
-            LocalDateTime localDate = LocalDateTime.parse(asteroidApproachDate, dateTimeFormatter);
-            return localDate;
+            return LocalDateTime.parse(asteroidApproachDate, dateTimeFormatter);
         } else {
             return null;
         }

@@ -1,8 +1,10 @@
 package com.udacity.astroapp.adapters;
 
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,7 +18,20 @@ import com.udacity.astroapp.R;
 import com.udacity.astroapp.models.Asteroid;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHolder> {
 
@@ -101,7 +116,26 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
 
         asteroidVelocityTextView.setText(asteroidVelocityDecimal);
 
-        asteroidApproachDateTextView.setText(asteroid.getAsteroidApproachDate());
+        String approachDate = asteroid.getAsteroidApproachDate();
+
+        LocalDateTime formattedAproachDate = getFormattedApproachDate(approachDate);
+
+        if (formattedAproachDate != null) {
+            approachDate = formattedAproachDate.toString();
+        }
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            DateTimeFormatter sourceFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            DateTimeFormatter targetFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime dateTime = LocalDateTime.parse(approachDate, sourceFormat);
+            approachDate = dateTime.atZone(ZoneId.of("UTC")).format(targetFormat);
+        }
+//        else {
+//            approachDate = formatedDateTime.substring(formatedDateTime.indexOf("T"));
+////            return asteroidFullName.substring(asteroidFullName.indexOf("(") + 1, asteroidFullName.indexOf(")"));
+//        }
+
+        asteroidApproachDateTextView.setText(approachDate);
 
         String asteroidUrl = asteroid.getAsteroidUrl();
         final Uri asteroidUri = Uri.parse(asteroidUrl);
@@ -144,5 +178,15 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
         double asteroidVelocityDouble = Double.parseDouble(asteroidVelocity);
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         return decimalFormat.format(asteroidVelocityDouble);
+    }
+
+    private LocalDateTime getFormattedApproachDate(String asteroidApproachDate) {
+        if (Build.VERSION.SDK_INT >= 26) {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm");
+            LocalDateTime localDate = LocalDateTime.parse(asteroidApproachDate, dateTimeFormatter);
+            return localDate;
+        } else {
+            return null;
+        }
     }
 }

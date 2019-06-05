@@ -121,37 +121,12 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
 
         String approachDate = asteroid.getAsteroidApproachDate();
 
-        if (Build.VERSION.SDK_INT >= 26) {
-            LocalDateTime formattedAproachDate = getFormattedApproachDate(approachDate);
-            if (formattedAproachDate != null) {
-                approachDate = formattedAproachDate.toString();
-            }
-
-            DateTimeFormatter sourceFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-            DateTimeFormatter targetFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime dateTime = LocalDateTime.parse(approachDate, sourceFormat);
-            approachDate = dateTime.atZone(ZoneId.of("UTC")).format(targetFormat);
-        } else {
-            try {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm");
-                Date date = simpleDateFormat.parse(approachDate);
-
-                SimpleDateFormat simpleDateFormatNew = new SimpleDateFormat("yyyy-MM-dd HH:mm",
-                        Locale.getDefault());
-               approachDate = simpleDateFormatNew.format(date);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-
         boolean isHazardous = asteroid.getAsteroidIsHazardous();
         if (isHazardous) {
             asteroidHazardousImage.setImageResource(R.drawable.hazardous_image);
         } else {
             asteroidHazardousImage.setImageResource(R.drawable.not_hazardous_image);
         }
-
-        approachDate = approachDate + " h";
 
         asteroidApproachDateTextView.setText(approachDate);
 
@@ -196,15 +171,6 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
         double asteroidVelocityDouble = Double.parseDouble(asteroidVelocity);
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         return decimalFormat.format(asteroidVelocityDouble);
-    }
-
-    private LocalDateTime getFormattedApproachDate(String asteroidApproachDate) {
-        if (Build.VERSION.SDK_INT >= 26) {
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd HH:mm");
-            return LocalDateTime.parse(asteroidApproachDate, dateTimeFormatter);
-        } else {
-            return null;
-        }
     }
 
 }

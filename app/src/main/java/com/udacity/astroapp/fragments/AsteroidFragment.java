@@ -24,9 +24,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -35,13 +37,15 @@ public class AsteroidFragment extends Fragment {
 
     private static final String LOG_TAG = AsteroidFragment.class.getSimpleName();
 
-    private String date;
-
     private AsteroidAdapter asteroidAdapter;
 
     private List<Asteroid> asteroidList;
 
     private RecyclerView asteroidRecyclerView;
+
+    private Date date;
+
+    private String localDate;
 
 
     @Override
@@ -65,11 +69,9 @@ public class AsteroidFragment extends Fragment {
         asteroidRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         asteroidRecyclerView.setAdapter(asteroidAdapter);
 
-
-
-
-
-//       LocalDate localDate = LocalDate.now();
+        date = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        localDate = simpleDateFormat.format(date);
 
         new AsteroidAsyncTask().execute();
 
@@ -88,14 +90,15 @@ public class AsteroidFragment extends Fragment {
             List<Asteroid> asteroidList = new ArrayList<>();
 
             try {
-                URL url = QueryUtils.createAsteroidUrl("2019-06-01", "2019-06-01");
+                URL url = QueryUtils.createAsteroidUrl(localDate, localDate);
+
                 String asteroidJson = QueryUtils.makeHttpRequest(url);
 
                 JSONObject baseAsteroidResponse = new JSONObject(asteroidJson);
 
                 JSONObject asteroidBaseObject = baseAsteroidResponse.getJSONObject("near_earth_objects");
 
-                JSONArray asteroidArray = asteroidBaseObject.getJSONArray("2019-06-01");
+                JSONArray asteroidArray = asteroidBaseObject.getJSONArray(localDate);
 
                 for (int i = 0; i < asteroidArray.length(); i++) {
 
@@ -110,11 +113,6 @@ public class AsteroidFragment extends Fragment {
                     String asteroidUrl = asteroidObject.getString("nasa_jpl_url");
 
                     JSONObject diameterObject = asteroidObject.getJSONObject("estimated_diameter");
-
-
-//                    JSONObject diameterObject = diameterArray.getJSONObject(i);
-
-//                    JSONArray diameterMetersArray = diameterArray.getJSONArray("");
 
                     JSONObject diameterKilometersObject = diameterObject.getJSONObject("kilometers");
 
@@ -133,7 +131,7 @@ public class AsteroidFragment extends Fragment {
 
                         JSONObject approachDataObject = approachDateArray.getJSONObject(j);
 
-                        asteroidApproachDate = approachDataObject.getString("close_approach_date_full");
+                        asteroidApproachDate = approachDataObject.getString("close_approach_date");
 
                         JSONObject velocityObject = approachDataObject.getJSONObject("relative_velocity");
 
@@ -178,5 +176,4 @@ public class AsteroidFragment extends Fragment {
         asteroidAdapter.setAsteroids(asteroids);
         asteroidRecyclerView.setVisibility(View.VISIBLE);
     }
-
 }

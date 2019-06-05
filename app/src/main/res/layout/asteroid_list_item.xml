@@ -10,10 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="?android:actionBarSize"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@mipmap/ic_launcher" />
+        android:src="@drawable/asteroid_image"/>
 
     <TextView
         android:id="@+id/asteroid_name_label_text_view"
@@ -91,7 +90,7 @@
         app:layout_constraintTop_toBottomOf="@id/asteroid_velocity_label_text_view" />
 
     <ImageView
-        android:id="@+id/asteroid_hazardous_button"
+        android:id="@+id/asteroid_hazardous_image"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginRight="16dp"

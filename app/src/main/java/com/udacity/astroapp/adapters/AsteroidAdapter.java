@@ -59,7 +59,7 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
             asteroidNameTextView = itemView.findViewById(R.id.asteroid_name_text_view);
             asteroidDiameterTextView = itemView.findViewById(R.id.asteroid_diameter_text_view);
             asteroidApproachDateTextView = itemView.findViewById(R.id.asteroid_approach_date_text_view);
-            asteroidHazardousImageView = itemView.findViewById(R.id.asteroid_hazardous_button);
+            asteroidHazardousImageView = itemView.findViewById(R.id.asteroid_hazardous_image);
             asteroidImageView = itemView.findViewById(R.id.asteroid_image_view);
             asteroidVelocityTextView = itemView.findViewById(R.id.asteroid_velocity_text_view);
             readMoreButton = itemView.findViewById(R.id.asteroid_read_more_button);
@@ -94,7 +94,7 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
         TextView asteroidDiameterTextView = viewHolder.asteroidDiameterTextView;
         TextView asteroidVelocityTextView = viewHolder.asteroidVelocityTextView;
         TextView asteroidApproachDateTextView = viewHolder.asteroidApproachDateTextView;
-        ImageView asteroidImageView = viewHolder.asteroidImageView;
+        ImageView asteroidHazardousImage = viewHolder.asteroidHazardousImageView;
         Button readMoreButton = viewHolder.readMoreButton;
 
         final Context context = asteroidVelocityTextView.getContext();
@@ -139,12 +139,19 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
                 SimpleDateFormat simpleDateFormatNew = new SimpleDateFormat("yyyy-MM-dd HH:mm",
                         Locale.getDefault());
                approachDate = simpleDateFormatNew.format(date);
-
-//                approachDate = simpleDateFormat.format(date);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
+
+        boolean isHazardous = asteroid.getAsteroidIsHazardous();
+        if (isHazardous) {
+            asteroidHazardousImage.setImageResource(R.drawable.hazardous_image);
+        } else {
+            asteroidHazardousImage.setImageResource(R.drawable.not_hazardous_image);
+        }
+
+        approachDate = approachDate + " h";
 
         asteroidApproachDateTextView.setText(approachDate);
 
@@ -199,4 +206,5 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
             return null;
         }
     }
+
 }

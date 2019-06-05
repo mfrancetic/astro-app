@@ -7,11 +7,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.adapters.AsteroidAdapter;
@@ -25,8 +26,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -46,6 +45,12 @@ public class AsteroidFragment extends Fragment {
     private Date date;
 
     private String localDate;
+
+    private TextView emptyTextView;
+
+    private ProgressBar loadingIndicator;
+
+
 
 
     @Override
@@ -69,14 +74,16 @@ public class AsteroidFragment extends Fragment {
         asteroidRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         asteroidRecyclerView.setAdapter(asteroidAdapter);
 
+        emptyTextView = rootView.findViewById(R.id.asteroid_empty_text_view);
+        loadingIndicator = rootView.findViewById(R.id.asteroid_loading_indicator);
+        emptyTextView.setVisibility(View.GONE);
+        loadingIndicator.setVisibility(View.VISIBLE);
+
         date = Calendar.getInstance().getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         localDate = simpleDateFormat.format(date);
 
         new AsteroidAsyncTask().execute();
-
-
-
         return rootView;
     }
 
@@ -165,7 +172,8 @@ public class AsteroidFragment extends Fragment {
         @Override
         protected void onPostExecute(List<Asteroid> asteroids) {
             if (asteroids.size() == 0) {
-
+            asteroidRecyclerView.setVisibility(View.GONE);
+            emptyTextView.setVisibility(View.VISIBLE);
             } else {
                 populateAsteroids(asteroids);
             }
@@ -173,6 +181,8 @@ public class AsteroidFragment extends Fragment {
     }
 
     private void populateAsteroids(List<Asteroid> asteroids) {
+        loadingIndicator.setVisibility(View.GONE);
+        emptyTextView.setVisibility(View.GONE);
         asteroidAdapter.setAsteroids(asteroids);
         asteroidRecyclerView.setVisibility(View.VISIBLE);
     }

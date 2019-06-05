@@ -28,4 +28,5 @@
     <string name="menu_asteroids">Asteroids</string>
     <string name="menu_observatories">Observatories</string>
     <string name="menu_share">Share</string>
+    <string name="no_asteroids_found">No asteroids found</string>
 </resources>

@@ -164,6 +164,8 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
 
     private double getDiameterDecimal(double diameterDouble) {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
+//        Double
+
         return Double.parseDouble(decimalFormat.format(diameterDouble));
     }
 

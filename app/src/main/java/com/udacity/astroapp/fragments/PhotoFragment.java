@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -89,6 +90,10 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
 
     private Uri photoUri;
 
+    private TextView emptyTextView;
+
+    private ProgressBar loadingIndicator;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +115,12 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
 
         photoScrollView = rootView.findViewById(R.id.photo_scroll_view);
         playerPhotoViewFrame = rootView.findViewById(R.id.player_photo_view_frame);
+
+        loadingIndicator = rootView.findViewById(R.id.photo_loading_indicator);
+        loadingIndicator.setVisibility(View.VISIBLE);
+        emptyTextView = rootView.findViewById(R.id.photo_empty_text_view);
+
+        emptyTextView.setVisibility(View.GONE);
 
         context = photoDateTextView.getContext();
 
@@ -134,7 +145,6 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
     private class PhotoAsyncTask extends AsyncTask<String, Void, Photo> {
 
         Photo photo;
-
 
         @Override
         protected Photo doInBackground(String... strings) {
@@ -179,11 +189,27 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
         protected void onPostExecute(Photo photo) {
             if(photo != null) {
                 populatePhoto(photo);
+            } else {
+                loadingIndicator.setVisibility(View.GONE);
+                photoTitleTextView.setVisibility(View.GONE);
+                photoDescriptionTextView.setVisibility(View.GONE);
+                photoDateTextView.setVisibility(View.GONE);
+                photoImageView.setVisibility(View.GONE);
+                emptyTextView.setVisibility(View.VISIBLE);
+                exoPlayerView.setVisibility(View.GONE);
             }
             super.onPostExecute(photo);
         }
 
         private void populatePhoto(Photo photo) {
+            emptyTextView.setVisibility(View.GONE);
+            loadingIndicator.setVisibility(View.GONE);
+
+            photoImageView.setVisibility(View.VISIBLE);
+            photoDateTextView.setVisibility(View.VISIBLE);
+            photoTitleTextView.setVisibility(View.VISIBLE);
+            photoDescriptionTextView.setVisibility(View.VISIBLE);
+
             photoTitleTextView.setText(photo.getPhotoTitle());
             photoDateTextView.setText(photo.getPhotoDate());
             photoDescriptionTextView.setText(photo.getPhotoDescription());

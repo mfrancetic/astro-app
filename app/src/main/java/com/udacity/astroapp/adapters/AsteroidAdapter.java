@@ -19,6 +19,7 @@ import com.udacity.astroapp.R;
 import com.udacity.astroapp.models.Asteroid;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -163,15 +164,20 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
     }
 
     private double getDiameterDecimal(double diameterDouble) {
+//        try {
+        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+        decimalFormatSymbols.setDecimalSeparator('.');
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
-//        Double
-
+        decimalFormat.setDecimalFormatSymbols(decimalFormatSymbols);
         return Double.parseDouble(decimalFormat.format(diameterDouble));
     }
 
     private String getVelocityDecimal(String asteroidVelocity) {
-        double asteroidVelocityDouble = Double.parseDouble(asteroidVelocity);
+        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+        decimalFormatSymbols.setDecimalSeparator('.');
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        decimalFormat.setDecimalFormatSymbols(decimalFormatSymbols);
+        double asteroidVelocityDouble = Double.parseDouble(asteroidVelocity);
         return decimalFormat.format(asteroidVelocityDouble);
     }
 

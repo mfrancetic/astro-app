@@ -2,7 +2,6 @@ package com.udacity.astroapp.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.models.Asteroid;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHolder> {
@@ -52,6 +52,8 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
 
     private List<Asteroid> asteroids;
 
+    private String asteroidFullName;
+
     public AsteroidAdapter(List<Asteroid> asteroids) {
         this.asteroids = asteroids;
     }
@@ -77,16 +79,27 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
         ImageView asteroidImageView = viewHolder.asteroidImageView;
         Button readMoreButton = viewHolder.readMoreButton;
 
-        final Context context =asteroidVelocityTextView.getContext();
+        final Context context = asteroidVelocityTextView.getContext();
 
-        asteroidNameTextView.setText(asteroid.getAsteroidName());
+        asteroidFullName = asteroid.getAsteroidName();
 
-        String asteroidDiameter = asteroid.getAsteroidDiameterMin() + " - " + asteroid.getAsteroidDiameterMax() + " km";
+        asteroidNameTextView.setText(getTrimmedAsteroidName(asteroidFullName));
+
+        double asteroidDiameterMin = asteroid.getAsteroidDiameterMin();
+        double asteroidDiameterMax = asteroid.getAsteroidDiameterMax();
+
+        double asteroidDiameterMinDecimal = getDiameterDecimal(asteroidDiameterMin);
+        double asteroidDiameterMaxDecimal = getDiameterDecimal(asteroidDiameterMax);
+
+        String asteroidDiameter = asteroidDiameterMinDecimal + " - " + asteroidDiameterMaxDecimal + " km";
+
         asteroidDiameterTextView.setText(asteroidDiameter);
 
-        String asteroidVelocity = asteroid.getAsteroidVelocity() + " km/s";
+        String asteroidVelocity = asteroid.getAsteroidVelocity();
 
-        asteroidVelocityTextView.setText(asteroidVelocity);
+        String asteroidVelocityDecimal = getVelocityDecimal(asteroidVelocity) + " km/s";
+
+        asteroidVelocityTextView.setText(asteroidVelocityDecimal);
 
         asteroidApproachDateTextView.setText(asteroid.getAsteroidApproachDate());
 
@@ -116,5 +129,20 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
     public void setAsteroids(List<Asteroid> asteroids) {
         this.asteroids = asteroids;
         notifyDataSetChanged();
+    }
+
+    private String getTrimmedAsteroidName(String asteroidFullName) {
+        return asteroidFullName.substring(asteroidFullName.indexOf("(") + 1, asteroidFullName.indexOf(")"));
+    }
+
+    private double getDiameterDecimal(double diameterDouble) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        return Double.parseDouble(decimalFormat.format(diameterDouble));
+    }
+
+    private String getVelocityDecimal(String asteroidVelocity) {
+        double asteroidVelocityDouble = Double.parseDouble(asteroidVelocity);
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        return decimalFormat.format(asteroidVelocityDouble);
     }
 }

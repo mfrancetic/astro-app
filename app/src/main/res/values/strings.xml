@@ -2,8 +2,8 @@
     <string name="app_name">AstroApp</string>
     <string name="photo_of_the_day_content_description">Photo of the day</string>
     <string name="diameter_label">Diameter: </string>
-    <string name="approach_date_label">Approach date: </string>
-    <string name="velocity_label">Velocity: </string>
+    <string name="approach_date_label">Approach date:</string>
+    <string name="velocity_label">Velocity:</string>
     <string name="read_more_button">Read more</string>
     <string name="asteroid_hazardous_button">Asteroid hazardous indication</string>
     <string name="observatory_content_description">Observatory photo</string>
@@ -23,7 +23,7 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="no_photo_found">No photo found</string>
-    <string name="name_label">Asteroid</string>
+    <string name="name_label">Asteroid name:</string>
     <string name="menu_photo">Photo of the day</string>
     <string name="menu_asteroids">Asteroids</string>
     <string name="menu_observatories">Observatories</string>

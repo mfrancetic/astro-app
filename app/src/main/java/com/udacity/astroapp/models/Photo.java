@@ -1,10 +1,14 @@
 package com.udacity.astroapp.models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+@Entity(tableName = "photo")
 public class Photo implements Parcelable {
 
+    @PrimaryKey
     private int photoId;
 
     private String photoTitle;

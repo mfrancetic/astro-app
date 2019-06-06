@@ -1,8 +1,10 @@
 package com.udacity.astroapp.models;
 
+import android.arch.persistence.room.Entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+@Entity(tableName = "asteroid")
 public class Asteroid implements Parcelable {
 
     private int asteroidId;

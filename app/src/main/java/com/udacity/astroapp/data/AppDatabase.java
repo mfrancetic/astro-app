@@ -1,10 +1,16 @@
 package com.udacity.astroapp.data;
 
+import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.util.Log;
 
+import com.udacity.astroapp.models.Asteroid;
+import com.udacity.astroapp.models.Observatory;
+import com.udacity.astroapp.models.Photo;
+
+@Database(entities = {Photo.class, Asteroid.class, Observatory.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String LOG_TAG = AppDatabase.class.getSimpleName();
@@ -14,8 +20,8 @@ public abstract class AppDatabase extends RoomDatabase {
 
     /* Gets the instance of the AppDatabase and builds the database using the
      * Room.databaseBuilder method */
-    static AppDatabase getInstance(Context context) {
-        if (databaseInstance== null) {
+    public static AppDatabase getInstance(Context context) {
+        if (databaseInstance == null) {
             synchronized (LOCK) {
                 Log.d(LOG_TAG, "Creating a new database instance");
                 databaseInstance = Room.databaseBuilder(context.getApplicationContext(),

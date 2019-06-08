@@ -16,21 +16,25 @@ public class PhotoViewModel  extends ViewModel {
     private static final String LOG_TAG = PhotoViewModel.class.getSimpleName();
 //    private final LiveData<List<Photo>> photos;
 
-    private final LiveData<Photo> photo;
+    private final LiveData<List<Photo>> photos;
 
-    PhotoViewModel(AppDatabase appDatabase, int photoId) {
+    public PhotoViewModel(@NonNull AppDatabase appDatabase) {
+
+//    public PhotoViewModel(@NonNull AppDatabase appDatabase, int photoId) {
 //        AppDatabase appDatabase = AppDatabase.getInstance(this.getApplication());
 //        Log.d(LOG_TAG, "Actively retrieving the tasks from the Database");
 //        photos = appDatabase.astroDao().loadAllPhotos();
-        photo = appDatabase.astroDao().loadPhotoById(photoId);
+//        photo = appDatabase.astroDao().loadPhotoById(photoId);
+        photos = appDatabase.astroDao().loadAllPhotos();
+
     }
 
 
-//    LiveData<List<Photo>> getPhotos() {
-//        return photos;
+    public LiveData<List<Photo>> getPhotos() {
+        return photos;
+    }
+
+//    public LiveData<Photo> getPhoto() {
+//        return photo;
 //    }
-
-    public LiveData<Photo> getPhoto() {
-        return photo;
-    }
 }

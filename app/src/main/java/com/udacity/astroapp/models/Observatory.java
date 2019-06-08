@@ -1,12 +1,15 @@
 package com.udacity.astroapp.models;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 @Entity(tableName = "observatory")
 public class Observatory implements Parcelable {
 
+    @PrimaryKey
     private int observatoryId;
 
     private String observatoryName;
@@ -19,7 +22,12 @@ public class Observatory implements Parcelable {
 
     private String observatoryPhotoUrl;
 
-    Observatory (int observatoryId, String observatoryName, String observatoryAddress,
+    @Ignore
+    Observatory() {
+    }
+
+
+    public Observatory (int observatoryId, String observatoryName, String observatoryAddress,
                  String observatoryOpeningHours, String observatoryUrl, String observatoryPhotoUrl){
         this.observatoryId = observatoryId;
         this.observatoryName = observatoryName;
@@ -29,7 +37,7 @@ public class Observatory implements Parcelable {
         this.observatoryPhotoUrl = observatoryPhotoUrl;
     }
 
-    Observatory(Parcel in) {
+    public Observatory(Parcel in) {
         observatoryId = in.readInt();
         observatoryName = in.readString();
         observatoryAddress = in.readString();

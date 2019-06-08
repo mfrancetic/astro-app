@@ -1,5 +1,8 @@
 package com.udacity.astroapp.fragments;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +45,11 @@ import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.data.AppDatabase;
+import com.udacity.astroapp.data.AppExecutors;
+import com.udacity.astroapp.data.AstroDao;
+import com.udacity.astroapp.data.PhotoViewModel;
+import com.udacity.astroapp.data.PhotoViewModelFactory;
 import com.udacity.astroapp.models.Photo;
 import com.udacity.astroapp.utils.QueryUtils;
 
@@ -56,7 +64,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PhotoFragment extends Fragment implements Player.EventListener{
+public class PhotoFragment extends Fragment implements Player.EventListener {
 
     private static final String LOG_TAG = PhotoFragment.class.getSimpleName();
 
@@ -94,6 +102,28 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
 
     private ProgressBar loadingIndicator;
 
+    private PhotoViewModel photoViewModel;
+
+    private AstroDao astroDao;
+    private PhotoViewModelFactory photoViewModelFactory;
+
+    private AppDatabase appDatabase;
+
+    private Photo photo;
+
+    private int photoId;
+
+    private String photoTitle;
+
+    private String photoDate;
+
+    private String photoDescription;
+
+    private String photoUrl;
+
+
+    private String photoMediaType;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +149,37 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
         loadingIndicator = rootView.findViewById(R.id.photo_loading_indicator);
         loadingIndicator.setVisibility(View.VISIBLE);
         emptyTextView = rootView.findViewById(R.id.photo_empty_text_view);
+        appDatabase = AppDatabase.getInstance(getContext());
+
+
+//        if (photo != null) {
+//            photoId = photo.getPhotoId();
+//        }
+
+        photoViewModelFactory = new PhotoViewModelFactory(appDatabase);
+
+//        photoViewModelFactory = new PhotoViewModelFactory(appDatabase, photoId);
+        photoViewModel = ViewModelProviders.of(PhotoFragment.this, photoViewModelFactory).get(PhotoViewModel.class);
+
+        photoViewModel.getPhotos().observe(PhotoFragment.this, new Observer<List<Photo>>() {
+            @Override
+            public void onChanged(@Nullable final List<Photo> photos) {
+                photoViewModel.getPhotos().removeObserver(this);
+                if (photos != null) {
+                    AppExecutors.getExecutors().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (photoTitle != null) {
+                                appDatabase.astroDao().deleteAllPhotos();
+                                appDatabase.astroDao().addPhoto(photo);
+//                                populatePhoto(photo);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
 
         emptyTextView.setVisibility(View.GONE);
 
@@ -144,10 +205,12 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
 
     private class PhotoAsyncTask extends AsyncTask<String, Void, Photo> {
 
-        Photo photo;
-
         @Override
         protected Photo doInBackground(String... strings) {
+
+//            if (photo == null) {
+//            photo = new Photo(0, null, null, null, null, null);
+//            }
 
             try {
                 URL url = QueryUtils.createPhotoUrl();
@@ -155,40 +218,73 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
 
                 JSONObject photoObject = new JSONObject(photoJson);
 
-                String photoTitle = photoObject.getString("title");
+                photoTitle = photoObject.getString("title");
 
-                String photoDate = photoObject.getString("date");
+                photoDate = photoObject.getString("date");
 
-                String photoDescription = photoObject.getString("explanation");
+                photoDescription = photoObject.getString("explanation");
 
-                String photoUrl = photoObject.getString("url");
+                photoUrl = photoObject.getString("url");
 
-                String photoMediaType = photoObject.getString("media_type");
+                photoMediaType = photoObject.getString("media_type");
 
-                int id = 0;
+//                int id = 1;
 
-                photo = new Photo(id, photoTitle, photoDate, photoDescription, photoUrl, photoMediaType);
+                photo = new Photo(0, photoTitle, photoDate, photoDescription, photoUrl, photoMediaType);
 
-                photo.setPhotoId(id);
-                photo.setPhotoTitle(photoTitle);
-                photo.setPhotoDate(photoDate);
-                photo.setPhotoDescription(photoDescription);
-                photo.setPhotoUrl(photoUrl);
-                photo.setPhotoMediaType(photoMediaType);
+//                photo.setPhotoId(id);
+//                photo.setPhotoTitle(photoTitle);
+//                photo.setPhotoDate(photoDate);
+//                photo.setPhotoDescription(photoDescription);
+//                photo.setPhotoUrl(photoUrl);
+//                photo.setPhotoMediaType(photoMediaType);
+
+//                astroDao.addPhoto(photo);
+
+//                astroDao.addPhoto(photo);
             } catch (
                     IOException e) {
                 Log.e(LOG_TAG, "Problem retrieving the photo JSON results");
+//                return null;
             } catch (
                     JSONException e) {
-                Log.e(LOG_TAG, "Problem parsing the photo JSON resposne");
+                Log.e(LOG_TAG, "Problem parsing the photo JSON response");
             }
             return photo;
         }
 
         @Override
         protected void onPostExecute(Photo photo) {
-            if(photo != null) {
+//            if (photo != null && photoTitle != null) {
+            if (photo != null) {
                 populatePhoto(photo);
+                //TODO return
+//                astroDao.addPhoto(photo);
+//            } else if (appDatabase.astroDao().loadAllPhotos() != null) {
+            } else if (photoViewModel.getPhotos() != null && photoViewModel.getPhotos().getValue().size() != 0) {
+//            } else if (appDatabase.astroDao().loadPhotoById(photoId) != null){
+                LiveData<List<Photo>> photoDatabaseList = photoViewModel.getPhotos();
+                List<Photo> photos = photoDatabaseList.getValue();
+                photo = photos.get(0);
+                if (photo != null) {
+//                    photo = new Photo(photoId, null, null, null, null, null);
+                    photoId = photo.getPhotoId();
+                    photoTitle = photo.getPhotoTitle();
+                    photoDate = photo.getPhotoDate();
+                    photoDescription = photo.getPhotoDescription();
+                    photoUrl = photo.getPhotoUrl();
+                    photoMediaType = photo.getPhotoMediaType();
+//                    if (photoDatabase.getValue().getPhotoId() != 0) {
+                    photo.setPhotoId(photoId);
+                    photo.setPhotoTitle(photoTitle);
+                    photo.setPhotoDate(photoDate);
+                    photo.setPhotoDescription(photoDescription);
+                    photo.setPhotoUrl(photoUrl);
+                    photo.setPhotoMediaType(photoMediaType);
+                    populatePhoto(photo);
+
+//                    astroDao.addPhoto(photo);
+                }
             } else {
                 loadingIndicator.setVisibility(View.GONE);
                 photoTitleTextView.setVisibility(View.GONE);
@@ -201,34 +297,6 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
             super.onPostExecute(photo);
         }
 
-        private void populatePhoto(Photo photo) {
-            emptyTextView.setVisibility(View.GONE);
-            loadingIndicator.setVisibility(View.GONE);
-
-            photoImageView.setVisibility(View.VISIBLE);
-            photoDateTextView.setVisibility(View.VISIBLE);
-            photoTitleTextView.setVisibility(View.VISIBLE);
-            photoDescriptionTextView.setVisibility(View.VISIBLE);
-
-            photoTitleTextView.setText(photo.getPhotoTitle());
-            photoDateTextView.setText(photo.getPhotoDate());
-            photoDescriptionTextView.setText(photo.getPhotoDescription());
-
-            videoUrl = "https://www.ustream.tv/embed/17074538?v=3&wmode=direct";
-
-
-//            if (photo.getPhotoMediaType().equals("video")) {
-//                videoUrl = photo.getPhotoUrl();
-                videoUri = Uri.parse(videoUrl);
-                initializePlayer(videoUri);
-                //TODO return
-//            } else if (photo.getPhotoMediaType().equals("image")) {
-//                photoUri = Uri.parse(photo.getPhotoUrl());
-//
-//                Picasso.get().load(photoUri)
-//                        .into(photoImageView);
-//            }
-        }
 
 //        private void populateVideo() {
 //            releasePlayer();
@@ -366,5 +434,35 @@ public class PhotoFragment extends Fragment implements Player.EventListener{
                     exoPlayer.getCurrentPosition(), 1f);
         }
         mediaSession.setPlaybackState(stateBuilder.build());
+    }
+
+    private void populatePhoto(Photo photo) {
+        emptyTextView.setVisibility(View.GONE);
+        loadingIndicator.setVisibility(View.GONE);
+
+        photoImageView.setVisibility(View.VISIBLE);
+        photoDateTextView.setVisibility(View.VISIBLE);
+        photoTitleTextView.setVisibility(View.VISIBLE);
+        photoDescriptionTextView.setVisibility(View.VISIBLE);
+
+        photoTitleTextView.setText(photo.getPhotoTitle());
+        photoDateTextView.setText(photo.getPhotoDate());
+        photoDescriptionTextView.setText(photo.getPhotoDescription());
+
+        //TODO return for video
+//        videoUrl = "https://www.ustream.tv/embed/17074538?v=3&wmode=direct";
+
+
+        if (photoMediaType.equals("video")) {
+            videoUrl = photo.getPhotoUrl();
+            videoUri = Uri.parse(videoUrl);
+            initializePlayer(videoUri);
+            //TODO return
+        } else if (photo.getPhotoMediaType().equals("image")) {
+            photoUri = Uri.parse(photo.getPhotoUrl());
+
+            Picasso.get().load(photoUri)
+                    .into(photoImageView);
+        }
     }
 }

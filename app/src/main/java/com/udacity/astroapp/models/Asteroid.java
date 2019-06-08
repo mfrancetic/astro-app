@@ -1,12 +1,15 @@
 package com.udacity.astroapp.models;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 @Entity(tableName = "asteroid")
 public class Asteroid implements Parcelable {
 
+    @PrimaryKey
     private int asteroidId;
 
     private String asteroidName;
@@ -23,9 +26,9 @@ public class Asteroid implements Parcelable {
 
     private String asteroidUrl;
 
-   public Asteroid (int asteroidId, String asteroidName, double asteroidDiameterMin,
-              double asteroidDiameterMax,
-              String asteroidApproachDate, String asteroidVelocity, boolean asteroidIsHazardous,
+    public Asteroid(int asteroidId, String asteroidName, double asteroidDiameterMin,
+                    double asteroidDiameterMax,
+                    String asteroidApproachDate, String asteroidVelocity, boolean asteroidIsHazardous,
                     String asteroidUrl) {
         this.asteroidId = asteroidId;
         this.asteroidName = asteroidName;
@@ -37,7 +40,11 @@ public class Asteroid implements Parcelable {
         this.asteroidUrl = asteroidUrl;
     }
 
-     Asteroid(Parcel in) {
+    @Ignore
+    Asteroid() {
+    }
+
+    Asteroid(Parcel in) {
         asteroidId = in.readInt();
         asteroidName = in.readString();
         asteroidDiameterMin = in.readDouble();

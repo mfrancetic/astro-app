@@ -1,6 +1,8 @@
 package com.udacity.astroapp.models;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,7 +10,7 @@ import android.os.Parcelable;
 @Entity(tableName = "photo")
 public class Photo implements Parcelable {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int photoId;
 
     private String photoTitle;
@@ -32,7 +34,12 @@ public class Photo implements Parcelable {
         this.photoMediaType = photoMediaType;
     }
 
-     Photo(Parcel in) {
+    @Ignore
+    Photo() {
+    }
+
+
+    public Photo(Parcel in) {
          in.writeInt(photoId);
          in.writeString(photoTitle);
          in.writeString(photoDate);

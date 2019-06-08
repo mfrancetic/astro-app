@@ -8,18 +8,18 @@ import android.support.annotation.NonNull;
 public class PhotoViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final AppDatabase appDatabase;
-    private final int photoId;
+//    private final int photoId;
 
-    PhotoViewModelFactory(AppDatabase appDatabase, int photoId) {
+    public PhotoViewModelFactory(AppDatabase appDatabase) {
 //        super(application);
         this.appDatabase = appDatabase;
-        this.photoId = photoId;
+//        this.photoId = photoId;
     }
 
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new PhotoViewModel(appDatabase, photoId);
+        return (T) new PhotoViewModel(appDatabase);
     }
 }

@@ -25,7 +25,7 @@ public class AppExecutors {
         this.networkIO = networkIO;
     }
 
-    static AppExecutors getExecutors() {
+    public static AppExecutors getExecutors() {
         if (executors == null) {
             synchronized (LOCK) {
                 executors = new AppExecutors(Executors.newSingleThreadExecutor(),
@@ -36,11 +36,11 @@ public class AppExecutors {
         return executors;
     }
 
-    Executor diskIO() {
+    public Executor diskIO() {
         return diskIO;
     }
 
-    Executor mainThread() {
+    public Executor mainThread() {
         return mainThread;
     }
 

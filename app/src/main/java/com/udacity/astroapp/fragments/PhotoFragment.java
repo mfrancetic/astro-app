@@ -149,12 +149,8 @@ public class PhotoFragment extends Fragment implements Player.EventListener {
         loadingIndicator = rootView.findViewById(R.id.photo_loading_indicator);
         loadingIndicator.setVisibility(View.VISIBLE);
         emptyTextView = rootView.findViewById(R.id.photo_empty_text_view);
+
         appDatabase = AppDatabase.getInstance(getContext());
-
-
-//        if (photo != null) {
-//            photoId = photo.getPhotoId();
-//        }
 
         photoViewModelFactory = new PhotoViewModelFactory(appDatabase);
 

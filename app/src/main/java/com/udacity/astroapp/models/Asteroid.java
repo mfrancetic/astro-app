@@ -44,7 +44,7 @@ public class Asteroid implements Parcelable {
     Asteroid() {
     }
 
-    Asteroid(Parcel in) {
+   public Asteroid(Parcel in) {
         asteroidId = in.readInt();
         asteroidName = in.readString();
         asteroidDiameterMin = in.readDouble();

@@ -1,5 +1,8 @@
 package com.udacity.astroapp.fragments;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +19,10 @@ import android.widget.TextView;
 
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.adapters.AsteroidAdapter;
+import com.udacity.astroapp.data.AppDatabase;
+import com.udacity.astroapp.data.AppExecutors;
+import com.udacity.astroapp.data.AsteroidViewModel;
+import com.udacity.astroapp.data.AsteroidViewModelFactory;
 import com.udacity.astroapp.models.Asteroid;
 import com.udacity.astroapp.utils.QueryUtils;
 
@@ -40,6 +47,8 @@ public class AsteroidFragment extends Fragment {
 
     private List<Asteroid> asteroidList;
 
+    private Asteroid asteroid;
+
     private RecyclerView asteroidRecyclerView;
 
     private Date date;
@@ -50,8 +59,11 @@ public class AsteroidFragment extends Fragment {
 
     private ProgressBar loadingIndicator;
 
+    private AppDatabase appDatabase;
 
+    private AsteroidViewModelFactory asteroidViewModelFactory;
 
+    private AsteroidViewModel asteroidViewModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,7 +79,7 @@ public class AsteroidFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_asteroid, container, false);
 
-        asteroidList = new ArrayList<>();
+//        asteroidList = new ArrayList<>();
         asteroidRecyclerView = rootView.findViewById(R.id.asteroid_recycler_view);
 
         asteroidAdapter = new AsteroidAdapter(asteroidList);
@@ -78,6 +90,39 @@ public class AsteroidFragment extends Fragment {
         loadingIndicator = rootView.findViewById(R.id.asteroid_loading_indicator);
         emptyTextView.setVisibility(View.GONE);
         loadingIndicator.setVisibility(View.VISIBLE);
+
+        appDatabase = AppDatabase.getInstance(getContext());
+
+        asteroidViewModelFactory = new AsteroidViewModelFactory(appDatabase);
+        asteroidViewModel = ViewModelProviders.of(AsteroidFragment.this, asteroidViewModelFactory)
+                .get(AsteroidViewModel.class);
+
+        asteroidViewModel.getAsteroids().observe(AsteroidFragment.this, new Observer<List<Asteroid>>() {
+            @Override
+            public void onChanged(@Nullable final List<Asteroid> asteroids) {
+                asteroidViewModel.getAsteroids().removeObserver(this);
+                if (asteroids != null) {
+                    AppExecutors.getExecutors().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+//                            if (asteroids.size() != 0) {
+                             int numberOfAsteroids = appDatabase.astroDao().getAsteroidCount();
+//                            if (numberOfAsteroids > 0) {
+//                                asteroidList = asteroids;
+//
+                            if (asteroidList != null) {
+                                appDatabase.astroDao().deleteAllAsteroids();
+
+                                numberOfAsteroids = appDatabase.astroDao().getAsteroidCount();
+
+//                                appDatabase.astroDao().addAsteroid(asteroid);
+                                appDatabase.astroDao().addAllAsteroids(asteroidList);
+                            }
+                        }
+                    });
+                }
+            }
+        });
 
         date = Calendar.getInstance().getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -90,11 +135,10 @@ public class AsteroidFragment extends Fragment {
     private class AsteroidAsyncTask extends AsyncTask<String, Void, List<Asteroid>> {
 
 
-
         @Override
         protected List<Asteroid> doInBackground(String... strings) {
 
-            List<Asteroid> asteroidList = new ArrayList<>();
+//            List<Asteroid> asteroidList = new ArrayList<>();
 
             try {
                 URL url = QueryUtils.createAsteroidUrl(localDate, localDate);
@@ -145,7 +189,7 @@ public class AsteroidFragment extends Fragment {
                         asteroidVelocity = velocityObject.getString("kilometers_per_second");
                     }
 
-                    Asteroid asteroid = new Asteroid(id, asteroidName, asteroidDiameterMin, asteroidDiameterMax,
+                    asteroid = new Asteroid(id, asteroidName, asteroidDiameterMin, asteroidDiameterMax,
                             asteroidApproachDate,
                             asteroidVelocity, asteroidIsHazardous, asteroidUrl);
 
@@ -158,6 +202,9 @@ public class AsteroidFragment extends Fragment {
                     asteroid.setAsteroidIsHazardous(asteroidIsHazardous);
                     asteroid.setAsteroidUrl(asteroidUrl);
 
+                    if (asteroidList == null) {
+                        asteroidList = new ArrayList<>();
+                    }
                     asteroidList.add(i, asteroid);
                 }
 
@@ -171,11 +218,16 @@ public class AsteroidFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Asteroid> asteroids) {
-            if (asteroids.size() == 0) {
-            asteroidRecyclerView.setVisibility(View.GONE);
-            emptyTextView.setVisibility(View.VISIBLE);
-            } else {
+            if (asteroids != null) {
                 populateAsteroids(asteroids);
+            } else if (asteroidViewModel.getAsteroids() != null && asteroidViewModel.getAsteroids().getValue().size() != 0) {
+                LiveData<List<Asteroid>> asteroidDatabaseList = asteroidViewModel.getAsteroids();
+                asteroids = asteroidDatabaseList.getValue();
+                populateAsteroids(asteroids);
+            } else {
+                asteroidRecyclerView.setVisibility(View.GONE);
+                emptyTextView.setVisibility(View.VISIBLE);
+                loadingIndicator.setVisibility(View.GONE);
             }
         }
     }

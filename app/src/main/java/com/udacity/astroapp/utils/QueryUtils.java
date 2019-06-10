@@ -30,6 +30,18 @@ public class QueryUtils {
 
     private static final String api_key = Secret.nasa_api_key;
 
+    private static final String GOOGLE_API_KEY_PARAM = "key";
+
+    private static final String OBSERVATORY_BASE_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=observatory";
+
+    private static final String googleApiKey = Secret.google_play_services_api_key;
+
+    private static final String LOCATION_PARAM = "location";
+
+    private static final String RADIUS_PARAM = "radius";
+
+    private static final String radiusParam = "50000";
+
     private QueryUtils() {
     }
 
@@ -66,6 +78,22 @@ public class QueryUtils {
                 .build();
         try {
             url = new URL(uriBuilder.toString());
+        } catch (MalformedURLException e) {
+            Log.e(LOG_TAG, "Problem building the URL", e);
+        }
+        return url;
+    }
+
+    public static URL createObservatoryURL(String latitudeLongitude) {
+        URL url = null;
+        Uri baseUri = Uri.parse(OBSERVATORY_BASE_URL);
+        Uri.Builder builder = baseUri.buildUpon();
+        builder.appendQueryParameter(GOOGLE_API_KEY_PARAM, googleApiKey)
+                .appendQueryParameter(LOCATION_PARAM, latitudeLongitude)
+                .appendQueryParameter(RADIUS_PARAM, radiusParam)
+                .build();
+        try {
+            url = new URL(builder.toString());
         } catch (MalformedURLException e) {
             Log.e(LOG_TAG, "Problem building the URL", e);
         }

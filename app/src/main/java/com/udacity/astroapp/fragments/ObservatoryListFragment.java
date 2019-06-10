@@ -1,11 +1,14 @@
 package com.udacity.astroapp.fragments;
 
 import android.Manifest;
+import android.arch.persistence.room.Insert;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +19,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,10 +34,17 @@ import com.google.android.gms.location.LocationServices;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.adapters.ObservatoryAdapter;
 import com.udacity.astroapp.models.Observatory;
+import com.udacity.astroapp.utils.QueryUtils;
 import com.udacity.astroapp.utils.Secret;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.FileDescriptor;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.security.Permission;
 import java.security.Permissions;
 import java.util.ArrayList;
@@ -50,7 +61,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     private ObservatoryAdapter observatoryAdapter;
 
-    private List<Observatory> observatories;
+    private List<Observatory> observatoryList;
 
     private String google_api_key = Secret.google_play_services_api_key;
 
@@ -65,17 +76,27 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     private Context context;
 
+    private Observatory observatory;
+
     private boolean locationPermissionGranted;
 
     private LocationManager locationManager;
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
 
+    private static final String LOG_TAG = ObservatoryListFragment.class.getSimpleName();
+
     private Location location;
 
     private double currentLongitude;
 
     private double currentLatitude;
+
+    private String currentLatitudeString;
+
+    private String currentLongitudeString;
+
+    private String currentLocation;
 
 
     @Override
@@ -92,15 +113,14 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
         View rootView = inflater.inflate(R.layout.fragment_observatory_list, container, false);
 
-        observatories = new ArrayList<>();
+//        observatories = new ArrayList<>();
 
         observatoryRecyclerView = rootView.findViewById(R.id.observatory_list_recycler_view);
-        observatoryAdapter = new ObservatoryAdapter(observatories);
+        observatoryAdapter = new ObservatoryAdapter(observatoryList);
         observatoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         observatoryRecyclerView.setAdapter(observatoryAdapter);
 
         context = observatoryRecyclerView.getContext();
-
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
@@ -110,27 +130,86 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                         != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
         } else {
             locationPermissionGranted = true;
             location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
 
             onLocationChanged(location);
         }
-
+        new ObservatoryAsyncTask().execute();
 
         return rootView;
     }
 
-    public void getUsersLocation() {
 
-//        googleApiClient = new GoogleApiClient.Builder(context)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .addApi(LocationServices.API).build();
-//
-//
+    private class ObservatoryAsyncTask extends AsyncTask<String, Void, List<Observatory>> {
 
+        @Override
+        protected List<Observatory> doInBackground(String... strings) {
+            try {
+                URL url = QueryUtils.createObservatoryURL(currentLocation);
+
+                String observatoryJson = QueryUtils.makeHttpRequest(url);
+
+                JSONObject baseObservatoryResponse = new JSONObject(observatoryJson);
+
+                JSONArray observatoryArray = baseObservatoryResponse.getJSONArray("results");
+
+                for (int i = 0; i < observatoryArray.length(); i++) {
+                    JSONObject observatoryObject = observatoryArray.getJSONObject(i);
+
+//                    String observatoryIdString = observatoryObject.getString("id");
+//                    int observatoryId = Integer.parseInt(observatoryIdString);
+//                    int observatoryId = Integer.valueOf(observatoryIdString);
+                    String observatoryName = observatoryObject.getString("name");
+                    String observatoryAddress = observatoryObject.getString("formatted_address");
+
+                    boolean observatoryOpeningHours;
+
+//                    if (observatoryObject.getJSONObject("opening_hours") != null) {
+//                        JSONObject openingHoursObject = observatoryObject.getJSONObject("opening_hours");
+//                        observatoryOpeningHours = openingHoursObject.getBoolean("open_now");
+//                    } else {
+                        observatoryOpeningHours = false;
+//                    }
+
+                    String observatoryUrl = "";
+                    String observatoryPhotoUrl = "";
+
+                    observatory = new Observatory(i, observatoryName, observatoryAddress, observatoryOpeningHours,
+                            observatoryUrl, observatoryPhotoUrl);
+
+//                    observatory.setObservatoryId(i);
+//                    observatory.setObservatoryAddress(observatoryAddress);
+//                    observatory.setObservatoryOpenNow(observatoryOpeningHours);
+//                    observatory.setObservatoryName(observatoryName);
+
+                    if (observatoryList == null) {
+                        observatoryList = new ArrayList<>();
+                    }
+                    observatoryList.add(i, observatory);
+                }
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Problem retrieving the observatory JSON results");
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "Problem parsing the observatory JSON response");
+            }
+            return observatoryList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Observatory> observatories) {
+            if (observatories != null) {
+                populateObservatories(observatories);
+            } else {
+
+            }
+        }
+    }
+
+    private void populateObservatories(List<Observatory> observatories) {
+        observatoryAdapter.setObservatories(observatories);
+        observatoryRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -144,7 +223,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     locationPermissionGranted = true;
-
+                    onLocationChanged(location);
+                    new ObservatoryAsyncTask().execute();
                 } else {
                     String toastText = "Location access not granted. Please allow location access";
                     Toast.makeText(getActivity(), toastText, Toast.LENGTH_LONG).show();
@@ -159,6 +239,9 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     public void onLocationChanged(Location location) {
         currentLongitude = location.getLongitude();
         currentLatitude = location.getLatitude();
+        currentLongitudeString = String.valueOf(currentLongitude);
+        currentLatitudeString = String.valueOf(currentLatitude);
+        currentLocation = currentLatitudeString + ", " + currentLongitudeString;
     }
 
     @Override

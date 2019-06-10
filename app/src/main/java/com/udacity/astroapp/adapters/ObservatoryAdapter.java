@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.udacity.astroapp.R;
@@ -28,7 +29,8 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
 
         private TextView observatoryListItemOpeningHoursTextView;
 
-        private Button observatoryListItemButton;
+        private ImageButton observatoryListItemButton;
+
 
 
         public ObservatoryViewHolder(@NonNull View itemView) {
@@ -44,6 +46,11 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
 
     private List<Observatory> observatories;
 
+    private boolean observatoryOpenNow;
+
+    private Context context;
+
+
     public ObservatoryAdapter(List<Observatory> observatories) {
         this.observatories = observatories;
     }
@@ -51,9 +58,9 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
     @NonNull
     @Override
     public ObservatoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
-        Context context = parent.getContext();
+        context = parent.getContext();
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View observatoryListView = layoutInflater.inflate(R.layout.fragment_observatory_list, parent, false);
+        View observatoryListView = layoutInflater.inflate(R.layout.observatory_list_item, parent, false);
         return new ObservatoryViewHolder(observatoryListView);
     }
 
@@ -61,16 +68,26 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
     public void onBindViewHolder(@NonNull ObservatoryViewHolder viewHolder, int position) {
         Observatory observatory = observatories.get(position);
 
+
         TextView observatoryListItemNameTextView = viewHolder.observatoryListItemNameTextView;
         TextView observatoryListItemAddressTextView = viewHolder.observatoryListItemAddressTextView;
         TextView observatoryListItemOpeningHoursTextView = viewHolder.observatoryListItemOpeningHoursTextView;
-        Button observatoryListItemButton = viewHolder.observatoryListItemButton;
+        ImageButton  observatoryListItemButton = viewHolder.observatoryListItemButton;
 
-        Context context = observatoryListItemNameTextView.getContext();
+//        final Context context = observatoryListItemNameTextView.getContext();
 
         observatoryListItemNameTextView.setText(observatory.getObservatoryName());
         observatoryListItemAddressTextView.setText(observatory.getObservatoryAddress());
-        observatoryListItemOpeningHoursTextView.setText(observatory.getObservatoryOpeningHours());
+
+        observatoryOpenNow = observatory.getObservatoryOpenNow();
+        if (observatoryOpenNow) {
+            observatoryListItemOpeningHoursTextView.setText(R.string.observatory_open);
+        }
+//        else {
+//            observatoryListItemOpeningHoursTextView.setText(R.string.observatory_closed);
+//        }
+
+//        observatoryListItemOpeningHoursTextView.setText(String.valueOf()observatory.getObservatoryOpenNow());
         observatoryListItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

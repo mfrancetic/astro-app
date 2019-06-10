@@ -1,5 +1,6 @@
 *.iml
 Secret.java
+secret_strings.xml
 .gradle
 /local.properties
 /.idea/caches

@@ -30,4 +30,6 @@
     <string name="menu_share">Share</string>
     <string name="no_asteroids_found">No asteroids found</string>
     <string name="play_video_button">Play video</string>
+    <string name="observatory_open">Open now</string>
+    <string name="observatory_closed">Closed now</string>
 </resources>

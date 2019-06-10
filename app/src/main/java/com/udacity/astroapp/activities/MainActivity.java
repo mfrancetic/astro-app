@@ -1,8 +1,14 @@
 package com.udacity.astroapp.activities;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -23,9 +29,22 @@ import com.udacity.astroapp.fragments.ObservatoryFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment;
 import com.udacity.astroapp.fragments.PhotoFragment;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+
+    private LocationManager locationManager;
+
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
+
+    private Location location;
+
+    private boolean locationPermissionGranted;
+
+    private ObservatoryListFragment observatoryListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +52,24 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        } else {
+            locationPermissionGranted = true;
+            location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+
+            ObservatoryListFragment observatoryListFragment = new ObservatoryListFragment();
+            observatoryListFragment.onLocationChanged(location);
+        }
+
+
 //        FloatingActionButton fab = findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override

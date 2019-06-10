@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -29,7 +28,7 @@ public class QueryUtils {
 
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
-    private static final String api_key = Secret.api_key;
+    private static final String api_key = Secret.nasa_api_key;
 
     private QueryUtils() {
     }

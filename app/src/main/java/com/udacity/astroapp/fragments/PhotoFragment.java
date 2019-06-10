@@ -30,20 +30,6 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.extractor.ExtractorsFactory;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.dash.DashMediaSource;
-import com.google.android.exoplayer2.source.hls.DefaultHlsDataSourceFactory;
-import com.google.android.exoplayer2.source.hls.HlsMediaSource;
-import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.data.AppDatabase;
@@ -65,7 +51,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PhotoFragment extends Fragment implements Player.EventListener {
+public class PhotoFragment extends Fragment  {
 
     private static final String LOG_TAG = PhotoFragment.class.getSimpleName();
 
@@ -93,7 +79,6 @@ public class PhotoFragment extends Fragment implements Player.EventListener {
 
     private PhotoViewModel photoViewModel;
 
-    private AstroDao astroDao;
     private PhotoViewModelFactory photoViewModelFactory;
 
     private AppDatabase appDatabase;
@@ -233,7 +218,6 @@ public class PhotoFragment extends Fragment implements Player.EventListener {
 //            if (photo != null && photoTitle != null) {
             if (photo != null) {
                 populatePhoto(photo);
-                //TODO return
 //                astroDao.addPhoto(photo);
 //            } else if (appDatabase.astroDao().loadAllPhotos() != null) {
             } else if (photoViewModel.getPhotos() != null && photoViewModel.getPhotos().getValue().size() != 0) {

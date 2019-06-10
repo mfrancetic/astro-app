@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -78,18 +79,6 @@ public class PhotoFragment extends Fragment implements Player.EventListener {
 
     private Context context;
 
-    private FrameLayout playerPhotoViewFrame;
-
-    private PlayerView exoPlayerView;
-
-    private SimpleExoPlayer exoPlayer;
-
-    private static MediaSessionCompat mediaSession;
-
-    private PlaybackStateCompat.Builder stateBuilder;
-
-    private boolean exoPlayerIsFullScreen = false;
-
     private ScrollView photoScrollView;
 
     private String videoUrl;
@@ -124,6 +113,8 @@ public class PhotoFragment extends Fragment implements Player.EventListener {
 
     private String photoMediaType;
 
+    private Button playVideoButton;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,10 +132,12 @@ public class PhotoFragment extends Fragment implements Player.EventListener {
         photoImageView = rootView.findViewById(R.id.photo_view);
         photoTitleTextView = rootView.findViewById(R.id.photo_title_text_view);
         photoDateTextView = rootView.findViewById(R.id.photo_date_text_view);
-        exoPlayerView = rootView.findViewById(R.id.player_view);
+        playVideoButton = rootView.findViewById(R.id.play_video_button);
+
+//        playVideoButton.setVisibility(View.GONE);
+
 
         photoScrollView = rootView.findViewById(R.id.photo_scroll_view);
-        playerPhotoViewFrame = rootView.findViewById(R.id.player_photo_view_frame);
 
         loadingIndicator = rootView.findViewById(R.id.photo_loading_indicator);
         loadingIndicator.setVisibility(View.VISIBLE);
@@ -154,7 +147,6 @@ public class PhotoFragment extends Fragment implements Player.EventListener {
 
         photoViewModelFactory = new PhotoViewModelFactory(appDatabase);
 
-//        photoViewModelFactory = new PhotoViewModelFactory(appDatabase, photoId);
         photoViewModel = ViewModelProviders.of(PhotoFragment.this, photoViewModelFactory).get(PhotoViewModel.class);
 
         photoViewModel.getPhotos().observe(PhotoFragment.this, new Observer<List<Photo>>() {
@@ -185,13 +177,7 @@ public class PhotoFragment extends Fragment implements Player.EventListener {
             photoScrollView.requestFocus();
         }
 
-        releasePlayer();
-
-        initializeMediaSession();
-
         photoDescriptionTextView = rootView.findViewById(R.id.photo_description_text_view);
-
-//        videoUri = Uri.parse(videoUrl);
 
         new PhotoAsyncTask().execute();
 
@@ -199,20 +185,26 @@ public class PhotoFragment extends Fragment implements Player.EventListener {
         return rootView;
     }
 
+
     private class PhotoAsyncTask extends AsyncTask<String, Void, Photo> {
 
         @Override
         protected Photo doInBackground(String... strings) {
-
-//            if (photo == null) {
-//            photo = new Photo(0, null, null, null, null, null);
-//            }
 
             try {
                 URL url = QueryUtils.createPhotoUrl();
                 String photoJson = QueryUtils.makeHttpRequest(url);
 
                 JSONObject photoObject = new JSONObject(photoJson);
+
+                //TODO erase
+
+//                JSONObject photoObjectPhoto = new JSONObject(photoJson);
+
+//                JSONArray photoObjectArray = new JSONArray(photoJson);
+
+//                for (int i = 0; i<photoObjectArray.length(); i++) {
+//                    JSONObject photoObject = photoObjectArray.getJSONObject(i);
 
                 photoTitle = photoObject.getString("title");
 
@@ -224,24 +216,11 @@ public class PhotoFragment extends Fragment implements Player.EventListener {
 
                 photoMediaType = photoObject.getString("media_type");
 
-//                int id = 1;
-
                 photo = new Photo(0, photoTitle, photoDate, photoDescription, photoUrl, photoMediaType);
 
-//                photo.setPhotoId(id);
-//                photo.setPhotoTitle(photoTitle);
-//                photo.setPhotoDate(photoDate);
-//                photo.setPhotoDescription(photoDescription);
-//                photo.setPhotoUrl(photoUrl);
-//                photo.setPhotoMediaType(photoMediaType);
-
-//                astroDao.addPhoto(photo);
-
-//                astroDao.addPhoto(photo);
             } catch (
                     IOException e) {
                 Log.e(LOG_TAG, "Problem retrieving the photo JSON results");
-//                return null;
             } catch (
                     JSONException e) {
                 Log.e(LOG_TAG, "Problem parsing the photo JSON response");
@@ -286,150 +265,11 @@ public class PhotoFragment extends Fragment implements Player.EventListener {
                 photoTitleTextView.setVisibility(View.GONE);
                 photoDescriptionTextView.setVisibility(View.GONE);
                 photoDateTextView.setVisibility(View.GONE);
-                photoImageView.setVisibility(View.GONE);
+                photoImageView.setVisibility(View.INVISIBLE);
                 emptyTextView.setVisibility(View.VISIBLE);
-                exoPlayerView.setVisibility(View.GONE);
             }
             super.onPostExecute(photo);
         }
-
-
-//        private void populateVideo() {
-//            releasePlayer();
-//            initializeMediaSession();
-//            initializePlayer(videoUri);
-//        }
-    }
-
-    /**
-     * Initialize a new MediaSession
-     */
-    private void initializeMediaSession() {
-        mediaSession = new MediaSessionCompat(getActivity(), LOG_TAG);
-        mediaSession.setFlags(
-                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS
-                        | MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
-        mediaSession.setMediaButtonReceiver(null);
-
-        /* Create a new stateBuilder with the play, pause and play_pause actions */
-        stateBuilder = new PlaybackStateCompat.Builder()
-                .setActions(
-                        PlaybackStateCompat.ACTION_PLAY |
-                                PlaybackStateCompat.ACTION_PAUSE
-                                | PlaybackStateCompat.ACTION_PLAY_PAUSE);
-        mediaSession.setPlaybackState(stateBuilder.build());
-        mediaSession.setCallback(new SessionCallback());
-        mediaSession.setActive(true);
-    }
-
-    private class SessionCallback extends MediaSessionCompat.Callback {
-        @Override
-        public void onPlay() {
-            /* Set playWhenReady to true */
-            exoPlayer.setPlayWhenReady(true);
-        }
-
-        @Override
-        public void onPause() {
-            /* Set playWhenReady to false */
-            exoPlayer.setPlayWhenReady(false);
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        releasePlayer();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        initializePlayer(videoUri);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        initializePlayer(videoUri);
-    }
-
-    public static class MediaReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            MediaButtonReceiver.handleIntent(mediaSession, intent);
-        }
-    }
-
-    private void initializePlayer(Uri videoUri) {
-        if (videoUrl == null || videoUrl.isEmpty()) {
-            exoPlayerView.setVisibility(View.GONE);
-            photoImageView.setVisibility(View.VISIBLE);
-        } else {
-            exoPlayerView.setVisibility(View.VISIBLE);
-            photoImageView.setVisibility(View.GONE);
-
-            if (exoPlayer == null) {
-
-                exoPlayer = ExoPlayerFactory.newSimpleInstance(context);
-
-                exoPlayerView.setPlayer(exoPlayer);
-
-                exoPlayer.addListener(this);
-
-                String userAgent = Util.getUserAgent(context, getString(R.string.app_name));
-
-                DefaultHttpDataSourceFactory httpDataSourceFactory = new DefaultHttpDataSourceFactory(userAgent);
-                DefaultHlsDataSourceFactory hlsDataSourceFactory = new DefaultHlsDataSourceFactory(httpDataSourceFactory);
-
-                ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-
-//);
-
-                HlsMediaSource mediaSource = new HlsMediaSource.Factory(hlsDataSourceFactory)
-                        .createMediaSource(videoUri);
-
-//                DashMediaSource mediaSource = new DashMediaSource.Factory(httpDataSourceFactory)
-//                        .createMediaSource(videoUri);
-
-
-//                ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
-
-//                MediaSource mediaSource = new ExtractorMediaSource.Factory(new DefaultDataSourceFactory(context, userAgent))
-//                        .setExtractorsFactory(extractorsFactory).createMediaSource(videoUri);
-
-//                exoPlayer.prepare(exoPlayer.Create);
-                exoPlayer.prepare(mediaSource);
-                exoPlayer.setPlayWhenReady(true);
-            }
-        }
-    }
-
-    private void releasePlayer() {
-        if (exoPlayer != null) {
-            exoPlayer.stop();
-            exoPlayer.release();
-            exoPlayer = null;
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        releasePlayer();
-        mediaSession.setActive(false);
-    }
-
-    @Override
-    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-        if ((playbackState == Player.STATE_READY) && playWhenReady) {
-            stateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
-                    exoPlayer.getCurrentPosition(), 1f);
-        } else if ((playbackState == Player.STATE_READY)) {
-            stateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
-                    exoPlayer.getCurrentPosition(), 1f);
-        }
-        mediaSession.setPlaybackState(stateBuilder.build());
     }
 
     private void populatePhoto(Photo photo) {
@@ -445,17 +285,28 @@ public class PhotoFragment extends Fragment implements Player.EventListener {
         photoDateTextView.setText(photo.getPhotoDate());
         photoDescriptionTextView.setText(photo.getPhotoDescription());
 
-        //TODO return for video
-//        videoUrl = "https://www.ustream.tv/embed/17074538?v=3&wmode=direct";
-
-
         if (photoMediaType.equals("video")) {
             videoUrl = photo.getPhotoUrl();
             videoUri = Uri.parse(videoUrl);
-            initializePlayer(videoUri);
-            //TODO return
+            photoTitleTextView.setVisibility(View.VISIBLE);
+            photoDescriptionTextView.setVisibility(View.VISIBLE);
+            photoDateTextView.setVisibility(View.VISIBLE);
+//            photoImageView.setVisibility(View.INVISIBLE);
+            playVideoButton.setVisibility(View.VISIBLE);
+
+            playVideoButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent openVideoIntent = new Intent(Intent.ACTION_VIEW);
+                    openVideoIntent.setData(videoUri);
+                    startActivity(openVideoIntent);
+                }
+            });
+
         } else if (photo.getPhotoMediaType().equals("image")) {
             photoUri = Uri.parse(photo.getPhotoUrl());
+
+            playVideoButton.setVisibility(View.GONE);
 
             Picasso.get().load(photoUri)
                     .into(photoImageView);

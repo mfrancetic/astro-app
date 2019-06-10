@@ -15,6 +15,8 @@ import java.nio.charset.Charset;
 
 public class QueryUtils {
 
+//    private static final String PHOTO_BASE_URL = "https://api.nasa.gov/planetary/apod?";
+
     private static final String PHOTO_BASE_URL = "https://api.nasa.gov/planetary/apod?";
 
     private static final String ASTEROID_BASE_URl = "https://api.nasa.gov/neo/rest/v1/feed?";
@@ -38,7 +40,12 @@ public class QueryUtils {
         Uri baserUri = Uri.parse(PHOTO_BASE_URL);
 
         Uri.Builder uriBuilder = baserUri.buildUpon();
-        uriBuilder.appendQueryParameter(API_PARAM, api_key)
+        uriBuilder
+//                .appendQueryParameter(START_DATE_PARAM, "2019-06-02")
+//                .appendQueryParameter(END_DATE_PARAM, "2019-06-02")
+                .appendQueryParameter(API_PARAM, api_key)
+//                .appendQueryParameter(START_DATE_PARAM, "2019-06-02")
+//                .appendQueryParameter(END_DATE_PARAM, "2019-06-02")
                 .build();
         try {
             url = new URL(uriBuilder.toString());

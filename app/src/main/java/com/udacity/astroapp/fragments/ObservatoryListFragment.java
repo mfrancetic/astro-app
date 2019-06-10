@@ -23,6 +23,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -98,6 +100,11 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     private String currentLocation;
 
+    private TextView observatoryListEmptyTextView;
+
+    private ProgressBar observatoryListLoadingIndicator;
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,6 +121,11 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         View rootView = inflater.inflate(R.layout.fragment_observatory_list, container, false);
 
 //        observatories = new ArrayList<>();
+
+        observatoryListEmptyTextView = rootView.findViewById(R.id.observatory_list_empty_text_view);
+        observatoryListLoadingIndicator = rootView.findViewById(R.id.observatory_list_loading_indicator);
+
+        observatoryListEmptyTextView.setVisibility(View.GONE);
 
         observatoryRecyclerView = rootView.findViewById(R.id.observatory_list_recycler_view);
         observatoryAdapter = new ObservatoryAdapter(observatoryList);
@@ -158,9 +170,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                 for (int i = 0; i < observatoryArray.length(); i++) {
                     JSONObject observatoryObject = observatoryArray.getJSONObject(i);
 
-//                    String observatoryIdString = observatoryObject.getString("id");
-//                    int observatoryId = Integer.parseInt(observatoryIdString);
-//                    int observatoryId = Integer.valueOf(observatoryIdString);
+                    String observatoryId = observatoryObject.getString("place_id");
                     String observatoryName = observatoryObject.getString("name");
                     String observatoryAddress = observatoryObject.getString("formatted_address");
 
@@ -173,10 +183,18 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                         observatoryOpeningHours = false;
 //                    }
 
-                    String observatoryUrl = "";
-                    String observatoryPhotoUrl = "";
+                    JSONObject geometryObject = observatoryObject.getJSONObject("geometry");
 
-                    observatory = new Observatory(i, observatoryName, observatoryAddress, observatoryOpeningHours,
+                    JSONObject locationObject = geometryObject.getJSONObject("location");
+
+                    double observatoryLatitude = locationObject.getDouble("lat");
+                    double observatoryLongitude = locationObject.getDouble("lng");
+
+                    String observatoryUrl = "";
+                    String observatoryPhotoUrl = observatoryObject.getString("icon");
+
+                    observatory = new Observatory(observatoryId, observatoryName, observatoryAddress, observatoryOpeningHours,
+                            observatoryLatitude, observatoryLongitude,
                             observatoryUrl, observatoryPhotoUrl);
 
 //                    observatory.setObservatoryId(i);
@@ -202,12 +220,16 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             if (observatories != null) {
                 populateObservatories(observatories);
             } else {
-
+                observatoryRecyclerView.setVisibility(View.GONE);
+                observatoryListLoadingIndicator.setVisibility(View.GONE);
+                observatoryListEmptyTextView.setVisibility(View.VISIBLE);
             }
         }
     }
 
     private void populateObservatories(List<Observatory> observatories) {
+        observatoryListLoadingIndicator.setVisibility(View.GONE);
+        observatoryListEmptyTextView.setVisibility(View.GONE);
         observatoryAdapter.setObservatories(observatories);
         observatoryRecyclerView.setVisibility(View.VISIBLE);
     }

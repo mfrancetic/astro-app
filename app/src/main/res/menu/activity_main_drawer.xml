@@ -16,6 +16,7 @@
             android:id="@+id/nav_observatories"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="@string/menu_observatories" />
+
     </group>
 
     <item android:title="Communicate">

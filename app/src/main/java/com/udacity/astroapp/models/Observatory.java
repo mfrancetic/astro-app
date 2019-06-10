@@ -5,18 +5,24 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 @Entity(tableName = "observatory")
 public class Observatory implements Parcelable {
 
     @PrimaryKey
-    private int observatoryId;
+    @NonNull
+    private String observatoryId;
 
     private String observatoryName;
 
     private String observatoryAddress;
 
     private boolean observatoryOpenNow;
+
+    private double observatoryLatitude;
+
+    private double observatoryLongitude;
 
 //    private String observatoryOpeningHours;
 
@@ -30,18 +36,21 @@ public class Observatory implements Parcelable {
     }
 
 
-    public Observatory (int observatoryId, String observatoryName, String observatoryAddress,
-                 boolean observatoryOpenNow, String observatoryUrl, String observatoryPhotoUrl){
+    public Observatory (@NonNull String observatoryId, String observatoryName, String observatoryAddress,
+                 boolean observatoryOpenNow, double observatoryLatitude, double observatoryLongitude,
+                        String observatoryUrl, String observatoryPhotoUrl){
         this.observatoryId = observatoryId;
         this.observatoryName = observatoryName;
         this.observatoryAddress = observatoryAddress;
         this.observatoryOpenNow = observatoryOpenNow;
+        this.observatoryLatitude = observatoryLatitude;
+        this.observatoryLongitude = observatoryLongitude;
         this.observatoryUrl = observatoryUrl;
         this.observatoryPhotoUrl = observatoryPhotoUrl;
     }
 
     public Observatory(Parcel in) {
-        observatoryId = in.readInt();
+        observatoryId = in.readString();
         observatoryName = in.readString();
         observatoryAddress = in.readString();
         observatoryOpenNow = in.readByte() != 0;
@@ -49,7 +58,8 @@ public class Observatory implements Parcelable {
         observatoryPhotoUrl = in.readString();
     }
 
-    public int getObservatoryId() {
+    @NonNull
+    public String getObservatoryId() {
         return observatoryId;
     }
 
@@ -65,6 +75,14 @@ public class Observatory implements Parcelable {
         return observatoryOpenNow;
     }
 
+    public double getObservatoryLatitude() {
+        return observatoryLatitude;
+    }
+
+    public double getObservatoryLongitude() {
+        return observatoryLongitude;
+    }
+
     public String getObservatoryUrl() {
         return observatoryUrl;
     }
@@ -73,7 +91,7 @@ public class Observatory implements Parcelable {
         return observatoryPhotoUrl;
     }
 
-    public void setObservatoryId(int observatoryId) {
+    public void setObservatoryId(@NonNull String observatoryId) {
         this.observatoryId = observatoryId;
     }
 
@@ -87,6 +105,14 @@ public class Observatory implements Parcelable {
 
     public void setObservatoryOpenNow(boolean observatoryOpenNow) {
         this.observatoryOpenNow = observatoryOpenNow;
+    }
+
+    public void setObservatoryLatitude(double observatoryLatitude) {
+        this.observatoryLatitude = observatoryLatitude;
+    }
+
+    public void setObservatoryLongitude(double observatoryLongitude) {
+        this.observatoryLongitude = observatoryLongitude;
     }
 
     public void setObservatoryUrl(String observatoryUrl) {
@@ -116,10 +142,12 @@ public class Observatory implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(observatoryId);
+        dest.writeString(observatoryId);
         dest.writeString(observatoryName);
         dest.writeString(observatoryAddress);
         dest.writeByte((byte) (observatoryOpenNow ? 1 : 0));
+        dest.writeDouble(observatoryLatitude);
+        dest.writeDouble(observatoryLongitude);
         dest.writeString(observatoryUrl);
         dest.writeString(observatoryPhotoUrl);
     }

@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             locationPermissionGranted = true;
             location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-
             ObservatoryListFragment observatoryListFragment = new ObservatoryListFragment();
             observatoryListFragment.onLocationChanged(location);
         }
@@ -145,7 +144,6 @@ public class MainActivity extends AppCompatActivity
             displayFragment(fragment);
         } else if (id == R.id.nav_share) {
             setTitle(R.string.menu_share);
-
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

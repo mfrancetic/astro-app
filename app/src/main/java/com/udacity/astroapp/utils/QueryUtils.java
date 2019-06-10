@@ -40,7 +40,7 @@ public class QueryUtils {
 
     private static final String RADIUS_PARAM = "radius";
 
-    private static final String radiusParam = "50000";
+    private static final String radiusParam = "30000";
 
     private QueryUtils() {
     }
@@ -99,6 +99,8 @@ public class QueryUtils {
         }
         return url;
     }
+
+
 
     public static String makeHttpRequest(URL url) throws IOException {
 

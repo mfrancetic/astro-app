@@ -1,13 +1,10 @@
 package com.udacity.astroapp.adapters;
 
-import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,25 +17,13 @@ import com.udacity.astroapp.models.Asteroid;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHolder> {
+public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.AsteroidViewHolder> {
 
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class AsteroidViewHolder extends RecyclerView.ViewHolder {
 
         private TextView asteroidNameTextView;
 
@@ -55,7 +40,7 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
         private ImageView asteroidHazardousImageView;
 
 
-        public ViewHolder(@NonNull View itemView) {
+        public AsteroidViewHolder(@NonNull View itemView) {
             super(itemView);
             asteroidNameTextView = itemView.findViewById(R.id.asteroid_name_text_view);
             asteroidDiameterTextView = itemView.findViewById(R.id.asteroid_diameter_text_view);
@@ -80,15 +65,15 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.ViewHo
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
+    public AsteroidViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View asteroidView = inflater.inflate(R.layout.asteroid_list_item, parent, false);
-        return new ViewHolder(asteroidView);
+        return new AsteroidViewHolder(asteroidView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull AsteroidViewHolder viewHolder, int position) {
         Asteroid asteroid = asteroids.get(position);
 
         TextView asteroidNameTextView = viewHolder.asteroidNameTextView;

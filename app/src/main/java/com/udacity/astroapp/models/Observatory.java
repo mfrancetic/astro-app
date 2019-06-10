@@ -9,7 +9,7 @@ import android.os.Parcelable;
 @Entity(tableName = "observatory")
 public class Observatory implements Parcelable {
 
-    @PrimaryKey
+    @PrimaryKey (autoGenerate = true)
     private int observatoryId;
 
     private String observatoryName;

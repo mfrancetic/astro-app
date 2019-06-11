@@ -23,6 +23,11 @@ import java.util.List;
 
 public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.ObservatoryViewHolder> {
 
+    public static Observatory observatory;
+
+    public static List<Observatory> observatories;
+
+
     public class ObservatoryViewHolder extends RecyclerView.ViewHolder {
 
         private TextView observatoryListItemNameTextView;
@@ -46,11 +51,11 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
         }
     }
 
-    private List<Observatory> observatories;
 
     private boolean observatoryOpenNow;
 
     private Context context;
+
 
 
     public ObservatoryAdapter(List<Observatory> observatories, ObservatoryListFragment.OnObservatoryClickListener onObservatoryClickListener) {
@@ -69,7 +74,7 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ObservatoryViewHolder viewHolder, int position) {
-        Observatory observatory = observatories.get(position);
+        observatory = observatories.get(position);
 
 
         TextView observatoryListItemNameTextView = viewHolder.observatoryListItemNameTextView;
@@ -119,5 +124,9 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
     public void setObservatories(List<Observatory> observatories) {
         this.observatories = observatories;
         notifyDataSetChanged();
+    }
+
+    public Observatory getObservatory(int position) {
+        return observatories.get(position);
     }
 }

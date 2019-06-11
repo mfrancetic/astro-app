@@ -63,7 +63,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     private ObservatoryAdapter observatoryAdapter;
 
-    private List<Observatory> observatoryList;
+    public List<Observatory> observatoryList;
 
     private String google_api_key = Secret.google_play_services_api_key;
 
@@ -78,7 +78,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     private Context context;
 
-    private Observatory observatory;
+    public Observatory observatory;
 
     private boolean locationPermissionGranted;
 

@@ -24,11 +24,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.adapters.ObservatoryAdapter;
 import com.udacity.astroapp.fragments.AsteroidFragment;
 import com.udacity.astroapp.fragments.ObservatoryFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment.OnObservatoryClickListener;
 import com.udacity.astroapp.fragments.PhotoFragment;
+import com.udacity.astroapp.adapters.ObservatoryAdapter;
+import com.udacity.astroapp.fragments.ObservatoryListFragment;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
@@ -44,6 +47,8 @@ OnObservatoryClickListener{
 
     private Location location;
 
+    private ObservatoryAdapter observatoryAdapter;
+
     private boolean locationPermissionGranted;
 
     private ObservatoryListFragment observatoryListFragment;
@@ -54,6 +59,13 @@ OnObservatoryClickListener{
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+//        observatoryAdapter = new ObservatoryAdapter(observatoryAdapter.observatories, new OnObservatoryClickListener() {
+//            @Override
+//            public void onObservatorySelected(int position) {
+//
+//            }
+//        });
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -161,6 +173,8 @@ OnObservatoryClickListener{
 
     public void onObservatorySelected(int position) {
         ObservatoryFragment observatoryFragment = new ObservatoryFragment();
+//        observatoryFragment.setObservatory(ObservatoryAdapter.observatory);
+        observatoryFragment.setObservatory(ObservatoryAdapter.observatories.get(position));
         displayFragment(observatoryFragment);
     }
 }

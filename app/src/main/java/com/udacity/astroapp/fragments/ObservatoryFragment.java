@@ -17,7 +17,7 @@ public class ObservatoryFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getActivity()!= null) {
-            getActivity().setTitle(R.string.menu_observatories);
+            getActivity().setTitle("Observatory Detail");
         }
     }
 

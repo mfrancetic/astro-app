@@ -98,6 +98,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     private String currentLongitudeString;
 
+    public static OnObservatoryClickListener onObservatoryClickListener;
+
     private String currentLocation;
 
     private TextView observatoryListEmptyTextView;
@@ -105,6 +107,10 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     private ProgressBar observatoryListLoadingIndicator;
 
 
+
+    public interface OnObservatoryClickListener {
+        void onObservatorySelected(int position);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -128,7 +134,17 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         observatoryListEmptyTextView.setVisibility(View.GONE);
 
         observatoryRecyclerView = rootView.findViewById(R.id.observatory_list_recycler_view);
-        observatoryAdapter = new ObservatoryAdapter(observatoryList);
+        observatoryAdapter = new ObservatoryAdapter(observatoryList, onObservatoryClickListener);
+
+        final FragmentActivity fragmentActivity = getActivity();
+
+        observatoryRecyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onObservatoryClickListener.onObservatorySelected(observatoryRecyclerView.getId());
+            }
+        });
+
         observatoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         observatoryRecyclerView.setAdapter(observatoryAdapter);
 
@@ -279,6 +295,23 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        /* Check if the onRecipeStepClickListener exists; if not, throw a RuntimeException */
+        try {
+            onObservatoryClickListener = (OnObservatoryClickListener) context;
+        } catch (ClassCastException e) {
+            throw new RuntimeException(context.toString() + "must implement OnDetailRecipeStepClickListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        onObservatoryClickListener = null;
     }
 
 }

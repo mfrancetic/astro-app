@@ -27,13 +27,15 @@ import com.udacity.astroapp.R;
 import com.udacity.astroapp.fragments.AsteroidFragment;
 import com.udacity.astroapp.fragments.ObservatoryFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment;
+import com.udacity.astroapp.fragments.ObservatoryListFragment.OnObservatoryClickListener;
 import com.udacity.astroapp.fragments.PhotoFragment;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+OnObservatoryClickListener{
 
 
     private LocationManager locationManager;
@@ -155,5 +157,10 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
                 .commit();
+    }
+
+    public void onObservatorySelected(int position) {
+        ObservatoryFragment observatoryFragment = new ObservatoryFragment();
+        displayFragment(observatoryFragment);
     }
 }

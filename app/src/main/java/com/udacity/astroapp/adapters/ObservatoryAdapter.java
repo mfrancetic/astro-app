@@ -12,8 +12,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.data.ObservatoryViewModel;
 import com.udacity.astroapp.fragments.ObservatoryFragment;
+import com.udacity.astroapp.fragments.ObservatoryListFragment;
 import com.udacity.astroapp.models.Asteroid;
 import com.udacity.astroapp.models.Observatory;
 
@@ -51,8 +53,9 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
     private Context context;
 
 
-    public ObservatoryAdapter(List<Observatory> observatories) {
+    public ObservatoryAdapter(List<Observatory> observatories, ObservatoryListFragment.OnObservatoryClickListener onObservatoryClickListener) {
         this.observatories = observatories;
+        ObservatoryListFragment.onObservatoryClickListener = onObservatoryClickListener;
     }
 
     @NonNull
@@ -88,12 +91,18 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
 //        }
 
 //        observatoryListItemOpeningHoursTextView.setText(String.valueOf()observatory.getObservatoryOpenNow());
-        observatoryListItemButton.setOnClickListener(new View.OnClickListener() {
+        viewHolder.observatoryListItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent openObservatoryDetailsIntent = new Intent(context, ObservatoryFragment.class);
-                openObservatoryDetailsIntent.putExtra("observatory", observatory);
-                context.startActivity(openObservatoryDetailsIntent);
+                if (ObservatoryListFragment.onObservatoryClickListener == null) {
+                    ObservatoryListFragment.onObservatoryClickListener = new ObservatoryListFragment.OnObservatoryClickListener() {
+                        @Override
+                        public void onObservatorySelected(int position) {
+//                        onObservatorySelected(position);
+                        }
+                    };
+                }
+                    ObservatoryListFragment.onObservatoryClickListener.onObservatorySelected(position);
             }
         });
     }

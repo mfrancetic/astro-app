@@ -191,13 +191,14 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     String observatoryAddress = observatoryObject.getString("formatted_address");
 
                     boolean observatoryOpeningHours;
+                    if (observatoryObject.has("opening_hours")) {
 
 //                    if (observatoryObject.getJSONObject("opening_hours") != null) {
-//                        JSONObject openingHoursObject = observatoryObject.getJSONObject("opening_hours");
-//                        observatoryOpeningHours = openingHoursObject.getBoolean("open_now");
-//                    } else {
+                        JSONObject openingHoursObject = observatoryObject.getJSONObject("opening_hours");
+                        observatoryOpeningHours = openingHoursObject.getBoolean("open_now");
+                    } else {
                         observatoryOpeningHours = false;
-//                    }
+                    }
 
                     JSONObject geometryObject = observatoryObject.getJSONObject("geometry");
 
@@ -212,11 +213,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     observatory = new Observatory(observatoryId, observatoryName, observatoryAddress, observatoryOpeningHours,
                             observatoryLatitude, observatoryLongitude,
                             observatoryUrl, observatoryPhotoUrl);
-
-//                    observatory.setObservatoryId(i);
-//                    observatory.setObservatoryAddress(observatoryAddress);
-//                    observatory.setObservatoryOpenNow(observatoryOpeningHours);
-//                    observatory.setObservatoryName(observatoryName);
 
                     if (observatoryList == null) {
                         observatoryList = new ArrayList<>();

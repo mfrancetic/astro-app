@@ -1,5 +1,7 @@
 package com.udacity.astroapp.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,9 +9,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.adapters.ObservatoryAdapter;
@@ -44,6 +48,8 @@ public class ObservatoryFragment extends Fragment {
     private TextView observatoryOpenNowTextView;
 
     private ImageView observatoryImageView;
+
+    private Button visitObservatoryHomepageButton;
 
 
 
@@ -80,6 +86,7 @@ public class ObservatoryFragment extends Fragment {
         observatoryAddressTextView = rootView.findViewById(R.id.observatory_address);
         observatoryOpenNowTextView = rootView.findViewById(R.id.observatory_opening_hours);
         observatoryImageView = rootView.findViewById(R.id.observatory_image_view);
+        visitObservatoryHomepageButton = rootView.findViewById(R.id.observatory_visit_homepage_button);
 
         populateObservatory();
 
@@ -106,6 +113,30 @@ public class ObservatoryFragment extends Fragment {
     private void populateObservatory() {
         observatoryNameTextView.setText(observatoryName);
         observatoryAddressTextView.setText(observatoryAddress);
+
+        if (observatoryPhotoUrl != null) {
+            Uri observatoryPhotoUri = Uri.parse(observatoryPhotoUrl);
+            Picasso.get().load(observatoryPhotoUri).into(observatoryImageView);
+        }
+
+        if (observatoryOpenNow) {
+            observatoryOpenNowTextView.setText(R.string.observatory_open);
+        }
+
+        if (observatoryUrl == null || observatoryUrl.isEmpty()) {
+            visitObservatoryHomepageButton.setVisibility(View.GONE);
+        } else {
+            visitObservatoryHomepageButton.setVisibility(View.VISIBLE);
+            visitObservatoryHomepageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent openObservatoryHomepageIntent = new Intent(Intent.ACTION_VIEW);
+                    Uri observatoryHomepageUri = Uri.parse(observatoryUrl);
+                    openObservatoryHomepageIntent.setData(observatoryHomepageUri);
+                    startActivity(openObservatoryHomepageIntent);
+                }
+            });
+        }
     }
 
 

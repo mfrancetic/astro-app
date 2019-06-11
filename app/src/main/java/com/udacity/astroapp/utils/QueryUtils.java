@@ -40,7 +40,7 @@ public class QueryUtils {
 
     private static final String RADIUS_PARAM = "radius";
 
-    private static final String radiusParam = "30000";
+    private static final String radiusParam = "1000";
 
     private QueryUtils() {
     }

@@ -105,11 +105,7 @@ public class AsteroidFragment extends Fragment {
                     AppExecutors.getExecutors().diskIO().execute(new Runnable() {
                         @Override
                         public void run() {
-//                            if (asteroids.size() != 0) {
                              int numberOfAsteroids = appDatabase.astroDao().getAsteroidCount();
-//                            if (numberOfAsteroids > 0) {
-//                                asteroidList = asteroids;
-//
                             if (asteroidList != null) {
                                 appDatabase.astroDao().deleteAllAsteroids();
 

@@ -30,12 +30,4 @@ public class AsteroidViewModel extends ViewModel {
         return asteroids;
     }
 
-//    public AsteroidViewModel(AppDatabase appDatabase, int asteroidId) {
-//        super();
-//        asteroid = appDatabase.astroDao().loadAsteroidById(asteroidId);
-//    }
-
-//    LiveData<Asteroid> getAsteroid() {
-//        return asteroid;
-//    }
 }

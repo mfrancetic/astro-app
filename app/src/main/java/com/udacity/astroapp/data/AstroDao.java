@@ -30,6 +30,11 @@ public interface AstroDao {
     @Query("DELETE FROM asteroid")
     void deleteAllAsteroids();
 
+    @Query("DELETE FROM observatory")
+    void deleteAllObservatories();
+
+
+
 
     @Query("SELECT * FROM observatory ORDER BY observatoryId")
     LiveData<List<Observatory>> loadAllObservatories();
@@ -57,6 +62,9 @@ public interface AstroDao {
 
     @Insert(onConflict = REPLACE)
     void addAllAsteroids(List<Asteroid> asteroids);
+
+    @Insert(onConflict = REPLACE)
+    void addAllObservatories(List<Observatory> observatories);
 
     @Insert(onConflict = REPLACE)
     void addAsteroid(Asteroid asteroid);

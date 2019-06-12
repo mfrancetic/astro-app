@@ -25,7 +25,6 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
 
     public static Observatory observatory;
 
-    public static List<Observatory> observatories;
 
 
     public class ObservatoryViewHolder extends RecyclerView.ViewHolder {
@@ -52,6 +51,8 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
     }
 
 
+    public static List<Observatory> observatories;
+
     private boolean observatoryOpenNow;
 
     private Context context;
@@ -59,7 +60,7 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
 
 
     public ObservatoryAdapter(List<Observatory> observatories, ObservatoryListFragment.OnObservatoryClickListener onObservatoryClickListener) {
-        this.observatories = observatories;
+        ObservatoryAdapter.observatories = observatories;
         ObservatoryListFragment.onObservatoryClickListener = onObservatoryClickListener;
     }
 
@@ -80,7 +81,6 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
         TextView observatoryListItemNameTextView = viewHolder.observatoryListItemNameTextView;
         TextView observatoryListItemAddressTextView = viewHolder.observatoryListItemAddressTextView;
         TextView observatoryListItemOpeningHoursTextView = viewHolder.observatoryListItemOpeningHoursTextView;
-        ImageButton  observatoryListItemButton = viewHolder.observatoryListItemButton;
 
 //        final Context context = observatoryListItemNameTextView.getContext();
 
@@ -122,7 +122,7 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
     }
 
     public void setObservatories(List<Observatory> observatories) {
-        this.observatories = observatories;
+        ObservatoryAdapter.observatories = observatories;
         notifyDataSetChanged();
     }
 

@@ -7,16 +7,18 @@ import android.support.annotation.NonNull;
 
 public class ObservatoryViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
-    private Application application;
+//    private Application application;
+    private AppDatabase appDatabase;
 
-    public ObservatoryViewModelFactory(Application application) {
-        this.application = application;
+    public ObservatoryViewModelFactory(AppDatabase appDatabase) {
+//        this.application = application;
+        this.appDatabase = appDatabase;
     }
 
     @NonNull
     @Override
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new ObservatoryViewModel(application);
+        return (T) new ObservatoryViewModel(appDatabase);
     }
 }

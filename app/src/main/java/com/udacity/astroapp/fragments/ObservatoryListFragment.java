@@ -1,6 +1,9 @@
 package com.udacity.astroapp.fragments;
 
 import android.Manifest;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.Insert;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -35,6 +38,10 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.adapters.ObservatoryAdapter;
+import com.udacity.astroapp.data.AppDatabase;
+import com.udacity.astroapp.data.AppExecutors;
+import com.udacity.astroapp.data.ObservatoryViewModel;
+import com.udacity.astroapp.data.ObservatoryViewModelFactory;
 import com.udacity.astroapp.models.Observatory;
 import com.udacity.astroapp.utils.QueryUtils;
 import com.udacity.astroapp.utils.Secret;
@@ -106,6 +113,12 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     private ProgressBar observatoryListLoadingIndicator;
 
+    private AppDatabase appDatabase;
+
+    private ObservatoryViewModelFactory observatoryViewModelFactory;
+
+    private ObservatoryViewModel observatoryViewModel;
+
 
     public interface OnObservatoryClickListener {
         void onObservatorySelected(int position);
@@ -132,6 +145,37 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
         observatoryListEmptyTextView.setVisibility(View.GONE);
 
+        context = observatoryListLoadingIndicator.getContext();
+
+        appDatabase = AppDatabase.getInstance(context);
+
+        observatoryViewModelFactory = new ObservatoryViewModelFactory(appDatabase);
+        observatoryViewModel = ViewModelProviders.of(ObservatoryListFragment.this, observatoryViewModelFactory)
+                .get(ObservatoryViewModel.class);
+
+        observatoryViewModel.getObservatories().observe(ObservatoryListFragment.this, new Observer<List<Observatory>>() {
+            @Override
+            public void onChanged(@Nullable final List<Observatory> observatories) {
+                observatoryViewModel.getObservatories().removeObserver(this);
+                if (observatories != null) {
+                    AppExecutors.getExecutors().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            int numberOfObservatories = appDatabase.astroDao().getObservatoryCount();
+                            if (observatoryList != null) {
+                                appDatabase.astroDao().deleteAllObservatories();
+
+                                numberOfObservatories = appDatabase.astroDao().getObservatoryCount();
+
+                                appDatabase.astroDao().addAllObservatories(observatoryList);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+
         observatoryRecyclerView = rootView.findViewById(R.id.observatory_list_recycler_view);
         observatoryAdapter = new ObservatoryAdapter(observatoryList, onObservatoryClickListener);
 
@@ -147,7 +191,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         observatoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         observatoryRecyclerView.setAdapter(observatoryAdapter);
 
-        context = observatoryRecyclerView.getContext();
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
@@ -160,11 +203,9 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         } else {
             locationPermissionGranted = true;
             location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-
             onLocationChanged(location);
         }
         new ObservatoryAsyncTask().execute();
-
         return rootView;
     }
 
@@ -207,12 +248,19 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     double observatoryLongitude = locationObject.getDouble("lng");
 
                     String observatoryUrl = "";
-                    String observatoryPhotoUrl = observatoryObject.getString("icon");
 
                     observatory = new Observatory(observatoryId, observatoryName, observatoryAddress, null, observatoryOpeningHours,
                             null,
                             observatoryLatitude, observatoryLongitude,
                             observatoryUrl);
+
+                    observatory.setObservatoryId(observatoryId);
+                    observatory.setObservatoryName(observatoryName);
+                    observatory.setObservatoryAddress(observatoryAddress);
+                    observatory.setObservatoryOpenNow(observatoryOpeningHours);
+                    observatory.setObservatoryLatitude(observatoryLatitude);
+                    observatory.setObservatoryLongitude(observatoryLongitude);
+                    observatory.setObservatoryUrl(observatoryUrl);
 
                     if (observatoryList == null) {
                         observatoryList = new ArrayList<>();
@@ -230,6 +278,11 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         @Override
         protected void onPostExecute(List<Observatory> observatories) {
             if (observatories != null) {
+                populateObservatories(observatories);
+            } else if (observatoryViewModel.getObservatories() != null && observatoryViewModel.getObservatories()
+                    .getValue().size() != 0) {
+                LiveData<List<Observatory>> observatoryDatabaseList = observatoryViewModel.getObservatories();
+                observatories = observatoryDatabaseList.getValue();
                 populateObservatories(observatories);
             } else {
                 observatoryRecyclerView.setVisibility(View.GONE);

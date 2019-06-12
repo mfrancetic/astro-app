@@ -210,7 +210,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     String observatoryUrl = "";
                     String observatoryPhotoUrl = observatoryObject.getString("icon");
 
-                    observatory = new Observatory(observatoryId, observatoryName, observatoryAddress, observatoryOpeningHours,
+                    observatory = new Observatory(observatoryId, observatoryName, observatoryAddress, null, observatoryOpeningHours,
+                            null,
                             observatoryLatitude, observatoryLongitude,
                             observatoryUrl, observatoryPhotoUrl);
 

@@ -7,6 +7,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(tableName = "observatory")
 public class Observatory implements Parcelable {
 
@@ -18,7 +21,11 @@ public class Observatory implements Parcelable {
 
     private String observatoryAddress;
 
+    private String observatoryPhoneNumber;
+
     private boolean observatoryOpenNow;
+
+    private String observatoryOpeningHours;
 
     private double observatoryLatitude;
 
@@ -37,12 +44,15 @@ public class Observatory implements Parcelable {
 
 
     public Observatory (@NonNull String observatoryId, String observatoryName, String observatoryAddress,
-                 boolean observatoryOpenNow, double observatoryLatitude, double observatoryLongitude,
+                 String observatoryPhoneNumber,
+                 boolean observatoryOpenNow, String observatoryOpeningHours, double observatoryLatitude, double observatoryLongitude,
                         String observatoryUrl, String observatoryPhotoUrl){
         this.observatoryId = observatoryId;
         this.observatoryName = observatoryName;
         this.observatoryAddress = observatoryAddress;
+        this.observatoryPhoneNumber = observatoryPhoneNumber;
         this.observatoryOpenNow = observatoryOpenNow;
+        this.observatoryOpeningHours = observatoryOpeningHours;
         this.observatoryLatitude = observatoryLatitude;
         this.observatoryLongitude = observatoryLongitude;
         this.observatoryUrl = observatoryUrl;
@@ -71,8 +81,16 @@ public class Observatory implements Parcelable {
         return observatoryAddress;
     }
 
+    public String getObservatoryPhoneNumber() {
+        return observatoryPhoneNumber;
+    }
+
     public boolean getObservatoryOpenNow() {
         return observatoryOpenNow;
+    }
+
+    public String getObservatoryOpeningHours() {
+        return observatoryOpeningHours;
     }
 
     public double getObservatoryLatitude() {
@@ -103,8 +121,16 @@ public class Observatory implements Parcelable {
         this.observatoryAddress = observatoryAddress;
     }
 
+    public void setObservatoryPhoneNumber(String observatoryPhoneNumber) {
+        this.observatoryPhoneNumber = observatoryPhoneNumber;
+    }
+
     public void setObservatoryOpenNow(boolean observatoryOpenNow) {
         this.observatoryOpenNow = observatoryOpenNow;
+    }
+
+    public void setObservatoryOpeningHours(String observatoryOpeningHours) {
+        this.observatoryOpeningHours = observatoryOpeningHours;
     }
 
     public void setObservatoryLatitude(double observatoryLatitude) {
@@ -145,7 +171,9 @@ public class Observatory implements Parcelable {
         dest.writeString(observatoryId);
         dest.writeString(observatoryName);
         dest.writeString(observatoryAddress);
+        dest.writeString(observatoryPhoneNumber);
         dest.writeByte((byte) (observatoryOpenNow ? 1 : 0));
+        dest.writeString(observatoryOpeningHours);
         dest.writeDouble(observatoryLatitude);
         dest.writeDouble(observatoryLongitude);
         dest.writeString(observatoryUrl);

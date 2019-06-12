@@ -32,6 +32,8 @@ public class QueryUtils {
 
     private static final String GOOGLE_API_KEY_PARAM = "key";
 
+    private static final String PLACE_ID_PARAM = "placeid";
+
     private static final String OBSERVATORY_BASE_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=observatory";
 
     private static final String googleApiKey = Secret.google_play_services_api_key;
@@ -40,7 +42,13 @@ public class QueryUtils {
 
     private static final String RADIUS_PARAM = "radius";
 
-    private static final String radiusParam = "1000";
+    private static final String radiusParam = "100";
+
+    private static final String OBSERVATORY_DETAILS_BASE_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
+
+    private static final String FIELDS_PARAM = "fields";
+
+    private static final String fieldsKey = "name, photo, opening_hours, website";
 
     private QueryUtils() {
     }
@@ -90,7 +98,23 @@ public class QueryUtils {
         Uri.Builder builder = baseUri.buildUpon();
         builder.appendQueryParameter(GOOGLE_API_KEY_PARAM, googleApiKey)
                 .appendQueryParameter(LOCATION_PARAM, latitudeLongitude)
+                .appendQueryParameter(FIELDS_PARAM, fieldsKey)
                 .appendQueryParameter(RADIUS_PARAM, radiusParam)
+                .build();
+        try {
+            url = new URL(builder.toString());
+        } catch (MalformedURLException e) {
+            Log.e(LOG_TAG, "Problem building the URL", e);
+        }
+        return url;
+    }
+
+    public static URL createObservatoryDetailsUrl(String placeId) {
+        URL url = null;
+        Uri baseUri = Uri.parse(OBSERVATORY_DETAILS_BASE_URL);
+        Uri.Builder builder = baseUri.buildUpon();
+        builder.appendQueryParameter(GOOGLE_API_KEY_PARAM, googleApiKey)
+                .appendQueryParameter(PLACE_ID_PARAM, placeId)
                 .build();
         try {
             url = new URL(builder.toString());

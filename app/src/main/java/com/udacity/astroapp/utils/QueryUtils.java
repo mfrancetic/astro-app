@@ -60,11 +60,7 @@ public class QueryUtils {
 
         Uri.Builder uriBuilder = baserUri.buildUpon();
         uriBuilder
-//                .appendQueryParameter(START_DATE_PARAM, "2019-06-02")
-//                .appendQueryParameter(END_DATE_PARAM, "2019-06-02")
                 .appendQueryParameter(API_PARAM, api_key)
-//                .appendQueryParameter(START_DATE_PARAM, "2019-06-02")
-//                .appendQueryParameter(END_DATE_PARAM, "2019-06-02")
                 .build();
         try {
             url = new URL(uriBuilder.toString());

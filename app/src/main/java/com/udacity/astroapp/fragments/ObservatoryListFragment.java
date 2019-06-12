@@ -107,7 +107,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     private ProgressBar observatoryListLoadingIndicator;
 
 
-
     public interface OnObservatoryClickListener {
         void onObservatorySelected(int position);
     }
@@ -213,7 +212,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     observatory = new Observatory(observatoryId, observatoryName, observatoryAddress, null, observatoryOpeningHours,
                             null,
                             observatoryLatitude, observatoryLongitude,
-                            observatoryUrl, observatoryPhotoUrl);
+                            observatoryUrl);
 
                     if (observatoryList == null) {
                         observatoryList = new ArrayList<>();

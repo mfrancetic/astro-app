@@ -31,12 +31,7 @@ public class Observatory implements Parcelable {
 
     private double observatoryLongitude;
 
-//    private String observatoryOpeningHours;
-
     private String observatoryUrl;
-
-    private String observatoryPhotoUrl;
-
 
     @Ignore
     Observatory() {
@@ -46,7 +41,7 @@ public class Observatory implements Parcelable {
     public Observatory (@NonNull String observatoryId, String observatoryName, String observatoryAddress,
                  String observatoryPhoneNumber,
                  boolean observatoryOpenNow, String observatoryOpeningHours, double observatoryLatitude, double observatoryLongitude,
-                        String observatoryUrl, String observatoryPhotoUrl){
+                        String observatoryUrl){
         this.observatoryId = observatoryId;
         this.observatoryName = observatoryName;
         this.observatoryAddress = observatoryAddress;
@@ -56,16 +51,18 @@ public class Observatory implements Parcelable {
         this.observatoryLatitude = observatoryLatitude;
         this.observatoryLongitude = observatoryLongitude;
         this.observatoryUrl = observatoryUrl;
-        this.observatoryPhotoUrl = observatoryPhotoUrl;
     }
 
     public Observatory(Parcel in) {
         observatoryId = in.readString();
         observatoryName = in.readString();
         observatoryAddress = in.readString();
+        observatoryPhoneNumber = in.readString();
         observatoryOpenNow = in.readByte() != 0;
+        observatoryOpeningHours = in.readString();
+        observatoryLatitude = in.readDouble();
+        observatoryLongitude = in.readDouble();
         observatoryUrl = in.readString();
-        observatoryPhotoUrl = in.readString();
     }
 
     @NonNull
@@ -105,10 +102,6 @@ public class Observatory implements Parcelable {
         return observatoryUrl;
     }
 
-    public String getObservatoryPhotoUrl() {
-        return observatoryPhotoUrl;
-    }
-
     public void setObservatoryId(@NonNull String observatoryId) {
         this.observatoryId = observatoryId;
     }
@@ -145,10 +138,6 @@ public class Observatory implements Parcelable {
         this.observatoryUrl = observatoryUrl;
     }
 
-    public void setObservatoryPhotoUrl(String observatoryPhotoUrl) {
-        this.observatoryPhotoUrl = observatoryPhotoUrl;
-    }
-
     public static final Creator<Observatory> CREATOR = new Creator<Observatory>() {
         @Override
         public Observatory createFromParcel(Parcel in) {
@@ -177,6 +166,5 @@ public class Observatory implements Parcelable {
         dest.writeDouble(observatoryLatitude);
         dest.writeDouble(observatoryLongitude);
         dest.writeString(observatoryUrl);
-        dest.writeString(observatoryPhotoUrl);
     }
 }

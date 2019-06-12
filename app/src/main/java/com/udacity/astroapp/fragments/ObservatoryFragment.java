@@ -13,12 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
-import com.udacity.astroapp.adapters.ObservatoryAdapter;
 import com.udacity.astroapp.models.Observatory;
 import com.udacity.astroapp.utils.QueryUtils;
 
@@ -29,7 +29,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
-import java.util.PrimitiveIterator;
 
 public class ObservatoryFragment extends Fragment {
 
@@ -49,11 +48,7 @@ public class ObservatoryFragment extends Fragment {
 
     private String observatoryUrl;
 
-    private String observatoryPhotoUrl;
-
     private String observatoryPhoneNumber;
-
-    private List<String> observatoryOpeningHours;
 
     private String observatoryOpeningHoursDay;
 
@@ -68,6 +63,14 @@ public class ObservatoryFragment extends Fragment {
     private ImageView observatoryImageView;
 
     private Button visitObservatoryHomepageButton;
+
+    private TextView observatoryOpeningHoursTextView;
+
+    private TextView observatoryPhoneNumberTextView;
+
+    private TextView observatoryEmptyTextView;
+
+    private ProgressBar observatoryLoadingIndicator;
 
     private static final String LOG_TAG = ObservatoryFragment.class.getSimpleName();
 
@@ -93,9 +96,10 @@ public class ObservatoryFragment extends Fragment {
             observatoryLatitude = observatory.getObservatoryLatitude();
             observatoryLongitude = observatory.getObservatoryLongitude();
             observatoryUrl = observatory.getObservatoryUrl();
-            observatoryPhotoUrl = observatory.getObservatoryPhotoUrl();
             observatoryOpenNow = observatory.getObservatoryOpenNow();
             observatoryId = observatory.getObservatoryId();
+            observatoryOpeningHoursDay = observatory.getObservatoryOpeningHours();
+            observatoryPhoneNumber = observatory.getObservatoryPhoneNumber();
         }
 
         observatoryOpeningHoursDay = "";
@@ -106,9 +110,15 @@ public class ObservatoryFragment extends Fragment {
 
         observatoryNameTextView = rootView.findViewById(R.id.observatory_name);
         observatoryAddressTextView = rootView.findViewById(R.id.observatory_address);
-        observatoryOpenNowTextView = rootView.findViewById(R.id.observatory_opening_hours);
-        observatoryImageView = rootView.findViewById(R.id.observatory_image_view);
+        observatoryOpenNowTextView = rootView.findViewById(R.id.observatory_open_now);
         visitObservatoryHomepageButton = rootView.findViewById(R.id.observatory_visit_homepage_button);
+        observatoryOpeningHoursTextView = rootView.findViewById(R.id.observatory_opening_hours);
+        observatoryPhoneNumberTextView = rootView.findViewById(R.id.observatory_phone_number);
+        observatoryLoadingIndicator = rootView.findViewById(R.id.observatory_loading_indicator);
+        observatoryEmptyTextView = rootView.findViewById(R.id.observatory_empty_text_view);
+
+        observatoryEmptyTextView.setVisibility(View.GONE);
+
 
         new ObservatoryDetailsAsyncTask().execute();
 
@@ -131,15 +141,27 @@ public class ObservatoryFragment extends Fragment {
         observatoryNameTextView.setText(observatoryName);
         observatoryAddressTextView.setText(observatoryAddress);
 
-        if (observatoryPhotoUrl != null) {
-            Uri observatoryPhotoUri = Uri.parse(observatoryPhotoUrl);
-            Picasso.get().load(observatoryPhotoUri).into(observatoryImageView);
-        }
-
         if (observatoryOpenNow) {
             observatoryOpenNowTextView.setText(R.string.observatory_open);
+            observatoryOpenNowTextView.setVisibility(View.VISIBLE);
+        } else {
+            observatoryOpenNowTextView.setVisibility(View.GONE);
         }
-        
+
+        if (observatoryPhoneNumber != null) {
+            observatoryPhoneNumberTextView.setText(observatoryPhoneNumber);
+            observatoryPhoneNumberTextView.setVisibility(View.VISIBLE);
+        } else {
+            observatoryPhoneNumberTextView.setVisibility(View.GONE);
+        }
+
+        if(observatoryOpeningHoursDay != null) {
+            observatoryOpeningHoursTextView.setText(observatoryOpeningHoursDay);
+            observatoryOpeningHoursTextView.setVisibility(View.VISIBLE);
+        } else {
+            observatoryOpeningHoursTextView.setVisibility(View.GONE);
+        }
+
 
         if (observatoryUrl == null || observatoryUrl.isEmpty()) {
             visitObservatoryHomepageButton.setVisibility(View.GONE);
@@ -190,12 +212,7 @@ public class ObservatoryFragment extends Fragment {
                     JSONArray openingHoursArray = openingHoursJsonObject.getJSONArray("weekday_text");
 
                     for (int i= 0; i<openingHoursArray.length(); i++) {
-
                         observatoryOpeningHoursDay = observatoryOpeningHoursDay + "\n" + openingHoursArray.getString(i);
-//                           observatoryOpeningHoursDay =  observatoryOpeningHoursDay.concat(openingHoursArray.getString(i));
-
-//                        observatoryOpeningHoursDay = observatoryOpeningHoursDay.concat(openingHoursArray.getString(i));
-//                        observatoryOpeningHoursDay = observatoryOpeningHoursDay + openingHoursArray.getString(i);
                         observatory.setObservatoryOpeningHours(observatoryOpeningHoursDay);
                     }
                 }
@@ -212,9 +229,12 @@ public class ObservatoryFragment extends Fragment {
         @Override
         protected void onPostExecute(Observatory observatory) {
             if (observatory != null) {
+                observatoryEmptyTextView.setVisibility(View.GONE);
+                observatoryLoadingIndicator.setVisibility(View.GONE);
                 populateObservatory();
             } else {
-
+                observatoryLoadingIndicator.setVisibility(View.GONE);
+                observatoryEmptyTextView.setVisibility(View.VISIBLE);
             }
         }
     }

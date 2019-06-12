@@ -119,6 +119,7 @@ public class PhotoFragment extends Fragment  {
         photoDateTextView = rootView.findViewById(R.id.photo_date_text_view);
         playVideoButton = rootView.findViewById(R.id.play_video_button);
 
+        playVideoButton.setVisibility(View.GONE);
 //        playVideoButton.setVisibility(View.GONE);
 
 
@@ -181,8 +182,6 @@ public class PhotoFragment extends Fragment  {
                 String photoJson = QueryUtils.makeHttpRequest(url);
 
                 JSONObject photoObject = new JSONObject(photoJson);
-
-                //TODO erase
 
 //                JSONObject photoObjectPhoto = new JSONObject(photoJson);
 

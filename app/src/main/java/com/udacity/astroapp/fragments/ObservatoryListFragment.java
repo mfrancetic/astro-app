@@ -231,67 +231,73 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     String observatoryName = observatoryObject.getString("name");
                     String observatoryAddress = observatoryObject.getString("formatted_address");
 
-                    boolean observatoryOpeningHours;
+                    boolean observatoryOpeningHours = false;
                     if (observatoryObject.has("opening_hours")) {
-
-//                    if (observatoryObject.getJSONObject("opening_hours") != null) {
                         JSONObject openingHoursObject = observatoryObject.getJSONObject("opening_hours");
-                        observatoryOpeningHours = openingHoursObject.getBoolean("open_now");
-                    } else {
-                        observatoryOpeningHours = false;
+                        if (openingHoursObject.has("open_now")) {
+                            observatoryOpeningHours = openingHoursObject.getBoolean("open_now");
+                        }
                     }
 
-                    JSONObject geometryObject = observatoryObject.getJSONObject("geometry");
+                JSONObject geometryObject = observatoryObject.getJSONObject("geometry");
 
-                    JSONObject locationObject = geometryObject.getJSONObject("location");
+                JSONObject locationObject = geometryObject.getJSONObject("location");
 
-                    double observatoryLatitude = locationObject.getDouble("lat");
-                    double observatoryLongitude = locationObject.getDouble("lng");
+                double observatoryLatitude = locationObject.getDouble("lat");
+                double observatoryLongitude = locationObject.getDouble("lng");
 
-                    String observatoryUrl = "";
+                String observatoryUrl = "";
 
-                    observatory = new Observatory(observatoryId, observatoryName, observatoryAddress, null, observatoryOpeningHours,
-                            null,
-                            observatoryLatitude, observatoryLongitude,
-                            observatoryUrl);
+                observatory = new Observatory(observatoryId, observatoryName, observatoryAddress, null,
+                        observatoryOpeningHours,
+                        null,
+                        observatoryLatitude, observatoryLongitude,
+                        observatoryUrl);
 
-                    observatory.setObservatoryId(observatoryId);
-                    observatory.setObservatoryName(observatoryName);
-                    observatory.setObservatoryAddress(observatoryAddress);
-                    observatory.setObservatoryOpenNow(observatoryOpeningHours);
-                    observatory.setObservatoryLatitude(observatoryLatitude);
-                    observatory.setObservatoryLongitude(observatoryLongitude);
-                    observatory.setObservatoryUrl(observatoryUrl);
+                observatory.setObservatoryId(observatoryId);
+                observatory.setObservatoryName(observatoryName);
+                observatory.setObservatoryAddress(observatoryAddress);
+                observatory.setObservatoryOpenNow(observatoryOpeningHours);
+                observatory.setObservatoryLatitude(observatoryLatitude);
+                observatory.setObservatoryLongitude(observatoryLongitude);
+                observatory.setObservatoryUrl(observatoryUrl);
 
-                    if (observatoryList == null) {
-                        observatoryList = new ArrayList<>();
-                    }
-                    observatoryList.add(i, observatory);
+                if (observatoryList == null) {
+                    observatoryList = new ArrayList<>();
                 }
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Problem retrieving the observatory JSON results");
-            } catch (JSONException e) {
-                Log.e(LOG_TAG, "Problem parsing the observatory JSON response");
+                observatoryList.add(i, observatory);
             }
-            return observatoryList;
-        }
+        } catch(
+        IOException e)
 
-        @Override
-        protected void onPostExecute(List<Observatory> observatories) {
-            if (observatories != null) {
-                populateObservatories(observatories);
-            } else if (observatoryViewModel.getObservatories() != null && observatoryViewModel.getObservatories()
-                    .getValue().size() != 0) {
-                LiveData<List<Observatory>> observatoryDatabaseList = observatoryViewModel.getObservatories();
-                observatories = observatoryDatabaseList.getValue();
-                populateObservatories(observatories);
-            } else {
-                observatoryRecyclerView.setVisibility(View.GONE);
-                observatoryListLoadingIndicator.setVisibility(View.GONE);
-                observatoryListEmptyTextView.setVisibility(View.VISIBLE);
-            }
+        {
+            Log.e(LOG_TAG, "Problem retrieving the observatory JSON results");
+        } catch(
+        JSONException e)
+
+        {
+            Log.e(LOG_TAG, "Problem parsing the observatory JSON response");
+        }
+            return observatoryList;
+    }
+
+    @Override
+    protected void onPostExecute(List<Observatory> observatories) {
+        if (observatories != null) {
+            populateObservatories(observatories);
+        } else if (observatoryViewModel.getObservatories() != null && observatoryViewModel.getObservatories()
+                .getValue().size() != 0) {
+            LiveData<List<Observatory>> observatoryDatabaseList = observatoryViewModel.getObservatories();
+            observatories = observatoryDatabaseList.getValue();
+            populateObservatories(observatories);
+        } else {
+            observatoryRecyclerView.setVisibility(View.GONE);
+            observatoryListLoadingIndicator.setVisibility(View.GONE);
+            observatoryListEmptyTextView.setVisibility(View.VISIBLE);
         }
     }
+
+}
 
     private void populateObservatories(List<Observatory> observatories) {
         observatoryListLoadingIndicator.setVisibility(View.GONE);

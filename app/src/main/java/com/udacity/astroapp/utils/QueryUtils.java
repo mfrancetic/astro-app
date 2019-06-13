@@ -40,9 +40,13 @@ public class QueryUtils {
 
     private static final String LOCATION_PARAM = "location";
 
-    private static final String RADIUS_PARAM = "radius";
+//    private static final String RADIUS_PARAM = "radius";
 
-    private static final String radiusParam = "100";
+    private static final String RANKBY_PARAM = "rankby";
+
+    private static final String rankbyParam = "distance";
+
+//    private static final String radiusParam = "100";
 
     private static final String OBSERVATORY_DETAILS_BASE_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
 
@@ -95,7 +99,8 @@ public class QueryUtils {
         builder.appendQueryParameter(GOOGLE_API_KEY_PARAM, googleApiKey)
                 .appendQueryParameter(LOCATION_PARAM, latitudeLongitude)
                 .appendQueryParameter(FIELDS_PARAM, fieldsKey)
-                .appendQueryParameter(RADIUS_PARAM, radiusParam)
+                .appendQueryParameter(RANKBY_PARAM, rankbyParam)
+//                .appendQueryParameter(RADIUS_PARAM, radiusParam)
                 .build();
         try {
             url = new URL(builder.toString());

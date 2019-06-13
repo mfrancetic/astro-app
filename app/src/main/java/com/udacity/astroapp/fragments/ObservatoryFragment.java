@@ -3,6 +3,7 @@ package com.udacity.astroapp.fragments;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.persistence.room.Query;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +12,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +23,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.picasso.Picasso;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
@@ -37,8 +48,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
-public class ObservatoryFragment extends Fragment {
+public class ObservatoryFragment extends Fragment implements OnMapReadyCallback {
 
     private Observatory observatory;
 
@@ -105,7 +117,11 @@ public class ObservatoryFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_observatory, container, false);
+//        View rootView;
+//
+//        if (savedInstanceState == null) {
+             View rootView = inflater.inflate(R.layout.fragment_observatory, container, false);
+//        }
 
         observatoryOpeningHoursDay = "";
 
@@ -132,6 +148,28 @@ public class ObservatoryFragment extends Fragment {
         observatoryPhoneNumberTextView = rootView.findViewById(R.id.observatory_phone_number);
         observatoryLoadingIndicator = rootView.findViewById(R.id.observatory_loading_indicator);
         observatoryEmptyTextView = rootView.findViewById(R.id.observatory_empty_text_view);
+
+//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//        MapFragment mapFragment = (MapFragment) getActivity().getSupportFragmentManager().findFragmentByTag("mapFragment");
+//
+        FragmentManager fragmentManager = getChildFragmentManager();
+
+        SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager
+                .findFragmentByTag("mapFragment");
+
+//        MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager()
+//                .findFragmentByTag("mapFragment");
+
+        if (mapFragment == null) {
+            mapFragment = new SupportMapFragment();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.map_fragment_container, mapFragment, "mapFragment");
+            fragmentTransaction.commit();
+            fragmentManager.executePendingTransactions();
+        }
+//        MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager()
+//                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         observatoryEmptyTextView.setVisibility(View.GONE);
 
@@ -235,6 +273,37 @@ public class ObservatoryFragment extends Fragment {
             }
         }
     }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+//        String latitudeString = String.valueOf(observatoryLatitude);
+//        String longitudeString = String.valueOf(observatoryLongitude);
+
+//        CameraUpdate center = CameraUpdateFactory.newLatLng(observatoryLatitude, observatoryLongitude);
+//        CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
+
+        // Add a marker in Sydney, Australia,
+        // and move the map's camera to the same location.
+        LatLng observatoryLatLng = new LatLng(observatoryLatitude, observatoryLongitude);
+        CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
+
+        googleMap.addMarker(new MarkerOptions().position(observatoryLatLng)
+                .title("Marker of the observatory"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(observatoryLatLng));
+        googleMap.animateCamera(zoom);
+    }
+
+
+//        googleMap.addMarker(new MarkerOptions()
+//                .position(new LatLng(observatoryLatitude, observatoryLongitude))
+//                .title("Marker"));
+
+//        googleMap.moveCamera();
+//        googleMap.animateCamera(zoom);
+
+
+
 
     private class ObservatoryDetailsAsyncTask extends AsyncTask<String, Void, Observatory> {
 

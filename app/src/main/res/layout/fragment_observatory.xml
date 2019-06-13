@@ -89,6 +89,13 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/observatory_open_now" />
 
+        <LinearLayout
+            android:id="@+id/map_fragment_container"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/observatory_visit_homepage_button"
+            android:layout_height="300dp"/>
+
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

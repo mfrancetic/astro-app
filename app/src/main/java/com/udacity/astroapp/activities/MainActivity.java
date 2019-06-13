@@ -38,7 +38,7 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-OnObservatoryClickListener{
+        OnObservatoryClickListener {
 
 
     private LocationManager locationManager;
@@ -102,11 +102,11 @@ OnObservatoryClickListener{
 
 
         navigationView.setNavigationItemSelectedListener(this);
-
-        navigationView.setCheckedItem(R.id.nav_photo);
-        Fragment fragment = new PhotoFragment();
-        displayFragment(fragment);
-
+        if (savedInstanceState == null) {
+            navigationView.setCheckedItem(R.id.nav_photo);
+            Fragment fragment = new PhotoFragment();
+            displayFragment(fragment);
+        }
     }
 
     @Override

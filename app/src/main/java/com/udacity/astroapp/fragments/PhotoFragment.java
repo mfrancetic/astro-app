@@ -103,6 +103,7 @@ public class PhotoFragment extends Fragment  {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         if (getActivity() != null) {
             getActivity().setTitle(R.string.menu_photo);
         }

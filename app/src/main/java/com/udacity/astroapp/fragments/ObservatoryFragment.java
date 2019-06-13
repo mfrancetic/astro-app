@@ -1,5 +1,9 @@
 package com.udacity.astroapp.fragments;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -19,6 +23,10 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
+import com.udacity.astroapp.data.AppDatabase;
+import com.udacity.astroapp.data.AppExecutors;
+import com.udacity.astroapp.data.ObservatoryDetailViewModel;
+import com.udacity.astroapp.data.ObservatoryDetailViewModelFactory;
 import com.udacity.astroapp.models.Observatory;
 import com.udacity.astroapp.utils.QueryUtils;
 
@@ -72,6 +80,14 @@ public class ObservatoryFragment extends Fragment {
 
     private ProgressBar observatoryLoadingIndicator;
 
+    private AppDatabase appDatabase;
+
+    private Context context;
+
+    private ObservatoryDetailViewModel observatoryDetailViewModel;
+
+    private ObservatoryDetailViewModelFactory observatoryDetailViewModelFactory;
+
     private static final String LOG_TAG = ObservatoryFragment.class.getSimpleName();
 
 
@@ -90,8 +106,13 @@ public class ObservatoryFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_observatory, container, false);
 
+        observatoryOpeningHoursDay = "";
+
+        if (getActivity() != null) {
+            getActivity().setTitle(observatoryName);
+        }
+
         if (observatory != null) {
-            observatoryName = observatory.getObservatoryName();
             observatoryAddress = observatory.getObservatoryAddress();
             observatoryLatitude = observatory.getObservatoryLatitude();
             observatoryLongitude = observatory.getObservatoryLongitude();
@@ -100,12 +121,6 @@ public class ObservatoryFragment extends Fragment {
             observatoryId = observatory.getObservatoryId();
             observatoryOpeningHoursDay = observatory.getObservatoryOpeningHours();
             observatoryPhoneNumber = observatory.getObservatoryPhoneNumber();
-        }
-
-        observatoryOpeningHoursDay = "";
-
-        if (getActivity() != null) {
-            getActivity().setTitle(observatoryName);
         }
 
         observatoryNameTextView = rootView.findViewById(R.id.observatory_name);
@@ -119,11 +134,37 @@ public class ObservatoryFragment extends Fragment {
 
         observatoryEmptyTextView.setVisibility(View.GONE);
 
+        context = observatoryEmptyTextView.getContext();
 
+        appDatabase = AppDatabase.getInstance(context);
+
+        observatoryDetailViewModelFactory = new ObservatoryDetailViewModelFactory(appDatabase, observatoryId);
+
+        observatoryDetailViewModel = ViewModelProviders.of(ObservatoryFragment.this, observatoryDetailViewModelFactory)
+                .get(ObservatoryDetailViewModel.class);
+
+        observatoryDetailViewModel.getObservatory().observe(ObservatoryFragment.this, new Observer<Observatory>() {
+            @Override
+            public void onChanged(@Nullable final Observatory observatoryDatabase) {
+                observatoryDetailViewModel.getObservatory().removeObserver(this);
+
+                if (observatoryDatabase != null) {
+                    AppExecutors.getExecutors().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            appDatabase.astroDao().loadObservatoryById(observatoryId);
+                            if (observatory != null) {
+                                appDatabase.astroDao().deleteObservatory(observatoryId);
+                                appDatabase.astroDao().addObservatory(observatory);
+                            }
+                        }
+                    });
+                }
+            }
+        });
         new ObservatoryDetailsAsyncTask().execute();
 
-        populateObservatory();
-
+//        populateObservatory(observatory);
 
         return rootView;
     }
@@ -137,50 +178,64 @@ public class ObservatoryFragment extends Fragment {
         return observatory;
     }
 
-    private void populateObservatory() {
-        observatoryNameTextView.setText(observatoryName);
-        observatoryAddressTextView.setText(observatoryAddress);
+    private void populateObservatory(Observatory observatory) {
+        if (observatory != null) {
+            observatoryName = observatory.getObservatoryName();
+            observatoryId = observatory.getObservatoryId();
+            getActivity().setTitle(observatoryName);
 
-        if (observatoryOpenNow) {
-            observatoryOpenNowTextView.setText(R.string.observatory_open);
-            observatoryOpenNowTextView.setVisibility(View.VISIBLE);
-        } else {
-            observatoryOpenNowTextView.setVisibility(View.GONE);
-        }
+            observatoryAddress = observatory.getObservatoryAddress();
+            observatoryLatitude = observatory.getObservatoryLatitude();
+            observatoryLongitude = observatory.getObservatoryLongitude();
+            observatoryUrl = observatory.getObservatoryUrl();
+            observatoryOpenNow = observatory.getObservatoryOpenNow();
+            observatoryId = observatory.getObservatoryId();
+            observatoryOpeningHoursDay = observatory.getObservatoryOpeningHours();
+            observatoryPhoneNumber = observatory.getObservatoryPhoneNumber();
 
-        if (observatoryPhoneNumber != null) {
-            observatoryPhoneNumberTextView.setText(observatoryPhoneNumber);
-            observatoryPhoneNumberTextView.setVisibility(View.VISIBLE);
-        } else {
-            observatoryPhoneNumberTextView.setVisibility(View.GONE);
-        }
+            observatoryNameTextView.setText(observatoryName);
+            observatoryAddressTextView.setText(observatoryAddress);
 
-        if(observatoryOpeningHoursDay != null) {
-            observatoryOpeningHoursTextView.setText(observatoryOpeningHoursDay);
-            observatoryOpeningHoursTextView.setVisibility(View.VISIBLE);
-        } else {
-            observatoryOpeningHoursTextView.setVisibility(View.GONE);
-        }
+            if (observatoryOpenNow) {
+                observatoryOpenNowTextView.setText(R.string.observatory_open);
+                observatoryOpenNowTextView.setVisibility(View.VISIBLE);
+            } else {
+                observatoryOpenNowTextView.setVisibility(View.GONE);
+            }
+
+            if (observatoryPhoneNumber != null) {
+                observatoryPhoneNumberTextView.setText(observatoryPhoneNumber);
+                observatoryPhoneNumberTextView.setVisibility(View.VISIBLE);
+            } else {
+                observatoryPhoneNumberTextView.setVisibility(View.GONE);
+            }
+
+            if (observatoryOpeningHoursDay != null) {
+                observatoryOpeningHoursTextView.setText(observatoryOpeningHoursDay);
+                observatoryOpeningHoursTextView.setVisibility(View.VISIBLE);
+            } else {
+                observatoryOpeningHoursTextView.setVisibility(View.GONE);
+            }
 
 
-        if (observatoryUrl == null || observatoryUrl.isEmpty()) {
-            visitObservatoryHomepageButton.setVisibility(View.GONE);
-        } else {
-            visitObservatoryHomepageButton.setVisibility(View.VISIBLE);
-            visitObservatoryHomepageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent openObservatoryHomepageIntent = new Intent(Intent.ACTION_VIEW);
-                    Uri observatoryHomepageUri = Uri.parse(observatoryUrl);
-                    openObservatoryHomepageIntent.setData(observatoryHomepageUri);
-                    startActivity(openObservatoryHomepageIntent);
-                }
-            });
+            if (observatoryUrl == null || observatoryUrl.isEmpty()) {
+                visitObservatoryHomepageButton.setVisibility(View.GONE);
+            } else {
+                visitObservatoryHomepageButton.setVisibility(View.VISIBLE);
+                visitObservatoryHomepageButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent openObservatoryHomepageIntent = new Intent(Intent.ACTION_VIEW);
+                        Uri observatoryHomepageUri = Uri.parse(observatoryUrl);
+                        openObservatoryHomepageIntent.setData(observatoryHomepageUri);
+                        startActivity(openObservatoryHomepageIntent);
+                    }
+                });
+            }
         }
     }
 
     private class ObservatoryDetailsAsyncTask extends AsyncTask<String, Void, Observatory> {
-
 
         @Override
         protected Observatory doInBackground(String... strings) {
@@ -206,12 +261,14 @@ public class ObservatoryFragment extends Fragment {
                     observatory.setObservatoryPhoneNumber(observatoryPhoneNumber);
                 }
 
+                observatoryOpeningHoursDay = "";
+
                 if (observatoryObject.has("opening_hours")) {
                     JSONObject openingHoursJsonObject = observatoryObject.getJSONObject("opening_hours");
 
                     JSONArray openingHoursArray = openingHoursJsonObject.getJSONArray("weekday_text");
 
-                    for (int i= 0; i<openingHoursArray.length(); i++) {
+                    for (int i = 0; i < openingHoursArray.length(); i++) {
                         observatoryOpeningHoursDay = observatoryOpeningHoursDay + "\n" + openingHoursArray.getString(i);
                         observatory.setObservatoryOpeningHours(observatoryOpeningHoursDay);
                     }
@@ -221,7 +278,6 @@ public class ObservatoryFragment extends Fragment {
                 Log.e(LOG_TAG, "Problem retrieving the observatory details JSON results");
             } catch (JSONException e) {
                 Log.e(LOG_TAG, "Problem parsing the observatory details JSON response");
-
             }
             return observatory;
         }
@@ -231,11 +287,21 @@ public class ObservatoryFragment extends Fragment {
             if (observatory != null) {
                 observatoryEmptyTextView.setVisibility(View.GONE);
                 observatoryLoadingIndicator.setVisibility(View.GONE);
-                populateObservatory();
+                populateObservatory(observatory);
+            } else if (observatoryDetailViewModel.getObservatory() != null) {
+                LiveData<Observatory> observatoryDatabase = observatoryDetailViewModel.getObservatory();
+                observatory = observatoryDatabase.getValue();
+                if (observatory != null) {
+                    populateObservatory(observatory);
+                } else {
+                    observatoryLoadingIndicator.setVisibility(View.GONE);
+                    observatoryEmptyTextView.setVisibility(View.VISIBLE);
+                }
             } else {
                 observatoryLoadingIndicator.setVisibility(View.GONE);
                 observatoryEmptyTextView.setVisibility(View.VISIBLE);
             }
+            super.onPostExecute(observatory);
         }
     }
 

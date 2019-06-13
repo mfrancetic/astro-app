@@ -46,7 +46,7 @@ public interface AstroDao {
     LiveData<Asteroid> loadAsteroidById(int asteroidId);
 
     @Query("SELECT * FROM observatory WHERE observatoryId = :observatoryId")
-    LiveData<Observatory> loadObservatoryById(int observatoryId);
+    LiveData<Observatory> loadObservatoryById(String observatoryId);
 
     @Query("SELECT COUNT (*) FROM photo")
     int getPhotoCount();
@@ -59,6 +59,16 @@ public interface AstroDao {
 
     @Insert(onConflict = REPLACE)
     void addPhoto(Photo photo);
+
+    @Insert(onConflict = REPLACE)
+    void addObservatory(Observatory observatory);
+
+    //    @Query("SELECT * FROM photo WHERE photoId = :photoId")
+//    LiveData<Photo> loadPhotoById(int photoId);
+
+
+    @Query("DELETE FROM observatory WHERE observatoryId = :observatoryId")
+    void deleteObservatory(String observatoryId);
 
     @Insert(onConflict = REPLACE)
     void addAllAsteroids(List<Asteroid> asteroids);

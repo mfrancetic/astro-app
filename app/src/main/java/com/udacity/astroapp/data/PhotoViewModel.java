@@ -26,9 +26,7 @@ public class PhotoViewModel  extends ViewModel {
 //        photos = appDatabase.astroDao().loadAllPhotos();
 //        photo = appDatabase.astroDao().loadPhotoById(photoId);
         photos = appDatabase.astroDao().loadAllPhotos();
-
     }
-
 
     public LiveData<List<Photo>> getPhotos() {
         return photos;

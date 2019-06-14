@@ -331,11 +331,14 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     @Override
     public void onLocationChanged(Location location) {
-        currentLongitude = location.getLongitude();
-        currentLatitude = location.getLatitude();
-        currentLongitudeString = String.valueOf(currentLongitude);
-        currentLatitudeString = String.valueOf(currentLatitude);
-        currentLocation = currentLatitudeString + ", " + currentLongitudeString;
+        if (location != null) {
+            currentLongitude = location.getLongitude();
+            currentLatitude = location.getLatitude();
+            currentLongitudeString = String.valueOf(currentLongitude);
+            currentLatitudeString = String.valueOf(currentLatitude);
+            currentLocation = currentLatitudeString + ", " + currentLongitudeString;
+        }
+
     }
 
     @Override

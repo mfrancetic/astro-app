@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_layout"
+    android:background="@color/quantum_white_100"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
@@ -9,40 +11,26 @@
 
     <ImageView
         android:id="@+id/widget_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:contentDescription="@string/widget_image_content_description"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@mipmap/ic_launcher" />
+        android:layout_centerInParent="true"
+        android:src="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/widget_image_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/widget_photo_of_the_day"
-        app:layout_constraintBottom_toTopOf="@id/widget_image"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        android:layout_above="@id/widget_image"
+        android:layout_centerHorizontal="true"
+        android:text="@string/widget_photo_of_the_day" />
 
     <TextView
         android:id="@+id/widget_image_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/widget_image"
+        android:layout_below="@id/widget_image"
+        android:layout_centerHorizontal="true"
         tools:text="Moons near Jupiter" />
 
-    <TextView
-        android:id="@+id/widget_image_author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/widget_image_title"
-        tools:text="By: Betul Turkouy" />
-
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

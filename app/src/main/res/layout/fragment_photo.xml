@@ -13,7 +13,7 @@
 
         <ImageView
             android:id="@+id/photo_view"
-            android:layout_width="300dp"
+            android:layout_width="@dimen/exo_player_height"
             android:layout_height="@dimen/exo_player_height"
             android:contentDescription="@string/photo_of_the_day_content_description"
             app:layout_constraintLeft_toLeftOf="parent"

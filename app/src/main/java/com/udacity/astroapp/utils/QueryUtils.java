@@ -1,8 +1,13 @@
 package com.udacity.astroapp.utils;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
+import com.udacity.astroapp.data.AppExecutors;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +15,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 
 public class QueryUtils {
@@ -126,12 +132,11 @@ public class QueryUtils {
     }
 
 
-
     public static String makeHttpRequest(URL url) throws IOException {
 
         /* Define the read time out, connect time out, success response code and request method */
         int READ_TIME_OUT = 10000;
-        int CONNECT_TIME_OUT = 15000;
+        int CONNECT_TIME_OUT = 10000;
         int SUCCESS_RESPONSE_CODE = 200;
 
         String REQUEST_METHOD = "GET";
@@ -194,5 +199,30 @@ public class QueryUtils {
         }
         return output.toString();
     }
+//
+//    public static Bitmap getImageBitmap(String url) {
+//
+//        final Bitmap[] bitmap = {null};
+//
+//        AppExecutors.getExecutors().diskIO().execute(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//                try {
+//                    URL photoUrl = new URL(url);
+//                    URLConnection urlConnection = photoUrl.openConnection();
+//                    urlConnection.connect();
+//                    InputStream inputStream = urlConnection.getInputStream();
+//                    BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
+//                    bitmap[0] = BitmapFactory.decodeStream(bufferedInputStream);
+//                    inputStream.close();
+//                } catch (IOException e) {
+//                    Log.e("", "Error getting bitmap, e");
+//                }
+//            }
+//        });
+//        return bitmap[0];
+//    }
 
 }

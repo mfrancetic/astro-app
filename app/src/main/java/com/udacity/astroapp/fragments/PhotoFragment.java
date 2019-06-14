@@ -1,11 +1,14 @@
 package com.udacity.astroapp.fragments;
 
+import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInstaller;
 import android.media.session.PlaybackState;
 import android.net.Uri;
@@ -32,8 +35,10 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
+import com.udacity.astroapp.data.AstroAppWidget;
 import com.udacity.astroapp.data.AstroDao;
 import com.udacity.astroapp.data.PhotoViewModel;
 import com.udacity.astroapp.data.PhotoViewModelFactory;
@@ -51,7 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class PhotoFragment extends Fragment  {
+public class PhotoFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String LOG_TAG = PhotoFragment.class.getSimpleName();
 
@@ -83,22 +88,36 @@ public class PhotoFragment extends Fragment  {
 
     private AppDatabase appDatabase;
 
-    private Photo photo;
+    public static Photo photo;
 
     private int photoId;
 
-    private String photoTitle;
+    public static String photoTitle;
 
     private String photoDate;
 
     private String photoDescription;
 
-    private String photoUrl;
+    public static String photoUrl;
 
 
     private String photoMediaType;
 
     private Button playVideoButton;
+
+    private static SharedPreferences sharedPreferences;
+
+    private static final String preferenceId = "preferenceId";
+
+    private static final String preferenceName = "preferenceName";
+
+    private static final String preferenceTitle = "preferenceTitle";
+
+    static final String preferences = "preferences";
+
+    public static final String titleKey = "photoTitle";
+
+    public static final String photoUrlKey = "photoUrl";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,6 +131,10 @@ public class PhotoFragment extends Fragment  {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        if (getContext() != null) {
+            sharedPreferences = getContext().getSharedPreferences(preferences, Context.MODE_PRIVATE);
+        }
 
         View rootView = inflater.inflate(R.layout.fragment_photo, container, false);
 
@@ -151,6 +174,15 @@ public class PhotoFragment extends Fragment  {
                             }
                         }
                     });
+                    /* Update the app widget */
+                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                    Intent widgetIntent = new Intent(context, AstroAppWidget.class);
+                    widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+
+                    /* Send the broadcast to update all the app widget id's */
+                    int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), AstroAppWidget.class.getName()));
+                    widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+                    context.sendBroadcast(widgetIntent);
                 }
             }
         });
@@ -169,7 +201,14 @@ public class PhotoFragment extends Fragment  {
         new PhotoAsyncTask().execute();
 
 
+
+
         return rootView;
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
     }
 
 
@@ -295,5 +334,34 @@ public class PhotoFragment extends Fragment  {
             Picasso.get().load(photoUri)
                     .into(photoImageView);
         }
+
+//        if (photo == null) {
+//            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getContext());
+//            Intent widgetIntent = new Intent(getContext(), AstroAppWidget.class);
+//            widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+//
+//            /* Send a broadcast for all the app widget ids */
+//            int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(getContext().getPackageName(),
+//                    AstroAppWidget.class.getName()));
+//            widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+//            getContext().sendBroadcast(widgetIntent);
+//
+//            /* Launch a new intent that opens the MainActivity */
+//            Intent intent = new Intent(getContext(), MainActivity.class);
+//            startActivity(intent);
+//        }
+//
+        /* Update the app widget */
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        Intent widgetIntent = new Intent(context, AstroAppWidget.class);
+        widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+
+        /* Send the broadcast to update all the app widget id's */
+        int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), AstroAppWidget.class.getName()));
+        widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        context.sendBroadcast(widgetIntent);
+//
     }
+//
+
 }

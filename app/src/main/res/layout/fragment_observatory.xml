@@ -4,18 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/observatory_scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/margin"
+    android:layout_marginLeft="@dimen/margin"
+    android:layout_marginBottom="@dimen/margin"
+    android:layout_marginRight="@dimen/margin">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/observatory_fragment_constraint_layout"
         android:layout_width="match_parent"
-        android:layout_marginTop="?actionBarSize"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?actionBarSize">
 
         <!-- Empty view is only visible when the list has no items-->
         <TextView
             android:id="@+id/observatory_empty_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/EmptyTextViewStyle"
             android:text="@string/observatory_details_not_found"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -24,9 +28,7 @@
 
         <ProgressBar
             android:id="@+id/observatory_loading_indicator"
-            style="@style/Widget.AppCompat.ProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/LoadingIndicatorStyle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -34,9 +36,7 @@
 
         <TextView
             android:id="@+id/observatory_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="2"
+            style="@style/ObservatoryListItemTitleStyle"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,9 +44,7 @@
 
         <TextView
             android:id="@+id/observatory_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="3"
+            style="@style/ObservatoryListItemSubtitleStyle"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/observatory_name"
@@ -54,18 +52,15 @@
 
         <TextView
             android:id="@+id/observatory_phone_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/observatory_address"
+            style="@style/ObservatoryListItemSubtitleStyle"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            tools:text="+49 89 406 239"
-            />
+            app:layout_constraintTop_toBottomOf="@id/observatory_address"
+            tools:text="+49 89 406 239" />
 
         <TextView
             android:id="@+id/observatory_opening_hours"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/ObservatoryListItemSubtitleStyle"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/observatory_phone_number"
@@ -73,29 +68,30 @@
 
         <TextView
             android:id="@+id/observatory_open_now"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/ObservatoryListItemTitleStyle"
+            android:textColor="@color/colorPrimary"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/observatory_opening_hours"
-            tools:text="Now open, Open from 0 to 24" />
+            tools:text="Now open" />
 
         <Button
             android:id="@+id/observatory_visit_homepage_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/ButtonStyle"
+            android:layout_marginTop="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin"
             android:text="@string/observatory_visit_homepage_button"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/observatory_open_now" />
 
         <LinearLayout
+            app:layout_constraintLeft_toLeftOf="parent"
+            style="@style/MapFragmentStyle"
             android:id="@+id/map_fragment_container"
-            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/observatory_visit_homepage_button"
-            android:layout_height="300dp"/>
-
-
+            app:layout_constraintTop_toBottomOf="@id/observatory_visit_homepage_button" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

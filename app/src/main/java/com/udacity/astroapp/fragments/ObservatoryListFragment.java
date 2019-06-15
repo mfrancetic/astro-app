@@ -20,6 +20,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -192,6 +193,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         observatoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         observatoryRecyclerView.setAdapter(observatoryAdapter);
 
+        observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
+                DividerItemDecoration.VERTICAL));
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 

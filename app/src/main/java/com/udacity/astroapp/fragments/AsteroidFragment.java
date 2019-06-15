@@ -3,11 +3,13 @@ package com.udacity.astroapp.fragments;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -53,6 +55,8 @@ public class AsteroidFragment extends Fragment {
 
     private Date date;
 
+    private Context context;
+
     private String localDate;
 
     private TextView emptyTextView;
@@ -86,6 +90,12 @@ public class AsteroidFragment extends Fragment {
         asteroidAdapter = new AsteroidAdapter(asteroidList);
         asteroidRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         asteroidRecyclerView.setAdapter(asteroidAdapter);
+
+         context = asteroidRecyclerView.getContext();
+
+        asteroidRecyclerView.addItemDecoration(new DividerItemDecoration(context,
+                DividerItemDecoration.VERTICAL));
+
 
         emptyTextView = rootView.findViewById(R.id.asteroid_empty_text_view);
         loadingIndicator = rootView.findViewById(R.id.asteroid_loading_indicator);
@@ -234,5 +244,6 @@ public class AsteroidFragment extends Fragment {
         emptyTextView.setVisibility(View.GONE);
         asteroidAdapter.setAsteroids(asteroids);
         asteroidRecyclerView.setVisibility(View.VISIBLE);
+
     }
 }

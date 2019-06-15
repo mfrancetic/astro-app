@@ -6,7 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowContentTransitions">true</item>
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
+        <item name="android:textColorSecondary">@color/colorTextSecondary</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -17,4 +18,97 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="PhotoImageView">
+        <item name="android:layout_width">@dimen/photo_dimensions</item>
+        <item name="android:layout_height">@dimen/photo_dimensions</item>
+    </style>
+
+    <style name="PhotoTitleTextView">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/margin</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+    </style>
+
+    <style name="SubtitleTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
+        </item>
+    </style>
+
+    <style name="PhotoDescriptionTextView">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/margin</item>
+        <item name="android:paddingTop">@dimen/margin</item>
+        <item name="android:paddingRight">@dimen/margin</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+    </style>
+
+    <style name="EmptyTextViewStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+    </style>
+
+    <style name="LoadingIndicatorStyle" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="AsteroidImageViewStyle">
+        <item name="android:layout_width">@dimen/image_dimensions</item>
+        <item name="android:layout_height">@dimen/image_dimensions</item>
+        <item name="android:layout_marginLeft">@dimen/margin</item>
+    </style>
+
+    <style name="ButtonStyle" parent="TextAppearance.AppCompat.Widget.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorTextIcons</item>
+        <item name="android:paddingLeft">@dimen/margin_list_item</item>
+        <item name="android:paddingRight">@dimen/margin_list_item</item>
+    </style>
+
+    <style name="AsteroidLabelTextViewStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
+    </style>
+
+    <style name="AsteroidValueTextViewStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorTextSecondary</item>
+    </style>
+
+    <style name="ObservatoryListItemTitleStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
+        </item>
+    </style>
+
+    <style name="ObservatoryListItemSubtitleStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorTextSecondary</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle2
+        </item>
+    </style>
+
+    <style name="ObservatoryImageViewStyle">
+        <item name="android:layout_height">@dimen/image_dimensions</item>
+        <item name="android:layout_width">@dimen/image_dimensions</item>
+    </style>
+
+    <style name="MapFragmentStyle">
+        <item name="android:layout_height">@dimen/map_fragment_height</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
 </resources>

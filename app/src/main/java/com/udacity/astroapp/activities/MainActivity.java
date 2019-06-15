@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,6 +13,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.transition.ChangeBounds;
+import android.transition.Scene;
+import android.transition.Slide;
+import android.transition.TransitionManager;
+import android.view.Gravity;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,6 +28,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.animation.DecelerateInterpolator;
 
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.adapters.ObservatoryAdapter;
@@ -166,8 +173,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void displayFragment(Fragment fragment) {
+
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment)
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        fragmentTransaction.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
+                R.animator.enter_from_left, R.animator.exit_to_right);
+
+        fragmentTransaction.replace(R.id.fragment_container, fragment)
                 .commit();
     }
 

@@ -15,7 +15,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.fragments.PhotoFragment;
@@ -64,7 +66,13 @@ public class AstroAppWidget extends AppWidgetProvider {
                 Uri photoUri = Uri.parse(PhotoFragment.photoUrl);
 //                Picasso.get().load(photoUri).into(R.id.widget_image);
 
-                Picasso.get().load(photoUri).into(
+                final int radius = 5;
+                final int margin = 5;
+
+
+
+                Picasso.get().load(photoUri)
+                        .into(
                         remoteViews, R.id.widget_image, new int [] {
                              appWidgetId
                         }

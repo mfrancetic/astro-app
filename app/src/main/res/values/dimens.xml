@@ -12,4 +12,15 @@
     <dimen name="observatory_list_item_margin">72dp</dimen>
     <dimen name="map_fragment_height">300dp</dimen>
     <dimen name="widget_image_dimensions">110dp</dimen>
+
+
+    <dimen name="app_bar_layout_main_elevation">4dp</dimen>
+    <dimen name="detail_toolbar_elevation">2dp</dimen>
+    <dimen name="navigation_drawer_elevation">16dp</dimen>
+    <dimen name="button_elevation_rested">2dp</dimen>
+    <dimen name="button_elevation_pressed">8dp</dimen>
+
+    <dimen name="fab_elevation">6dp</dimen>
+    <dimen name="detail_layout_elevation">2dp</dimen>
+
 </resources>

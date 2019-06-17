@@ -71,6 +71,10 @@
         <item name="android:background">@color/colorAccent</item>
         <item name="android:textColor">@color/colorTextIcons</item>
         <item name="android:paddingLeft">@dimen/margin_list_item</item>
+        <item name="android:elevation">@dimen/button_elevation_rested</item>
+        <item name="android:popupElevation">@dimen/button_elevation_pressed</item>
+        <item name="android:translationZ">@dimen/button_elevation_pressed</item>
+        <item name="android:stateListAnimator">@null</item>
         <item name="android:paddingRight">@dimen/margin_list_item</item>
     </style>
 
@@ -102,9 +106,12 @@
         </item>
     </style>
 
-    <style name="ObservatoryImageViewStyle">
+    <style name="ObservatoryImageButoonStyle">
         <item name="android:layout_height">@dimen/image_dimensions</item>
         <item name="android:layout_width">@dimen/image_dimensions</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">@dimen/button_elevation_rested</item>
+        <item name="android:translationZ">@dimen/button_elevation_pressed</item>
     </style>
 
     <style name="MapFragmentStyle">

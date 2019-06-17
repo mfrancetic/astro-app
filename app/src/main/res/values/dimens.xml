@@ -22,5 +22,4 @@
 
     <dimen name="fab_elevation">6dp</dimen>
     <dimen name="detail_layout_elevation">2dp</dimen>
-
 </resources>

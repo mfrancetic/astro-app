@@ -65,6 +65,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
+
+//        toolbar.requestFocus();
+//        toolbar.setFocusable(true);
+//
+//
+
         setSupportActionBar(toolbar);
 
 //        observatoryAdapter = new ObservatoryAdapter(observatoryAdapter.observatories, new OnObservatoryClickListener() {
@@ -101,9 +107,17 @@ public class MainActivity extends AppCompatActivity
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
         NavigationView navigationView = findViewById(R.id.nav_view);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.requestFocus();
+//        drawer.setFocusable(true);
+//
+//        navigationView.requestFocus();
+//        navigationView.setFocusable(true);
+
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -119,6 +133,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -163,8 +178,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_observatories) {
             fragment = new ObservatoryListFragment();
             displayFragment(fragment);
-        } else if (id == R.id.nav_share) {
-            setTitle(R.string.menu_share);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

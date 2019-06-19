@@ -6,9 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/margin"
-    android:layout_marginLeft="@dimen/margin"
+    android:layout_marginStart="@dimen/margin"
     android:layout_marginBottom="@dimen/margin"
-    android:layout_marginRight="@dimen/margin">
+    android:layout_marginEnd="@dimen/margin">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/observatory_fragment_constraint_layout"
@@ -22,16 +22,16 @@
             style="@style/EmptyTextViewStyle"
             android:text="@string/observatory_details_not_found"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
             android:id="@+id/observatory_loading_indicator"
             style="@style/LoadingIndicatorStyle"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -40,29 +40,37 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
             tools:text="Bavarian Public Observatory Munich" />
 
         <TextView
             android:id="@+id/observatory_address"
             style="@style/ObservatoryListItemSubtitleStyle"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
             app:layout_constraintTop_toBottomOf="@id/observatory_name"
             tools:text="Rosenheimer Str. 145H, 81671 Munich" />
 
         <TextView
             android:id="@+id/observatory_phone_number"
             style="@style/ObservatoryListItemSubtitleStyle"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
             app:layout_constraintTop_toBottomOf="@id/observatory_address"
             tools:text="+49 89 406 239" />
 
         <TextView
             android:id="@+id/observatory_opening_hours"
             style="@style/ObservatoryListItemSubtitleStyle"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
             app:layout_constraintTop_toBottomOf="@id/observatory_phone_number"
             tools:text="Monday: 9:00 - 11:00 PM, Tuesday: 9:00 - 11:00 PM" />
 
@@ -70,8 +78,10 @@
             android:id="@+id/observatory_open_now"
             style="@style/ObservatoryListItemTitleStyle"
             android:textColor="@color/colorPrimary"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
             app:layout_constraintTop_toBottomOf="@id/observatory_opening_hours"
             tools:text="Now open" />
 
@@ -81,8 +91,8 @@
             android:layout_marginTop="@dimen/margin"
             android:layout_marginBottom="@dimen/margin"
             android:text="@string/observatory_visit_homepage_button"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/observatory_open_now" />
 
         <LinearLayout

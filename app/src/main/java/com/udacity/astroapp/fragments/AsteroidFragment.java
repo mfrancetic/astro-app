@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
 public class AsteroidFragment extends Fragment {
@@ -132,7 +133,7 @@ public class AsteroidFragment extends Fragment {
         });
 
         date = Calendar.getInstance().getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         localDate = simpleDateFormat.format(date);
 
         new AsteroidAsyncTask().execute();

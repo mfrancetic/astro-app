@@ -16,8 +16,8 @@
             android:id="@+id/photo_view"
             style="@style/PhotoImageView"
             android:contentDescription="@string/photo_of_the_day_content_description"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@mipmap/ic_launcher" />
 
@@ -28,8 +28,8 @@
             android:nextFocusForward="@id/photo_title_text_view"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintBottom_toTopOf="@id/photo_title_text_view"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -37,6 +37,8 @@
             style="@style/PhotoTitleTextView"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_horizontal"
             app:layout_constraintTop_toBottomOf="@id/photo_view"
             tools:text="Moons near Jupiter" />
 
@@ -53,23 +55,23 @@
             android:id="@+id/photo_loading_indicator"
             style="@style/LoadingIndicatorStyle"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/photo_date_text_view"
             style="@style/SubtitleTextView"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/photo_title_text_view"
             tools:text="2019-06-01" />
 
         <TextView
             android:id="@+id/photo_description_text_view"
             style="@style/PhotoDescriptionTextView"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintLeft_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/photo_date_text_view"
             tools:text="On May 20, a nearly Full Moon and Jupiter shared this telephoto field of view." />
     </android.support.constraint.ConstraintLayout>

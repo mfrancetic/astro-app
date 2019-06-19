@@ -5,7 +5,7 @@
     android:id="@+id/observatory_list_item_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/margin"
+    android:layout_marginStart="@dimen/margin"
     android:layout_marginTop="@dimen/margin_list_item"
     android:focusable="true"
     android:descendantFocusability="afterDescendants"
@@ -14,36 +14,48 @@
     <TextView
         android:id="@+id/observatory_list_item_name"
         style="@style/ObservatoryListItemTitleStyle"
-        android:paddingRight="@dimen/observatory_list_item_margin"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:paddingEnd="@dimen/observatory_list_item_margin"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Bavarian Public Observatory Munich" />
+        android:gravity="start"
+        android:singleLine="false"
+        android:layout_gravity="start"
+        android:ellipsize="start"
+        tools:text="Bavarian Public Observatory Munich, Bavarian Public Observatory Munich" />
 
     <TextView
         android:id="@+id/observatory_list_item_address"
         style="@style/ObservatoryListItemSubtitleStyle"
-        android:paddingRight="@dimen/observatory_list_item_margin"
-        app:layout_constraintLeft_toLeftOf="@id/observatory_list_item_name"
+        android:paddingEnd="@dimen/observatory_list_item_margin"
+        android:gravity="start"
+        android:layout_gravity="start"
+        android:ellipsize="end"
+        android:singleLine="false"
+        app:layout_constraintStart_toStartOf="@id/observatory_list_item_name"
         app:layout_constraintTop_toBottomOf="@id/observatory_list_item_name"
-        tools:text="Rosenheimer Str. 160H" />
+        tools:text="Rosenheimer Str. 160H, Rosenheimer Str. 160H, Rosenheimer Str. 160H" />
 
     <TextView
         android:id="@+id/observatory_list_item_opening_Hours"
         style="@style/ObservatoryListItemSubtitleStyle"
-        android:paddingRight="@dimen/observatory_list_item_margin"
+        android:paddingEnd="@dimen/observatory_list_item_margin"
         android:textColor="@color/colorPrimary"
-        app:layout_constraintLeft_toLeftOf="@id/observatory_list_item_address"
+        android:gravity="start"
+        android:layout_gravity="start"
+        android:ellipsize="start"
+        android:singleLine="false"
+        app:layout_constraintStart_toStartOf="@id/observatory_list_item_address"
         app:layout_constraintTop_toBottomOf="@id/observatory_list_item_address"
         tools:text="Open now" />
 
     <ImageButton
         android:id="@+id/observatory_list_item_button"
         style="@style/ObservatoryImageButoonStyle"
-        android:layout_marginRight="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
         android:background="@color/colorPrimary"
         android:contentDescription="@string/observatory_list_item_button_content_description"
         android:src="@drawable/ic_action_info"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>

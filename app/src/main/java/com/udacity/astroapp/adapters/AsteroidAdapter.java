@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
 
     class AsteroidViewHolder extends RecyclerView.ViewHolder {
 
+
         private TextView asteroidNameTextView;
 
         private TextView asteroidDiameterTextView;
@@ -39,6 +41,8 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
 
         private ImageView asteroidHazardousImageView;
 
+        private TextView diameterLabelTextView;
+
 
         public AsteroidViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -49,6 +53,7 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
             asteroidImageView = itemView.findViewById(R.id.asteroid_image_view);
             asteroidVelocityTextView = itemView.findViewById(R.id.asteroid_velocity_text_view);
             readMoreButton = itemView.findViewById(R.id.asteroid_read_more_button);
+            diameterLabelTextView = itemView.findViewById(R.id.asteroid_diameter_label_text_view);
         }
     }
 
@@ -57,6 +62,8 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
     private String asteroidFullName;
 
     private Date approachDateObject;
+
+    private String LOG_TAG = AsteroidAdapter.class.getSimpleName();
 
     public AsteroidAdapter(List<Asteroid> asteroids) {
         this.asteroids = asteroids;
@@ -82,6 +89,7 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
         TextView asteroidApproachDateTextView = viewHolder.asteroidApproachDateTextView;
         ImageView asteroidHazardousImage = viewHolder.asteroidHazardousImageView;
         Button readMoreButton = viewHolder.readMoreButton;
+        TextView diameterLabelTextView = viewHolder.diameterLabelTextView;
 
         final Context context = asteroidVelocityTextView.getContext();
 
@@ -95,9 +103,14 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
         double asteroidDiameterMinDecimal = getDiameterDecimal(asteroidDiameterMin);
         double asteroidDiameterMaxDecimal = getDiameterDecimal(asteroidDiameterMax);
 
-        String asteroidDiameter = asteroidDiameterMinDecimal + " - " + asteroidDiameterMaxDecimal + " km";
+        if (asteroidDiameterMinDecimal != 0.00 && asteroidDiameterMaxDecimal != 0.00) {
+            String asteroidDiameter = asteroidDiameterMinDecimal + " - " + asteroidDiameterMaxDecimal + " km";
 
-        asteroidDiameterTextView.setText(asteroidDiameter);
+            asteroidDiameterTextView.setText(asteroidDiameter);
+            diameterLabelTextView.setVisibility(View.VISIBLE);
+        } else {
+            diameterLabelTextView.setVisibility(View.GONE);
+        }
 
         String asteroidVelocity = asteroid.getAsteroidVelocity();
 
@@ -150,11 +163,16 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
 
     private double getDiameterDecimal(double diameterDouble) {
 //        try {
-        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
-        decimalFormatSymbols.setDecimalSeparator('.');
-        DecimalFormat decimalFormat = new DecimalFormat("#.##");
-        decimalFormat.setDecimalFormatSymbols(decimalFormatSymbols);
-        return Double.parseDouble(decimalFormat.format(diameterDouble));
+        try {
+            DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+            decimalFormatSymbols.setDecimalSeparator('.');
+            DecimalFormat decimalFormat = new DecimalFormat("#.##");
+            decimalFormat.setDecimalFormatSymbols(decimalFormatSymbols);
+            return Double.parseDouble(decimalFormat.format(diameterDouble));
+        } catch (NumberFormatException e) {
+            Log.e(LOG_TAG, "Problem parsing the diameterDouble");
+        }
+        return 0.00;
     }
 
     private String getVelocityDecimal(String asteroidVelocity) {

@@ -1,6 +1,10 @@
 *.iml
 Secret.java
 secret_strings.xml
+keystore.properties
+app-debug.apk
+app-release.apk
+
 .gradle
 /local.properties
 /.idea/caches

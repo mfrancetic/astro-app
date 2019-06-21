@@ -5,6 +5,7 @@
     android:id="@+id/photo_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginStart="@dimen/fragment_margin_start"
     android:layout_marginTop="?actionBarSize"
     tools:ignore="Overdraw">
 

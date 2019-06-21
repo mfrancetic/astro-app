@@ -14,6 +14,7 @@
         android:id="@+id/observatory_fragment_constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/fragment_margin_start"
         android:layout_marginTop="?actionBarSize">
 
         <!-- Empty view is only visible when the list has no items-->

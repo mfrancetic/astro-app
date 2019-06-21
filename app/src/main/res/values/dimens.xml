@@ -13,6 +13,9 @@
     <dimen name="map_fragment_height">300dp</dimen>
     <dimen name="widget_image_dimensions">110dp</dimen>
 
+    <dimen name="drawer_width">150dp</dimen>
+    <dimen name="fragment_margin_start">0dp</dimen>
+
 
     <dimen name="app_bar_layout_main_elevation">4dp</dimen>
     <dimen name="detail_toolbar_elevation">2dp</dimen>

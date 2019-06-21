@@ -47,18 +47,25 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         OnObservatoryClickListener {
 
-
     private LocationManager locationManager;
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
 
     private Location location;
 
+    private boolean isDrawerLocked;
+
     private ObservatoryAdapter observatoryAdapter;
 
     private boolean locationPermissionGranted;
 
+    private boolean tabletSize;
+
     private ObservatoryListFragment observatoryListFragment;
+
+    private DrawerLayout drawer;
+
+    private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,19 +73,11 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
 
-//        toolbar.requestFocus();
-//        toolbar.setFocusable(true);
-//
-//
+        tabletSize = getResources().getBoolean(R.bool.isTablet);
 
         setSupportActionBar(toolbar);
-
-//        observatoryAdapter = new ObservatoryAdapter(observatoryAdapter.observatories, new OnObservatoryClickListener() {
-//            @Override
-//            public void onObservatorySelected(int position) {
-//
-//            }
-//        });
+//        getSupportActionBar().setHomeButtonEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -105,22 +104,27 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        });
 
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-
         NavigationView navigationView = findViewById(R.id.nav_view);
+        drawer = findViewById(R.id.drawer_layout);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.requestFocus();
-//        drawer.setFocusable(true);
+        if (!tabletSize) {
+            toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
+            drawer.closeDrawer(GravityCompat.START);
+        }
+
+//        if (findViewById(R.id.drawer_layout) != null) {
+
+//        }
 //
-//        navigationView.requestFocus();
-//        navigationView.setFocusable(true);
-
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
+//        if (tabletSize) {
+//            drawer.getDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+//            drawer.setScrimColor(getResources().getColor(R.color.colorDrawerNoShadow));
+//            isDrawerLocked = true;
+//        }
+//        drawer.openDrawer(GravityCompat.START);
 
         navigationView.setNavigationItemSelectedListener(this);
         if (savedInstanceState == null) {
@@ -132,12 +136,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
+        if (tabletSize) {
+//            DrawerLayout drawer = findViewById(R.id.drawer_layout);
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -180,8 +185,12 @@ public class MainActivity extends AppCompatActivity
             displayFragment(fragment);
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
+        if (!tabletSize) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+
         return true;
     }
 
@@ -190,9 +199,10 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        fragmentTransaction.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
-                R.animator.enter_from_left, R.animator.exit_to_right);
-
+        if (!tabletSize) {
+            fragmentTransaction.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
+                    R.animator.enter_from_left, R.animator.exit_to_right);
+        }
         fragmentTransaction.replace(R.id.fragment_container, fragment)
                 .commit();
     }

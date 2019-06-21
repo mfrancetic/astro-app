@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/observatory_list_fragment_layout"
     android:layout_width="match_parent"
+    android:layout_marginStart="@dimen/fragment_margin_start"
     android:layout_marginTop="?android:actionBarSize"
     android:layout_height="match_parent">
 

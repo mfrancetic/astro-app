@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <dimen name="activity_horizontal_margin">24dp</dimen>
+    <dimen name="activity_vertical_margin">24dp</dimen>
+    <dimen name="drawer_width">300dp</dimen>
+    <dimen name="fragment_margin_start">@dimen/drawer_width</dimen>
+</resources>

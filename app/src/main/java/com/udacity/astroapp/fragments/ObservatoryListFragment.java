@@ -6,6 +6,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -73,6 +75,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     public Observatory observatory;
 
+    private int orientation;
+
     private boolean locationPermissionGranted;
 
     private LocationManager locationManager;
@@ -96,6 +100,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     public static OnObservatoryClickListener onObservatoryClickListener;
 
     private String currentLocation;
+
+    private boolean isTablet;
 
     private TextView observatoryListEmptyTextView;
 
@@ -128,6 +134,10 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         View rootView = inflater.inflate(R.layout.fragment_observatory_list, container, false);
 
 //        observatories = new ArrayList<>();
+
+        isTablet = getResources().getBoolean(R.bool.isTablet);
+
+        orientation = getResources().getConfiguration().orientation;
 
         observatoryListEmptyTextView = rootView.findViewById(R.id.observatory_list_empty_text_view);
         observatoryListLoadingIndicator = rootView.findViewById(R.id.observatory_list_loading_indicator);
@@ -177,7 +187,17 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             }
         });
 
-        observatoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
+                    DividerItemDecoration.VERTICAL));
+            observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
+                    DividerItemDecoration.HORIZONTAL));
+            observatoryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        } else {
+            observatoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        }
+
         observatoryRecyclerView.setAdapter(observatoryAdapter);
 
         observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
@@ -208,7 +228,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             try {
 
                 if (currentLocation == null) {
-                     currentLocation = defaultLocationBerlin;
+                    currentLocation = defaultLocationBerlin;
                 }
 
                 URL url = QueryUtils.createObservatoryURL(currentLocation);
@@ -234,65 +254,61 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                         }
                     }
 
-                JSONObject geometryObject = observatoryObject.getJSONObject("geometry");
+                    JSONObject geometryObject = observatoryObject.getJSONObject("geometry");
 
-                JSONObject locationObject = geometryObject.getJSONObject("location");
+                    JSONObject locationObject = geometryObject.getJSONObject("location");
 
-                double observatoryLatitude = locationObject.getDouble("lat");
-                double observatoryLongitude = locationObject.getDouble("lng");
+                    double observatoryLatitude = locationObject.getDouble("lat");
+                    double observatoryLongitude = locationObject.getDouble("lng");
 
-                String observatoryUrl = "";
+                    String observatoryUrl = "";
 
-                observatory = new Observatory(observatoryId, observatoryName, observatoryAddress, null,
-                        observatoryOpeningHours,
-                        null,
-                        observatoryLatitude, observatoryLongitude,
-                        observatoryUrl);
+                    observatory = new Observatory(observatoryId, observatoryName, observatoryAddress, null,
+                            observatoryOpeningHours,
+                            null,
+                            observatoryLatitude, observatoryLongitude,
+                            observatoryUrl);
 
-                observatory.setObservatoryId(observatoryId);
-                observatory.setObservatoryName(observatoryName);
-                observatory.setObservatoryAddress(observatoryAddress);
-                observatory.setObservatoryOpenNow(observatoryOpeningHours);
-                observatory.setObservatoryLatitude(observatoryLatitude);
-                observatory.setObservatoryLongitude(observatoryLongitude);
-                observatory.setObservatoryUrl(observatoryUrl);
+                    observatory.setObservatoryId(observatoryId);
+                    observatory.setObservatoryName(observatoryName);
+                    observatory.setObservatoryAddress(observatoryAddress);
+                    observatory.setObservatoryOpenNow(observatoryOpeningHours);
+                    observatory.setObservatoryLatitude(observatoryLatitude);
+                    observatory.setObservatoryLongitude(observatoryLongitude);
+                    observatory.setObservatoryUrl(observatoryUrl);
 
-                if (observatoryList == null) {
-                    observatoryList = new ArrayList<>();
+                    if (observatoryList == null) {
+                        observatoryList = new ArrayList<>();
+                    }
+                    observatoryList.add(i, observatory);
                 }
-                observatoryList.add(i, observatory);
+            } catch (
+                    IOException e) {
+                Log.e(LOG_TAG, "Problem retrieving the observatory JSON results");
+            } catch (
+                    JSONException e) {
+                Log.e(LOG_TAG, "Problem parsing the observatory JSON response");
             }
-        } catch(
-        IOException e)
-
-        {
-            Log.e(LOG_TAG, "Problem retrieving the observatory JSON results");
-        } catch(
-        JSONException e)
-
-        {
-            Log.e(LOG_TAG, "Problem parsing the observatory JSON response");
-        }
             return observatoryList;
-    }
-
-    @Override
-    protected void onPostExecute(List<Observatory> observatories) {
-        if (observatories != null) {
-            populateObservatories(observatories);
-        } else if (observatoryViewModel.getObservatories() != null && observatoryViewModel.getObservatories()
-                .getValue().size() != 0) {
-            LiveData<List<Observatory>> observatoryDatabaseList = observatoryViewModel.getObservatories();
-            observatories = observatoryDatabaseList.getValue();
-            populateObservatories(observatories);
-        } else {
-            observatoryRecyclerView.setVisibility(View.GONE);
-            observatoryListLoadingIndicator.setVisibility(View.GONE);
-            observatoryListEmptyTextView.setVisibility(View.VISIBLE);
         }
-    }
 
-}
+        @Override
+        protected void onPostExecute(List<Observatory> observatories) {
+            if (observatories != null) {
+                populateObservatories(observatories);
+            } else if (observatoryViewModel.getObservatories() != null && observatoryViewModel.getObservatories()
+                    .getValue().size() != 0) {
+                LiveData<List<Observatory>> observatoryDatabaseList = observatoryViewModel.getObservatories();
+                observatories = observatoryDatabaseList.getValue();
+                populateObservatories(observatories);
+            } else {
+                observatoryRecyclerView.setVisibility(View.GONE);
+                observatoryListLoadingIndicator.setVisibility(View.GONE);
+                observatoryListEmptyTextView.setVisibility(View.VISIBLE);
+            }
+        }
+
+    }
 
     private void populateObservatories(List<Observatory> observatories) {
         observatoryListLoadingIndicator.setVisibility(View.GONE);
@@ -368,4 +384,18 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         onObservatoryClickListener = null;
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        orientation = getResources().getConfiguration().orientation;
+        if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
+                    DividerItemDecoration.VERTICAL));
+            observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
+                    DividerItemDecoration.HORIZONTAL));
+            observatoryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        } else {
+            observatoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
+        super.onConfigurationChanged(newConfig);
+    }
 }

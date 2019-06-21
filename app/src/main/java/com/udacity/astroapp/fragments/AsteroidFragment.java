@@ -4,12 +4,18 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -70,6 +76,12 @@ public class AsteroidFragment extends Fragment {
 
     private AsteroidViewModel asteroidViewModel;
 
+    private boolean isTablet;
+
+    private boolean isLandscape;
+
+    private int orientation;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,14 +97,37 @@ public class AsteroidFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_asteroid, container, false);
 
+        isTablet = getResources().getBoolean(R.bool.isTablet);
+
+        orientation = getResources().getConfiguration().orientation;
+
 //        asteroidList = new ArrayList<>();
         asteroidRecyclerView = rootView.findViewById(R.id.asteroid_recycler_view);
 
         asteroidAdapter = new AsteroidAdapter(asteroidList);
-        asteroidRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        context = asteroidRecyclerView.getContext();
+
+        if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+            asteroidRecyclerView.addItemDecoration(new DividerItemDecoration(context,
+                    DividerItemDecoration.HORIZONTAL));
+            asteroidRecyclerView.addItemDecoration(new DividerItemDecoration(context,
+                    DividerItemDecoration.VERTICAL));
+            asteroidRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
+//            Drawable dividerDrawable = ContextCompat.getDrawable(context, R.drawable.divider);
+//            asteroidRecyclerView.addItemDecoration(new DividerItemDecoration(dividerDrawable));
+            //            asteroidRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//            DividerItemDecoration verticalDivider = new DividerItemDecoration(context, DividerItemDecoration.VERTICAL);
+//            verticalDivider.setDrawable(ContextCompat.getDrawable(context, R.drawable.divider));
+//            asteroidRecyclerView.addItemDecoration(verticalDivider);
+        } else {
+            asteroidRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
+
         asteroidRecyclerView.setAdapter(asteroidAdapter);
 
-         context = asteroidRecyclerView.getContext();
 
         asteroidRecyclerView.addItemDecoration(new DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL));
@@ -117,7 +152,7 @@ public class AsteroidFragment extends Fragment {
                     AppExecutors.getExecutors().diskIO().execute(new Runnable() {
                         @Override
                         public void run() {
-                             int numberOfAsteroids = appDatabase.astroDao().getAsteroidCount();
+                            int numberOfAsteroids = appDatabase.astroDao().getAsteroidCount();
                             if (asteroidList != null) {
                                 appDatabase.astroDao().deleteAllAsteroids();
 
@@ -246,5 +281,20 @@ public class AsteroidFragment extends Fragment {
         asteroidAdapter.setAsteroids(asteroids);
         asteroidRecyclerView.setVisibility(View.VISIBLE);
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        orientation = getResources().getConfiguration().orientation;
+        if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            asteroidRecyclerView.addItemDecoration(new DividerItemDecoration(context,
+                    DividerItemDecoration.HORIZONTAL));
+            asteroidRecyclerView.addItemDecoration(new DividerItemDecoration(context,
+                    DividerItemDecoration.VERTICAL));
+            asteroidRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));
+        } else {
+            asteroidRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
+        super.onConfigurationChanged(newConfig);
     }
 }

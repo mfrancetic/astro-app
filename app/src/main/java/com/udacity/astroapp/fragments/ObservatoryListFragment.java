@@ -4,22 +4,18 @@ import android.Manifest;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.arch.persistence.room.Insert;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,12 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationServices;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.adapters.ObservatoryAdapter;
 import com.udacity.astroapp.data.AppDatabase;
@@ -51,18 +42,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.URL;
-import java.security.Permission;
-import java.security.Permissions;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 
 public class ObservatoryListFragment extends Fragment implements LocationListener {
@@ -91,6 +76,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     private boolean locationPermissionGranted;
 
     private LocationManager locationManager;
+
+    private String defaultLocationBerlin = "52.520008, 13.404954";
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
 
@@ -219,6 +206,11 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         @Override
         protected List<Observatory> doInBackground(String... strings) {
             try {
+
+                if (currentLocation == null) {
+                     currentLocation = defaultLocationBerlin;
+                }
+
                 URL url = QueryUtils.createObservatoryURL(currentLocation);
 
                 String observatoryJson = QueryUtils.makeHttpRequest(url);

@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity
 
     private boolean tabletSize;
 
+    private NavigationView navigationView;
+
     private ObservatoryListFragment observatoryListFragment;
 
     private DrawerLayout drawer;
@@ -104,7 +106,8 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        });
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+         navigationView = findViewById(R.id.nav_view);
+        navigationView.requestFocus();
         drawer = findViewById(R.id.drawer_layout);
 
         if (!tabletSize) {
@@ -127,8 +130,23 @@ public class MainActivity extends AppCompatActivity
 //        drawer.openDrawer(GravityCompat.START);
 
         navigationView.setNavigationItemSelectedListener(this);
+//        navigationView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//                    navigationView.setFocusable(true);
+//                    navigationView.requestFocus();
+//                } else {
+//                    navigationView.setFocusable(false);
+//                    navigationView.clearFocus();
+//                }
+//            }
+//        });
+//        navigationView.getOnFocusChangeListener().onFocusChange();
+
         if (savedInstanceState == null) {
             navigationView.setCheckedItem(R.id.nav_photo);
+            navigationView.requestFocus();
             Fragment fragment = new PhotoFragment();
             displayFragment(fragment);
         }
@@ -172,6 +190,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        navigationView.requestFocus();
         int id = item.getItemId();
         Fragment fragment = null;
         if (id == R.id.nav_photo) {
@@ -189,6 +208,7 @@ public class MainActivity extends AppCompatActivity
 
         if (!tabletSize) {
             drawer.closeDrawer(GravityCompat.START);
+            navigationView.clearFocus();
         }
 
         return true;

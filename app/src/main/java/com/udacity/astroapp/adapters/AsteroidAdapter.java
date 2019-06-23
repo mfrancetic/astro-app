@@ -95,7 +95,9 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
 
         asteroidFullName = asteroid.getAsteroidName();
 
-        asteroidNameTextView.setText(getTrimmedAsteroidName(asteroidFullName));
+        String asteroidTrimmedName = getTrimmedAsteroidName(asteroidFullName);
+
+        asteroidNameTextView.setText(asteroidTrimmedName);
 
         double asteroidDiameterMin = asteroid.getAsteroidDiameterMin();
         double asteroidDiameterMax = asteroid.getAsteroidDiameterMax();
@@ -123,14 +125,19 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
         boolean isHazardous = asteroid.getAsteroidIsHazardous();
         if (isHazardous) {
             asteroidHazardousImage.setImageResource(R.drawable.hazardous_image);
+            asteroidHazardousImage.setContentDescription(context.getString(R.string.asteroid_is_hazardous));
         } else {
             asteroidHazardousImage.setImageResource(R.drawable.not_hazardous_image);
+            asteroidHazardousImage.setContentDescription(context.getString(R.string.asteroid_not_hazardous));
         }
 
         asteroidApproachDateTextView.setText(approachDate);
 
         String asteroidUrl = asteroid.getAsteroidUrl();
         final Uri asteroidUri = Uri.parse(asteroidUrl);
+
+        readMoreButton.setContentDescription(context.getString(R.string.read_more_about_content_description)
+                + " " + asteroidTrimmedName);
 
         readMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override

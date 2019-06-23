@@ -333,6 +333,7 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
 
             Picasso.get().load(photoUri)
                     .into(photoImageView);
+            photoImageView.setContentDescription(getString(R.string.photo_of_content_description) + " " + photoTitle);
         }
 
 //        if (photo == null) {

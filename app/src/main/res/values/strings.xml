@@ -6,6 +6,8 @@
     <string name="velocity_label">Velocity:</string>
     <string name="read_more_button">Read more</string>
     <string name="asteroid_hazardous_button">Asteroid hazardous indication</string>
+    <string name="asteroid_is_hazardous">Asteroid is hazardous</string>
+    <string name="asteroid_not_hazardous">Asteroid is not hazardous</string>
     <string name="observatory_content_description">Observatory photo</string>
     <string name="observatory_visit_homepage_button">Visit homepage</string>
     <string name="widget_image_content_description">Photo of the day image</string>
@@ -35,5 +37,8 @@
     <string name="no_observatories_found">No observatories found</string>
     <string name="observatory_details_not_found">Observatory details not found</string>
     <string name="asteroid_image_content_description">Asteroid image</string>
-    <string name="observatory_list_item_button_content_description">See observatory details</string>
+    <string name="observatory_list_item_button_content_description">See observatory details of</string>
+    <string name="photo_of_content_description">Photo</string>
+    <string name="read_more_about_content_description">Read more about</string>
+    <string name="marker_of_the_observatory_content_description">Location of the observatory</string>
 </resources>

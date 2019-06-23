@@ -47,16 +47,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
 
 public class ObservatoryFragment extends Fragment implements OnMapReadyCallback {
 
     private Observatory observatory;
 
     private String observatoryId;
-
-    private MainActivity mainActivity;
 
     private String observatoryName;
 
@@ -221,7 +217,9 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         if (observatory != null) {
             observatoryName = observatory.getObservatoryName();
             observatoryId = observatory.getObservatoryId();
-            getActivity().setTitle(observatoryName);
+            if (getActivity() != null) {
+                getActivity().setTitle(observatoryName);
+            }
 
             observatoryAddress = observatory.getObservatoryAddress();
             observatoryLatitude = observatory.getObservatoryLatitude();
@@ -289,7 +287,8 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
 
         googleMap.addMarker(new MarkerOptions().position(observatoryLatLng)
-                .title("Marker of the observatory"));
+                .title(getString(R.string.marker_of_the_observatory_content_description) + " " +
+                        observatoryName));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(observatoryLatLng));
         googleMap.animateCamera(zoom);
     }

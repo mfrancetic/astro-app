@@ -84,7 +84,9 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
 
 //        final Context context = observatoryListItemNameTextView.getContext();
 
-        observatoryListItemNameTextView.setText(observatory.getObservatoryName());
+        String observatoryName = observatory.getObservatoryName();
+
+        observatoryListItemNameTextView.setText(observatoryName);
         observatoryListItemAddressTextView.setText(observatory.getObservatoryAddress());
 
         observatoryOpenNow = observatory.getObservatoryOpenNow();
@@ -96,6 +98,11 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
 //        }
 
 //        observatoryListItemOpeningHoursTextView.setText(String.valueOf()observatory.getObservatoryOpenNow());
+
+
+        viewHolder.observatoryListItemButton.setContentDescription(context.getString(R.string.observatory_list_item_button_content_description) + " "
+        + observatoryName);
+
         viewHolder.observatoryListItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

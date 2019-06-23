@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity
 //            }
 //        });
 
-         navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.requestFocus();
         navigationView.setFocusable(true);
         drawer = findViewById(R.id.drawer_layout);
@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity
             toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.addDrawerListener(toggle);
+//            drawer.openDrawer(GravityCompat.START);
             toggle.syncState();
             drawer.closeDrawer(GravityCompat.START);
         }
@@ -163,28 +164,6 @@ public class MainActivity extends AppCompatActivity
                 super.onBackPressed();
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

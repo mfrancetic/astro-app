@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity
 
          navigationView = findViewById(R.id.nav_view);
         navigationView.requestFocus();
+        navigationView.setFocusable(true);
         drawer = findViewById(R.id.drawer_layout);
 
         if (!tabletSize) {
@@ -130,18 +131,18 @@ public class MainActivity extends AppCompatActivity
 //        drawer.openDrawer(GravityCompat.START);
 
         navigationView.setNavigationItemSelectedListener(this);
-//        navigationView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            @Override
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    navigationView.setFocusable(true);
-//                    navigationView.requestFocus();
-//                } else {
-//                    navigationView.setFocusable(false);
-//                    navigationView.clearFocus();
-//                }
-//            }
-//        });
+        navigationView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    navigationView.setFocusable(true);
+                    navigationView.requestFocus();
+                } else {
+                    navigationView.setFocusable(false);
+                    navigationView.clearFocus();
+                }
+            }
+        });
 //        navigationView.getOnFocusChangeListener().onFocusChange();
 
         if (savedInstanceState == null) {
@@ -233,4 +234,6 @@ public class MainActivity extends AppCompatActivity
         observatoryFragment.setObservatory(ObservatoryAdapter.observatories.get(position));
         displayFragment(observatoryFragment);
     }
+
+
 }

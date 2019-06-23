@@ -363,6 +363,12 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
         context.sendBroadcast(widgetIntent);
 //
     }
-//
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    //
 
 }

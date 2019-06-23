@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -113,6 +114,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     private ObservatoryViewModel observatoryViewModel;
 
+    private ImageView observatoryListEmptyImageView;
+
 
     public interface OnObservatoryClickListener {
         void onObservatorySelected(int position);
@@ -140,9 +143,11 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         orientation = getResources().getConfiguration().orientation;
 
         observatoryListEmptyTextView = rootView.findViewById(R.id.observatory_list_empty_text_view);
+        observatoryListEmptyImageView = rootView.findViewById(R.id.observatory_list_empty_image_view);
         observatoryListLoadingIndicator = rootView.findViewById(R.id.observatory_list_loading_indicator);
 
         observatoryListEmptyTextView.setVisibility(View.GONE);
+        observatoryListEmptyImageView.setVisibility(View.GONE);
 
         context = observatoryListLoadingIndicator.getContext();
 
@@ -296,7 +301,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         protected void onPostExecute(List<Observatory> observatories) {
             if (observatories != null) {
                 populateObservatories(observatories);
-            } else if (observatoryViewModel.getObservatories() != null && observatoryViewModel.getObservatories()
+            } else if (observatoryViewModel.getObservatories().getValue() != null && observatoryViewModel.getObservatories()
                     .getValue().size() != 0) {
                 LiveData<List<Observatory>> observatoryDatabaseList = observatoryViewModel.getObservatories();
                 observatories = observatoryDatabaseList.getValue();
@@ -305,6 +310,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                 observatoryRecyclerView.setVisibility(View.GONE);
                 observatoryListLoadingIndicator.setVisibility(View.GONE);
                 observatoryListEmptyTextView.setVisibility(View.VISIBLE);
+                observatoryListEmptyImageView.setVisibility(View.VISIBLE);
             }
         }
 
@@ -313,6 +319,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     private void populateObservatories(List<Observatory> observatories) {
         observatoryListLoadingIndicator.setVisibility(View.GONE);
         observatoryListEmptyTextView.setVisibility(View.GONE);
+        observatoryListEmptyImageView.setVisibility(View.GONE);
         observatoryAdapter.setObservatories(observatories);
         observatoryRecyclerView.setVisibility(View.VISIBLE);
     }

@@ -23,6 +23,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/observatory_list_empty_image_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@null"
+        app:layout_constraintBottom_toTopOf="@id/observatory_list_empty_text_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="@dimen/margin"
+        android:src="@drawable/ic_nothing_found"
+        />
+
     <ProgressBar
         android:id="@+id/observatory_list_loading_indicator"
         style="@style/LoadingIndicatorStyle"

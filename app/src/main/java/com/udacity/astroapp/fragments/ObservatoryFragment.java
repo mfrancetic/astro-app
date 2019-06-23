@@ -86,6 +86,8 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
     private TextView observatoryEmptyTextView;
 
+    private ImageView observatoryEmptyImageView;
+
     private ProgressBar observatoryLoadingIndicator;
 
     private AppDatabase appDatabase;
@@ -144,6 +146,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         observatoryPhoneNumberTextView = rootView.findViewById(R.id.observatory_phone_number);
         observatoryLoadingIndicator = rootView.findViewById(R.id.observatory_loading_indicator);
         observatoryEmptyTextView = rootView.findViewById(R.id.observatory_empty_text_view);
+        observatoryEmptyImageView = rootView.findViewById(R.id.observatory_empty_image_view);
 
 //        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 //        MapFragment mapFragment = (MapFragment) getActivity().getSupportFragmentManager().findFragmentByTag("mapFragment");
@@ -168,6 +171,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         mapFragment.getMapAsync(this);
 
         observatoryEmptyTextView.setVisibility(View.GONE);
+        observatoryEmptyImageView.setVisibility(View.GONE);
 
         context = observatoryEmptyTextView.getContext();
 
@@ -365,10 +369,12 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
                 } else {
                     observatoryLoadingIndicator.setVisibility(View.GONE);
                     observatoryEmptyTextView.setVisibility(View.VISIBLE);
+                    observatoryEmptyImageView.setVisibility(View.VISIBLE);
                 }
             } else {
                 observatoryLoadingIndicator.setVisibility(View.GONE);
                 observatoryEmptyTextView.setVisibility(View.VISIBLE);
+                observatoryEmptyImageView.setVisibility(View.VISIBLE);
             }
             super.onPostExecute(observatory);
         }

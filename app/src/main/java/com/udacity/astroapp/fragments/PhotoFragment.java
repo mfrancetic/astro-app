@@ -119,6 +119,8 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
 
     public static final String photoUrlKey = "photoUrl";
 
+    private ImageView emptyImageView;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,6 +141,7 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
         View rootView = inflater.inflate(R.layout.fragment_photo, container, false);
 
         photoImageView = rootView.findViewById(R.id.photo_view);
+        emptyImageView = rootView.findViewById(R.id.photo_empty_image_view);
         photoTitleTextView = rootView.findViewById(R.id.photo_title_text_view);
         photoDateTextView = rootView.findViewById(R.id.photo_date_text_view);
         playVideoButton = rootView.findViewById(R.id.play_video_button);
@@ -189,6 +192,7 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
 
 
         emptyTextView.setVisibility(View.GONE);
+        emptyImageView.setVisibility(View.GONE);
 
         context = photoDateTextView.getContext();
 
@@ -199,9 +203,6 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
         photoDescriptionTextView = rootView.findViewById(R.id.photo_description_text_view);
 
         new PhotoAsyncTask().execute();
-
-
-
 
         return rootView;
     }
@@ -259,7 +260,7 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
                 populatePhoto(photo);
 //                astroDao.addPhoto(photo);
 //            } else if (appDatabase.astroDao().loadAllPhotos() != null) {
-            } else if (photoViewModel.getPhotos() != null && photoViewModel.getPhotos().getValue().size() != 0) {
+            } else if (photoViewModel.getPhotos().getValue() != null && photoViewModel.getPhotos().getValue().size() != 0) {
 //            } else if (appDatabase.astroDao().loadPhotoById(photoId) != null){
                 LiveData<List<Photo>> photoDatabaseList = photoViewModel.getPhotos();
                 List<Photo> photos = photoDatabaseList.getValue();
@@ -290,6 +291,7 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
                 photoDateTextView.setVisibility(View.GONE);
                 photoImageView.setVisibility(View.INVISIBLE);
                 emptyTextView.setVisibility(View.VISIBLE);
+                emptyImageView.setVisibility(View.VISIBLE);
             }
             super.onPostExecute(photo);
         }
@@ -297,6 +299,7 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
 
     private void populatePhoto(Photo photo) {
         emptyTextView.setVisibility(View.GONE);
+        emptyImageView.setVisibility(View.GONE);
         loadingIndicator.setVisibility(View.GONE);
 
         photoImageView.setVisibility(View.VISIBLE);

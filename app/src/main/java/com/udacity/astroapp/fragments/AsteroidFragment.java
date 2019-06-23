@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -82,6 +83,8 @@ public class AsteroidFragment extends Fragment {
 
     private int orientation;
 
+    private ImageView emptyImageView;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,8 +137,10 @@ public class AsteroidFragment extends Fragment {
 
 
         emptyTextView = rootView.findViewById(R.id.asteroid_empty_text_view);
+        emptyImageView = rootView.findViewById(R.id.asteroid_empty_image_view);
         loadingIndicator = rootView.findViewById(R.id.asteroid_loading_indicator);
         emptyTextView.setVisibility(View.GONE);
+        emptyImageView.setVisibility(View.GONE);
         loadingIndicator.setVisibility(View.VISIBLE);
 
         appDatabase = AppDatabase.getInstance(getContext());
@@ -263,13 +268,14 @@ public class AsteroidFragment extends Fragment {
         protected void onPostExecute(List<Asteroid> asteroids) {
             if (asteroids != null) {
                 populateAsteroids(asteroids);
-            } else if (asteroidViewModel.getAsteroids() != null && asteroidViewModel.getAsteroids().getValue().size() != 0) {
+            } else if (asteroidViewModel.getAsteroids().getValue() != null && asteroidViewModel.getAsteroids().getValue().size() != 0) {
                 LiveData<List<Asteroid>> asteroidDatabaseList = asteroidViewModel.getAsteroids();
                 asteroids = asteroidDatabaseList.getValue();
                 populateAsteroids(asteroids);
             } else {
                 asteroidRecyclerView.setVisibility(View.GONE);
                 emptyTextView.setVisibility(View.VISIBLE);
+                emptyImageView.setVisibility(View.VISIBLE);
                 loadingIndicator.setVisibility(View.GONE);
             }
         }
@@ -278,6 +284,7 @@ public class AsteroidFragment extends Fragment {
     private void populateAsteroids(List<Asteroid> asteroids) {
         loadingIndicator.setVisibility(View.GONE);
         emptyTextView.setVisibility(View.GONE);
+        emptyImageView.setVisibility(View.GONE);
         asteroidAdapter.setAsteroids(asteroids);
         asteroidRecyclerView.setVisibility(View.VISIBLE);
 

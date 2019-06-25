@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -52,6 +54,8 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
     private Observatory observatory;
 
+    private static final String observatoryKey = "observatory";
+
     private String observatoryId;
 
     private String observatoryName;
@@ -76,7 +80,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
     private TextView observatoryOpenNowTextView;
 
-    private ImageView observatoryImageView;
+    private ScrollView observatoryScrollView;
 
     private Button visitObservatoryHomepageButton;
 
@@ -100,26 +104,30 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
     private static final String LOG_TAG = ObservatoryFragment.class.getSimpleName();
 
+    private static final String SCROLL_POSITION_X = "scrollX";
+
+    private static final String SCROLL_POSITION_Y = "scrollY";
+
+    private boolean jsonNotSuccessful;
+
+    private int scrollX;
+
+    private int scrollY;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
-//        if (getActivity()!= null) {
-//            getActivity().setTitle(observatoryName);
-//        }
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-//        View rootView;
-//
-//        if (savedInstanceState == null) {
-             View rootView = inflater.inflate(R.layout.fragment_observatory, container, false);
-//        }
+        View rootView = inflater.inflate(R.layout.fragment_observatory, container, false);
+
+        jsonNotSuccessful = false;
 
         observatoryOpeningHoursDay = "";
 
@@ -138,6 +146,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
             observatoryPhoneNumber = observatory.getObservatoryPhoneNumber();
         }
 
+        observatoryScrollView = rootView.findViewById(R.id.observatory_scroll_view);
         observatoryNameTextView = rootView.findViewById(R.id.observatory_name);
         observatoryAddressTextView = rootView.findViewById(R.id.observatory_address);
         observatoryOpenNowTextView = rootView.findViewById(R.id.observatory_open_now);
@@ -148,6 +157,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         observatoryEmptyTextView = rootView.findViewById(R.id.observatory_empty_text_view);
         observatoryEmptyImageView = rootView.findViewById(R.id.observatory_empty_image_view);
 
+
 //        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 //        MapFragment mapFragment = (MapFragment) getActivity().getSupportFragmentManager().findFragmentByTag("mapFragment");
 //
@@ -156,9 +166,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager
                 .findFragmentByTag("mapFragment");
 
-//        MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager()
-//                .findFragmentByTag("mapFragment");
-
         if (mapFragment == null) {
             mapFragment = new SupportMapFragment();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -166,8 +173,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
             fragmentTransaction.commit();
             fragmentManager.executePendingTransactions();
         }
-//        MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager()
-//                .findFragmentById(R.id.map);
+
         mapFragment.getMapAsync(this);
 
         observatoryEmptyTextView.setVisibility(View.GONE);
@@ -201,10 +207,14 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
                 }
             }
         });
-        new ObservatoryDetailsAsyncTask().execute();
-
-//        populateObservatory(observatory);
-
+        if (savedInstanceState == null) {
+            new ObservatoryDetailsAsyncTask().execute();
+        } else {
+            scrollX = savedInstanceState.getInt(SCROLL_POSITION_X);
+            scrollY = savedInstanceState.getInt(SCROLL_POSITION_Y);
+            observatory = savedInstanceState.getParcelable(observatoryKey);
+            populateObservatory(observatory);
+        }
         return rootView;
     }
 
@@ -218,6 +228,8 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
     }
 
     private void populateObservatory(Observatory observatory) {
+        observatoryEmptyImageView.setVisibility(View.GONE);
+        observatoryLoadingIndicator.setVisibility(View.GONE);
         if (observatory != null) {
             observatoryName = observatory.getObservatoryName();
             observatoryId = observatory.getObservatoryId();
@@ -258,7 +270,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
                 observatoryOpeningHoursTextView.setVisibility(View.GONE);
             }
 
-
             if (observatoryUrl == null || observatoryUrl.isEmpty()) {
                 visitObservatoryHomepageButton.setVisibility(View.GONE);
             } else {
@@ -274,19 +285,13 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
                 });
             }
         }
+        if (observatoryScrollView != null) {
+            observatoryScrollView.scrollTo(scrollX, scrollY);
+        }
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
-//        String latitudeString = String.valueOf(observatoryLatitude);
-//        String longitudeString = String.valueOf(observatoryLongitude);
-
-//        CameraUpdate center = CameraUpdateFactory.newLatLng(observatoryLatitude, observatoryLongitude);
-//        CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
-
-        // Add a marker in Sydney, Australia,
-        // and move the map's camera to the same location.
         LatLng observatoryLatLng = new LatLng(observatoryLatitude, observatoryLongitude);
         CameraUpdate zoom = CameraUpdateFactory.zoomTo(15);
 
@@ -296,17 +301,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(observatoryLatLng));
         googleMap.animateCamera(zoom);
     }
-
-
-//        googleMap.addMarker(new MarkerOptions()
-//                .position(new LatLng(observatoryLatitude, observatoryLongitude))
-//                .title("Marker"));
-
-//        googleMap.moveCamera();
-//        googleMap.animateCamera(zoom);
-
-
-
 
     private class ObservatoryDetailsAsyncTask extends AsyncTask<String, Void, Observatory> {
 
@@ -320,9 +314,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
                 JSONObject baseObservatoryJsonResponse = new JSONObject(observatoryDetailsJson);
 
                 JSONObject observatoryObject = baseObservatoryJsonResponse.getJSONObject("result");
-//                JSONArray observatoryDetailsArray = baseObservatoryJsonResponse.getJSONArray("result");
-
-//                for (int i = 0; i < observatoryDetailsArray.length(); i++) {
 
                 if (observatoryObject.has("website")) {
                     observatoryUrl = observatoryObject.getString("website");
@@ -333,7 +324,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
                     observatoryPhoneNumber = observatoryObject.getString("international_phone_number");
                     observatory.setObservatoryPhoneNumber(observatoryPhoneNumber);
                 }
-
                 observatoryOpeningHoursDay = "";
 
                 if (observatoryObject.has("opening_hours")) {
@@ -349,23 +339,36 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Problem retrieving the observatory details JSON results");
+                jsonNotSuccessful = true;
             } catch (JSONException e) {
                 Log.e(LOG_TAG, "Problem parsing the observatory details JSON response");
+                jsonNotSuccessful = true;
             }
             return observatory;
         }
 
         @Override
-        protected void onPostExecute(Observatory observatory) {
-            if (observatory != null) {
+        protected void onPostExecute(Observatory newObservatory) {
+            if (newObservatory != null) {
                 observatoryEmptyTextView.setVisibility(View.GONE);
                 observatoryLoadingIndicator.setVisibility(View.GONE);
-                populateObservatory(observatory);
-            } else if (observatoryDetailViewModel.getObservatory() != null) {
+                populateObservatory(newObservatory);
+                if (jsonNotSuccessful) {
+                        Snackbar snackbar = Snackbar.make(observatoryScrollView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);
+                        snackbar.show();
+                }
+            } else if (observatoryDetailViewModel.getObservatory() != null && observatoryDetailViewModel.getObservatory()
+                    .getValue() != null) {
                 LiveData<Observatory> observatoryDatabase = observatoryDetailViewModel.getObservatory();
                 observatory = observatoryDatabase.getValue();
                 if (observatory != null) {
+//                    if (getActivity() != null) {
+//                        View scrollView = getActivity().findViewById(R.id.observatory_scroll_view);
+                        Snackbar snackbar = Snackbar.make(observatoryScrollView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);
+                        snackbar.show();
+//                    }
                     populateObservatory(observatory);
+
                 } else {
                     observatoryLoadingIndicator.setVisibility(View.GONE);
                     observatoryEmptyTextView.setVisibility(View.VISIBLE);
@@ -380,4 +383,15 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         }
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(observatoryKey, observatory);
+        if (observatoryScrollView != null) {
+            scrollX = observatoryScrollView.getScrollX();
+            scrollY = observatoryScrollView.getScrollY();
+        }
+        outState.putInt(SCROLL_POSITION_X, scrollX);
+        outState.putInt(SCROLL_POSITION_Y, scrollY);
+        super.onSaveInstanceState(outState);
+    }
 }

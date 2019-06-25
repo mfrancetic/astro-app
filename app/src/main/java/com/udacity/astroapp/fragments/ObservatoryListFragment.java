@@ -12,8 +12,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -60,6 +62,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     private ObservatoryAdapter observatoryAdapter;
 
     public List<Observatory> observatoryList;
+
+    private static final String observatoryListKey = "observatoryList";
 
     private String google_api_key = Secret.google_play_services_api_key;
 
@@ -134,6 +138,9 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        if (getActivity() != null) {
+            getActivity().setTitle(R.string.menu_observatories);
+        }
         View rootView = inflater.inflate(R.layout.fragment_observatory_list, container, false);
 
 //        observatories = new ArrayList<>();
@@ -166,7 +173,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                         @Override
                         public void run() {
                             int numberOfObservatories = appDatabase.astroDao().getObservatoryCount();
-                            if (observatoryList != null) {
+                            if (observatoryList != null && !observatoryList.isEmpty()) {
                                 appDatabase.astroDao().deleteAllObservatories();
 
                                 numberOfObservatories = appDatabase.astroDao().getObservatoryCount();
@@ -221,7 +228,12 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
             onLocationChanged(location);
         }
-        new ObservatoryAsyncTask().execute();
+        if (savedInstanceState == null) {
+            new ObservatoryAsyncTask().execute();
+        } else {
+            observatoryList = savedInstanceState.getParcelableArrayList(observatoryListKey);
+            populateObservatories(observatoryList);
+        }
         return rootView;
     }
 
@@ -298,14 +310,17 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         }
 
         @Override
-        protected void onPostExecute(List<Observatory> observatories) {
-            if (observatories != null) {
-                populateObservatories(observatories);
+        protected void onPostExecute(List<Observatory> newObservatories) {
+            if (newObservatories != null) {
+                populateObservatories(newObservatories);
             } else if (observatoryViewModel.getObservatories().getValue() != null && observatoryViewModel.getObservatories()
                     .getValue().size() != 0) {
                 LiveData<List<Observatory>> observatoryDatabaseList = observatoryViewModel.getObservatories();
-                observatories = observatoryDatabaseList.getValue();
-                populateObservatories(observatories);
+                observatoryList = observatoryDatabaseList.getValue();
+                populateObservatories(observatoryList);
+
+                Snackbar snackbar = Snackbar.make(observatoryRecyclerView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);
+                snackbar.show();
             } else {
                 observatoryRecyclerView.setVisibility(View.GONE);
                 observatoryListLoadingIndicator.setVisibility(View.GONE);
@@ -404,5 +419,11 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             observatoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         }
         super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelableArrayList(observatoryListKey, (ArrayList<? extends Parcelable>) observatoryList);
+        super.onSaveInstanceState(outState);
     }
 }

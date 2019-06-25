@@ -9,8 +9,10 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -59,6 +61,8 @@ public class AsteroidFragment extends Fragment {
 
     private Asteroid asteroid;
 
+    private static final String asteroidListKey = "asteroidList";
+
     private RecyclerView asteroidRecyclerView;
 
     private Date date;
@@ -85,6 +89,8 @@ public class AsteroidFragment extends Fragment {
 
     private ImageView emptyImageView;
 
+    private int lastFirstVisiblePosition;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +103,9 @@ public class AsteroidFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (getActivity() != null) {
+            getActivity().setTitle(R.string.menu_asteroids);
+        }
 
         View rootView = inflater.inflate(R.layout.fragment_asteroid, container, false);
 
@@ -104,9 +113,11 @@ public class AsteroidFragment extends Fragment {
 
         orientation = getResources().getConfiguration().orientation;
 
-//        asteroidList = new ArrayList<>();
         asteroidRecyclerView = rootView.findViewById(R.id.asteroid_recycler_view);
 
+        if (savedInstanceState != null) {
+            asteroidList = savedInstanceState.getParcelableArrayList(asteroidListKey);
+        }
         asteroidAdapter = new AsteroidAdapter(asteroidList);
 
         context = asteroidRecyclerView.getContext();
@@ -128,13 +139,10 @@ public class AsteroidFragment extends Fragment {
         } else {
             asteroidRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         }
-
         asteroidRecyclerView.setAdapter(asteroidAdapter);
-
 
         asteroidRecyclerView.addItemDecoration(new DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL));
-
 
         emptyTextView = rootView.findViewById(R.id.asteroid_empty_text_view);
         emptyImageView = rootView.findViewById(R.id.asteroid_empty_image_view);
@@ -145,7 +153,9 @@ public class AsteroidFragment extends Fragment {
 
         appDatabase = AppDatabase.getInstance(getContext());
 
-        asteroidViewModelFactory = new AsteroidViewModelFactory(appDatabase);
+        if (asteroidViewModelFactory == null) {
+            asteroidViewModelFactory = new AsteroidViewModelFactory(appDatabase);
+        }
         asteroidViewModel = ViewModelProviders.of(AsteroidFragment.this, asteroidViewModelFactory)
                 .get(AsteroidViewModel.class);
 
@@ -158,12 +168,9 @@ public class AsteroidFragment extends Fragment {
                         @Override
                         public void run() {
                             int numberOfAsteroids = appDatabase.astroDao().getAsteroidCount();
-                            if (asteroidList != null) {
+                            if (asteroidList != null && !asteroidList.isEmpty()) {
                                 appDatabase.astroDao().deleteAllAsteroids();
-
                                 numberOfAsteroids = appDatabase.astroDao().getAsteroidCount();
-
-//                                appDatabase.astroDao().addAsteroid(asteroid);
                                 appDatabase.astroDao().addAllAsteroids(asteroidList);
                             }
                         }
@@ -171,12 +178,17 @@ public class AsteroidFragment extends Fragment {
                 }
             }
         });
-
         date = Calendar.getInstance().getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         localDate = simpleDateFormat.format(date);
 
-        new AsteroidAsyncTask().execute();
+        if (savedInstanceState == null) {
+            new AsteroidAsyncTask().execute();
+        } else {
+//            asteroidList = savedInstanceState.getParcelableArrayList(asteroidListKey);
+            populateAsteroids(asteroidList);
+        }
+
         return rootView;
     }
 
@@ -265,13 +277,16 @@ public class AsteroidFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(List<Asteroid> asteroids) {
-            if (asteroids != null) {
-                populateAsteroids(asteroids);
+        protected void onPostExecute(List<Asteroid> newAsteroids) {
+            if (newAsteroids != null) {
+                populateAsteroids(newAsteroids);
             } else if (asteroidViewModel.getAsteroids().getValue() != null && asteroidViewModel.getAsteroids().getValue().size() != 0) {
                 LiveData<List<Asteroid>> asteroidDatabaseList = asteroidViewModel.getAsteroids();
-                asteroids = asteroidDatabaseList.getValue();
-                populateAsteroids(asteroids);
+                asteroidList = asteroidDatabaseList.getValue();
+                populateAsteroids(asteroidList);
+
+                Snackbar snackbar = Snackbar.make(asteroidRecyclerView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);
+                snackbar.show();
             } else {
                 asteroidRecyclerView.setVisibility(View.GONE);
                 emptyTextView.setVisibility(View.VISIBLE);
@@ -287,7 +302,7 @@ public class AsteroidFragment extends Fragment {
         emptyImageView.setVisibility(View.GONE);
         asteroidAdapter.setAsteroids(asteroids);
         asteroidRecyclerView.setVisibility(View.VISIBLE);
-
+        asteroidRecyclerView.smoothScrollToPosition(lastFirstVisiblePosition);
     }
 
     @Override
@@ -303,5 +318,19 @@ public class AsteroidFragment extends Fragment {
             asteroidRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         }
         super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelableArrayList(asteroidListKey, (ArrayList<? extends Parcelable>) asteroidList);
+        if (asteroidRecyclerView.getLayoutManager() != null) {
+//            lastFirstVisiblePosition = (asteroidRecyclerView.getLayoutManager())findFirstCompletelyVisibleItemPosition();
+//            if (lastFirstVisiblePosition !=0) {
+//                lastFirstVisiblePosition = ((LinearLayoutManager) asteroidRecyclerView.getLayoutManager())
+//                        .findFirstCompletelyVisibleItemPosition();
+//            }
+            lastFirstVisiblePosition = asteroidRecyclerView.getVerticalScrollbarPosition();
+        }
+        super.onSaveInstanceState(outState);
     }
 }

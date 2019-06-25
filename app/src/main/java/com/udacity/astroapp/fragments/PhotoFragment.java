@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -72,6 +73,8 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
 
     private ScrollView photoScrollView;
 
+    private boolean jsonNotSuccessful;
+
     private String videoUrl;
 
     private static Uri videoUri;
@@ -89,6 +92,8 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
     private AppDatabase appDatabase;
 
     public static Photo photo;
+
+    private static final String photoKey = "photo";
 
     private int photoId;
 
@@ -121,6 +126,14 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
 
     private ImageView emptyImageView;
 
+    private static final String SCROLL_POSITION_X = "scrollPositionX";
+
+    private static final String SCROLL_POSITION_Y = "scrollPositionY";
+
+    private int scrollX;
+
+    private int scrollY;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,6 +146,11 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        jsonNotSuccessful = false;
+        if (getActivity() != null) {
+            getActivity().setTitle(R.string.menu_photo);
+        }
 
         if (getContext() != null) {
             sharedPreferences = getContext().getSharedPreferences(preferences, Context.MODE_PRIVATE);
@@ -149,7 +167,6 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
         playVideoButton.setVisibility(View.GONE);
 //        playVideoButton.setVisibility(View.GONE);
 
-
         photoScrollView = rootView.findViewById(R.id.photo_scroll_view);
 
         loadingIndicator = rootView.findViewById(R.id.photo_loading_indicator);
@@ -158,7 +175,9 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
 
         appDatabase = AppDatabase.getInstance(getContext());
 
-        photoViewModelFactory = new PhotoViewModelFactory(appDatabase);
+        if (photoViewModelFactory == null) {
+            photoViewModelFactory = new PhotoViewModelFactory(appDatabase);
+        }
 
         photoViewModel = ViewModelProviders.of(PhotoFragment.this, photoViewModelFactory).get(PhotoViewModel.class);
 
@@ -170,7 +189,7 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
                     AppExecutors.getExecutors().diskIO().execute(new Runnable() {
                         @Override
                         public void run() {
-                            if (photoTitle != null) {
+                            if (photo != null && !photo.getPhotoDate().isEmpty()) {
                                 appDatabase.astroDao().deleteAllPhotos();
                                 appDatabase.astroDao().addPhoto(photo);
 //                                populatePhoto(photo);
@@ -190,7 +209,6 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
             }
         });
 
-
         emptyTextView.setVisibility(View.GONE);
         emptyImageView.setVisibility(View.GONE);
 
@@ -202,14 +220,23 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
 
         photoDescriptionTextView = rootView.findViewById(R.id.photo_description_text_view);
 
-        new PhotoAsyncTask().execute();
+        if (savedInstanceState == null) {
+            new PhotoAsyncTask().execute();
+        } else {
+            scrollX = savedInstanceState.getInt(SCROLL_POSITION_X);
+            scrollY = savedInstanceState.getInt(SCROLL_POSITION_Y);
+            getActivity().overridePendingTransition(0, 0);
+            photo = savedInstanceState.getParcelable(photoKey);
+            if (photo != null) {
+                populatePhoto(photo);
+            }
+        }
 
         return rootView;
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
     }
 
 
@@ -243,21 +270,21 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
 
                 photo = new Photo(0, photoTitle, photoDate, photoDescription, photoUrl, photoMediaType);
 
-            } catch (
-                    IOException e) {
+            } catch (IOException e) {
                 Log.e(LOG_TAG, "Problem retrieving the photo JSON results");
-            } catch (
-                    JSONException e) {
+                jsonNotSuccessful = true;
+            } catch (JSONException e) {
                 Log.e(LOG_TAG, "Problem parsing the photo JSON response");
+                jsonNotSuccessful = true;
             }
             return photo;
         }
 
         @Override
-        protected void onPostExecute(Photo photo) {
+        protected void onPostExecute(Photo newPhoto) {
 //            if (photo != null && photoTitle != null) {
-            if (photo != null) {
-                populatePhoto(photo);
+            if (newPhoto != null && !jsonNotSuccessful) {
+                populatePhoto(newPhoto);
 //                astroDao.addPhoto(photo);
 //            } else if (appDatabase.astroDao().loadAllPhotos() != null) {
             } else if (photoViewModel.getPhotos().getValue() != null && photoViewModel.getPhotos().getValue().size() != 0) {
@@ -282,6 +309,8 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
                     photo.setPhotoMediaType(photoMediaType);
                     populatePhoto(photo);
 
+                    Snackbar snackbar = Snackbar.make(photoScrollView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);
+                    snackbar.show();
 //                    astroDao.addPhoto(photo);
                 }
             } else {
@@ -311,7 +340,7 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
         photoDateTextView.setText(photo.getPhotoDate());
         photoDescriptionTextView.setText(photo.getPhotoDescription());
 
-        if (photoMediaType.equals("video")) {
+        if (photoMediaType != null && photoMediaType.equals("video")) {
             videoUrl = photo.getPhotoUrl();
             videoUri = Uri.parse(videoUrl);
             photoTitleTextView.setVisibility(View.VISIBLE);
@@ -337,6 +366,11 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
             Picasso.get().load(photoUri)
                     .into(photoImageView);
             photoImageView.setContentDescription(getString(R.string.photo_of_content_description) + " " + photoTitle);
+        }
+
+        if (photoScrollView != null) {
+            /* Scroll to the X and Y position of the mainScrollView*/
+            photoScrollView.scrollTo(scrollX, scrollY);
         }
 
 //        if (photo == null) {
@@ -372,6 +406,15 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
         super.onStop();
     }
 
-    //
-
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(photoKey, photo);
+        if (photoScrollView != null) {
+            scrollX = photoScrollView.getScrollX();
+            scrollY = photoScrollView.getScrollY();
+        }
+        outState.putInt(SCROLL_POSITION_X, scrollX);
+        outState.putInt(SCROLL_POSITION_Y, scrollY);
+        super.onSaveInstanceState(outState);
+    }
 }

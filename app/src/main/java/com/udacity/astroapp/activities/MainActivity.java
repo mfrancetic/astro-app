@@ -63,6 +63,10 @@ public class MainActivity extends AppCompatActivity
 
     private boolean tabletSize;
 
+    private final static String fragmentIdKey = "fragmentId";
+
+    private int fragmentId;
+
     private NavigationView navigationView;
 
     private ObservatoryListFragment observatoryListFragment;
@@ -70,6 +74,10 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
 
     private ActionBarDrawerToggle toggle;
+
+    private Bundle onSaveInstanceState;
+
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +88,6 @@ public class MainActivity extends AppCompatActivity
         tabletSize = getResources().getBoolean(R.bool.isTablet);
 
         setSupportActionBar(toolbar);
-//        getSupportActionBar().setHomeButtonEnabled(true);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -98,40 +104,24 @@ public class MainActivity extends AppCompatActivity
             observatoryListFragment.onLocationChanged(location);
         }
 
-
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
         navigationView = findViewById(R.id.nav_view);
         navigationView.requestFocus();
         navigationView.setFocusable(true);
         drawer = findViewById(R.id.drawer_layout);
 
+        if (savedInstanceState != null) {
+            currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
+        }
+
         if (!tabletSize) {
-            toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.addDrawerListener(toggle);
-//            drawer.openDrawer(GravityCompat.START);
+            if (toggle == null) {
+                toggle = new ActionBarDrawerToggle(
+                        this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                drawer.addDrawerListener(toggle);
+            }
             toggle.syncState();
             drawer.closeDrawer(GravityCompat.START);
         }
-
-//        if (findViewById(R.id.drawer_layout) != null) {
-
-//        }
-//
-//        if (tabletSize) {
-//            drawer.getDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-//            drawer.setScrimColor(getResources().getColor(R.color.colorDrawerNoShadow));
-//            isDrawerLocked = true;
-//        }
-//        drawer.openDrawer(GravityCompat.START);
 
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -146,19 +136,19 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
-//        navigationView.getOnFocusChangeListener().onFocusChange();
-
         if (savedInstanceState == null) {
             navigationView.setCheckedItem(R.id.nav_photo);
             navigationView.requestFocus();
             Fragment fragment = new PhotoFragment();
             displayFragment(fragment);
+        } else {
+            currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (tabletSize) {
+        if (!tabletSize) {
 //            DrawerLayout drawer = findViewById(R.id.drawer_layout);
             if (drawer.isDrawerOpen(GravityCompat.START)) {
                 drawer.closeDrawer(GravityCompat.START);
@@ -166,6 +156,7 @@ public class MainActivity extends AppCompatActivity
                 super.onBackPressed();
             }
         }
+        finish();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -173,21 +164,20 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         navigationView.requestFocus();
-        int id = item.getItemId();
-        Fragment fragment = null;
-        if (id == R.id.nav_photo) {
-            fragment = new PhotoFragment();
-            displayFragment(fragment);
-        } else if (id == R.id.nav_asteroids) {
-            fragment = new AsteroidFragment();
-            displayFragment(fragment);
-        } else if (id == R.id.nav_observatories) {
-            fragment = new ObservatoryListFragment();
-            displayFragment(fragment);
-        }
-
-//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-
+        int newId = item.getItemId();
+//        if (newId != fragmentId) {
+            if (newId == R.id.nav_photo) {
+                currentFragment = new PhotoFragment();
+                displayFragment(currentFragment);
+            } else if (newId == R.id.nav_asteroids) {
+                currentFragment = new AsteroidFragment();
+                displayFragment(currentFragment);
+            } else if (newId == R.id.nav_observatories) {
+                currentFragment = new ObservatoryListFragment();
+                displayFragment(currentFragment);
+            }
+            fragmentId = newId;
+//        }
         if (!tabletSize) {
             drawer.closeDrawer(GravityCompat.START);
             navigationView.clearFocus();
@@ -201,21 +191,23 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        if (!tabletSize) {
-            fragmentTransaction.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
-                    R.animator.enter_from_left, R.animator.exit_to_right);
+        currentFragment = fragmentManager.findFragmentById(fragmentId);
+
+        if (currentFragment == null) {
+            if (!tabletSize) {
+                fragmentTransaction.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
+                        R.animator.enter_from_left, R.animator.exit_to_right);
+            }
+            fragmentTransaction.replace(R.id.fragment_container, fragment)
+                    .commit();
         }
-        fragmentTransaction.replace(R.id.fragment_container, fragment)
-                .commit();
     }
 
     public void onObservatorySelected(int position) {
         ObservatoryFragment observatoryFragment = new ObservatoryFragment();
-//        observatoryFragment.setObservatory(ObservatoryAdapter.observatory);
         observatoryFragment.setObservatory(ObservatoryAdapter.observatories.get(position));
         displayFragment(observatoryFragment);
     }
-
 
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
@@ -229,7 +221,14 @@ public class MainActivity extends AppCompatActivity
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (!tabletSize) {
-            toggle.onConfigurationChanged(newConfig);
+//            toggle.onConfigurationChanged(newConfig);
+            overridePendingTransition(0,0);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(fragmentIdKey, fragmentId);
+        super.onSaveInstanceState(outState);
     }
 }

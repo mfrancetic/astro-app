@@ -19,6 +19,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -62,6 +63,28 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     private ObservatoryAdapter observatoryAdapter;
 
     public List<Observatory> observatoryList;
+
+    /**
+     * Key of the scroll position X
+     */
+    private static final String SCROLL_POSITION_X = "scrollPositionX";
+
+    /**
+     * Key of the scroll position Y
+     */
+    private static final String SCROLL_POSITION_Y = "scrollPositionY";
+
+    /**
+     * Scroll position X
+     */
+    private int scrollX;
+
+    /**
+     * Scroll position Y
+     */
+    private int scrollY;
+
+    private NestedScrollView scrollView;
 
     private static final String observatoryListKey = "observatoryList";
 
@@ -156,6 +179,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         observatoryListEmptyTextView.setVisibility(View.GONE);
         observatoryListEmptyImageView.setVisibility(View.GONE);
 
+        scrollView = rootView.findViewById(R.id.observatory_list_scroll_view);
         context = observatoryListLoadingIndicator.getContext();
 
         appDatabase = AppDatabase.getInstance(context);
@@ -232,6 +256,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             new ObservatoryAsyncTask().execute();
         } else {
             observatoryList = savedInstanceState.getParcelableArrayList(observatoryListKey);
+            scrollX = savedInstanceState.getInt(SCROLL_POSITION_X);
+            scrollY = savedInstanceState.getInt(SCROLL_POSITION_Y);
             populateObservatories(observatoryList);
         }
         return rootView;
@@ -336,6 +362,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         observatoryListEmptyTextView.setVisibility(View.GONE);
         observatoryListEmptyImageView.setVisibility(View.GONE);
         observatoryAdapter.setObservatories(observatories);
+        scrollView.scrollTo(scrollX, scrollY);
         observatoryRecyclerView.setVisibility(View.VISIBLE);
     }
 
@@ -424,6 +451,10 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelableArrayList(observatoryListKey, (ArrayList<? extends Parcelable>) observatoryList);
+        scrollX = scrollView.getScrollX();
+        scrollY = scrollView.getScrollY();
+        outState.putInt(SCROLL_POSITION_X, scrollX);
+        outState.putInt(SCROLL_POSITION_Y, scrollY);
         super.onSaveInstanceState(outState);
     }
 }

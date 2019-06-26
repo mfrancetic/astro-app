@@ -228,6 +228,11 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
     }
 
     private void populateObservatory(Observatory observatory) {
+
+        if (observatoryScrollView != null) {
+            observatoryScrollView.scrollTo(scrollX, scrollY);
+        }
+
         observatoryEmptyImageView.setVisibility(View.GONE);
         observatoryLoadingIndicator.setVisibility(View.GONE);
         if (observatory != null) {
@@ -285,9 +290,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
                 });
             }
         }
-        if (observatoryScrollView != null) {
-            observatoryScrollView.scrollTo(scrollX, scrollY);
-        }
+
     }
 
     @Override

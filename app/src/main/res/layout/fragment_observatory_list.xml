@@ -1,45 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/observatory_list_fragment_layout"
+    android:id="@+id/observatory_list_scroll_view"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_marginStart="@dimen/fragment_margin_start"
-    android:layout_marginTop="?android:actionBarSize"
-    android:layout_height="match_parent">
+    android:layout_marginTop="?android:actionBarSize">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/observatory_list_recycler_view"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
 
-    <!-- Empty view is only visible when the list has no items-->
-    <TextView
-        android:id="@+id/observatory_list_empty_text_view"
-        style="@style/EmptyTextViewStyle"
-        android:text="@string/no_observatories_found"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/observatory_list_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/observatory_list_empty_image_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@null"
-        app:layout_constraintBottom_toTopOf="@id/observatory_list_empty_text_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:paddingBottom="@dimen/margin"
-        android:src="@drawable/ic_nothing_found"
-        />
+        <!-- Empty view is only visible when the list has no items-->
+        <TextView
+            android:id="@+id/observatory_list_empty_text_view"
+            style="@style/EmptyTextViewStyle"
+            android:layout_centerInParent="true"
+            android:text="@string/no_observatories_found" />
 
-    <ProgressBar
-        android:id="@+id/observatory_list_loading_indicator"
-        style="@style/LoadingIndicatorStyle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</android.support.constraint.ConstraintLayout>
+        <ImageView
+            android:id="@+id/observatory_list_empty_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/observatory_list_empty_text_view"
+            android:contentDescription="@null"
+            android:paddingBottom="@dimen/margin"
+            android:src="@drawable/ic_nothing_found" />
+
+        <ProgressBar
+            android:id="@+id/observatory_list_loading_indicator"
+            style="@style/LoadingIndicatorStyle"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

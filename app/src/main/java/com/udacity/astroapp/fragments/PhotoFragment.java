@@ -327,6 +327,12 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
     }
 
     private void populatePhoto(Photo photo) {
+
+        if (photoScrollView != null) {
+            /* Scroll to the X and Y position of the mainScrollView*/
+            photoScrollView.scrollTo(scrollX, scrollY);
+        }
+
         emptyTextView.setVisibility(View.GONE);
         emptyImageView.setVisibility(View.GONE);
         loadingIndicator.setVisibility(View.GONE);
@@ -368,10 +374,7 @@ public class PhotoFragment extends Fragment implements SharedPreferences.OnShare
             photoImageView.setContentDescription(getString(R.string.photo_of_content_description) + " " + photoTitle);
         }
 
-        if (photoScrollView != null) {
-            /* Scroll to the X and Y position of the mainScrollView*/
-            photoScrollView.scrollTo(scrollX, scrollY);
-        }
+
 
 //        if (photo == null) {
 //            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getContext());

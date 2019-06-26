@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.udacity.astroapp.R;
@@ -91,6 +93,29 @@ public class AsteroidFragment extends Fragment {
 
     private int lastFirstVisiblePosition;
 
+    /**
+     * Key of the scroll position X
+     */
+    private static final String SCROLL_POSITION_X = "scrollPositionX";
+
+    /**
+     * Key of the scroll position Y
+     */
+    private static final String SCROLL_POSITION_Y = "scrollPositionY";
+
+    /**
+     * Scroll position X
+     */
+    private int scrollX;
+
+    /**
+     * Scroll position Y
+     */
+    private int scrollY;
+
+    private NestedScrollView scrollView;
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +137,7 @@ public class AsteroidFragment extends Fragment {
         isTablet = getResources().getBoolean(R.bool.isTablet);
 
         orientation = getResources().getConfiguration().orientation;
-
+        scrollView = rootView.findViewById(R.id.asteroid_scroll_view);
         asteroidRecyclerView = rootView.findViewById(R.id.asteroid_recycler_view);
 
         if (savedInstanceState != null) {
@@ -185,7 +210,9 @@ public class AsteroidFragment extends Fragment {
         if (savedInstanceState == null) {
             new AsteroidAsyncTask().execute();
         } else {
-//            asteroidList = savedInstanceState.getParcelableArrayList(asteroidListKey);
+            asteroidList = savedInstanceState.getParcelableArrayList(asteroidListKey);
+            scrollX = savedInstanceState.getInt(SCROLL_POSITION_X);
+            scrollY = savedInstanceState.getInt(SCROLL_POSITION_Y);
             populateAsteroids(asteroidList);
         }
 
@@ -297,12 +324,13 @@ public class AsteroidFragment extends Fragment {
     }
 
     private void populateAsteroids(List<Asteroid> asteroids) {
+        scrollView.scrollTo(scrollX, scrollY);
         loadingIndicator.setVisibility(View.GONE);
         emptyTextView.setVisibility(View.GONE);
         emptyImageView.setVisibility(View.GONE);
         asteroidAdapter.setAsteroids(asteroids);
+//        asteroidRecyclerView.smoothScrollToPosition(lastFirstVisiblePosition);
         asteroidRecyclerView.setVisibility(View.VISIBLE);
-        asteroidRecyclerView.smoothScrollToPosition(lastFirstVisiblePosition);
     }
 
     @Override
@@ -317,20 +345,33 @@ public class AsteroidFragment extends Fragment {
         } else {
             asteroidRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         }
+
         super.onConfigurationChanged(newConfig);
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelableArrayList(asteroidListKey, (ArrayList<? extends Parcelable>) asteroidList);
-        if (asteroidRecyclerView.getLayoutManager() != null) {
+        scrollX = scrollView.getScrollX();
+        scrollY = scrollView.getScrollY();
+        outState.putInt(SCROLL_POSITION_X, scrollX);
+        outState.putInt(SCROLL_POSITION_Y, scrollY);
+//        if (asteroidRecyclerView.getLayoutManager() != null) {
+//            if (asteroidRecyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+//                lastFirstVisiblePosition = ((LinearLayoutManager) asteroidRecyclerView.getLayoutManager())
+//                        .findFirstCompletelyVisibleItemPosition();
+//            }
+//            if (asteroidRecyclerView.getLayoutManager() instanceof GridLayoutManager) {
+//                lastFirstVisiblePosition = ((GridLayoutManager) asteroidRecyclerView.getLayoutManager())
+//                        .findFirstCompletelyVisibleItemPosition();
+//            }
 //            lastFirstVisiblePosition = (asteroidRecyclerView.getLayoutManager())findFirstCompletelyVisibleItemPosition();
 //            if (lastFirstVisiblePosition !=0) {
 //                lastFirstVisiblePosition = ((LinearLayoutManager) asteroidRecyclerView.getLayoutManager())
 //                        .findFirstCompletelyVisibleItemPosition();
 //            }
-            lastFirstVisiblePosition = asteroidRecyclerView.getVerticalScrollbarPosition();
-        }
+//            lastFirstVisiblePosition = asteroidRecyclerView.getfir();
+//        }
         super.onSaveInstanceState(outState);
     }
 }

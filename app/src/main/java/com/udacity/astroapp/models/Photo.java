@@ -1,8 +1,6 @@
 package com.udacity.astroapp.models;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -12,20 +10,15 @@ public class Photo implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int photoId;
-
     private String photoTitle;
-
     private String photoDate;
-
     private String photoDescription;
-
     private String photoUrl;
-
     private String photoMediaType;
 
 
-   public Photo(int photoId, String photoTitle, String photoDate,
-          String photoDescription, String photoUrl, String photoMediaType) {
+    public Photo(int photoId, String photoTitle, String photoDate,
+                 String photoDescription, String photoUrl, String photoMediaType) {
         this.photoId = photoId;
         this.photoTitle = photoTitle;
         this.photoDate = photoDate;
@@ -34,18 +27,13 @@ public class Photo implements Parcelable {
         this.photoMediaType = photoMediaType;
     }
 
-    @Ignore
-    Photo() {
-    }
-
-
     public Photo(Parcel in) {
-         in.writeInt(photoId);
-         in.writeString(photoTitle);
-         in.writeString(photoDate);
-         in.writeString(photoDescription);
-         in.writeString(photoUrl);
-         in.writeString(photoMediaType);
+        in.writeInt(photoId);
+        in.writeString(photoTitle);
+        in.writeString(photoDate);
+        in.writeString(photoDescription);
+        in.writeString(photoUrl);
+        in.writeString(photoMediaType);
     }
 
     public int getPhotoId() {
@@ -96,6 +84,9 @@ public class Photo implements Parcelable {
         this.photoMediaType = photoMediaType;
     }
 
+    /**
+     * Creates and returns a new Photo object, as well as a new Photo array
+     */
     public static final Creator<Photo> CREATOR = new Creator<Photo>() {
         @Override
         public Photo createFromParcel(Parcel in) {

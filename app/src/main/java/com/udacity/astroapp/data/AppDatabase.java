@@ -34,5 +34,4 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public abstract AstroDao astroDao();
-
 }

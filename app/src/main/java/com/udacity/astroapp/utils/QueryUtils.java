@@ -1,13 +1,8 @@
 package com.udacity.astroapp.utils;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 
-import com.udacity.astroapp.data.AppExecutors;
-
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,56 +10,41 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
 
 public class QueryUtils {
 
-//    private static final String PHOTO_BASE_URL = "https://api.nasa.gov/planetary/apod?";
-
-    private static final String PHOTO_BASE_URL = "https://api.nasa.gov/planetary/apod?";
-
-    private static final String ASTEROID_BASE_URl = "https://api.nasa.gov/neo/rest/v1/feed?";
-
-    private static final String API_PARAM = "api_key";
-
-    private static final String START_DATE_PARAM = "start_date";
-
-    private static final String END_DATE_PARAM = "end_date";
-
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
-    private static final String api_key = Secret.nasa_api_key;
-
-    private static final String GOOGLE_API_KEY_PARAM = "key";
-
-    private static final String PLACE_ID_PARAM = "placeid";
-
+    /* URL's of the photo, asteroid and observatory search */
+    private static final String PHOTO_BASE_URL = "https://api.nasa.gov/planetary/apod?";
+    private static final String ASTEROID_BASE_URl = "https://api.nasa.gov/neo/rest/v1/feed?";
     private static final String OBSERVATORY_BASE_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=observatory";
-
-    private static final String googleApiKey = Secret.google_play_services_api_key;
-
-    private static final String LOCATION_PARAM = "location";
-
-//    private static final String RADIUS_PARAM = "radius";
-
-    private static final String RANKBY_PARAM = "rankby";
-
-    private static final String rankbyParam = "distance";
-
-//    private static final String radiusParam = "100";
-
     private static final String OBSERVATORY_DETAILS_BASE_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
 
+    /* Respective parameters and keys of the API queries */
+    private static final String API_PARAM = "api_key";
+    private static final String START_DATE_PARAM = "start_date";
+    private static final String END_DATE_PARAM = "end_date";
+    private static final String LOCATION_PARAM = "location";
+    private static final String RANKBY_PARAM = "rankby";
+    private static final String rankbyParam = "distance";
+    private static final String GOOGLE_API_KEY_PARAM = "key";
+    private static final String PLACE_ID_PARAM = "placeid";
     private static final String FIELDS_PARAM = "fields";
-
     private static final String fieldsKey = "name, photo, opening_hours, website";
+
+    /* API keys */
+    private static final String api_key = Secret.nasa_api_key;
+    private static final String googleApiKey = Secret.google_play_services_api_key;
 
     private QueryUtils() {
     }
 
+    /**
+     * Create a URL for the photo
+     */
     public static URL createPhotoUrl() {
-
         URL url = null;
         Uri baserUri = Uri.parse(PHOTO_BASE_URL);
 
@@ -80,6 +60,9 @@ public class QueryUtils {
         return url;
     }
 
+    /**
+     * Create a URL for the asteroids
+     */
     public static URL createAsteroidUrl(String startDate, String endDate) {
         URL url = null;
         Uri baseUri = Uri.parse(ASTEROID_BASE_URl);
@@ -98,6 +81,9 @@ public class QueryUtils {
         return url;
     }
 
+    /**
+     * Create a URL for the observatories
+     */
     public static URL createObservatoryURL(String latitudeLongitude) {
         URL url = null;
         Uri baseUri = Uri.parse(OBSERVATORY_BASE_URL);
@@ -106,7 +92,6 @@ public class QueryUtils {
                 .appendQueryParameter(LOCATION_PARAM, latitudeLongitude)
                 .appendQueryParameter(FIELDS_PARAM, fieldsKey)
                 .appendQueryParameter(RANKBY_PARAM, rankbyParam)
-//                .appendQueryParameter(RADIUS_PARAM, radiusParam)
                 .build();
         try {
             url = new URL(builder.toString());
@@ -116,6 +101,9 @@ public class QueryUtils {
         return url;
     }
 
+    /**
+     * Create a URL for the observatory details
+     */
     public static URL createObservatoryDetailsUrl(String placeId) {
         URL url = null;
         Uri baseUri = Uri.parse(OBSERVATORY_DETAILS_BASE_URL);
@@ -131,7 +119,9 @@ public class QueryUtils {
         return url;
     }
 
-
+    /**
+     * Make an HTTP request to the given URL and return a String as the response.
+     */
     public static String makeHttpRequest(URL url) throws IOException {
 
         /* Define the read time out, connect time out, success response code and request method */
@@ -199,30 +189,4 @@ public class QueryUtils {
         }
         return output.toString();
     }
-//
-//    public static Bitmap getImageBitmap(String url) {
-//
-//        final Bitmap[] bitmap = {null};
-//
-//        AppExecutors.getExecutors().diskIO().execute(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//
-//                try {
-//                    URL photoUrl = new URL(url);
-//                    URLConnection urlConnection = photoUrl.openConnection();
-//                    urlConnection.connect();
-//                    InputStream inputStream = urlConnection.getInputStream();
-//                    BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-//                    bitmap[0] = BitmapFactory.decodeStream(bufferedInputStream);
-//                    inputStream.close();
-//                } catch (IOException e) {
-//                    Log.e("", "Error getting bitmap, e");
-//                }
-//            }
-//        });
-//        return bitmap[0];
-//    }
-
 }

@@ -9,11 +9,11 @@ public class ObservatoryDetailViewModelFactory extends ViewModelProvider.NewInst
     private final AppDatabase appDatabase;
     private final String observatoryId;
 
+    /* Initializes the member variable database and id of the observatory in the constructor */
     public ObservatoryDetailViewModelFactory(AppDatabase appDatabase, String id) {
         this.appDatabase = appDatabase;
         this.observatoryId = id;
     }
-
 
     @NonNull
     @Override

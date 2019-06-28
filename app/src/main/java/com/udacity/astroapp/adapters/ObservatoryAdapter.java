@@ -1,63 +1,45 @@
 package com.udacity.astroapp.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.udacity.astroapp.R;
-import com.udacity.astroapp.activities.MainActivity;
-import com.udacity.astroapp.data.ObservatoryViewModel;
-import com.udacity.astroapp.fragments.ObservatoryFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment;
-import com.udacity.astroapp.models.Asteroid;
 import com.udacity.astroapp.models.Observatory;
 
 import java.util.List;
 
+/**
+ * RecyclerView Adapter for displaying the list of observatories in the ObservatoryListFragment
+ */
 public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.ObservatoryViewHolder> {
 
     public static Observatory observatory;
 
-
-
-    public class ObservatoryViewHolder extends RecyclerView.ViewHolder {
-
+    class ObservatoryViewHolder extends RecyclerView.ViewHolder {
         private TextView observatoryListItemNameTextView;
-
         private TextView observatoryListItemAddressTextView;
-
-        private TextView observatoryListItemOpeningHoursTextView;
-
+        private TextView observatoryListItemOpenNowTextView;
         private ImageButton observatoryListItemButton;
 
-
-
-        public ObservatoryViewHolder(@NonNull View itemView) {
+        ObservatoryViewHolder(@NonNull View itemView) {
             super(itemView);
             observatoryListItemNameTextView = itemView.findViewById(R.id.observatory_list_item_name);
             observatoryListItemAddressTextView = itemView.findViewById(R.id.observatory_list_item_address);
-            observatoryListItemOpeningHoursTextView = itemView.findViewById(R.id.observatory_list_item_opening_Hours);
+            observatoryListItemOpenNowTextView = itemView.findViewById(R.id.observatory_list_item_opening_Hours);
             observatoryListItemButton = itemView.findViewById(R.id.observatory_list_item_button);
-
-
         }
     }
 
-
     public static List<Observatory> observatories;
-
     private boolean observatoryOpenNow;
-
     private Context context;
-
-
 
     public ObservatoryAdapter(List<Observatory> observatories, ObservatoryListFragment.OnObservatoryClickListener onObservatoryClickListener) {
         ObservatoryAdapter.observatories = observatories;
@@ -68,6 +50,7 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
     @Override
     public ObservatoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         context = parent.getContext();
+        /* Inflate the observatory_list_item.xml layout */
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View observatoryListView = layoutInflater.inflate(R.layout.observatory_list_item, parent, false);
         return new ObservatoryViewHolder(observatoryListView);
@@ -75,52 +58,54 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ObservatoryViewHolder viewHolder, int position) {
+        /* Get the observatory according to its position */
         observatory = observatories.get(position);
 
-
+        /* Set the views to its views in the viewHolder */
         TextView observatoryListItemNameTextView = viewHolder.observatoryListItemNameTextView;
         TextView observatoryListItemAddressTextView = viewHolder.observatoryListItemAddressTextView;
-        TextView observatoryListItemOpeningHoursTextView = viewHolder.observatoryListItemOpeningHoursTextView;
+        TextView observatoryListItemOpenNowTextView = viewHolder.observatoryListItemOpenNowTextView;
 
-//        final Context context = observatoryListItemNameTextView.getContext();
-
+        /* Set the observatoryName to the observatoryListItemNameTextView */
         String observatoryName = observatory.getObservatoryName();
-
         observatoryListItemNameTextView.setText(observatoryName);
+
+        /* Set the address to the observatoryListItemAddress */
         observatoryListItemAddressTextView.setText(observatory.getObservatoryAddress());
 
         observatoryOpenNow = observatory.getObservatoryOpenNow();
+        /* In case there is information if the observatory is open now, set that text to the
+         * observatoryListItemOpenNowTextView */
         if (observatoryOpenNow) {
-            observatoryListItemOpeningHoursTextView.setText(R.string.observatory_open);
+            observatoryListItemOpenNowTextView.setText(R.string.observatory_open);
         }
-//        else {
-//            observatoryListItemOpeningHoursTextView.setText(R.string.observatory_closed);
-//        }
 
-//        observatoryListItemOpeningHoursTextView.setText(String.valueOf()observatory.getObservatoryOpenNow());
-
-
+        /* Set the content description of the observatoryListItemButton to match the name of the
+         * observatory */
         viewHolder.observatoryListItemButton.setContentDescription(context.getString(R.string.observatory_list_item_button_content_description) + " "
-        + observatoryName);
+                + observatoryName);
 
+        /* Set an OnClickListener to the observatoryListItemButton */
         viewHolder.observatoryListItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ObservatoryListFragment.onObservatoryClickListener == null) {
+                    /* In case there is no onObservatoryClickListener, create a new one */
                     ObservatoryListFragment.onObservatoryClickListener = new ObservatoryListFragment.OnObservatoryClickListener() {
                         @Override
                         public void onObservatorySelected(int position) {
-//                        onObservatorySelected(position);
                         }
                     };
                 }
-                    ObservatoryListFragment.onObservatoryClickListener.onObservatorySelected(position);
+                ObservatoryListFragment.onObservatoryClickListener.onObservatorySelected(position);
             }
         });
     }
 
     @Override
     public int getItemCount() {
+        /* In case there are no observatories, return 0.
+         * Otherwise, return the number of the observatories */
         if (observatories == null) {
             return 0;
         } else {
@@ -128,12 +113,11 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
         }
     }
 
+    /**
+     * Sets the list of observatories and notifies the adapter that the dataset has changed
+     */
     public void setObservatories(List<Observatory> observatories) {
         ObservatoryAdapter.observatories = observatories;
         notifyDataSetChanged();
-    }
-
-    public Observatory getObservatory(int position) {
-        return observatories.get(position);
     }
 }

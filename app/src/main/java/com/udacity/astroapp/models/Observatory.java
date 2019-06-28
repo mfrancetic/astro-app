@@ -1,14 +1,10 @@
 package com.udacity.astroapp.models;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity(tableName = "observatory")
 public class Observatory implements Parcelable {
@@ -16,32 +12,19 @@ public class Observatory implements Parcelable {
     @PrimaryKey
     @NonNull
     private String observatoryId;
-
     private String observatoryName;
-
     private String observatoryAddress;
-
     private String observatoryPhoneNumber;
-
     private boolean observatoryOpenNow;
-
     private String observatoryOpeningHours;
-
     private double observatoryLatitude;
-
     private double observatoryLongitude;
-
     private String observatoryUrl;
 
-    @Ignore
-    Observatory() {
-    }
-
-
-    public Observatory (@NonNull String observatoryId, String observatoryName, String observatoryAddress,
-                 String observatoryPhoneNumber,
-                 boolean observatoryOpenNow, String observatoryOpeningHours, double observatoryLatitude, double observatoryLongitude,
-                        String observatoryUrl){
+    public Observatory(@NonNull String observatoryId, String observatoryName, String observatoryAddress,
+                       String observatoryPhoneNumber,
+                       boolean observatoryOpenNow, String observatoryOpeningHours, double observatoryLatitude, double observatoryLongitude,
+                       String observatoryUrl) {
         this.observatoryId = observatoryId;
         this.observatoryName = observatoryName;
         this.observatoryAddress = observatoryAddress;
@@ -138,6 +121,9 @@ public class Observatory implements Parcelable {
         this.observatoryUrl = observatoryUrl;
     }
 
+    /**
+     * Creates and returns a new Observatory object, as well as a new Observatory array
+     */
     public static final Creator<Observatory> CREATOR = new Creator<Observatory>() {
         @Override
         public Observatory createFromParcel(Parcel in) {

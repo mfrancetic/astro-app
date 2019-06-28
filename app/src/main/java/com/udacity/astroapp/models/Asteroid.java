@@ -136,6 +136,9 @@ public class Asteroid implements Parcelable {
         return 0;
     }
 
+    /**
+     * Creates and returns a new Asteroid object, as well as a new Asteroid array
+     */
     public static final Creator<Asteroid> CREATOR = new Creator<Asteroid>() {
         @Override
         public Asteroid createFromParcel(Parcel in) {

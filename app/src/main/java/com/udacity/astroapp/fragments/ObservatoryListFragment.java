@@ -18,7 +18,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
@@ -33,7 +32,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.adapters.ObservatoryAdapter;
 import com.udacity.astroapp.data.AppDatabase;
@@ -42,7 +40,6 @@ import com.udacity.astroapp.data.ObservatoryViewModel;
 import com.udacity.astroapp.data.ObservatoryViewModelFactory;
 import com.udacity.astroapp.models.Observatory;
 import com.udacity.astroapp.utils.QueryUtils;
-import com.udacity.astroapp.utils.Secret;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,94 +52,54 @@ import java.util.List;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
-
 public class ObservatoryListFragment extends Fragment implements LocationListener {
 
+    /* Tag for log messages */
+    private static final String LOG_TAG = ObservatoryListFragment.class.getSimpleName();
+
+    /* Views of the PhotoFragment */
     private RecyclerView observatoryRecyclerView;
+    private NestedScrollView scrollView;
+    private TextView observatoryListEmptyTextView;
+    private ProgressBar observatoryListLoadingIndicator;
+    private ImageView observatoryListEmptyImageView;
 
+    /* Instances of the Observatory, ObservatoryAdapter and List<Observatory> and its key */
+    public Observatory observatory;
     private ObservatoryAdapter observatoryAdapter;
-
+    private static final String observatoryListKey = "observatoryList";
     public List<Observatory> observatoryList;
 
-    /**
-     * Key of the scroll position X
-     */
+    /* Scroll position X and Y keys */
     private static final String SCROLL_POSITION_X = "scrollPositionX";
-
-    /**
-     * Key of the scroll position Y
-     */
     private static final String SCROLL_POSITION_Y = "scrollPositionY";
 
-    /**
-     * Scroll position X
-     */
+    /* Scroll positions X and Y values */
     private int scrollX;
-
-    /**
-     * Scroll position Y
-     */
     private int scrollY;
-
-    private NestedScrollView scrollView;
-
-    private static final String observatoryListKey = "observatoryList";
-
-    private String google_api_key = Secret.google_play_services_api_key;
-
-
-    private ArrayList permissionsToRequest;
-    private ArrayList permissionsRejected = new ArrayList();
-    private ArrayList permissions = new ArrayList();
-
-    private final static int ALL_PERMISSIONS_RESULT = 101;
-
-    GoogleApiClient googleApiClient;
 
     private Context context;
 
-    public Observatory observatory;
-
+    /* Integer for device orientation */
     private int orientation;
 
+    /* Boolean that indicates if a location permission is granted */
     private boolean locationPermissionGranted;
+    /* Boolean that indicates if a device is a phone or tablet */
+    private boolean isTablet;
 
-    private LocationManager locationManager;
-
+    /* Variables connected with location */
     private String defaultLocationBerlin = "52.520008, 13.404954";
-
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
-
-    private static final String LOG_TAG = ObservatoryListFragment.class.getSimpleName();
-
     private Location location;
-
-    private double currentLongitude;
-
-    private double currentLatitude;
-
-    private String currentLatitudeString;
-
-    private String currentLongitudeString;
+    private String currentLocation;
 
     public static OnObservatoryClickListener onObservatoryClickListener;
 
-    private String currentLocation;
-
-    private boolean isTablet;
-
-    private TextView observatoryListEmptyTextView;
-
-    private ProgressBar observatoryListLoadingIndicator;
-
+    /* Instances of the AppDatabase and ViewModel */
     private AppDatabase appDatabase;
-
     private ObservatoryViewModelFactory observatoryViewModelFactory;
-
     private ObservatoryViewModel observatoryViewModel;
-
-    private ImageView observatoryListEmptyImageView;
-
 
     public interface OnObservatoryClickListener {
         void onObservatorySelected(int position);
@@ -153,6 +110,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         if (getActivity() != null) {
+            /* Set the title of the activity */
             getActivity().setTitle(R.string.menu_observatories);
         }
     }
@@ -160,34 +118,38 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         if (getActivity() != null) {
+            /* Set the title of the activity */
             getActivity().setTitle(R.string.menu_observatories);
         }
         View rootView = inflater.inflate(R.layout.fragment_observatory_list, container, false);
 
-//        observatories = new ArrayList<>();
-
+        /* Get the boolean that indicates if a device is a tablet */
         isTablet = getResources().getBoolean(R.bool.isTablet);
 
+        /* Get the orientation of the device */
         orientation = getResources().getConfiguration().orientation;
 
+        /* Find the views */
         observatoryListEmptyTextView = rootView.findViewById(R.id.observatory_list_empty_text_view);
         observatoryListEmptyImageView = rootView.findViewById(R.id.observatory_list_empty_image_view);
         observatoryListLoadingIndicator = rootView.findViewById(R.id.observatory_list_loading_indicator);
+        scrollView = rootView.findViewById(R.id.observatory_list_scroll_view);
+        observatoryRecyclerView = rootView.findViewById(R.id.observatory_list_recycler_view);
 
+        /* Hide the empty views and show the loadingIndicator */
         observatoryListEmptyTextView.setVisibility(View.GONE);
         observatoryListEmptyImageView.setVisibility(View.GONE);
+        observatoryListLoadingIndicator.setVisibility(View.VISIBLE);
 
-        scrollView = rootView.findViewById(R.id.observatory_list_scroll_view);
         context = observatoryListLoadingIndicator.getContext();
-
         appDatabase = AppDatabase.getInstance(context);
 
         observatoryViewModelFactory = new ObservatoryViewModelFactory(appDatabase);
         observatoryViewModel = ViewModelProviders.of(ObservatoryListFragment.this, observatoryViewModelFactory)
                 .get(ObservatoryViewModel.class);
 
+        /* Observe the observatories in the ObservatoryListFragment */
         observatoryViewModel.getObservatories().observe(ObservatoryListFragment.this, new Observer<List<Observatory>>() {
             @Override
             public void onChanged(@Nullable final List<Observatory> observatories) {
@@ -196,12 +158,10 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     AppExecutors.getExecutors().diskIO().execute(new Runnable() {
                         @Override
                         public void run() {
-                            int numberOfObservatories = appDatabase.astroDao().getObservatoryCount();
+                            /* In case the observatoryList is not null and it is not empty,
+                             * delete all observatories and add the observatoryList to the database */
                             if (observatoryList != null && !observatoryList.isEmpty()) {
                                 appDatabase.astroDao().deleteAllObservatories();
-
-                                numberOfObservatories = appDatabase.astroDao().getObservatoryCount();
-
                                 appDatabase.astroDao().addAllObservatories(observatoryList);
                             }
                         }
@@ -210,12 +170,10 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             }
         });
 
-
-        observatoryRecyclerView = rootView.findViewById(R.id.observatory_list_recycler_view);
+        /* Create a new ObservatoryAdapter */
         observatoryAdapter = new ObservatoryAdapter(observatoryList, onObservatoryClickListener);
 
-        final FragmentActivity fragmentActivity = getActivity();
-
+        /* Set an OnClickListener to the observatoryRecyclerView */
         observatoryRecyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,24 +181,14 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             }
         });
 
-        if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
-                    DividerItemDecoration.VERTICAL));
-            observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
-                    DividerItemDecoration.HORIZONTAL));
-            observatoryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        } else {
-            observatoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        }
-
+        /* Set the dividers and the adapter */
+        setDividers(orientation);
         observatoryRecyclerView.setAdapter(observatoryAdapter);
 
-        observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
-                DividerItemDecoration.VERTICAL));
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-
+        /* Check if the activity has an ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions.
+         * If it doesn't request it*/
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION)
@@ -248,13 +196,20 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         } else {
+            /* In case the activity does have a permission, get the last known location and pass the location to the
+           onLocationChangedMethod */
             locationPermissionGranted = true;
-            location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             onLocationChanged(location);
         }
+
+        /* Check if there in a savedInstanceState */
         if (savedInstanceState == null) {
+            /* In case there is no savedInstanceState, execute an ObservatoryAsycTask */
             new ObservatoryAsyncTask().execute();
         } else {
+            /* In case there is a savedInstanceState, get the scroll positions, get the saved
+             * observatoryList and populate the view with its values */
             observatoryList = savedInstanceState.getParcelableArrayList(observatoryListKey);
             scrollX = savedInstanceState.getInt(SCROLL_POSITION_X);
             scrollY = savedInstanceState.getInt(SCROLL_POSITION_Y);
@@ -263,28 +218,32 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         return rootView;
     }
 
-
+    /**
+     * ObservatoryAsyncTask class that creates the URL for loading the observatoryList, makes the HTTP request and
+     * parses the JSON String in order to create a new List<Observatory> object.
+     * Returns a list of observatories.
+     */
     private class ObservatoryAsyncTask extends AsyncTask<String, Void, List<Observatory>> {
 
         @Override
         protected List<Observatory> doInBackground(String... strings) {
             try {
-
                 if (currentLocation == null) {
                     currentLocation = defaultLocationBerlin;
                 }
 
+                /* Create an URL and make a HTTP request */
                 URL url = QueryUtils.createObservatoryURL(currentLocation);
-
                 String observatoryJson = QueryUtils.makeHttpRequest(url);
 
                 JSONObject baseObservatoryResponse = new JSONObject(observatoryJson);
-
                 JSONArray observatoryArray = baseObservatoryResponse.getJSONArray("results");
 
+                /* For each observatory in the observatoryArray, create an Observatory object */
                 for (int i = 0; i < observatoryArray.length(); i++) {
                     JSONObject observatoryObject = observatoryArray.getJSONObject(i);
 
+                    /* Extract the value for the required keys */
                     String observatoryId = observatoryObject.getString("place_id");
                     String observatoryName = observatoryObject.getString("name");
                     String observatoryAddress = observatoryObject.getString("formatted_address");
@@ -298,19 +257,16 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     }
 
                     JSONObject geometryObject = observatoryObject.getJSONObject("geometry");
-
                     JSONObject locationObject = geometryObject.getJSONObject("location");
-
                     double observatoryLatitude = locationObject.getDouble("lat");
                     double observatoryLongitude = locationObject.getDouble("lng");
 
                     String observatoryUrl = "";
 
-                    observatory = new Observatory(observatoryId, observatoryName, observatoryAddress, null,
-                            observatoryOpeningHours,
-                            null,
-                            observatoryLatitude, observatoryLongitude,
-                            observatoryUrl);
+                    /* Create a new Observatory object and set the values to it */
+                    observatory = new Observatory(observatoryId, observatoryName, observatoryAddress,
+                            null, observatoryOpeningHours, null,
+                            observatoryLatitude, observatoryLongitude, observatoryUrl);
 
                     observatory.setObservatoryId(observatoryId);
                     observatory.setObservatoryName(observatoryName);
@@ -338,31 +294,39 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         @Override
         protected void onPostExecute(List<Observatory> newObservatories) {
             if (newObservatories != null) {
+                /* If there is a list of observatories available, populate the view with its values */
                 populateObservatories(newObservatories);
             } else if (observatoryViewModel.getObservatories().getValue() != null && observatoryViewModel.getObservatories()
                     .getValue().size() != 0) {
+                /* In case there are values stored in the ObservatoryViewModel, retrieve those values */
                 LiveData<List<Observatory>> observatoryDatabaseList = observatoryViewModel.getObservatories();
                 observatoryList = observatoryDatabaseList.getValue();
                 populateObservatories(observatoryList);
 
+                /* Create and show a Snackbar that informs the user that there is no Internet
+                 * connectivity and the data is populated from the database */
                 Snackbar snackbar = Snackbar.make(observatoryRecyclerView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);
                 snackbar.show();
             } else {
+                /* In case there are also no values stored in the database, hide all the
+                 * views except the empty views */
                 observatoryRecyclerView.setVisibility(View.GONE);
                 observatoryListLoadingIndicator.setVisibility(View.GONE);
                 observatoryListEmptyTextView.setVisibility(View.VISIBLE);
                 observatoryListEmptyImageView.setVisibility(View.VISIBLE);
             }
         }
-
     }
 
     private void populateObservatories(List<Observatory> observatories) {
+        /* Scroll to the X and Y position of the scrollView*/
+        scrollView.scrollTo(scrollX, scrollY);
+        /* Hide the empty views and loading indicator */
         observatoryListLoadingIndicator.setVisibility(View.GONE);
         observatoryListEmptyTextView.setVisibility(View.GONE);
         observatoryListEmptyImageView.setVisibility(View.GONE);
+        /* Set the observatories to the observatoryAdapter and show the observatoryRecyclerView */
         observatoryAdapter.setObservatories(observatories);
-        scrollView.scrollTo(scrollX, scrollY);
         observatoryRecyclerView.setVisibility(View.VISIBLE);
     }
 
@@ -380,50 +344,45 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     onLocationChanged(location);
                     new ObservatoryAsyncTask().execute();
                 } else {
-                    String toastText = "Location access not granted. Please allow location access";
-                    Toast.makeText(getActivity(), toastText, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), getString(R.string.location_access_not_granted_toast),
+                            Toast.LENGTH_LONG).show();
                 }
-//                return;
             }
         }
-//        updateLocationUI();
     }
 
     @Override
     public void onLocationChanged(Location location) {
         if (location != null) {
-            currentLongitude = location.getLongitude();
-            currentLatitude = location.getLatitude();
-            currentLongitudeString = String.valueOf(currentLongitude);
-            currentLatitudeString = String.valueOf(currentLatitude);
+            /* Get longitude and logitude and set it to the currentLocation */
+            double currentLongitude = location.getLongitude();
+            double currentLatitude = location.getLatitude();
+            String currentLongitudeString = String.valueOf(currentLongitude);
+            String currentLatitudeString = String.valueOf(currentLatitude);
             currentLocation = currentLatitudeString + ", " + currentLongitudeString;
         }
-
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        /* Check if the onRecipeStepClickListener exists; if not, throw a RuntimeException */
+        /* Check if the onObservatoryClickListener exists; if not, throw a RuntimeException */
         try {
             onObservatoryClickListener = (OnObservatoryClickListener) context;
         } catch (ClassCastException e) {
-            throw new RuntimeException(context.toString() + "must implement OnDetailRecipeStepClickListener");
+            throw new RuntimeException(context.toString() + "must implement OnObservatoryClickListener");
         }
     }
 
@@ -436,25 +395,34 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         orientation = getResources().getConfiguration().orientation;
-        if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
-                    DividerItemDecoration.VERTICAL));
-            observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
-                    DividerItemDecoration.HORIZONTAL));
-            observatoryRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        } else {
-            observatoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        }
+        setDividers(orientation);
         super.onConfigurationChanged(newConfig);
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        /* Save the observatoryList and scroll positions in the savedInstanceState */
         outState.putParcelableArrayList(observatoryListKey, (ArrayList<? extends Parcelable>) observatoryList);
         scrollX = scrollView.getScrollX();
         scrollY = scrollView.getScrollY();
         outState.putInt(SCROLL_POSITION_X, scrollX);
         outState.putInt(SCROLL_POSITION_Y, scrollY);
         super.onSaveInstanceState(outState);
+    }
+
+    private void setDividers(int orientation) {
+        if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            /* In tablet landscape mode, add a horizontal divider and set the GridLayoutManager
+             * to the observatoryRecyclerView */
+            observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
+                    DividerItemDecoration.HORIZONTAL));
+            observatoryRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));
+        } else {
+            /* In all other case, set the LinearLayoutManager to the observatoryRecyclerView */
+            observatoryRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
+        /* In all cases, add a vertical item decoration to the observatoryRecyclerView */
+        observatoryRecyclerView.addItemDecoration(new DividerItemDecoration(context,
+                DividerItemDecoration.VERTICAL));
     }
 }

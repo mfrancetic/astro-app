@@ -1,7 +1,5 @@
 package com.udacity.astroapp.data;
 
-import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
@@ -14,9 +12,8 @@ public class ObservatoryViewModel extends ViewModel {
 
     private final LiveData<List<Observatory>> observatories;
 
-    public ObservatoryViewModel(@NonNull AppDatabase appDatabase) {
-//        super(application);
-//        AppDatabase appDatabase = AppDatabase.getInstance(this.getApplication());
+    /* Constructor which initializes the list of observatories and receives the database */
+    ObservatoryViewModel(@NonNull AppDatabase appDatabase) {
         observatories = appDatabase.astroDao().loadAllObservatories();
     }
 

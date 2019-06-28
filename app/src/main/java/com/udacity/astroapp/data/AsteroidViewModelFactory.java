@@ -1,6 +1,5 @@
 package com.udacity.astroapp.data;
 
-import android.app.Application;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
@@ -8,11 +7,10 @@ import android.support.annotation.NonNull;
 public class AsteroidViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final AppDatabase appDatabase;
-//    private Application application;
 
+    /* Initializes the member variable database in the constructor */
     public AsteroidViewModelFactory(AppDatabase appDatabase) {
         this.appDatabase = appDatabase;
-//        this.application = application;
     }
 
     @NonNull

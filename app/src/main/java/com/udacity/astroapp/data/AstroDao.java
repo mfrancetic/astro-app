@@ -2,10 +2,8 @@ package com.udacity.astroapp.data;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
-import android.icu.text.Replaceable;
 
 import com.udacity.astroapp.models.Asteroid;
 import com.udacity.astroapp.models.Observatory;
@@ -24,6 +22,12 @@ public interface AstroDao {
     @Query("SELECT * FROM asteroid ORDER BY asteroidId")
     LiveData<List<Asteroid>> loadAllAsteroids();
 
+    @Query("SELECT * FROM observatory ORDER BY observatoryId")
+    LiveData<List<Observatory>> loadAllObservatories();
+
+    @Query("SELECT * FROM observatory WHERE observatoryId = :observatoryId")
+    LiveData<Observatory> loadObservatoryById(String observatoryId);
+
     @Query("DELETE FROM photo")
     void deleteAllPhotos();
 
@@ -33,23 +37,8 @@ public interface AstroDao {
     @Query("DELETE FROM observatory")
     void deleteAllObservatories();
 
-
-
-
-    @Query("SELECT * FROM observatory ORDER BY observatoryId")
-    LiveData<List<Observatory>> loadAllObservatories();
-//
-//    @Query("SELECT * FROM photo WHERE photoId = :photoId")
-//    LiveData<Photo> loadPhotoById(int photoId);
-
-    @Query("SELECT * FROM asteroid WHERE asteroidId = :asteroidId")
-    LiveData<Asteroid> loadAsteroidById(int asteroidId);
-
-    @Query("SELECT * FROM observatory WHERE observatoryId = :observatoryId")
-    LiveData<Observatory> loadObservatoryById(String observatoryId);
-
-    @Query("SELECT COUNT (*) FROM photo")
-    int getPhotoCount();
+    @Query("DELETE FROM observatory WHERE observatoryId = :observatoryId")
+    void deleteObservatory(String observatoryId);
 
     @Query("SELECT COUNT (*) FROM asteroid")
     int getAsteroidCount();
@@ -61,23 +50,11 @@ public interface AstroDao {
     void addPhoto(Photo photo);
 
     @Insert(onConflict = REPLACE)
-    void addObservatory(Observatory observatory);
-
-    //    @Query("SELECT * FROM photo WHERE photoId = :photoId")
-//    LiveData<Photo> loadPhotoById(int photoId);
-
-
-    @Query("DELETE FROM observatory WHERE observatoryId = :observatoryId")
-    void deleteObservatory(String observatoryId);
-
-    @Insert(onConflict = REPLACE)
-    void addAllAsteroids(List<Asteroid> asteroids);
-
-    @Insert(onConflict = REPLACE)
     void addAllObservatories(List<Observatory> observatories);
 
     @Insert(onConflict = REPLACE)
-    void addAsteroid(Asteroid asteroid);
+    void addObservatory(Observatory observatory);
 
-
+    @Insert(onConflict = REPLACE)
+    void addAllAsteroids(List<Asteroid> asteroids);
 }

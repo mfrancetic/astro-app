@@ -1,46 +1,54 @@
 <resources>
+    <!-- Name of the app -->
     <string name="app_name">AstroApp</string>
+
+    <!-- Content descriptions -->
+    <string name="photo_of_content_description">Photo</string>
     <string name="photo_of_the_day_content_description">Photo of the day</string>
-    <string name="diameter_label">Diameter: </string>
-    <string name="approach_date_label">Approach date:</string>
-    <string name="velocity_label">Velocity:</string>
-    <string name="read_more_button">Read more</string>
-    <string name="asteroid_hazardous_button">Asteroid hazardous indication</string>
-    <string name="asteroid_is_hazardous">Asteroid is hazardous</string>
-    <string name="asteroid_not_hazardous">Asteroid is not hazardous</string>
-    <string name="observatory_content_description">Observatory photo</string>
-    <string name="observatory_visit_homepage_button">Visit homepage</string>
+    <string name="read_more_about_content_description">Read more about</string>
     <string name="widget_image_content_description">Photo of the day image</string>
-    <string name="widget_photo_of_the_day">Photo of the day</string>
-    <string name="open">Open</string>
-    <string name="close">Close</string>
-    <string name="navigation_title_photo">Photo of the day</string>
-    <string name="navigation_title_asteroid">Asteroids</string>
-    <string name="navigation_title_observatory">Observatories</string>
-    <string name="title_activity_main" translatable="false">MainActivity</string>
+    <string name="asteroid_image_content_description">Asteroid image</string>
+    <string name="observatory_list_item_button_content_description">See observatory details of</string>
+    <string name="marker_of_the_observatory_content_description">Location of the observatory</string>
+    <string name="asteroid_is_hazardous_content_descriptions">Asteroid is hazardous</string>
+    <string name="asteroid_not_hazardous_content_description">Asteroid is not hazardous</string>
+
+    <!-- Snackbar text, that indicates the data is populated from the database -->
+    <string name="snackbar_offline_mode">You are currently offline. Displaying local data</string>
+
+    <!-- Navigation drawer labels -->
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
     <string name="nav_header_title" translatable="false">AstroApp</string>
     <string name="nav_header_subtitle">Discover space</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
-    <string name="action_settings">Settings</string>
-    <string name="no_photo_found">No photo found</string>
-    <string name="name_label">Asteroid name:</string>
     <string name="menu_photo">Photo of the day</string>
     <string name="menu_asteroids">Asteroids</string>
     <string name="menu_observatories">Observatories</string>
-    <string name="menu_share">Share</string>
-    <string name="no_asteroids_found">No asteroids found</string>
+
+    <!-- AstroAppWidget strings -->
+    <string name="widget_photo_of_the_day">Photo of the day</string>
+
+    <!-- PhotoFragment strings -->
+    <string name="no_photo_found">No photo found</string>
     <string name="play_video_button">Play video</string>
-    <string name="observatory_open">Open now</string>
-    <string name="observatory_closed">Closed now</string>
+
+    <!-- AsteroidFragment strings -->
+    <string name="asteroid_hazardous_image">Asteroid hazardous indication</string>
+
+    <string name="no_asteroids_found">No asteroids found</string>
+    <string name="diameter_label">Diameter: </string>
+    <string name="approach_date_label">Approach date:</string>
+    <string name="velocity_label">Velocity:</string>
+    <string name="read_more_button">Read more</string>
+    <string name="name_label">Asteroid name:</string>
+
+    <!-- ObservatoryListFragment strings -->
     <string name="no_observatories_found">No observatories found</string>
-    <string name="observatory_details_not_found">Observatory details not found</string>
-    <string name="asteroid_image_content_description">Asteroid image</string>
-    <string name="observatory_list_item_button_content_description">See observatory details of</string>
-    <string name="photo_of_content_description">Photo</string>
-    <string name="read_more_about_content_description">Read more about</string>
-    <string name="marker_of_the_observatory_content_description">Location of the observatory</string>
-    <string name="snackbar_offline_mode">You are currently offline. Displaying local data</string>
+    <string name="observatory_open">Open now</string>
+
+    <!-- ObservatoryFragment strings -->
     <string name="location_access_not_granted_toast">Location access not granted. Please allow location access</string>
+    <string name="observatory_details_not_found">Observatory details not found</string>
+    <string name="observatory_visit_homepage_button">Visit homepage</string>
 </resources>

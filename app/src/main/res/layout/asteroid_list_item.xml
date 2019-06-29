@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/asteroid_list_item_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_list_item"
@@ -40,7 +40,7 @@
         android:id="@+id/asteroid_diameter_label_text_view"
         style="@style/AsteroidLabelTextViewStyle"
         android:text="@string/diameter_label"
-        app:layout_constraintLeft_toLeftOf="@id/asteroid_name_label_text_view"
+        app:layout_constraintStart_toStartOf="@id/asteroid_name_label_text_view"
         app:layout_constraintTop_toBottomOf="@id/asteroid_name_text_view" />
 
     <TextView
@@ -89,7 +89,7 @@
         android:id="@+id/asteroid_hazardous_image"
         style="@style/AsteroidImageViewStyle"
         android:layout_marginEnd="@dimen/margin"
-        android:contentDescription="@string/asteroid_hazardous_button"
+        android:contentDescription="@string/asteroid_hazardous_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/asteroid_name_text_view"
         tools:src="@drawable/not_hazardous_image" />
@@ -99,5 +99,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="193dp" />
+        app:layout_constraintGuide_begin="@dimen/guideline_start" />
 </android.support.constraint.ConstraintLayout>

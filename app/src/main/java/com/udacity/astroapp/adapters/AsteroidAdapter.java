@@ -122,10 +122,10 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
         boolean isHazardous = asteroid.getAsteroidIsHazardous();
         if (isHazardous) {
             asteroidHazardousImage.setImageResource(R.drawable.hazardous_image);
-            asteroidHazardousImage.setContentDescription(context.getString(R.string.asteroid_is_hazardous));
+            asteroidHazardousImage.setContentDescription(context.getString(R.string.asteroid_is_hazardous_content_descriptions));
         } else {
             asteroidHazardousImage.setImageResource(R.drawable.not_hazardous_image);
-            asteroidHazardousImage.setContentDescription(context.getString(R.string.asteroid_not_hazardous));
+            asteroidHazardousImage.setContentDescription(context.getString(R.string.asteroid_not_hazardous_content_description));
         }
 
         /* Get and parse the asteroidUrl */

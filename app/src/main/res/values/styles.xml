@@ -1,14 +1,11 @@
 <resources>
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorTextPrimary</item>
         <item name="android:textColorSecondary">@color/colorTextSecondary</item>
-        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -17,14 +14,15 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!-- Style of the photo ImageView -->
     <style name="PhotoImageView">
         <item name="android:layout_width">@dimen/photo_dimensions</item>
         <item name="android:layout_height">@dimen/photo_dimensions</item>
     </style>
 
+    <!-- Style of the photo title TextView -->
     <style name="PhotoTitleTextView">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
@@ -32,6 +30,7 @@
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
     </style>
 
+    <!-- Style of the subtitle TextView -->
     <style name="SubtitleTextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -39,6 +38,7 @@
         </item>
     </style>
 
+    <!-- Style of the photo description TextView -->
     <style name="PhotoDescriptionTextView">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
@@ -48,36 +48,37 @@
         <item name="android:textSize">@dimen/photo_description_text_size</item>
     </style>
 
+    <!-- Style of the empty TextView -->
     <style name="EmptyTextViewStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
     </style>
 
+    <!-- Style of the loading indicator -->
     <style name="LoadingIndicatorStyle" parent="Widget.AppCompat.ProgressBar">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
     </style>
 
+    <!-- Style of the asteroid ImageView -->
     <style name="AsteroidImageViewStyle">
         <item name="android:layout_width">@dimen/image_dimensions</item>
         <item name="android:layout_height">@dimen/image_dimensions</item>
         <item name="android:layout_marginLeft">@dimen/margin</item>
     </style>
 
+    <!-- Style of the buttons -->
     <style name="ButtonStyle" parent="TextAppearance.AppCompat.Widget.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@color/colorAccent</item>
         <item name="android:textColor">@color/colorTextIcons</item>
         <item name="android:paddingLeft">@dimen/margin_list_item</item>
-        <item name="android:elevation">@dimen/button_elevation_rested</item>
-        <item name="android:popupElevation">@dimen/button_elevation_pressed</item>
-        <item name="android:translationZ">@dimen/button_elevation_pressed</item>
-        <item name="android:stateListAnimator">@null</item>
         <item name="android:paddingRight">@dimen/margin_list_item</item>
     </style>
 
+    <!-- Style of the asteroid labels TextView -->
     <style name="AsteroidLabelTextViewStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
@@ -85,13 +86,9 @@
         <item name="android:textSize">@dimen/asteroid_text_size</item>
     </style>
 
-    <style name="AsteroidValueTextViewStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/colorTextSecondary</item>
-        <item name="android:textSize">@dimen/asteroid_text_size</item>
-    </style>
+    <!-- Style of the asteroid values TextView -->
 
+    <!-- Style for the list item title of the observatory -->
     <style name="ObservatoryListItemTitleStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -100,6 +97,7 @@
         </item>
     </style>
 
+    <!-- Style for the list item subtitle of the observatory -->
     <style name="ObservatoryListItemSubtitleStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -108,23 +106,24 @@
         </item>
     </style>
 
-    <style name="ObservatoryImageButoonStyle">
+    <!-- Style for the image of the observatory -->
+    <style name="ObservatoryImageButtonStyle">
         <item name="android:layout_height">@dimen/image_dimensions</item>
         <item name="android:layout_width">@dimen/image_dimensions</item>
-        <item name="android:stateListAnimator">@null</item>
-        <item name="android:elevation">@dimen/button_elevation_rested</item>
-        <item name="android:translationZ">@dimen/button_elevation_pressed</item>
     </style>
 
+    <!-- Style for the MapFragment -->
     <style name="MapFragmentStyle">
         <item name="android:layout_height">@dimen/map_fragment_height</item>
         <item name="android:layout_width">match_parent</item>
     </style>
 
+    <!-- TextView for the app widget -->
     <style name="WidgetTextViewStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle2</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle2
+        </item>
         <item name="android:textColor">@color/colorTextIcons</item>
         <item name="android:layout_centerHorizontal">true</item>
     </style>

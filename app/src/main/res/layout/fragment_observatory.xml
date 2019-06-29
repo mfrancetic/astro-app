@@ -11,7 +11,6 @@
     android:layout_marginBottom="@dimen/margin">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/observatory_fragment_constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/fragment_margin_start"
@@ -53,8 +52,8 @@
             style="@style/ObservatoryListItemTitleStyle"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Bavarian Public Observatory Munich" />
 

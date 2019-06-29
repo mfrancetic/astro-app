@@ -2,7 +2,6 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/observatory_list_item_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/margin"
@@ -50,7 +49,7 @@
 
     <ImageButton
         android:id="@+id/observatory_list_item_button"
-        style="@style/ObservatoryImageButoonStyle"
+        style="@style/ObservatoryImageButtonStyle"
         android:layout_marginEnd="@dimen/margin"
         android:background="@color/colorPrimary"
         android:contentDescription="@string/observatory_list_item_button_content_description"

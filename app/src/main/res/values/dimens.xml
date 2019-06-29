@@ -1,30 +1,37 @@
 <resources >
-    <!-- Default screen margins, per the Android Design guidelines. -->
+    <!-- Default screen margins and elevations, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="margin">16dp</dimen>
-    <dimen name="nav_header_vertical_spacing">8dp</dimen>
-    <dimen name="nav_header_height">176dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
-    <dimen name="photo_dimensions">250dp</dimen>
     <dimen name="margin_list_item">8dp</dimen>
     <dimen name="image_dimensions">48dp</dimen>
-    <dimen name="observatory_list_item_margin">72dp</dimen>
-    <dimen name="map_fragment_height">300dp</dimen>
-    <dimen name="widget_image_dimensions">110dp</dimen>
-
-    <dimen name="photo_description_text_size">14dp</dimen>
-    <dimen name="drawer_width">150dp</dimen>
-    <dimen name="fragment_margin_start">0dp</dimen>
-    <dimen name="asteroid_text_size">14dp</dimen>
-
-
     <dimen name="app_bar_layout_main_elevation">4dp</dimen>
+    <dimen name="fragment_margin_start">0dp</dimen>
     <dimen name="detail_toolbar_elevation">2dp</dimen>
-    <dimen name="navigation_drawer_elevation">16dp</dimen>
     <dimen name="button_elevation_rested">2dp</dimen>
     <dimen name="button_elevation_pressed">8dp</dimen>
 
-    <dimen name="fab_elevation">6dp</dimen>
-    <dimen name="detail_layout_elevation">2dp</dimen>
+    <!-- PhotoFragment -->
+    <dimen name="photo_description_text_size">14dp</dimen>
+    <dimen name="photo_dimensions">250dp</dimen>
+
+    <!-- AsteroidFragment -->
+    <dimen name="asteroid_text_size">14dp</dimen>
+    <dimen name="guideline_start">193dp</dimen>
+
+    <!-- ObservatoryListFragment -->
+    <dimen name="observatory_list_item_margin">72dp</dimen>
+
+    <!-- ObservatoryFragment -->
+    <dimen name="map_fragment_height">300dp</dimen>
+
+    <!-- NavigationDrawer -->
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="navigation_drawer_elevation">16dp</dimen>
+    <dimen name="drawer_width">150dp</dimen>
+
+    <!-- AppWidget -->
+    <dimen name="app_widget_dimensions">110dp</dimen>
+    <dimen name="widget_image_dimensions">110dp</dimen>
 </resources>

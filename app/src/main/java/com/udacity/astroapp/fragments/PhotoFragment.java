@@ -75,7 +75,7 @@ public class PhotoFragment extends Fragment {
     public static String photoUrl;
     private String photoMediaType;
     private Button playVideoButton;
-    private static Uri videoUri;
+    public static Uri videoUri;
 
     /* Scroll position X and Y keys */
     private static final String SCROLL_POSITION_X = "scrollPositionX";

@@ -30,32 +30,33 @@ public class AstroAppWidget extends AppWidgetProvider {
         Intent intent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
-        if (PhotoFragment.photo != null) {
-            /* If the photo exists, load it into the widget_image remote view */
-            if (PhotoFragment.photoTitle != null && PhotoFragment.photoUrl != null) {
+            if (PhotoFragment.photo != null && PhotoFragment.photoUrl != null && PhotoFragment.videoUri == null) {
+                /* If the photo exists, load it into the widget_image remote view */
                 Uri photoUri = Uri.parse(PhotoFragment.photoUrl);
                 Picasso.get().load(photoUri)
                         .into(remoteViews, R.id.widget_image, new int[]{appWidgetId});
 
                 /* Set the text of the widget_image_title TextView to the photoTitle and make all
                  * views visible */
-                remoteViews.setTextViewText(R.id.widget_image_title, PhotoFragment.photoTitle);
+                if (PhotoFragment.photoTitle != null) {
+                    remoteViews.setTextViewText(R.id.widget_image_title, PhotoFragment.photoTitle);
+                }
                 remoteViews.setViewVisibility(R.id.widget_image_title, View.VISIBLE);
                 remoteViews.setViewVisibility(R.id.widget_image_label, View.VISIBLE);
                 remoteViews.setViewVisibility(R.id.widget_image, View.VISIBLE);
-            } else {
-                /* In case there is no photo, hide the image label and title, and show only the
-                 * ic_launcher logo */
-                remoteViews.setViewVisibility(R.id.widget_image_label, View.GONE);
-                remoteViews.setViewVisibility(R.id.widget_image_title, View.GONE);
-                remoteViews.setViewVisibility(R.id.widget_image, View.VISIBLE);
-                remoteViews.setImageViewResource(R.id.widget_image, R.mipmap.ic_launcher);
-            }
-            /* Set an OnClickPendingIntent to the widget */
-            remoteViews.setOnClickPendingIntent(R.id.widget_layout, pendingIntent);
-            appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
+            }  else {
+            /* In case there is no photo, hide the image label and title, and show only the
+             * ic_launcher logo */
+            remoteViews.setViewVisibility(R.id.widget_image_label, View.GONE);
+            remoteViews.setViewVisibility(R.id.widget_image_title, View.GONE);
+            remoteViews.setViewVisibility(R.id.widget_image, View.VISIBLE);
+            remoteViews.setImageViewResource(R.id.widget_image, R.mipmap.ic_launcher);
         }
+        /* Set an OnClickPendingIntent to the widget */
+        remoteViews.setOnClickPendingIntent(R.id.widget_layout, pendingIntent);
+        appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
     }
+
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {

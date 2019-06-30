@@ -29,6 +29,6 @@
         style="@style/WidgetTextViewStyle"
         android:layout_below="@id/widget_image"
         android:layout_marginTop="@dimen/margin_list_item"
-        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
         tools:text="Moons near Jupiter" />
 </RelativeLayout>

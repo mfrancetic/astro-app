@@ -32,6 +32,6 @@
     <dimen name="drawer_width">150dp</dimen>
 
     <!-- AppWidget -->
-    <dimen name="app_widget_dimensions">110dp</dimen>
+    <dimen name="app_widget_dimensions">150dp</dimen>
     <dimen name="widget_image_dimensions">110dp</dimen>
 </resources>

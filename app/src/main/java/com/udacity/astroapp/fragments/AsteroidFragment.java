@@ -284,7 +284,7 @@ public class AsteroidFragment extends Fragment {
             } else {
                 /* In case there are also no values stored in the database, hide all the
                  * views except the empty views */
-                asteroidRecyclerView.setVisibility(View.GONE);
+                asteroidRecyclerView.setVisibility(View.INVISIBLE);
                 emptyTextView.setVisibility(View.VISIBLE);
                 emptyImageView.setVisibility(View.VISIBLE);
                 loadingIndicator.setVisibility(View.GONE);

@@ -239,7 +239,7 @@ public class PhotoFragment extends Fragment {
                 photo = photos.get(0);
                 if (photo != null) {
                     /* In case there is a photo in the database, retrieve its values and populate
-                    * the views */
+                     * the views */
                     int photoId = photo.getPhotoId();
                     photoTitle = photo.getPhotoTitle();
                     photoDate = photo.getPhotoDate();
@@ -255,13 +255,13 @@ public class PhotoFragment extends Fragment {
                     populatePhoto(photo);
 
                     /* Create and show a Snackbar that informs the user that there is no Internet
-                    * connectivity and the data is populated from the database */
+                     * connectivity and the data is populated from the database */
                     Snackbar snackbar = Snackbar.make(photoScrollView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }
             } else {
                 /* In case there are also no values stored in the database, hide all the
-                * views except the empty views */
+                 * views except the empty views */
                 loadingIndicator.setVisibility(View.GONE);
                 photoTitleTextView.setVisibility(View.GONE);
                 photoDescriptionTextView.setVisibility(View.GONE);
@@ -298,10 +298,11 @@ public class PhotoFragment extends Fragment {
 
         if (photoMediaType != null && photoMediaType.equals("video")) {
             /* If the photoMediaType exists and equals a video, get the URL,
-            * parse it show the playVideoButton*/
+             * parse it show the playVideoButton*/
             String videoUrl = photo.getPhotoUrl();
             videoUri = Uri.parse(videoUrl);
             playVideoButton.setVisibility(View.VISIBLE);
+            photoImageView.setVisibility(View.GONE);
 
             /* Set an OnClickListener to the playVideoButton */
             playVideoButton.setOnClickListener(new View.OnClickListener() {
@@ -316,6 +317,7 @@ public class PhotoFragment extends Fragment {
         } else if (photo.getPhotoMediaType().equals("image")) {
             /* In case the media type equals an image, hide the playVideoButton*/
             playVideoButton.setVisibility(View.GONE);
+            photoImageView.setVisibility(View.VISIBLE);
 
             /* Get the photoUrl and load it into the photoImageView */
             Uri photoUri = Uri.parse(photo.getPhotoUrl());

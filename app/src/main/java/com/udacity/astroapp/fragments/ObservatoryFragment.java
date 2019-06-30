@@ -220,7 +220,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
         /* Hide the empty views and loading indicator */
         observatoryEmptyImageView.setVisibility(View.GONE);
-        observatoryEmptyTextView.setVisibility(View.VISIBLE);
+        observatoryEmptyTextView.setVisibility(View.GONE);
         observatoryLoadingIndicator.setVisibility(View.GONE);
 
         if (observatory != null) {
@@ -360,8 +360,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         protected void onPostExecute(Observatory newObservatory) {
             if (newObservatory != null) {
                 /* If there is an observatory available, populate the view with its values */
-                observatoryEmptyTextView.setVisibility(View.GONE);
-                observatoryLoadingIndicator.setVisibility(View.GONE);
                 populateObservatory(newObservatory);
                 if (jsonNotSuccessful) {
                     /* Create and show a Snackbar that informs the user that there is no Internet

@@ -13,7 +13,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.MenuItem;
@@ -97,16 +96,13 @@ public class MainActivity extends AppCompatActivity
         }
 
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    navigationView.setFocusable(true);
-                    navigationView.requestFocus();
-                } else {
-                    navigationView.setFocusable(false);
-                    navigationView.clearFocus();
-                }
+        navigationView.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                navigationView.setFocusable(true);
+                navigationView.requestFocus();
+            } else {
+                navigationView.setFocusable(false);
+                navigationView.clearFocus();
             }
         });
 
@@ -171,8 +167,8 @@ public class MainActivity extends AppCompatActivity
         if (currentFragment == null) {
             /* In phone mode, set an animation for entering and exiting the fragment */
             if (!tabletSize) {
-                fragmentTransaction.setCustomAnimations(R.animator.enter_from_right, R.animator.exit_to_left,
-                        R.animator.enter_from_left, R.animator.exit_to_right);
+                fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+                        R.anim.enter_from_left, R.anim.exit_to_right);
             }
             fragmentTransaction.replace(R.id.fragment_container, fragment)
                     .commit();

@@ -1,5 +1,6 @@
 package com.udacity.astroapp.fragments;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -157,15 +158,12 @@ public class AsteroidFragment extends Fragment {
             public void onChanged(@Nullable final List<Asteroid> asteroids) {
                 asteroidViewModel.getAsteroids().removeObserver(this);
                 if (asteroids != null) {
-                    AppExecutors.getExecutors().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            /* In case the asteroidList is not null and it is not empty,
-                             * delete all asteroids and add the asteroidList to the database */
-                            if (asteroidList != null && !asteroidList.isEmpty()) {
-                                appDatabase.astroDao().deleteAllAsteroids();
-                                appDatabase.astroDao().addAllAsteroids(asteroidList);
-                            }
+                    AppExecutors.getExecutors().diskIO().execute(() -> {
+                        /* In case the asteroidList is not null and it is not empty,
+                         * delete all asteroids and add the asteroidList to the database */
+                        if (asteroidList != null && !asteroidList.isEmpty()) {
+                            appDatabase.astroDao().deleteAllAsteroids();
+                            appDatabase.astroDao().addAllAsteroids(asteroidList);
                         }
                     });
                 }
@@ -197,6 +195,7 @@ public class AsteroidFragment extends Fragment {
      * parses the JSON String in order to create a new List<Asteroid> object.
      * Returns a list of asteroids.
      */
+    @SuppressLint("StaticFieldLeak")
     private class AsteroidAsyncTask extends AsyncTask<String, Void, List<Asteroid>> {
 
         @Override

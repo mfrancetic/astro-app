@@ -6,6 +6,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import java.util.Objects;
+
 @Entity(tableName = "observatory")
 public class Observatory implements Parcelable {
 
@@ -37,7 +39,7 @@ public class Observatory implements Parcelable {
     }
 
     public Observatory(Parcel in) {
-        observatoryId = in.readString();
+        observatoryId = Objects.requireNonNull(in.readString());
         observatoryName = in.readString();
         observatoryAddress = in.readString();
         observatoryPhoneNumber = in.readString();

@@ -1,6 +1,7 @@
 package com.udacity.astroapp.fragments;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -64,11 +65,9 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     private ProgressBar observatoryListLoadingIndicator;
     private ImageView observatoryListEmptyImageView;
 
-    /* Instances of the Observatory, ObservatoryAdapter and List<Observatory> and its key */
-    public Observatory observatory;
     private ObservatoryAdapter observatoryAdapter;
     private static final String observatoryListKey = "observatoryList";
-    public List<Observatory> observatoryList;
+    private List<Observatory> observatoryList;
 
     /* Scroll position X and Y keys */
     private static final String SCROLL_POSITION_X = "scrollPositionX";
@@ -83,13 +82,9 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     /* Integer for device orientation */
     private int orientation;
 
-    /* Boolean that indicates if a location permission is granted */
-    private boolean locationPermissionGranted;
     /* Boolean that indicates if a device is a phone or tablet */
     private boolean isTablet;
 
-    /* Variables connected with location */
-    private String defaultLocationBerlin = "52.520008, 13.404954";
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
     private Location location;
     private String currentLocation;
@@ -98,7 +93,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     /* Instances of the AppDatabase and ViewModel */
     private AppDatabase appDatabase;
-    private ObservatoryViewModelFactory observatoryViewModelFactory;
     private ObservatoryViewModel observatoryViewModel;
 
     public interface OnObservatoryClickListener {
@@ -145,7 +139,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         context = observatoryListLoadingIndicator.getContext();
         appDatabase = AppDatabase.getInstance(context);
 
-        observatoryViewModelFactory = new ObservatoryViewModelFactory(appDatabase);
+        ObservatoryViewModelFactory observatoryViewModelFactory = new ObservatoryViewModelFactory(appDatabase);
         observatoryViewModel = ViewModelProviders.of(ObservatoryListFragment.this, observatoryViewModelFactory)
                 .get(ObservatoryViewModel.class);
 
@@ -155,15 +149,12 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             public void onChanged(@Nullable final List<Observatory> observatories) {
                 observatoryViewModel.getObservatories().removeObserver(this);
                 if (observatories != null) {
-                    AppExecutors.getExecutors().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            /* In case the observatoryList is not null and it is not empty,
-                             * delete all observatories and add the observatoryList to the database */
-                            if (observatoryList != null && !observatoryList.isEmpty()) {
-                                appDatabase.astroDao().deleteAllObservatories();
-                                appDatabase.astroDao().addAllObservatories(observatoryList);
-                            }
+                    AppExecutors.getExecutors().diskIO().execute(() -> {
+                        /* In case the observatoryList is not null and it is not empty,
+                         * delete all observatories and add the observatoryList to the database */
+                        if (observatoryList != null && !observatoryList.isEmpty()) {
+                            appDatabase.astroDao().deleteAllObservatories();
+                            appDatabase.astroDao().addAllObservatories(observatoryList);
                         }
                     });
                 }
@@ -174,12 +165,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         observatoryAdapter = new ObservatoryAdapter(observatoryList, onObservatoryClickListener);
 
         /* Set an OnClickListener to the observatoryRecyclerView */
-        observatoryRecyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onObservatoryClickListener.onObservatorySelected(observatoryRecyclerView.getId());
-            }
-        });
+        observatoryRecyclerView.setOnClickListener(v -> onObservatoryClickListener.onObservatorySelected(observatoryRecyclerView.getId()));
 
         /* Set the dividers and the adapter */
         setDividers(orientation);
@@ -198,7 +184,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         } else {
             /* In case the activity does have a permission, get the last known location and pass the location to the
            onLocationChangedMethod */
-            locationPermissionGranted = true;
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             onLocationChanged(location);
         }
@@ -223,12 +208,15 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
      * parses the JSON String in order to create a new List<Observatory> object.
      * Returns a list of observatories.
      */
+    @SuppressLint("StaticFieldLeak")
     private class ObservatoryAsyncTask extends AsyncTask<String, Void, List<Observatory>> {
 
         @Override
         protected List<Observatory> doInBackground(String... strings) {
             try {
                 if (currentLocation == null) {
+                    /* Variables connected with location */
+                    String defaultLocationBerlin = "52.520008, 13.404954";
                     currentLocation = defaultLocationBerlin;
                 }
 
@@ -264,7 +252,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     String observatoryUrl = "";
 
                     /* Create a new Observatory object and set the values to it */
-                    observatory = new Observatory(observatoryId, observatoryName, observatoryAddress,
+                    /* Instances of the Observatory, ObservatoryAdapter and List<Observatory> and its key */
+                    Observatory observatory = new Observatory(observatoryId, observatoryName, observatoryAddress,
                             null, observatoryOpeningHours, null,
                             observatoryLatitude, observatoryLongitude, observatoryUrl);
 
@@ -332,21 +321,17 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
+                                           @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        locationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    locationPermissionGranted = true;
-                    onLocationChanged(location);
-                    new ObservatoryAsyncTask().execute();
-                } else {
-                    Toast.makeText(getActivity(), getString(R.string.location_access_not_granted_toast),
-                            Toast.LENGTH_LONG).show();
-                }
+        // If request is cancelled, the result arrays are empty.
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                onLocationChanged(location);
+                new ObservatoryAsyncTask().execute();
+            } else {
+                Toast.makeText(getActivity(), getString(R.string.location_access_not_granted_toast),
+                        Toast.LENGTH_LONG).show();
             }
         }
     }

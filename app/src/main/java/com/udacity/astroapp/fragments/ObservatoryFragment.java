@@ -1,5 +1,6 @@
 package com.udacity.astroapp.fragments;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -173,16 +174,13 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
                 observatoryDetailViewModel.getObservatory().removeObserver(this);
 
                 if (observatoryDatabase != null) {
-                    AppExecutors.getExecutors().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            appDatabase.astroDao().loadObservatoryById(observatoryId);
-                            if (observatory != null) {
-                                /* In case the observatory is not null, delete the observatory and
-                                add the new one to the database */
-                                appDatabase.astroDao().deleteObservatory(observatoryId);
-                                appDatabase.astroDao().addObservatory(observatory);
-                            }
+                    AppExecutors.getExecutors().diskIO().execute(() -> {
+                        appDatabase.astroDao().loadObservatoryById(observatoryId);
+                        if (observatory != null) {
+                            /* In case the observatory is not null, delete the observatory and
+                            add the new one to the database */
+                            appDatabase.astroDao().deleteObservatory(observatoryId);
+                            appDatabase.astroDao().addObservatory(observatory);
                         }
                     });
                 }
@@ -206,10 +204,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
     public void setObservatory(Observatory observatory) {
         this.observatory = observatory;
-    }
-
-    public Observatory getObservatory() {
-        return observatory;
     }
 
     private void populateObservatory(Observatory observatory) {
@@ -275,15 +269,12 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
                 /* If there is an observatoryUrl, show the visitObservatoryHomepageButton and set
                 * an onClickListner to it */
                 visitObservatoryHomepageButton.setVisibility(View.VISIBLE);
-                visitObservatoryHomepageButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        /* OnClick, create and start an intent to open the homepage of the observatory */
-                        Intent openObservatoryHomepageIntent = new Intent(Intent.ACTION_VIEW);
-                        Uri observatoryHomepageUri = Uri.parse(observatoryUrl);
-                        openObservatoryHomepageIntent.setData(observatoryHomepageUri);
-                        startActivity(openObservatoryHomepageIntent);
-                    }
+                visitObservatoryHomepageButton.setOnClickListener(v -> {
+                    /* OnClick, create and start an intent to open the homepage of the observatory */
+                    Intent openObservatoryHomepageIntent = new Intent(Intent.ACTION_VIEW);
+                    Uri observatoryHomepageUri = Uri.parse(observatoryUrl);
+                    openObservatoryHomepageIntent.setData(observatoryHomepageUri);
+                    startActivity(openObservatoryHomepageIntent);
                 });
             }
         }
@@ -313,6 +304,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
      * parses the JSON String in order to create a new Observatory object.
      * Returns an observatory.
      */
+    @SuppressLint("StaticFieldLeak")
     private class ObservatoryDetailsAsyncTask extends AsyncTask<String, Void, Observatory> {
 
         @Override

@@ -20,13 +20,11 @@ import java.util.List;
  */
 public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.ObservatoryViewHolder> {
 
-    public static Observatory observatory;
-
     class ObservatoryViewHolder extends RecyclerView.ViewHolder {
-        private TextView observatoryListItemNameTextView;
-        private TextView observatoryListItemAddressTextView;
-        private TextView observatoryListItemOpenNowTextView;
-        private ImageButton observatoryListItemButton;
+        private final TextView observatoryListItemNameTextView;
+        private final TextView observatoryListItemAddressTextView;
+        private final TextView observatoryListItemOpenNowTextView;
+        private final ImageButton observatoryListItemButton;
 
         ObservatoryViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -38,7 +36,6 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
     }
 
     public static List<Observatory> observatories;
-    private boolean observatoryOpenNow;
     private Context context;
 
     public ObservatoryAdapter(List<Observatory> observatories, ObservatoryListFragment.OnObservatoryClickListener onObservatoryClickListener) {
@@ -59,7 +56,7 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
     @Override
     public void onBindViewHolder(@NonNull ObservatoryViewHolder viewHolder, int position) {
         /* Get the observatory according to its position */
-        observatory = observatories.get(position);
+        Observatory observatory = observatories.get(position);
 
         /* Set the views to its views in the viewHolder */
         TextView observatoryListItemNameTextView = viewHolder.observatoryListItemNameTextView;
@@ -73,7 +70,7 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
         /* Set the address to the observatoryListItemAddress */
         observatoryListItemAddressTextView.setText(observatory.getObservatoryAddress());
 
-        observatoryOpenNow = observatory.getObservatoryOpenNow();
+        boolean observatoryOpenNow = observatory.getObservatoryOpenNow();
         /* In case there is information if the observatory is open now, set that text to the
          * observatoryListItemOpenNowTextView */
         if (observatoryOpenNow) {
@@ -86,19 +83,13 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
                 + observatoryName);
 
         /* Set an OnClickListener to the observatoryListItemButton */
-        viewHolder.observatoryListItemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ObservatoryListFragment.onObservatoryClickListener == null) {
-                    /* In case there is no onObservatoryClickListener, create a new one */
-                    ObservatoryListFragment.onObservatoryClickListener = new ObservatoryListFragment.OnObservatoryClickListener() {
-                        @Override
-                        public void onObservatorySelected(int position) {
-                        }
-                    };
-                }
-                ObservatoryListFragment.onObservatoryClickListener.onObservatorySelected(position);
+        viewHolder.observatoryListItemButton.setOnClickListener(v -> {
+            if (ObservatoryListFragment.onObservatoryClickListener == null) {
+                /* In case there is no onObservatoryClickListener, create a new one */
+                ObservatoryListFragment.onObservatoryClickListener = position1 -> {
+                };
             }
+            ObservatoryListFragment.onObservatoryClickListener.onObservatorySelected(position);
         });
     }
 

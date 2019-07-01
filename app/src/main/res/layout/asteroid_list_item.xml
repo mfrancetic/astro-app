@@ -22,7 +22,7 @@
     <TextView
         android:id="@+id/asteroid_name_label_text_view"
         style="@style/AsteroidLabelTextViewStyle"
-        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginStart="@dimen/margin"
         android:text="@string/name_label"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@id/asteroid_image_view"

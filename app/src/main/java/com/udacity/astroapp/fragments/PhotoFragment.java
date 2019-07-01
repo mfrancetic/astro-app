@@ -1,5 +1,6 @@
 package com.udacity.astroapp.fragments;
 
+import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
@@ -140,15 +141,12 @@ public class PhotoFragment extends Fragment {
             public void onChanged(@Nullable final List<Photo> photos) {
                 photoViewModel.getPhotos().removeObserver(this);
                 if (photos != null) {
-                    AppExecutors.getExecutors().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            /* In case the photo is not null and it does not have empty values,
-                             * delete all photos and add the photo to the database */
-                            if (photo != null && !photo.getPhotoDate().isEmpty()) {
-                                appDatabase.astroDao().deleteAllPhotos();
-                                appDatabase.astroDao().addPhoto(photo);
-                            }
+                    AppExecutors.getExecutors().diskIO().execute(() -> {
+                        /* In case the photo is not null and it does not have empty values,
+                         * delete all photos and add the photo to the database */
+                        if (photo != null && !photo.getPhotoDate().isEmpty()) {
+                            appDatabase.astroDao().deleteAllPhotos();
+                            appDatabase.astroDao().addPhoto(photo);
                         }
                     });
 
@@ -194,6 +192,7 @@ public class PhotoFragment extends Fragment {
      * parses the JSON String in order to create a new Photo object.
      * Returns a list of photos.
      */
+    @SuppressLint("StaticFieldLeak")
     private class PhotoAsyncTask extends AsyncTask<String, Void, Photo> {
 
         @Override
@@ -305,14 +304,11 @@ public class PhotoFragment extends Fragment {
             photoImageView.setVisibility(View.GONE);
 
             /* Set an OnClickListener to the playVideoButton */
-            playVideoButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    /* OnClick, create and start an intent that opens the URL of the video */
-                    Intent openVideoIntent = new Intent(Intent.ACTION_VIEW);
-                    openVideoIntent.setData(videoUri);
-                    startActivity(openVideoIntent);
-                }
+            playVideoButton.setOnClickListener(v -> {
+                /* OnClick, create and start an intent that opens the URL of the video */
+                Intent openVideoIntent = new Intent(Intent.ACTION_VIEW);
+                openVideoIntent.setData(videoUri);
+                startActivity(openVideoIntent);
             });
         } else if (photo.getPhotoMediaType().equals("image")) {
             /* In case the media type equals an image, hide the playVideoButton*/
@@ -321,8 +317,8 @@ public class PhotoFragment extends Fragment {
 
             /* Get the photoUrl and load it into the photoImageView */
             Uri photoUri = Uri.parse(photo.getPhotoUrl());
-            Picasso.get().load(photoUri)
-                    .into(photoImageView);
+            Picasso picasso = new Picasso.Builder(context).build();
+            picasso.load(photoUri).into(photoImageView);
 
             /* Set the content description of the photoImageView to inform the user about the photo's title */
             photoImageView.setContentDescription(getString(R.string.photo_of_content_description) + " " + photoTitle);

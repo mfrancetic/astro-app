@@ -13,6 +13,7 @@ import java.util.List;
 
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 
+@SuppressWarnings("ALL")
 @Dao
 public interface AstroDao {
 
@@ -40,6 +41,7 @@ public interface AstroDao {
     @Query("DELETE FROM observatory WHERE observatoryId = :observatoryId")
     void deleteObservatory(String observatoryId);
 
+    @SuppressWarnings("unused")
     @Query("SELECT COUNT (*) FROM asteroid")
     int getAsteroidCount();
 

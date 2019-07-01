@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AsteroidViewModel extends ViewModel {
 
-    private LiveData<List<Asteroid>> asteroids;
+    private final LiveData<List<Asteroid>> asteroids;
 
     /* Constructor which initializes the list of asteroids and receives the database */
     AsteroidViewModel(@NonNull AppDatabase appDatabase) {

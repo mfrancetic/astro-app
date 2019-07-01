@@ -33,7 +33,8 @@ public class AstroAppWidget extends AppWidgetProvider {
             if (PhotoFragment.photo != null && PhotoFragment.photoUrl != null && PhotoFragment.videoUri == null) {
                 /* If the photo exists, load it into the widget_image remote view */
                 Uri photoUri = Uri.parse(PhotoFragment.photoUrl);
-                Picasso.get().load(photoUri)
+                Picasso picasso = new Picasso.Builder(context).build();
+                picasso.load(photoUri)
                         .into(remoteViews, R.id.widget_image, new int[]{appWidgetId});
 
                 /* Set the text of the widget_image_title TextView to the photoTitle and make all

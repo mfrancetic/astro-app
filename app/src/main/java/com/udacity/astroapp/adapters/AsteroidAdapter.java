@@ -27,13 +27,13 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
 
     class AsteroidViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView asteroidNameTextView;
-        private TextView asteroidDiameterTextView;
-        private TextView asteroidApproachDateTextView;
-        private TextView asteroidVelocityTextView;
-        private Button readMoreButton;
-        private ImageView asteroidHazardousImageView;
-        private TextView diameterLabelTextView;
+        private final TextView asteroidNameTextView;
+        private final TextView asteroidDiameterTextView;
+        private final TextView asteroidApproachDateTextView;
+        private final TextView asteroidVelocityTextView;
+        private final Button readMoreButton;
+        private final ImageView asteroidHazardousImageView;
+        private final TextView diameterLabelTextView;
 
 
         AsteroidViewHolder(@NonNull View itemView) {
@@ -49,7 +49,7 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
     }
 
     private List<Asteroid> asteroids;
-    private String LOG_TAG = AsteroidAdapter.class.getSimpleName();
+    private final String LOG_TAG = AsteroidAdapter.class.getSimpleName();
 
     public AsteroidAdapter(List<Asteroid> asteroids) {
         this.asteroids = asteroids;
@@ -137,14 +137,11 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
                 + " " + asteroidTrimmedName);
 
         /* Set an OnClickListener to the readMoreButton */
-        readMoreButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /* OnClick, create and start an intent that opens details of the selected asteroid */
-                Intent openAsteroidDetailsIntent = new Intent(Intent.ACTION_VIEW);
-                openAsteroidDetailsIntent.setData(asteroidUri);
-                context.startActivity(openAsteroidDetailsIntent);
-            }
+        readMoreButton.setOnClickListener(v -> {
+            /* OnClick, create and start an intent that opens details of the selected asteroid */
+            Intent openAsteroidDetailsIntent = new Intent(Intent.ACTION_VIEW);
+            openAsteroidDetailsIntent.setData(asteroidUri);
+            context.startActivity(openAsteroidDetailsIntent);
         });
     }
 

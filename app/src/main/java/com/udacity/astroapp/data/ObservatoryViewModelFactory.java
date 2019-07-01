@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 public class ObservatoryViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
-    private AppDatabase appDatabase;
+    private final AppDatabase appDatabase;
 
     /* Initializes the member variable database in the constructor */
     public ObservatoryViewModelFactory(AppDatabase appDatabase) {

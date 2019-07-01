@@ -42,20 +42,41 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class PhotoFragment extends Fragment {
 
     /* Tag for log messages */
     private static final String LOG_TAG = PhotoFragment.class.getSimpleName();
 
     /* Views of the PhotoFragment */
-    private ImageView photoImageView;
-    private TextView photoTitleTextView;
-    private TextView photoDateTextView;
-    private TextView photoDescriptionTextView;
-    private ScrollView photoScrollView;
-    private TextView emptyTextView;
-    private ProgressBar loadingIndicator;
-    private ImageView emptyImageView;
+    @BindView(R.id.photo_view)
+    ImageView photoImageView;
+
+    @BindView(R.id.photo_title_text_view)
+    TextView photoTitleTextView;
+
+    @BindView(R.id.photo_date_text_view)
+    TextView photoDateTextView;
+
+    @BindView(R.id.photo_description_text_view)
+    TextView photoDescriptionTextView;
+
+    @BindView(R.id.photo_scroll_view)
+    ScrollView photoScrollView;
+
+    @BindView(R.id.photo_empty_text_view)
+    TextView emptyTextView;
+
+    @BindView(R.id.photo_loading_indicator)
+    ProgressBar loadingIndicator;
+
+    @BindView(R.id.photo_empty_image_view)
+    ImageView emptyImageView;
+
+    @BindView(R.id.play_video_button)
+    Button playVideoButton;
 
     private Context context;
 
@@ -75,7 +96,6 @@ public class PhotoFragment extends Fragment {
     private String photoDescription;
     public static String photoUrl;
     private String photoMediaType;
-    private Button playVideoButton;
     public static Uri videoUri;
 
     /* Scroll position X and Y keys */
@@ -108,17 +128,7 @@ public class PhotoFragment extends Fragment {
 
         /* Inflate the fragment_photo.xml layout */
         View rootView = inflater.inflate(R.layout.fragment_photo, container, false);
-
-        /* Find views in the rootView */
-        photoImageView = rootView.findViewById(R.id.photo_view);
-        emptyImageView = rootView.findViewById(R.id.photo_empty_image_view);
-        photoTitleTextView = rootView.findViewById(R.id.photo_title_text_view);
-        photoDateTextView = rootView.findViewById(R.id.photo_date_text_view);
-        playVideoButton = rootView.findViewById(R.id.play_video_button);
-        photoScrollView = rootView.findViewById(R.id.photo_scroll_view);
-        loadingIndicator = rootView.findViewById(R.id.photo_loading_indicator);
-        emptyTextView = rootView.findViewById(R.id.photo_empty_text_view);
-        photoDescriptionTextView = rootView.findViewById(R.id.photo_description_text_view);
+        ButterKnife.bind(this, rootView);
 
         /* Hide the playVideoButton and empty views, and show the loadingIndicator */
         playVideoButton.setVisibility(View.GONE);

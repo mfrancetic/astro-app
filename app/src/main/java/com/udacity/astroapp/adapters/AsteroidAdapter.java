@@ -20,6 +20,9 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * RecyclerView Adapter for displaying the list of asteroids in the AsteroidFragment
  */
@@ -27,24 +30,30 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
 
     class AsteroidViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView asteroidNameTextView;
-        private final TextView asteroidDiameterTextView;
-        private final TextView asteroidApproachDateTextView;
-        private final TextView asteroidVelocityTextView;
-        private final Button readMoreButton;
-        private final ImageView asteroidHazardousImageView;
-        private final TextView diameterLabelTextView;
+        @BindView(R.id.asteroid_name_text_view)
+        TextView asteroidNameTextView;
 
+        @BindView(R.id.asteroid_diameter_text_view)
+        TextView asteroidDiameterTextView;
+
+        @BindView(R.id.asteroid_approach_date_text_view)
+        TextView asteroidApproachDateTextView;
+
+        @BindView(R.id.asteroid_velocity_text_view)
+        TextView asteroidVelocityTextView;
+
+        @BindView(R.id.asteroid_read_more_button)
+        Button readMoreButton;
+
+        @BindView(R.id.asteroid_hazardous_image)
+        ImageView asteroidHazardousImageView;
+
+        @BindView(R.id.asteroid_diameter_label_text_view)
+        TextView diameterLabelTextView;
 
         AsteroidViewHolder(@NonNull View itemView) {
             super(itemView);
-            asteroidNameTextView = itemView.findViewById(R.id.asteroid_name_text_view);
-            asteroidDiameterTextView = itemView.findViewById(R.id.asteroid_diameter_text_view);
-            asteroidApproachDateTextView = itemView.findViewById(R.id.asteroid_approach_date_text_view);
-            asteroidHazardousImageView = itemView.findViewById(R.id.asteroid_hazardous_image);
-            asteroidVelocityTextView = itemView.findViewById(R.id.asteroid_velocity_text_view);
-            readMoreButton = itemView.findViewById(R.id.asteroid_read_more_button);
-            diameterLabelTextView = itemView.findViewById(R.id.asteroid_diameter_label_text_view);
+            ButterKnife.bind(this, itemView);
         }
     }
 

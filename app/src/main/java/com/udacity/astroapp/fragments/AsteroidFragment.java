@@ -48,6 +48,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class AsteroidFragment extends Fragment {
 
     /* Tag for log messages */
@@ -61,11 +64,20 @@ public class AsteroidFragment extends Fragment {
     private Context context;
 
     /* Views of the PhotoFragment */
-    private NestedScrollView scrollView;
-    private RecyclerView asteroidRecyclerView;
-    private TextView emptyTextView;
-    private ProgressBar loadingIndicator;
-    private ImageView emptyImageView;
+    @BindView(R.id.asteroid_scroll_view)
+    NestedScrollView scrollView;
+
+    @BindView(R.id.asteroid_recycler_view)
+    RecyclerView asteroidRecyclerView;
+
+    @BindView(R.id.asteroid_empty_text_view)
+    TextView emptyTextView;
+
+    @BindView(R.id.asteroid_loading_indicator)
+    ProgressBar loadingIndicator;
+
+    @BindView(R.id.asteroid_empty_image_view)
+    ImageView emptyImageView;
 
     /* Instances of the AppDatabase and ViewModel */
     private AppDatabase appDatabase;
@@ -108,19 +120,13 @@ public class AsteroidFragment extends Fragment {
 
         /* Inflate the fragment_asteroid.xml layout */
         View rootView = inflater.inflate(R.layout.fragment_asteroid, container, false);
+        ButterKnife.bind(this, rootView);
 
         /* Get the boolean that indicates if a device is a tablet */
         isTablet = getResources().getBoolean(R.bool.isTablet);
 
         /* Get the orientation of the device */
         orientation = getResources().getConfiguration().orientation;
-
-        /* Find the views */
-        scrollView = rootView.findViewById(R.id.asteroid_scroll_view);
-        asteroidRecyclerView = rootView.findViewById(R.id.asteroid_recycler_view);
-        emptyTextView = rootView.findViewById(R.id.asteroid_empty_text_view);
-        emptyImageView = rootView.findViewById(R.id.asteroid_empty_image_view);
-        loadingIndicator = rootView.findViewById(R.id.asteroid_loading_indicator);
 
         /* Hide the empty views and show the loadingIndicator */
         emptyTextView.setVisibility(View.GONE);

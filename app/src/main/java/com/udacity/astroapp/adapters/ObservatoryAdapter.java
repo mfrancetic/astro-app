@@ -15,23 +15,31 @@ import com.udacity.astroapp.models.Observatory;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * RecyclerView Adapter for displaying the list of observatories in the ObservatoryListFragment
  */
 public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.ObservatoryViewHolder> {
 
     class ObservatoryViewHolder extends RecyclerView.ViewHolder {
-        private final TextView observatoryListItemNameTextView;
-        private final TextView observatoryListItemAddressTextView;
-        private final TextView observatoryListItemOpenNowTextView;
-        private final ImageButton observatoryListItemButton;
+
+        @BindView(R.id.observatory_list_item_name)
+        TextView observatoryListItemNameTextView;
+
+        @BindView(R.id.observatory_list_item_address)
+        TextView observatoryListItemAddressTextView;
+
+        @BindView(R.id.observatory_list_item_opening_Hours)
+        TextView observatoryListItemOpenNowTextView;
+
+        @BindView(R.id.observatory_list_item_button)
+        ImageButton observatoryListItemButton;
 
         ObservatoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            observatoryListItemNameTextView = itemView.findViewById(R.id.observatory_list_item_name);
-            observatoryListItemAddressTextView = itemView.findViewById(R.id.observatory_list_item_address);
-            observatoryListItemOpenNowTextView = itemView.findViewById(R.id.observatory_list_item_opening_Hours);
-            observatoryListItemButton = itemView.findViewById(R.id.observatory_list_item_button);
+            ButterKnife.bind(this, itemView);
         }
     }
 

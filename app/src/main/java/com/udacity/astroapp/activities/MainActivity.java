@@ -29,6 +29,9 @@ import com.udacity.astroapp.fragments.ObservatoryListFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment.OnObservatoryClickListener;
 import com.udacity.astroapp.fragments.PhotoFragment;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 public class MainActivity extends AppCompatActivity
@@ -39,8 +42,15 @@ public class MainActivity extends AppCompatActivity
     private boolean tabletSize;
     private final static String fragmentIdKey = "fragmentId";
     private int fragmentId;
-    private NavigationView navigationView;
-    private DrawerLayout drawer;
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     private ActionBarDrawerToggle toggle;
     private Fragment currentFragment;
 
@@ -49,11 +59,10 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /* Find toolbar and set the support action bar to the toolbar */
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
 
-        drawer = findViewById(R.id.drawer_layout);
+        /* Find toolbar and set the support action bar to the toolbar */
+        setSupportActionBar(toolbar);
 
         /* Check if the device is a phone or a tablet */
         tabletSize = getResources().getBoolean(R.bool.isTablet);
@@ -76,7 +85,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         /* Set NavigationView and focusable and request focus */
-        navigationView = findViewById(R.id.nav_view);
         navigationView.requestFocus();
         navigationView.setFocusable(true);
 

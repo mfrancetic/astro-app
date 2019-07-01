@@ -47,6 +47,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ObservatoryFragment extends Fragment implements OnMapReadyCallback {
 
     /* Tag for log messages */
@@ -66,16 +69,35 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
     private boolean observatoryOpenNow;
 
     /* Views of the PhotoFragment */
-    private TextView observatoryNameTextView;
-    private TextView observatoryAddressTextView;
-    private TextView observatoryOpenNowTextView;
-    private ScrollView observatoryScrollView;
-    private Button visitObservatoryHomepageButton;
-    private TextView observatoryOpeningHoursTextView;
-    private TextView observatoryPhoneNumberTextView;
-    private TextView observatoryEmptyTextView;
-    private ImageView observatoryEmptyImageView;
-    private ProgressBar observatoryLoadingIndicator;
+    @BindView(R.id.observatory_name)
+    TextView observatoryNameTextView;
+
+    @BindView(R.id.observatory_address)
+    TextView observatoryAddressTextView;
+
+    @BindView(R.id.observatory_open_now)
+    TextView observatoryOpenNowTextView;
+
+    @BindView(R.id.observatory_scroll_view)
+    ScrollView observatoryScrollView;
+
+    @BindView(R.id.observatory_visit_homepage_button)
+    Button visitObservatoryHomepageButton;
+
+    @BindView(R.id.observatory_opening_hours)
+    TextView observatoryOpeningHoursTextView;
+
+    @BindView(R.id.observatory_phone_number)
+    TextView observatoryPhoneNumberTextView;
+
+    @BindView(R.id.observatory_empty_text_view)
+    TextView observatoryEmptyTextView;
+
+    @BindView(R.id.observatory_empty_image_view)
+    ImageView observatoryEmptyImageView;
+
+    @BindView(R.id.observatory_loading_indicator)
+    ProgressBar observatoryLoadingIndicator;
 
     /* Instances of the AppDatabase and ObservatoryDetailViewModel */
     private AppDatabase appDatabase;
@@ -104,6 +126,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
         /* Inflate the fragment_observatory.xml view */
         View rootView = inflater.inflate(R.layout.fragment_observatory, container, false);
+        ButterKnife.bind(this, rootView);
 
         jsonNotSuccessful = false;
         observatoryOpeningHoursDay = "";
@@ -126,18 +149,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
             observatoryPhoneNumber = observatory.getObservatoryPhoneNumber();
         }
 
-        /* Find the views */
-        observatoryScrollView = rootView.findViewById(R.id.observatory_scroll_view);
-        observatoryNameTextView = rootView.findViewById(R.id.observatory_name);
-        observatoryAddressTextView = rootView.findViewById(R.id.observatory_address);
-        observatoryOpenNowTextView = rootView.findViewById(R.id.observatory_open_now);
-        visitObservatoryHomepageButton = rootView.findViewById(R.id.observatory_visit_homepage_button);
-        observatoryOpeningHoursTextView = rootView.findViewById(R.id.observatory_opening_hours);
-        observatoryPhoneNumberTextView = rootView.findViewById(R.id.observatory_phone_number);
-        observatoryLoadingIndicator = rootView.findViewById(R.id.observatory_loading_indicator);
-        observatoryEmptyTextView = rootView.findViewById(R.id.observatory_empty_text_view);
-        observatoryEmptyImageView = rootView.findViewById(R.id.observatory_empty_image_view);
-
         /* Get the childFragmentManager and find fragment by its tag */
         FragmentManager fragmentManager = getChildFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager
@@ -145,7 +156,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
         if (mapFragment == null) {
             /* If the mapFragment is null, create a new SupportMapFragment and execute the
-            * adding of the fragment*/
+             * adding of the fragment*/
             mapFragment = new SupportMapFragment();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.map_fragment_container, mapFragment, mapFragmentTag);
@@ -267,7 +278,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
                 visitObservatoryHomepageButton.setVisibility(View.GONE);
             } else {
                 /* If there is an observatoryUrl, show the visitObservatoryHomepageButton and set
-                * an onClickListner to it */
+                 * an onClickListner to it */
                 visitObservatoryHomepageButton.setVisibility(View.VISIBLE);
                 visitObservatoryHomepageButton.setOnClickListener(v -> {
                     /* OnClick, create and start an intent to open the homepage of the observatory */

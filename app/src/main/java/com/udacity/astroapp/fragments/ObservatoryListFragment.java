@@ -51,6 +51,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 public class ObservatoryListFragment extends Fragment implements LocationListener {
@@ -59,11 +62,20 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     private static final String LOG_TAG = ObservatoryListFragment.class.getSimpleName();
 
     /* Views of the PhotoFragment */
-    private RecyclerView observatoryRecyclerView;
-    private NestedScrollView scrollView;
-    private TextView observatoryListEmptyTextView;
-    private ProgressBar observatoryListLoadingIndicator;
-    private ImageView observatoryListEmptyImageView;
+    @BindView(R.id.observatory_list_recycler_view)
+    RecyclerView observatoryRecyclerView;
+
+    @BindView(R.id.observatory_list_scroll_view)
+    NestedScrollView scrollView;
+
+    @BindView(R.id.observatory_list_empty_text_view)
+    TextView observatoryListEmptyTextView;
+
+    @BindView(R.id.observatory_list_loading_indicator)
+    ProgressBar observatoryListLoadingIndicator;
+
+    @BindView(R.id.observatory_list_empty_image_view)
+    ImageView observatoryListEmptyImageView;
 
     private ObservatoryAdapter observatoryAdapter;
     private static final String observatoryListKey = "observatoryList";
@@ -117,19 +129,13 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             getActivity().setTitle(R.string.menu_observatories);
         }
         View rootView = inflater.inflate(R.layout.fragment_observatory_list, container, false);
+        ButterKnife.bind(this, rootView);
 
         /* Get the boolean that indicates if a device is a tablet */
         isTablet = getResources().getBoolean(R.bool.isTablet);
 
         /* Get the orientation of the device */
         orientation = getResources().getConfiguration().orientation;
-
-        /* Find the views */
-        observatoryListEmptyTextView = rootView.findViewById(R.id.observatory_list_empty_text_view);
-        observatoryListEmptyImageView = rootView.findViewById(R.id.observatory_list_empty_image_view);
-        observatoryListLoadingIndicator = rootView.findViewById(R.id.observatory_list_loading_indicator);
-        scrollView = rootView.findViewById(R.id.observatory_list_scroll_view);
-        observatoryRecyclerView = rootView.findViewById(R.id.observatory_list_recycler_view);
 
         /* Hide the empty views and show the loadingIndicator */
         observatoryListEmptyTextView.setVisibility(View.GONE);

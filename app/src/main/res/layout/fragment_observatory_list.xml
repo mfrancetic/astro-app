@@ -15,18 +15,17 @@
             android:id="@+id/observatory_list_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Empty view is only visible when the list has no items-->
         <TextView
             android:id="@+id/observatory_list_empty_text_view"
             style="@style/EmptyTextViewStyle"
-            app:layout_constraintTop_toBottomOf="@id/observatory_list_empty_image_view"
-            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/no_observatories_found"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="@string/no_observatories_found" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/observatory_list_empty_image_view" />
 
         <ImageView
             android:id="@+id/observatory_list_empty_image_view"
@@ -34,19 +33,19 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:paddingBottom="@dimen/margin"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_nothing_found"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:src="@drawable/ic_nothing_found" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
             android:id="@+id/observatory_list_loading_indicator"
             style="@style/LoadingIndicatorStyle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_centerInParent="true"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_centerInParent="true" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>

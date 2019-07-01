@@ -87,7 +87,8 @@
             style="@style/PhotoDescriptionTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            android:textAlignment="viewStart"
             app:layout_constraintTop_toBottomOf="@id/photo_date_text_view"
-            tools:text="On May 20, a nearly Full Moon and Jupiter shared this telephoto field of view." />
+            tools:text="On May 20, a nearly Full Moon and Jupiter shared this telephoto field of view. On May 20, a nearly Full Moon and Jupiter shared this telephoto field of view." />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

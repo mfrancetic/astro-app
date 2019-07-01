@@ -17,9 +17,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="start"
-        android:singleLine="false"
         android:layout_gravity="start"
-        android:ellipsize="start"
+        android:textAlignment="viewStart"
         tools:text="Bavarian Public Observatory Munich, Bavarian Public Observatory Munich"
         tools:ignore="RtlSymmetry" />
 
@@ -29,21 +28,21 @@
         android:paddingEnd="@dimen/observatory_list_item_margin"
         android:gravity="start"
         android:layout_gravity="start"
-        android:ellipsize="end"
-        android:singleLine="false"
+        android:textAlignment="viewStart"
         app:layout_constraintStart_toStartOf="@id/observatory_list_item_name"
         app:layout_constraintTop_toBottomOf="@id/observatory_list_item_name"
         tools:text="Rosenheimer Str. 160H, Rosenheimer Str. 160H, Rosenheimer Str. 160H"
         tools:ignore="RtlSymmetry" />
 
     <TextView
-        android:id="@+id/observatory_list_item_opening_Hours"
+        android:id="@+id/observatory_list_item_opening_hours"
         style="@style/ObservatoryListItemSubtitleStyle"
         android:paddingEnd="@dimen/observatory_list_item_margin"
         android:textColor="@color/colorPrimary"
         android:gravity="start"
         android:layout_gravity="start"
         android:ellipsize="start"
+        android:textAlignment="viewStart"
         android:singleLine="false"
         app:layout_constraintStart_toStartOf="@id/observatory_list_item_address"
         app:layout_constraintTop_toBottomOf="@id/observatory_list_item_address"

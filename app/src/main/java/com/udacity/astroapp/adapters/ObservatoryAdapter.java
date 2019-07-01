@@ -31,7 +31,7 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
         @BindView(R.id.observatory_list_item_address)
         TextView observatoryListItemAddressTextView;
 
-        @BindView(R.id.observatory_list_item_opening_Hours)
+        @BindView(R.id.observatory_list_item_opening_hours)
         TextView observatoryListItemOpenNowTextView;
 
         @BindView(R.id.observatory_list_item_button)

@@ -405,4 +405,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         outState.putInt(SCROLL_POSITION_Y, scrollY);
         super.onSaveInstanceState(outState);
     }
+
+
 }

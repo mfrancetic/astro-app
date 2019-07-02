@@ -220,12 +220,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         @Override
         protected List<Observatory> doInBackground(String... strings) {
             try {
-                if (currentLocation == null) {
-                    /* Variables connected with location */
-                    String defaultLocationBerlin = "52.520008, 13.404954";
-                    currentLocation = defaultLocationBerlin;
-                }
-
                 /* Create an URL and make a HTTP request */
                 URL url = QueryUtils.createObservatoryURL(currentLocation);
                 String observatoryJson = QueryUtils.makeHttpRequest(url);

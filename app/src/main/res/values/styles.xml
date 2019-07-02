@@ -65,7 +65,7 @@
     <style name="AsteroidImageViewStyle">
         <item name="android:layout_width">@dimen/image_dimensions</item>
         <item name="android:layout_height">@dimen/image_dimensions</item>
-        <item name="android:layout_marginLeft">@dimen/margin</item>
+        <item name="android:layout_marginStart">@dimen/margin</item>
     </style>
 
     <!-- Style of the buttons -->
@@ -74,8 +74,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@color/colorAccent</item>
         <item name="android:textColor">@color/colorTextIcons</item>
-        <item name="android:paddingLeft">@dimen/margin_list_item</item>
-        <item name="android:paddingRight">@dimen/margin_list_item</item>
+        <item name="android:paddingStart">@dimen/margin_list_item</item>
+        <item name="android:paddingEnd">@dimen/margin_list_item</item>
     </style>
 
     <!-- Style of the asteroid labels TextView -->

@@ -130,12 +130,13 @@ public class MainActivity extends AppCompatActivity
         if (!tabletSize) {
             if (drawer.isDrawerOpen(GravityCompat.START)) {
                 drawer.closeDrawer(GravityCompat.START);
-            } else {
-                super.onBackPressed();
             }
         }
-        /* Finish the activity */
-        finish();
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+            getSupportFragmentManager().popBackStack();
+        } else {
+            finish();
+        }
     }
 
     @Override
@@ -179,6 +180,7 @@ public class MainActivity extends AppCompatActivity
                         R.anim.enter_from_left, R.anim.exit_to_right);
             }
             fragmentTransaction.replace(R.id.fragment_container, fragment)
+                    .addToBackStack("fragment")
                     .commit();
         }
     }

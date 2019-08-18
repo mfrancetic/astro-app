@@ -118,24 +118,10 @@ public class MainActivity extends AppCompatActivity
             navigationView.setCheckedItem(R.id.nav_photo);
             navigationView.requestFocus();
             Fragment fragment = new PhotoFragment();
+            currentFragment = fragment;
             displayFragment(fragment);
         } else {
             currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        /* In phone mode, close the drawer */
-        if (!tabletSize) {
-            if (drawer.isDrawerOpen(GravityCompat.START)) {
-                drawer.closeDrawer(GravityCompat.START);
-            }
-        }
-        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-            getSupportFragmentManager().popBackStack();
-        } else {
-            finish();
         }
     }
 
@@ -182,6 +168,8 @@ public class MainActivity extends AppCompatActivity
             fragmentTransaction.replace(R.id.fragment_container, fragment)
                     .addToBackStack("fragment")
                     .commit();
+
+            currentFragment = fragment;
         }
     }
 
@@ -192,6 +180,7 @@ public class MainActivity extends AppCompatActivity
     public void onObservatorySelected(int position) {
         ObservatoryFragment observatoryFragment = new ObservatoryFragment();
         observatoryFragment.setObservatory(ObservatoryAdapter.observatories.get(position));
+        fragmentId = observatoryFragment.getId();
         displayFragment(observatoryFragment);
     }
 
@@ -218,5 +207,25 @@ public class MainActivity extends AppCompatActivity
         /* Add the fragment id to the savedInstanceState */
         outState.putInt(fragmentIdKey, fragmentId);
         super.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        /* In phone mode, close the drawer */
+        if (!tabletSize) {
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            }
+        }
+
+        /* If heading back from the ObservatoryFragment, go back to the ObservatoryListFragment.
+         * If not, close the application. */
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1 && currentFragment != null && currentFragment.toString().contains(getResources().getString(R.string.observatory_fragment_name))) {
+            getSupportFragmentManager().popBackStack();
+            currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
+        } else {
+            finish();
+        }
     }
 }

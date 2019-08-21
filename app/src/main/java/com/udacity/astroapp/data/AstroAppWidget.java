@@ -34,17 +34,24 @@ public class AstroAppWidget extends AppWidgetProvider {
                 /* If the photo exists, load it into the widget_image remote view */
                 Uri photoUri = Uri.parse(PhotoFragment.photoUrl);
                 Picasso picasso = new Picasso.Builder(context).build();
-                picasso.load(photoUri)
-                        .into(remoteViews, R.id.widget_image, new int[]{appWidgetId});
+                if (photoUri != null) {
+                    picasso.load(photoUri)
+                            .into(remoteViews, R.id.widget_image, new int[]{appWidgetId});
 
-                /* Set the text of the widget_image_title TextView to the photoTitle and make all
-                 * views visible */
-                if (PhotoFragment.photoTitle != null) {
-                    remoteViews.setTextViewText(R.id.widget_image_title, PhotoFragment.photoTitle);
+                    /* Set the text of the widget_image_title TextView to the photoTitle and make all
+                     * views visible */
+                    if (PhotoFragment.photoTitle != null) {
+                        remoteViews.setTextViewText(R.id.widget_image_title, PhotoFragment.photoTitle);
+                    }
+                    remoteViews.setViewVisibility(R.id.widget_image_title, View.VISIBLE);
+                    remoteViews.setViewVisibility(R.id.widget_image_label, View.VISIBLE);
+                    remoteViews.setViewVisibility(R.id.widget_image, View.VISIBLE);
+                } else {
+                    remoteViews.setViewVisibility(R.id.widget_image_label, View.GONE);
+                    remoteViews.setViewVisibility(R.id.widget_image_title, View.GONE);
+                    remoteViews.setViewVisibility(R.id.widget_image, View.VISIBLE);
+                    remoteViews.setImageViewResource(R.id.widget_image, R.mipmap.ic_launcher);
                 }
-                remoteViews.setViewVisibility(R.id.widget_image_title, View.VISIBLE);
-                remoteViews.setViewVisibility(R.id.widget_image_label, View.VISIBLE);
-                remoteViews.setViewVisibility(R.id.widget_image, View.VISIBLE);
             }  else {
             /* In case there is no photo, hide the image label and title, and show only the
              * ic_launcher logo */

@@ -42,7 +42,11 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -99,6 +103,8 @@ public class PhotoFragment extends Fragment {
     public static String photoUrl;
     private String photoMediaType;
     public static Uri videoUri;
+
+    private String localDate;
 
     /* Scroll position X and Y keys */
     private static final String SCROLL_POSITION_X = "scrollPositionX";
@@ -181,6 +187,11 @@ public class PhotoFragment extends Fragment {
             photoScrollView.requestFocus();
         }
 
+        /* Get the current time, put in the SimpleDataFormat and format it to the localDate */
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        localDate = simpleDateFormat.format(date);
+
         /* Check if there in a savedInstanceState */
         if (savedInstanceState == null) {
             /* In case there is no savedInstanceState, execute a PhotoAsyncTask */
@@ -212,7 +223,7 @@ public class PhotoFragment extends Fragment {
 
             try {
                 /* Create an URL and make a HTTP request */
-                URL url = QueryUtils.createPhotoUrl();
+                URL url = QueryUtils.createPhotoUrl(localDate);
                 String photoJson = QueryUtils.makeHttpRequest(url);
 
                 /* Create a new photoObject */
@@ -241,7 +252,7 @@ public class PhotoFragment extends Fragment {
         protected void onPostExecute(Photo newPhoto) {
             if (newPhoto != null && !jsonNotSuccessful) {
                 /* If there is a photo available, and the API call was successful,
-            populate the photo in the view */
+                populate the photo in the view */
                 populatePhoto(newPhoto);
             } else if (photoViewModel.getPhotos().getValue() != null && photoViewModel.getPhotos().getValue().size() != 0) {
                 /* In case there are values stored in the PhotoViewModel, retrieve those values */
@@ -303,28 +314,33 @@ public class PhotoFragment extends Fragment {
         photoDescriptionTextView.setVisibility(View.VISIBLE);
 
         /* Set text of the photoTitleTextView, photoDateTextView and photoDescriptionTextView */
-        photoTitleTextView.setText(photo.getPhotoTitle());
-        photoDateTextView.setText(photo.getPhotoDate());
+        if (photo.getPhotoTitle() != null && photo.getPhotoDate() != null && photo.getPhotoDescription() != null) {
+            photoTitleTextView.setText(photo.getPhotoTitle());
+            photoDateTextView.setText(photo.getPhotoDate());
+            photoDescriptionTextView.setText(photo.getPhotoDescription());
+        }
         if (Build.VERSION.SDK_INT >= 26) {
             photoDescriptionTextView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
         }
-        photoDescriptionTextView.setText(photo.getPhotoDescription());
 
         if (photoMediaType != null && photoMediaType.equals("video")) {
             /* If the photoMediaType exists and equals a video, get the URL,
              * parse it show the playVideoButton*/
             String videoUrl = photo.getPhotoUrl();
-            videoUri = Uri.parse(videoUrl);
-            playVideoButton.setVisibility(View.VISIBLE);
-            photoImageView.setVisibility(View.GONE);
+            if (videoUrl != null) {
+                videoUri = Uri.parse(videoUrl);
+                playVideoButton.setVisibility(View.VISIBLE);
+                photoImageView.setVisibility(View.GONE);
 
-            /* Set an OnClickListener to the playVideoButton */
-            playVideoButton.setOnClickListener(v -> {
-                /* OnClick, create and start an intent that opens the URL of the video */
-                Intent openVideoIntent = new Intent(Intent.ACTION_VIEW);
-                openVideoIntent.setData(videoUri);
-                startActivity(openVideoIntent);
-            });
+                /* Set an OnClickListener to the playVideoButton */
+                playVideoButton.setOnClickListener(v -> {
+                    /* OnClick, create and start an intent that opens the URL of the video */
+                    Intent openVideoIntent = new Intent(Intent.ACTION_VIEW);
+                    openVideoIntent.setData(videoUri);
+                    startActivity(openVideoIntent);
+                });
+            }
+
         } else if (photo.getPhotoMediaType().equals("image")) {
             /* In case the media type equals an image, hide the playVideoButton*/
             playVideoButton.setVisibility(View.GONE);
@@ -332,11 +348,13 @@ public class PhotoFragment extends Fragment {
 
             /* Get the photoUrl and load it into the photoImageView */
             Uri photoUri = Uri.parse(photo.getPhotoUrl());
-            Picasso picasso = new Picasso.Builder(context).build();
-            picasso.load(photoUri).into(photoImageView);
+            if (photoUri != null) {
+                Picasso picasso = new Picasso.Builder(context).build();
+                picasso.load(photoUri).into(photoImageView);
 
-            /* Set the content description of the photoImageView to inform the user about the photo's title */
-            photoImageView.setContentDescription(getString(R.string.photo_of_content_description) + " " + photoTitle);
+                /* Set the content description of the photoImageView to inform the user about the photo's title */
+                photoImageView.setContentDescription(getString(R.string.photo_of_content_description) + " " + photoTitle);
+            }
         }
         /* Update the app widget */
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

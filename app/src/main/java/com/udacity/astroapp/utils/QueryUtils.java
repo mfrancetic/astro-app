@@ -24,6 +24,7 @@ public class QueryUtils {
 
     /* Respective parameters and keys of the API queries */
     private static final String API_PARAM = "api_key";
+    private static final String DATE_PARAM = "date";
     private static final String START_DATE_PARAM = "start_date";
     private static final String END_DATE_PARAM = "end_date";
     private static final String LOCATION_PARAM = "location";
@@ -44,13 +45,14 @@ public class QueryUtils {
     /**
      * Create a URL for the photo
      */
-    public static URL createPhotoUrl() {
+    public static URL createPhotoUrl(String date) {
         URL url = null;
         Uri baserUri = Uri.parse(PHOTO_BASE_URL);
 
         Uri.Builder uriBuilder = baserUri.buildUpon();
         uriBuilder
                 .appendQueryParameter(API_PARAM, api_key)
+                .appendQueryParameter(DATE_PARAM, date)
                 .build();
         try {
             url = new URL(uriBuilder.toString());

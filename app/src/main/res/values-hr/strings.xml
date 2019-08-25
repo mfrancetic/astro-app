@@ -30,4 +30,5 @@
     <string name="velocity_label">Brzina kretanja:</string>
     <string name="widget_image_content_description">Slika dana</string>
     <string name="widget_photo_of_the_day">Slika dana</string>
+    <string name="nav_header_nasa">Podaci preuzeti s NASA-e</string>
 </resources>

@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/nav_header_height"
     android:background="@drawable/side_nav_bar"
+    android:clickable="true"
+    android:focusable="true"
     android:gravity="bottom"
     android:orientation="vertical"
     android:paddingStart="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:clickable="true"
-    android:focusable="true"
     android:paddingEnd="@dimen/activity_horizontal_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
@@ -25,15 +25,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:textAlignment="viewStart"
         android:text="@string/nav_header_title"
-        android:textColor="@color/colorTextIcons"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/colorTextIcons" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/nav_header_subtitle"
         android:textAlignment="viewStart"
-        android:textColor="@color/colorTextIcons"
-        android:text="@string/nav_header_subtitle" />
+        android:textColor="@color/colorTextIcons" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nav_header_nasa"
+        android:textAlignment="viewStart"
+        android:textColor="@color/colorTextIcons" />
 </LinearLayout>

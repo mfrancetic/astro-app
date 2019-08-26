@@ -28,6 +28,8 @@
     <string name="menu_observatories">Observatories</string>
 
     <string name="menu_refresh">Refresh</string>
+    <string name="share_photo">Share photo</string>
+    <string name="share_video">Share video</string>
 
     <!-- AstroAppWidget strings -->
     <string name="widget_photo_of_the_day">Photo of the day</string>

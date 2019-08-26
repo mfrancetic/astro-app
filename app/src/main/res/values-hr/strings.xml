@@ -32,4 +32,6 @@
     <string name="widget_photo_of_the_day">Slika dana</string>
     <string name="nav_header_nasa">Podaci preuzeti s NASA-e</string>
     <string name="menu_refresh">Osvježi</string>
+    <string name="share_photo">Podijeli sliku</string>
+    <string name="share_video">Podijeli videozapis</string>
 </resources>

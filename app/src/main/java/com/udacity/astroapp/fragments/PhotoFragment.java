@@ -8,12 +8,17 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -33,6 +38,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
@@ -45,6 +51,8 @@ import com.udacity.astroapp.utils.QueryUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -55,6 +63,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.internal.Util;
 
 public class PhotoFragment extends Fragment {
 
@@ -88,6 +97,9 @@ public class PhotoFragment extends Fragment {
 
     @BindView(R.id.play_video_button)
     Button playVideoButton;
+
+    @BindView(R.id.fab)
+    FloatingActionButton floatingActionButton;
 
     private Context context;
 
@@ -345,7 +357,6 @@ public class PhotoFragment extends Fragment {
                     startActivity(openVideoIntent);
                 });
             }
-
         } else if (photo.getPhotoMediaType().equals("image")) {
             /* In case the media type equals an image, hide the playVideoButton*/
             playVideoButton.setVisibility(View.GONE);
@@ -361,6 +372,38 @@ public class PhotoFragment extends Fragment {
                 photoImageView.setContentDescription(getString(R.string.photo_of_content_description) + " " + photoTitle);
             }
         }
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                if (photo.getPhotoMediaType().equals("image")) {
+                    Picasso picasso = new Picasso.Builder(context).build();
+                    picasso.load(photoUrl).into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            intent.setType("image/*");
+                            intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(bitmap, context));
+                            startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_photo)));
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+                        }
+                    });
+                } else if (photo.getPhotoMediaType().equals("video")) {
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, photoUrl);
+                    startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_video)));
+                }
+            }
+        });
+
         /* Update the app widget */
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         Intent widgetIntent = new Intent(context, AstroAppWidget.class);
@@ -385,5 +428,21 @@ public class PhotoFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-
+    /**
+     * Get local bitmap uri, in order to share the photo
+     */
+    public Uri getLocalBitmapUri(Bitmap bitmap, Context context) {
+        Uri bitmapUri = null;
+        try {
+            File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                    "share_image_" + System.currentTimeMillis() + ".png");
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, fileOutputStream);
+            fileOutputStream.close();
+            bitmapUri = Uri.fromFile(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmapUri;
+    }
 }

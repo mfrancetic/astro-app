@@ -27,6 +27,8 @@
     <string name="menu_asteroids">Asteroids</string>
     <string name="menu_observatories">Observatories</string>
 
+    <string name="menu_refresh">Refresh</string>
+
     <!-- AstroAppWidget strings -->
     <string name="widget_photo_of_the_day">Photo of the day</string>
 

@@ -1,6 +1,7 @@
 package com.udacity.astroapp.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
@@ -159,6 +160,7 @@ public class PhotoFragment extends Fragment {
         playVideoButton.setVisibility(View.GONE);
         emptyTextView.setVisibility(View.GONE);
         emptyImageView.setVisibility(View.GONE);
+        floatingActionButton.hide();
         loadingIndicator.setVisibility(View.VISIBLE);
 
         appDatabase = AppDatabase.getInstance(getContext());
@@ -305,6 +307,7 @@ public class PhotoFragment extends Fragment {
                 photoTitleTextView.setVisibility(View.GONE);
                 photoDescriptionTextView.setVisibility(View.GONE);
                 photoDateTextView.setVisibility(View.GONE);
+                floatingActionButton.hide();
                 photoImageView.setVisibility(View.INVISIBLE);
                 emptyTextView.setVisibility(View.VISIBLE);
                 emptyImageView.setVisibility(View.VISIBLE);
@@ -329,6 +332,7 @@ public class PhotoFragment extends Fragment {
         photoDateTextView.setVisibility(View.VISIBLE);
         photoTitleTextView.setVisibility(View.VISIBLE);
         photoDescriptionTextView.setVisibility(View.VISIBLE);
+        floatingActionButton.show();
 
         /* Set text of the photoTitleTextView, photoDateTextView and photoDescriptionTextView */
         if (photo.getPhotoTitle() != null && photo.getPhotoDate() != null && photo.getPhotoDescription() != null) {

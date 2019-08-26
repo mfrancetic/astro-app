@@ -1,107 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/photo_scroll_view"
+    android:id="@+id/photo_coordinator_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/fragment_margin_start"
-    android:layout_marginTop="?actionBarSize"
-    android:paddingStart="@dimen/margin_list_item"
-    android:paddingEnd="@dimen/margin_list_item"
-    android:paddingBottom="@dimen/margin"
-    tools:ignore="Overdraw">
+    android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <ScrollView
+        android:id="@+id/photo_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/fragment_margin_start"
+        android:layout_marginTop="?actionBarSize"
+        android:paddingStart="@dimen/margin_list_item"
+        android:paddingEnd="@dimen/margin_list_item"
+        android:paddingBottom="@dimen/margin_list_item"
+        tools:ignore="Overdraw">
 
-        <TextView
-            android:id="@+id/photo_empty_text_view"
-            style="@style/EmptyTextViewStyle"
-            android:text="@string/no_photo_found"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/photo_empty_image_view" />
-
-        <ImageView
-            android:id="@+id/photo_empty_image_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@null"
-            android:paddingTop="@dimen/margin"
-            android:paddingBottom="@dimen/margin"
-            android:src="@drawable/ic_nothing_found"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <FrameLayout
-            android:id="@+id/photo_video_frame_layout"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/margin"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/photo_empty_text_view"
+                style="@style/EmptyTextViewStyle"
+                android:text="@string/no_photo_found"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/photo_empty_image_view" />
 
             <ImageView
-                android:id="@+id/photo_view"
-                style="@style/PhotoImageView"
-                android:layout_gravity="center"
-                android:contentDescription="@string/photo_of_the_day_content_description"
-                tools:src="@mipmap/ic_launcher" />
+                android:id="@+id/photo_empty_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:paddingTop="@dimen/margin"
+                android:paddingBottom="@dimen/margin"
+                android:src="@drawable/ic_nothing_found"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/play_video_button"
-                style="@style/ButtonStyle"
-                android:layout_gravity="center"
-                android:nextFocusForward="@id/photo_title_text_view"
-                android:text="@string/play_video_button" />
-        </FrameLayout>
+            <FrameLayout
+                android:id="@+id/photo_video_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/photo_title_text_view"
-            style="@style/PhotoTitleTextView"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/photo_video_frame_layout"
-            tools:text="Moons near Jupiter" />
+                <ImageView
+                    android:id="@+id/photo_view"
+                    style="@style/PhotoImageView"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/photo_of_the_day_content_description"
+                    tools:src="@mipmap/ic_launcher" />
 
-        <ProgressBar
-            android:id="@+id/photo_loading_indicator"
-            style="@style/LoadingIndicatorStyle"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                <Button
+                    android:id="@+id/play_video_button"
+                    style="@style/ButtonStyle"
+                    android:layout_gravity="center"
+                    android:nextFocusForward="@id/photo_title_text_view"
+                    android:text="@string/play_video_button" />
+            </FrameLayout>
 
-        <TextView
-            android:id="@+id/photo_date_text_view"
-            style="@style/SubtitleTextView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/photo_title_text_view"
-            tools:text="2019-06-01" />
+            <TextView
+                android:id="@+id/photo_title_text_view"
+                style="@style/PhotoTitleTextView"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/photo_video_frame_layout"
+                tools:text="Moons near Jupiter" />
 
-        <TextView
-            android:id="@+id/photo_description_text_view"
-            style="@style/PhotoDescriptionTextView"
-            android:textAlignment="viewStart"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/photo_date_text_view"
-            tools:text="On May 20, a nearly Full Moon and Jupiter shared this telephoto field of view. On May 20, a nearly Full Moon and Jupiter shared this telephoto field of view." />
+            <ProgressBar
+                android:id="@+id/photo_loading_indicator"
+                style="@style/LoadingIndicatorStyle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/margin"
-            android:src="@drawable/ic_share"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/photo_description_text_view" />
-    </android.support.constraint.ConstraintLayout>
-</ScrollView>
+            <TextView
+                android:id="@+id/photo_date_text_view"
+                style="@style/SubtitleTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/photo_title_text_view"
+                tools:text="2019-06-01" />
+
+            <TextView
+                android:id="@+id/photo_description_text_view"
+                style="@style/PhotoDescriptionTextView"
+                android:textAlignment="viewStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/photo_date_text_view"
+                tools:text="On May 20, a nearly Full Moon and Jupiter shared this telephoto field of view. On May 20, a nearly Full Moon and Jupiter shared this telephoto field of view." />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_share"
+        app:fabSize="normal"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginBottom="@dimen/margin"
+        app:layout_anchorGravity="bottom|end" />
+</android.support.design.widget.CoordinatorLayout>

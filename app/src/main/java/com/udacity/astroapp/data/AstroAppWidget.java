@@ -28,7 +28,7 @@ public class AstroAppWidget extends AppWidgetProvider {
 
         /* Create a new intent that launches the MainActivity.class, as well as a pending Intent*/
         Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             if (PhotoFragment.photo != null && PhotoFragment.photoUrl != null && PhotoFragment.videoUri == null) {
                 /* If the photo exists, load it into the widget_image remote view */
@@ -87,6 +87,7 @@ public class AstroAppWidget extends AppWidgetProvider {
                 appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_image);
                 appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_image_label);
                 appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_image_title);
+                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_layout);
             }
         }
     }

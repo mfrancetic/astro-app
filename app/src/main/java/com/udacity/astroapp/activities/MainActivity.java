@@ -243,7 +243,9 @@ public class MainActivity extends AppCompatActivity
         if (item.getItemId() == R.id.menu_refresh) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
+            if (currentFragment != null) {
+                fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
+            }
         }
         return true;
     }

@@ -1,7 +1,6 @@
 package com.udacity.astroapp.fragments;
 
 import android.annotation.SuppressLint;
-import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
@@ -11,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,19 +17,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -64,7 +59,6 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.internal.Util;
 
 public class PhotoFragment extends Fragment {
 
@@ -72,6 +66,9 @@ public class PhotoFragment extends Fragment {
     private static final String LOG_TAG = PhotoFragment.class.getSimpleName();
 
     /* Views of the PhotoFragment */
+    @BindView(R.id.photo_coordinator_layout)
+    CoordinatorLayout photoCoordinatorLayout;
+
     @BindView(R.id.photo_view)
     ImageView photoImageView;
 
@@ -204,6 +201,19 @@ public class PhotoFragment extends Fragment {
 
         if (photoScrollView != null) {
             photoScrollView.requestFocus();
+            photoScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                @Override
+                public void onScrollChanged() {
+                    scrollX = photoScrollView.getScrollX();
+                    scrollY = photoScrollView.getScrollY();
+                    /* Hide the floatingActionButton when scrolling down, and show it when scrolling up*/
+                    if (scrollY > 0 || scrollY < 0 && floatingActionButton.isShown()) {
+                        floatingActionButton.hide();
+                    } else {
+                        floatingActionButton.show();
+                    }
+                }
+            });
         }
 
         /* Get the current time, put in the SimpleDataFormat and format it to the localDate */

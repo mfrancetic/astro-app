@@ -21,6 +21,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -249,9 +250,9 @@ public class PhotoFragment extends Fragment {
 
         @Override
         protected Photo doInBackground(String... strings) {
-
             try {
                 /* Create an URL and make a HTTP request */
+
                 URL url = QueryUtils.createPhotoUrl(localDate);
                 String photoJson = QueryUtils.makeHttpRequest(url);
 
@@ -398,7 +399,12 @@ public class PhotoFragment extends Fragment {
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                             intent.setType("image/*");
+//                            Uri bitmapUri = FileProvider.getUriForFile(context,
+//                                    context.getApplicationContext().getPackageName() +
+//                                    ".provider", file);
+//                            intent.setDataAndType(bitmapUri, mimeType);
                             intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(bitmap, context));
+//                            intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(bitmap, context));
                             startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_photo)));
                         }
 
@@ -413,6 +419,7 @@ public class PhotoFragment extends Fragment {
                 } else if (photo.getPhotoMediaType().equals("video")) {
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_TEXT, photoUrl);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_video)));
                 }
             }
@@ -453,7 +460,8 @@ public class PhotoFragment extends Fragment {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, fileOutputStream);
             fileOutputStream.close();
-            bitmapUri = Uri.fromFile(file);
+            bitmapUri = FileProvider.getUriForFile(context, context.getApplicationContext()
+            .getPackageName() + ".provider", file);
         } catch (IOException e) {
             e.printStackTrace();
         }

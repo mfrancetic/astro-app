@@ -35,4 +35,7 @@
     <string name="share_photo_content_description">Podijeli sliku</string>
     <string name="share_video_content_description">Podijeli videozapis</string>
     <string name="share_content_description">Podijeli sadržaj</string>
+    <string name="menu_asteroids_content_description">Navigiraj do asteroida</string>
+    <string name="menu_observatories_content_description">Navigiraj do zvjezdarnica</string>
+    <string name="menu_photo_content_description">Navigiraj do slike dana</string>
 </resources>

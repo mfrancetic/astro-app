@@ -15,6 +15,9 @@
     <string name="share_content_description">Share content</string>
     <string name="share_photo_content_description">Share photo</string>
     <string name="share_video_content_description">Share video</string>
+    <string name="menu_photo_content_description">Navigate to Photo of the day</string>
+    <string name="menu_asteroids_content_description">Navigate to Asteroids</string>
+    <string name="menu_observatories_content_description">Navigate to Observatories</string>
 
     <!-- Snackbar text, that indicates the data is populated from the database -->
     <string name="snackbar_offline_mode">You are currently offline. Displaying local data</string>
@@ -26,9 +29,9 @@
     <string name="nav_header_subtitle">Discover space</string>
     <string name="nav_header_nasa">Data provided by NASA</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
-    <string name="menu_photo">Navigate to Photo of the day</string>
-    <string name="menu_asteroids">Navigate to Asteroids</string>
-    <string name="menu_observatories">Navigate to Observatories</string>
+    <string name="menu_photo">Photo of the day</string>
+    <string name="menu_asteroids">Asteroids</string>
+    <string name="menu_observatories">Observatories</string>
 
     <string name="menu_refresh">Refresh</string>
 

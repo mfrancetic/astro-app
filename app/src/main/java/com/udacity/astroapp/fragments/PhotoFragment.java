@@ -39,7 +39,7 @@ import com.squareup.picasso.Target;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
-import com.udacity.astroapp.data.AstroAppWidget;
+//import com.udacity.astroapp.data.AstroAppWidget;
 import com.udacity.astroapp.data.PhotoViewModel;
 import com.udacity.astroapp.data.PhotoViewModelFactory;
 import com.udacity.astroapp.models.Photo;
@@ -184,16 +184,16 @@ public class PhotoFragment extends Fragment {
                             appDatabase.astroDao().addPhoto(photo);
                         }
                     });
-
-                    /* Update the app widget */
-                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                    Intent widgetIntent = new Intent(context, AstroAppWidget.class);
-                    widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-
-                    /* Send the broadcast to update all the app widget id's */
-                    int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), AstroAppWidget.class.getName()));
-                    widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-                    context.sendBroadcast(widgetIntent);
+//
+//                    /* Update the app widget */
+//                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+//                    Intent widgetIntent = new Intent(context, AstroAppWidget.class);
+//                    widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+//
+//                    /* Send the broadcast to update all the app widget id's */
+//                    int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), AstroAppWidget.class.getName()));
+//                    widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+//                    context.sendBroadcast(widgetIntent);
                 }
             }
         });
@@ -422,15 +422,15 @@ public class PhotoFragment extends Fragment {
             }
         });
 
-        /* Update the app widget */
-        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-        Intent widgetIntent = new Intent(context, AstroAppWidget.class);
-        widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-
-        /* Send the broadcast to update all the app widget id's */
-        int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), AstroAppWidget.class.getName()));
-        widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-        context.sendBroadcast(widgetIntent);
+//        /* Update the app widget */
+//        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+//        Intent widgetIntent = new Intent(context, AstroAppWidget.class);
+//        widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+//
+//        /* Send the broadcast to update all the app widget id's */
+//        int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), AstroAppWidget.class.getName()));
+//        widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+//        context.sendBroadcast(widgetIntent);
     }
 
     @Override

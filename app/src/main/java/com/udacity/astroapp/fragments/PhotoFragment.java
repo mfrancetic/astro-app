@@ -394,18 +394,14 @@ public class PhotoFragment extends Fragment {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 if (photo.getPhotoMediaType().equals("image")) {
+                    floatingActionButton.setContentDescription(getString(R.string.share_photo_content_description));
                     Picasso picasso = new Picasso.Builder(context).build();
                     picasso.load(photoUrl).into(new Target() {
                         @Override
                         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                             intent.setType("image/*");
-//                            Uri bitmapUri = FileProvider.getUriForFile(context,
-//                                    context.getApplicationContext().getPackageName() +
-//                                    ".provider", file);
-//                            intent.setDataAndType(bitmapUri, mimeType);
                             intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(bitmap, context));
-//                            intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(bitmap, context));
-                            startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_photo)));
+                            startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_photo_content_description)));
                         }
 
                         @Override
@@ -417,10 +413,11 @@ public class PhotoFragment extends Fragment {
                         }
                     });
                 } else if (photo.getPhotoMediaType().equals("video")) {
+                    floatingActionButton.setContentDescription(getString(R.string.share_video_content_description));
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_TEXT, photoUrl);
                     intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_video)));
+                    startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_video_content_description)));
                 }
             }
         });

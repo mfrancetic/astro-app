@@ -12,6 +12,9 @@
     <string name="marker_of_the_observatory_content_description">Location of the observatory</string>
     <string name="asteroid_is_hazardous_content_descriptions">Asteroid is hazardous</string>
     <string name="asteroid_not_hazardous_content_description">Asteroid is not hazardous</string>
+    <string name="share_content_description">Share content</string>
+    <string name="share_photo_content_description">Share photo</string>
+    <string name="share_video_content_description">Share video</string>
 
     <!-- Snackbar text, that indicates the data is populated from the database -->
     <string name="snackbar_offline_mode">You are currently offline. Displaying local data</string>
@@ -23,13 +26,12 @@
     <string name="nav_header_subtitle">Discover space</string>
     <string name="nav_header_nasa">Data provided by NASA</string>
     <string name="nav_header_desc" translatable="false">Navigation header</string>
-    <string name="menu_photo">Photo of the day</string>
-    <string name="menu_asteroids">Asteroids</string>
-    <string name="menu_observatories">Observatories</string>
+    <string name="menu_photo">Navigate to Photo of the day</string>
+    <string name="menu_asteroids">Navigate to Asteroids</string>
+    <string name="menu_observatories">Navigate to Observatories</string>
 
     <string name="menu_refresh">Refresh</string>
-    <string name="share_photo">Share photo</string>
-    <string name="share_video">Share video</string>
+
 
     <!-- AstroAppWidget strings -->
     <string name="widget_photo_of_the_day">Photo of the day</string>

@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity
 
         /* In case there is no current fragment, replace it */
         if (currentFragment == null) {
+            currentFragment = new PhotoFragment();
             /* In phone mode, set an animation for entering and exiting the fragment */
             if (!tabletSize) {
                 fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
@@ -223,10 +224,12 @@ public class MainActivity extends AppCompatActivity
 
         /* If heading back from the ObservatoryFragment, go back to the ObservatoryListFragment.
          * If not, close the application. */
-        if (getSupportFragmentManager().getBackStackEntryCount() > 1 && currentFragment != null && currentFragment.toString().contains(getResources().getString(R.string.observatory_fragment_name))) {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1 && currentFragment != null &&
+                currentFragment.toString().contains(getResources().getString(R.string.observatory_fragment_name))) {
             getSupportFragmentManager().popBackStack();
             currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
         } else {
+            currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
             finish();
         }
     }

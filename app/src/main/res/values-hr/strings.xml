@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AstroApp</string>
-    <string name="approach_date_label">Datum približavanja:</string>
+    <string name="approach_date_label">Datum dolaska:</string>
     <string name="asteroid_hazardous_image">Pokazatelj opasnosti asteroida</string>
     <string name="asteroid_image_content_description">Slika asteroida</string>
     <string name="asteroid_is_hazardous_content_descriptions">Asteroid je opasan</string>

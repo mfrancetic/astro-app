@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.TooltipCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -132,9 +133,11 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
         if (isHazardous) {
             asteroidHazardousImage.setImageResource(R.drawable.hazardous_image);
             asteroidHazardousImage.setContentDescription(context.getString(R.string.asteroid_is_hazardous_content_descriptions));
+            TooltipCompat.setTooltipText(asteroidHazardousImage, context.getString(R.string.asteroid_is_hazardous_content_descriptions));
         } else {
             asteroidHazardousImage.setImageResource(R.drawable.not_hazardous_image);
             asteroidHazardousImage.setContentDescription(context.getString(R.string.asteroid_not_hazardous_content_description));
+            TooltipCompat.setTooltipText(asteroidHazardousImage, context.getString(R.string.asteroid_not_hazardous_content_description));
         }
 
         /* Get and parse the asteroidUrl */

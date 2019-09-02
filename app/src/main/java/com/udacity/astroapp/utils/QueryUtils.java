@@ -19,7 +19,7 @@ public class QueryUtils {
     /* URL's of the photo, asteroid and observatory search */
     private static final String PHOTO_BASE_URL = "https://api.nasa.gov/planetary/apod?";
     private static final String ASTEROID_BASE_URl = "https://api.nasa.gov/neo/rest/v1/feed?";
-    private static final String OBSERVATORY_BASE_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=observatory";
+    private static final String OBSERVATORY_BASE_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=planetarium&observatory";
     private static final String OBSERVATORY_DETAILS_BASE_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
 
     /* Respective parameters and keys of the API queries */

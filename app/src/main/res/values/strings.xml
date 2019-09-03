@@ -22,6 +22,8 @@
     <!-- Snackbar text, that indicates the data is populated from the database -->
     <string name="snackbar_offline_mode">You are currently offline. Displaying local data</string>
 
+    <string name="snackbar_location_disabled">Location is disabled. Please turn location on</string>
+
     <!-- Navigation drawer labels -->
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
@@ -56,11 +58,13 @@
     <!-- ObservatoryListFragment strings -->
     <string name="no_observatories_found">No observatories found</string>
     <string name="observatory_open">Open now</string>
+    <string name="observatory_list_fragment_name" translatable="false">ObservatoryListFragment</string>
 
     <!-- ObservatoryFragment strings -->
     <string name="observatory_fragment_name" translatable="false">ObservatoryFragment</string>
-    <string name="location_access_not_granted_toast">Location access not granted. Please allow location access</string>
+    <string name="location_access_not_granted_toast">We need permission to use your location for the purpose of finding observatories near you. Please allow location permission in your phone settings and refresh.</string>
     <string name="observatory_details_not_found">Observatory details not found</string>
     <string name="observatory_visit_homepage_button">Visit homepage</string>
     <string name="activate_location">Activate location</string>
+    <string name="no_observatories_found_location_disabled">Location is disabled. Please turn on location and refresh.</string>
 </resources>

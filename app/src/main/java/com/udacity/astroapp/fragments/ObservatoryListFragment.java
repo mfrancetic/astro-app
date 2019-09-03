@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.adapters.ObservatoryAdapter;
 import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
@@ -58,11 +59,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.support.v4.content.ContextCompat.checkSelfPermission;
 
 public class ObservatoryListFragment extends Fragment implements LocationListener {
 
     /* Tag for log messages */
     private static final String LOG_TAG = ObservatoryListFragment.class.getSimpleName();
+
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
+
 
     /* Views of the PhotoFragment */
     @BindView(R.id.observatory_list_recycler_view)
@@ -100,7 +105,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     /* Boolean that indicates if a device is a phone or tablet */
     private boolean isTablet;
 
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
+//    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
     private Location location;
     private String currentLocation;
 
@@ -302,6 +307,13 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             } else {
                 /* In case there are also no values stored in the database, hide all the
                  * views except the empty views */
+                if (!isLocationEnabled(context)) {
+                    Snackbar snackbar = Snackbar.make(observatoryRecyclerView, getString(R.string.snackbar_location_disabled), Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                    observatoryListEmptyTextView.setText(getString(R.string.no_observatories_found_location_disabled));
+                } else {
+                    observatoryListEmptyTextView.setText(getString(R.string.no_observatories_found));
+                }
                 observatoryRecyclerView.setVisibility(View.GONE);
                 observatoryListLoadingIndicator.setVisibility(View.GONE);
                 observatoryListEmptyTextView.setVisibility(View.VISIBLE);
@@ -437,19 +449,53 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     public void checkLocationPermission() {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
+        if (checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION)
+                checkSelfPermission(context, ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
+//            if (getActivity() != null) {
+//                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+//                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+//}
+            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
             if (getActivity() != null) {
                 ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+}
+            } else {
+                requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             }
+
+
+//            onRequestPermissionsResult(switch (PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
+//                case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+//                    // If request is cancelled, the result arrays are empty.
+//                    if (grantResults.length > 0
+//                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                        // permission was granted, yay! Do the
+//                        // contacts-related task you need to do.
+//                        Toast.makeText(context, "Permission granted", Toast.LENGTH_SHORT).show();
+//                    } else {
+//
+//                        // permission denied, boo! Disable the
+//                        // functionality that depends on this permission.
+//                        Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show();
+//                    }
+//                    return;
+//                }
+
+//            });
         } else {
             /* In case the activity does have a permission, get the last known location and pass the location to the
            onLocationChangedMethod */
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             onLocationChanged(location);
         }
+    }
+
+    @Override
+    public boolean shouldShowRequestPermissionRationale(@NonNull String permission) {
+        return super.shouldShowRequestPermissionRationale(permission);
     }
 }

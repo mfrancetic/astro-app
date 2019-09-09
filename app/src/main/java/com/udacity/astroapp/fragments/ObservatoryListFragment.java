@@ -2,10 +2,13 @@ package com.udacity.astroapp.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.Location;
@@ -31,6 +34,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -85,6 +89,9 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     @BindView(R.id.observatory_list_empty_image_view)
     ImageView observatoryListEmptyImageView;
 
+    @BindView(R.id.activate_location_button)
+    Button activateLocationButton;
+
     private ObservatoryAdapter observatoryAdapter;
     private static final String observatoryListKey = "observatoryList";
     private List<Observatory> observatoryList;
@@ -105,7 +112,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     /* Boolean that indicates if a device is a phone or tablet */
     private boolean isTablet;
 
-//    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
+    //    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
     private Location location;
     private String currentLocation;
 
@@ -114,6 +121,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     /* Instances of the AppDatabase and ViewModel */
     private AppDatabase appDatabase;
     private ObservatoryViewModel observatoryViewModel;
+
+    public static boolean locationActivatedNeedsToBeRefreshed;
 
     public interface OnObservatoryClickListener {
         void onObservatorySelected(int position);
@@ -145,9 +154,12 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         /* Get the orientation of the device */
         orientation = getResources().getConfiguration().orientation;
 
+//        locationActivatedNeedsToBeRefreshed = false;
+
         /* Hide the empty views and show the loadingIndicator */
         observatoryListEmptyTextView.setVisibility(View.GONE);
         observatoryListEmptyImageView.setVisibility(View.GONE);
+        activateLocationButton.setVisibility(View.GONE);
         observatoryListLoadingIndicator.setVisibility(View.VISIBLE);
 
         context = observatoryListLoadingIndicator.getContext();
@@ -308,9 +320,16 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                 /* In case there are also no values stored in the database, hide all the
                  * views except the empty views */
                 if (!isLocationEnabled(context)) {
-                    Snackbar snackbar = Snackbar.make(observatoryRecyclerView, getString(R.string.snackbar_location_disabled), Snackbar.LENGTH_LONG);
-                    snackbar.show();
+//                    Snackbar snackbar = Snackbar.make(observatoryRecyclerView, getString(R.string.snackbar_location_disabled), Snackbar.LENGTH_LONG);
+//                    snackbar.show();
                     observatoryListEmptyTextView.setText(getString(R.string.no_observatories_found_location_disabled));
+                    activateLocationButton.setVisibility(View.VISIBLE);
+                    activateLocationButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            activateLocation();
+                        }
+                    });
                 } else {
                     observatoryListEmptyTextView.setText(getString(R.string.no_observatories_found));
                 }
@@ -458,10 +477,10 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 //                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 //}
             if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            if (getActivity() != null) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-}
+                if (getActivity() != null) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                }
             } else {
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -495,5 +514,18 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     @Override
     public boolean shouldShowRequestPermissionRationale(@NonNull String permission) {
         return super.shouldShowRequestPermissionRationale(permission);
+    }
+
+    public void activateLocation() {
+        new AlertDialog.Builder(context)
+                .setMessage(R.string.snackbar_location_disabled)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.open_location_settings, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        locationActivatedNeedsToBeRefreshed = true;
+                    }
+                }).show();
     }
 }

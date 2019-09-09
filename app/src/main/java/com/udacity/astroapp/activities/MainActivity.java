@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     Toast.makeText(getApplicationContext(), getString(R.string.toast_permission_granted), Toast.LENGTH_SHORT).show();
-                    if (currentFragment.toString().contains(getResources().getString(R.string.observatory_list_fragment_name))) {
+                    if (currentFragment != null && currentFragment.toString().contains(getResources().getString(R.string.observatory_list_fragment_name))) {
                         refreshFragment();
 //                        FragmentManager fragmentManager = getSupportFragmentManager();
 //                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity
                         // functionality that depends on this permission.
                         Toast.makeText(getApplicationContext(), getString(R.string.toast_permission_declined), Toast.LENGTH_SHORT).show();
                     }
-                    return;
+//                    return;
                 }
 
             }
@@ -319,6 +319,10 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         // if needsToBeRefreshed --> refresh the ObservatoryListFragment
+        if (ObservatoryListFragment.locationActivatedNeedsToBeRefreshed) {
+            refreshFragment();
+            ObservatoryListFragment.locationActivatedNeedsToBeRefreshed = false;
+        }
     }
 
     @Override

@@ -11,22 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/observatory_list_recycler_view"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/activate_location_button"
+            style="@style/ButtonStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <!-- Empty view is only visible when the list has no items-->
-        <TextView
-            android:id="@+id/observatory_list_empty_text_view"
-            style="@style/EmptyTextViewStyle"
-            android:text="@string/no_observatories_found"
+            android:text="@string/activate_location"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/observatory_list_empty_image_view" />
+            android:layout_marginTop="@dimen/margin"
+            app:layout_constraintTop_toBottomOf="@id/observatory_list_empty_text_view" />
 
+        <!-- Empty view is only visible when the list has no items-->
         <ImageView
             android:id="@+id/observatory_list_empty_image_view"
             android:layout_width="wrap_content"
@@ -45,6 +41,21 @@
             android:layout_centerInParent="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/observatory_list_empty_text_view"
+            style="@style/EmptyTextViewStyle"
+            android:text="@string/no_observatories_found"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/observatory_list_empty_image_view" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/observatory_list_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>

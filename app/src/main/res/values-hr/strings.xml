@@ -38,4 +38,11 @@
     <string name="menu_asteroids_content_description">Navigiraj do asteroida</string>
     <string name="menu_observatories_content_description">Navigiraj do zvjezdarnica</string>
     <string name="menu_photo_content_description">Navigiraj do slike dana</string>
+    <string name="activate_location">Aktiviraj lokaciju</string>
+    <string name="no_observatories_found_location_disabled">Lokacija je onemogućena.</string>
+    <string name="snackbar_location_disabled">Lokacija je onemogućena. Molim uključiti lokaciju</string>
+    <string name="toast_permission_declined">Pristup lokaciji nije dopušten</string>
+    <string name="toast_permission_granted">Pristup lokaciji je dopušten</string>
+    <string name="cancel">Odustani</string>
+    <string name="open_location_settings">Otvori postavke lokacije</string>
 </resources>

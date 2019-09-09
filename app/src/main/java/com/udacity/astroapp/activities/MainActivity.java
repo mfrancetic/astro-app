@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -266,7 +265,7 @@ public class MainActivity extends AppCompatActivity
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    Toast.makeText(getApplicationContext(), getString(R.string.toast_permission_granted), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.location_permission_granted), Toast.LENGTH_SHORT).show();
                     if (currentFragment != null && currentFragment.toString().contains(getResources().getString(R.string.observatory_list_fragment_name))) {
                         refreshFragment();
 //                        FragmentManager fragmentManager = getSupportFragmentManager();
@@ -280,7 +279,7 @@ public class MainActivity extends AppCompatActivity
                     else {
                         // permission denied, boo! Disable the
                         // functionality that depends on this permission.
-                        Toast.makeText(getApplicationContext(), getString(R.string.toast_permission_declined), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.location_permission_declined), Toast.LENGTH_SHORT).show();
                     }
 //                    return;
                 }

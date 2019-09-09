@@ -41,8 +41,9 @@
     <string name="activate_location">Aktiviraj lokaciju</string>
     <string name="no_observatories_found_location_disabled">Lokacija je onemogućena.</string>
     <string name="snackbar_location_disabled">Lokacija je onemogućena. Molim uključiti lokaciju</string>
-    <string name="toast_permission_declined">Pristup lokaciji nije dopušten</string>
-    <string name="toast_permission_granted">Pristup lokaciji je dopušten</string>
+    <string name="location_permission_declined">Pristup lokaciji nije dopušten</string>
+    <string name="location_permission_granted">Pristup lokaciji je dopušten</string>
     <string name="cancel">Odustani</string>
     <string name="open_location_settings">Otvori postavke lokacije</string>
+    <string name="grant_location_permission">Dopusti pristup lokaciji</string>
 </resources>

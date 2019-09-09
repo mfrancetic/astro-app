@@ -92,6 +92,9 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     @BindView(R.id.activate_location_button)
     Button activateLocationButton;
 
+    @BindView(R.id.grant_location_permission_button)
+    Button grantLocationPermissionButton;
+
     private ObservatoryAdapter observatoryAdapter;
     private static final String observatoryListKey = "observatoryList";
     private List<Observatory> observatoryList;
@@ -123,6 +126,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     private ObservatoryViewModel observatoryViewModel;
 
     public static boolean locationActivatedNeedsToBeRefreshed;
+
+    public boolean locationPermissionGranted;
 
     public interface OnObservatoryClickListener {
         void onObservatorySelected(int position);
@@ -160,6 +165,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         observatoryListEmptyTextView.setVisibility(View.GONE);
         observatoryListEmptyImageView.setVisibility(View.GONE);
         activateLocationButton.setVisibility(View.GONE);
+        grantLocationPermissionButton.setVisibility(View.GONE);
         observatoryListLoadingIndicator.setVisibility(View.VISIBLE);
 
         context = observatoryListLoadingIndicator.getContext();
@@ -319,7 +325,20 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             } else {
                 /* In case there are also no values stored in the database, hide all the
                  * views except the empty views */
-                if (!isLocationEnabled(context)) {
+                if (!locationPermissionGranted) {
+                    observatoryListEmptyTextView.setText(R.string.location_permission_declined);
+                    grantLocationPermissionButton.setVisibility(View.VISIBLE);
+                    grantLocationPermissionButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                            locationActivatedNeedsToBeRefreshed = true;
+                        }
+                    });
+                }
+
+                if (locationPermissionGranted && !isLocationEnabled(context)) {
 //                    Snackbar snackbar = Snackbar.make(observatoryRecyclerView, getString(R.string.snackbar_location_disabled), Snackbar.LENGTH_LONG);
 //                    snackbar.show();
                     observatoryListEmptyTextView.setText(getString(R.string.no_observatories_found_location_disabled));
@@ -328,11 +347,13 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                         @Override
                         public void onClick(View v) {
                             activateLocation();
+                            locationActivatedNeedsToBeRefreshed = true;
                         }
                     });
-                } else {
-                    observatoryListEmptyTextView.setText(getString(R.string.no_observatories_found));
                 }
+//                else {
+//                    observatoryListEmptyTextView.setText(getString(R.string.no_observatories_found));
+//                }
                 observatoryRecyclerView.setVisibility(View.GONE);
                 observatoryListLoadingIndicator.setVisibility(View.GONE);
                 observatoryListEmptyTextView.setVisibility(View.VISIBLE);
@@ -472,6 +493,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                 PackageManager.PERMISSION_GRANTED &&
                 checkSelfPermission(context, ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = false;
 //            if (getActivity() != null) {
 //                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
 //                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
@@ -506,6 +528,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         } else {
             /* In case the activity does have a permission, get the last known location and pass the location to the
            onLocationChangedMethod */
+            locationPermissionGranted = true;
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             onLocationChanged(location);
         }

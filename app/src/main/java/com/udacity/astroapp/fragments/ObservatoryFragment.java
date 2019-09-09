@@ -33,6 +33,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.ObservatoryDetailViewModel;
@@ -114,6 +115,8 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
     private int scrollX;
     private int scrollY;
 
+    private Context context;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -171,7 +174,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         observatoryEmptyImageView.setVisibility(View.GONE);
         observatoryLoadingIndicator.setVisibility(View.VISIBLE);
 
-        Context context = observatoryEmptyTextView.getContext();
+        context = observatoryEmptyTextView.getContext();
         appDatabase = AppDatabase.getInstance(context);
 
         ObservatoryDetailViewModelFactory observatoryDetailViewModelFactory = new ObservatoryDetailViewModelFactory(appDatabase, observatoryId);
@@ -385,6 +388,9 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
             } else {
                 /* In case there are also no values stored in the database, hide all the
                  * views except the empty views */
+                if (!MainActivity.isNetworkAvailable(getContext())) {
+                    observatoryEmptyTextView.setText(R.string.no_internet_connection);
+                }
                 observatoryLoadingIndicator.setVisibility(View.GONE);
                 observatoryEmptyTextView.setVisibility(View.VISIBLE);
                 observatoryEmptyImageView.setVisibility(View.VISIBLE);

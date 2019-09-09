@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.adapters.AsteroidAdapter;
 import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
@@ -289,6 +290,9 @@ public class AsteroidFragment extends Fragment {
             } else {
                 /* In case there are also no values stored in the database, hide all the
                  * views except the empty views */
+                if (!MainActivity.isNetworkAvailable(context)) {
+                    emptyTextView.setText(R.string.no_internet_connection);
+                }
                 asteroidRecyclerView.setVisibility(View.INVISIBLE);
                 emptyTextView.setVisibility(View.VISIBLE);
                 emptyImageView.setVisibility(View.VISIBLE);

@@ -37,6 +37,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.AstroAppWidget;
@@ -312,6 +313,9 @@ public class PhotoFragment extends Fragment {
                     snackbar.show();
                 }
             } else {
+                if (!MainActivity.isNetworkAvailable(context)) {
+                    emptyTextView.setText(R.string.no_internet_connection);
+                }
                 /* In case there are also no values stored in the database, hide all the
                  * views except the empty views */
                 loadingIndicator.setVisibility(View.GONE);

@@ -351,6 +351,10 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                         }
                     });
                 }
+
+                if (locationPermissionGranted && isLocationEnabled(context) && !MainActivity.isNetworkAvailable(context)) {
+                    observatoryListEmptyTextView.setText(R.string.no_internet_connection);
+                }
 //                else {
 //                    observatoryListEmptyTextView.setText(getString(R.string.no_observatories_found));
 //                }
@@ -551,4 +555,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     }
                 }).show();
     }
+
+
 }

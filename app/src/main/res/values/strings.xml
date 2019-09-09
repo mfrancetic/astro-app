@@ -22,6 +22,8 @@
     <!-- Snackbar text, that indicates the data is populated from the database -->
     <string name="snackbar_offline_mode">You are currently offline. Displaying local data</string>
 
+    <string name="no_internet_connection">No Internet connection. \nYou are offline.</string>
+
     <string name="snackbar_location_disabled">Location is disabled. Please turn location for the purpose of finding observatories near you.</string>
 
     <!-- Navigation drawer labels -->

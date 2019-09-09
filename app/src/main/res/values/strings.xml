@@ -59,6 +59,8 @@
     <string name="no_observatories_found">No observatories found</string>
     <string name="observatory_open">Open now</string>
     <string name="observatory_list_fragment_name" translatable="false">ObservatoryListFragment</string>
+    <string name="toast_permission_granted">Location permission granted</string>
+    <string name="toast_permission_declined">Location permission not granted</string>
 
     <!-- ObservatoryFragment strings -->
     <string name="observatory_fragment_name" translatable="false">ObservatoryFragment</string>

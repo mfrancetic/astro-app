@@ -466,8 +466,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             }
-
-
 //            onRequestPermissionsResult(switch (PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
 //                case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
 //                    // If request is cancelled, the result arrays are empty.

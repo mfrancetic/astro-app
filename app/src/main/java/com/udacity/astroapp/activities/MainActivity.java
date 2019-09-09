@@ -266,24 +266,21 @@ public class MainActivity extends AppCompatActivity
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    Toast.makeText(getApplicationContext(), "Permission granted", Toast.LENGTH_SHORT).show();
-                    if (currentFragment.toString().contains(getResources().getString(R.string.observatory_list_fragment_name)))
-                    {
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        if (currentFragment != null) {
-                            fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
-                        }
+                    Toast.makeText(getApplicationContext(), getString(R.string.toast_permission_granted), Toast.LENGTH_SHORT).show();
+                    if (currentFragment.toString().contains(getResources().getString(R.string.observatory_list_fragment_name))) {
+                        refreshFragment();
+//                        FragmentManager fragmentManager = getSupportFragmentManager();
+//                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                        if (currentFragment != null) {
+//                            fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
+//                        }
                     }
-
-
 //                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                     // }
-                    else{
-
+                    else {
                         // permission denied, boo! Disable the
                         // functionality that depends on this permission.
-                        Toast.makeText(getApplicationContext(), "Permission denied", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.toast_permission_declined), Toast.LENGTH_SHORT).show();
                     }
                     return;
                 }
@@ -309,6 +306,32 @@ public class MainActivity extends AppCompatActivity
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             }
+        }
+    }
+
+    //
+//    @Override
+//    protected void onPostResume() {
+//        super.onPostResume();
+//    }
+//
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // if needsToBeRefreshed --> refresh the ObservatoryListFragment
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+    }
+
+    public void refreshFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        if (currentFragment != null) {
+//        if (currentFragment != null && currentFragment.toString().contains(getResources().getString(R.string.observatory_fragment_name))) {
+            fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
         }
     }
 }

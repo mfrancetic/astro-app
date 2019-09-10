@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         OnObservatoryClickListener {
 
-
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
     private boolean tabletSize;
     private final static String fragmentIdKey = "fragmentId";
@@ -72,23 +71,6 @@ public class MainActivity extends AppCompatActivity
         /* Check if the device is a phone or a tablet */
         tabletSize = getResources().getBoolean(R.bool.isTablet);
         checkLocationPermission();
-
-
-        /* Check if the activity has an ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions.
-         * If it doesn't request it*/
-//        checkLocationPermission();
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
-//                PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION)
-//                != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-//                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-//        } else {
-//            /* In case the activity does have a permission, get the last known location and pass the location to the
-//           onLocationChangedMethod in the ObservatoryListFragment */
-//            Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//            ObservatoryListFragment observatoryListFragment = new ObservatoryListFragment();
-//            observatoryListFragment.onLocationChanged(location);
-//        }
 
         /* Set NavigationView and focusable and request focus */
         navigationView.requestFocus();
@@ -257,7 +239,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -265,42 +246,25 @@ public class MainActivity extends AppCompatActivity
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
                     Toast.makeText(getApplicationContext(), getString(R.string.location_permission_granted), Toast.LENGTH_SHORT).show();
                     if (currentFragment != null && currentFragment.toString().contains(getResources().getString(R.string.observatory_list_fragment_name))) {
                         refreshFragment();
-//                        FragmentManager fragmentManager = getSupportFragmentManager();
-//                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                        if (currentFragment != null) {
-//                            fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
-//                        }
                     }
-//                    if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    // }
-                    else {
-                        // permission denied, boo! Disable the
-                        // functionality that depends on this permission.
-                        Toast.makeText(getApplicationContext(), getString(R.string.location_permission_declined), Toast.LENGTH_SHORT).show();
-                    }
-//                    return;
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.location_permission_declined), Toast.LENGTH_SHORT).show();
                 }
 
             }
         }
+
     }
 
     public void checkLocationPermission() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-
-//            if (getAct           PERMISSIONS_REQUEST_A; CCESS_FINE_LOCATION);ivity() != null) {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             } else {
@@ -310,32 +274,19 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    //
-//    @Override
-//    protected void onPostResume() {
-//        super.onPostResume();
-//    }
-//
     @Override
     protected void onResume() {
         super.onResume();
-        // if needsToBeRefreshed --> refresh the ObservatoryListFragment
         if (ObservatoryListFragment.locationActivatedNeedsToBeRefreshed) {
             refreshFragment();
             ObservatoryListFragment.locationActivatedNeedsToBeRefreshed = false;
         }
     }
 
-    @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
-    }
-
     public void refreshFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (currentFragment != null) {
-//        if (currentFragment != null && currentFragment.toString().contains(getResources().getString(R.string.observatory_fragment_name))) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
         }
     }

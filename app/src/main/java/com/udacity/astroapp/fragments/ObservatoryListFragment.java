@@ -40,6 +40,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.adapters.ObservatoryAdapter;
@@ -205,21 +209,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
         checkLocationPermission();
 
-//        /* Check if the activity has an ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions.
-//         * If it doesn't request it*/
-//        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
-//                PackageManager.PERMISSION_GRANTED &&
-//                ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION)
-//                        != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-//                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-//        } else {
-//            /* In case the activity does have a permission, get the last known location and pass the location to the
-//           onLocationChangedMethod */
-//            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//            onLocationChanged(location);
-//        }
-
         /* Check if there in a savedInstanceState */
         if (savedInstanceState == null) {
             /* In case there is no savedInstanceState, execute an ObservatoryAsycTask */
@@ -339,8 +328,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                 }
 
                 if (locationPermissionGranted && !isLocationEnabled(context)) {
-//                    Snackbar snackbar = Snackbar.make(observatoryRecyclerView, getString(R.string.snackbar_location_disabled), Snackbar.LENGTH_LONG);
-//                    snackbar.show();
                     observatoryListEmptyTextView.setText(getString(R.string.no_observatories_found_location_disabled));
                     activateLocationButton.setVisibility(View.VISIBLE);
                     activateLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -355,9 +342,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                 if (locationPermissionGranted && isLocationEnabled(context) && !MainActivity.isNetworkAvailable(context)) {
                     observatoryListEmptyTextView.setText(R.string.no_internet_connection);
                 }
-//                else {
-//                    observatoryListEmptyTextView.setText(getString(R.string.no_observatories_found));
-//                }
                 observatoryRecyclerView.setVisibility(View.GONE);
                 observatoryListLoadingIndicator.setVisibility(View.GONE);
                 observatoryListEmptyTextView.setVisibility(View.VISIBLE);
@@ -498,10 +482,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                 checkSelfPermission(context, ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
             locationPermissionGranted = false;
-//            if (getActivity() != null) {
-//                ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-//                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-//}
             if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 if (getActivity() != null) {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -511,30 +491,31 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             }
-//            onRequestPermissionsResult(switch (PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
-//                case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-//                    // If request is cancelled, the result arrays are empty.
-//                    if (grantResults.length > 0
-//                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                        // permission was granted, yay! Do the
-//                        // contacts-related task you need to do.
-//                        Toast.makeText(context, "Permission granted", Toast.LENGTH_SHORT).show();
-//                    } else {
-//
-//                        // permission denied, boo! Disable the
-//                        // functionality that depends on this permission.
-//                        Toast.makeText(context, "Permission denied", Toast.LENGTH_SHORT).show();
-//                    }
-//                    return;
-//                }
-
-//            });
         } else {
             /* In case the activity does have a permission, get the last known location and pass the location to the
            onLocationChangedMethod */
             locationPermissionGranted = true;
-            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            onLocationChanged(location);
+            FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
+            fusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // GPS location can be null if GPS is switched off
+                            if (location != null) {
+                                onLocationChanged(location);
+                                new ObservatoryAsyncTask().execute();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(LOG_TAG, "Error trying to get last GPS location");
+                            e.printStackTrace();
+                        }
+                    });
+//            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//            onLocationChanged(location);
         }
     }
 
@@ -555,6 +536,4 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     }
                 }).show();
     }
-
-
 }

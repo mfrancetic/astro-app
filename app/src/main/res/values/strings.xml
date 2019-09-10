@@ -24,7 +24,7 @@
 
     <string name="no_internet_connection">No Internet connection. \nYou are offline.</string>
 
-    <string name="snackbar_location_disabled">Location is disabled. Please turn location for the purpose of finding observatories near you.</string>
+    <string name="snackbar_location_disabled" translatable="false">Location is disabled. Please turn location for the purpose of finding observatories near you.</string>
 
     <!-- Navigation drawer labels -->
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>

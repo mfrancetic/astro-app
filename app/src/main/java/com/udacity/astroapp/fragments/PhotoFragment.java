@@ -513,14 +513,13 @@ public class PhotoFragment extends Fragment {
         fullScreenImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
                 isDialogShown = false;
+                dialog.dismiss();
             }
         });
-    }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
+        dialog.setOnDismissListener(dialog -> {
+            isDialogShown = false;
+        });
     }
 }

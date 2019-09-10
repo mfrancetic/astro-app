@@ -260,6 +260,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void checkLocationPermission() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION)
@@ -284,9 +285,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void refreshFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (currentFragment != null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
         }
     }

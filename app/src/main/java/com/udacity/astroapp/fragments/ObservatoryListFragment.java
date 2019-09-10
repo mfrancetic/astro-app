@@ -475,7 +475,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     /* Check if the activity has an ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions.
      * If it doesn't request it*/
     public void checkLocationPermission() {
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        context.getSystemService(Context.LOCATION_SERVICE);
 
         if (checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED &&

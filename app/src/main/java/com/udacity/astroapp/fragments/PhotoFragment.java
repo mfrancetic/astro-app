@@ -11,6 +11,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -115,7 +116,9 @@ public class PhotoFragment extends Fragment {
     /* Boolean that indicates the API call was not successful */
     private boolean jsonNotSuccessful;
 
-    private boolean isImageFullScreen;
+    private boolean isDialogShown;
+
+    private final static String IS_DIALOG_SHOWN_KEY = "isDialogShown";
 
     /* ViewModel and database instances */
     private PhotoViewModel photoViewModel;
@@ -141,6 +144,8 @@ public class PhotoFragment extends Fragment {
     /* Scroll positions X and Y values */
     private int scrollX;
     private int scrollY;
+
+    private Dialog dialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -241,12 +246,16 @@ public class PhotoFragment extends Fragment {
         } else {
             /* In case there is a savedInstanceState, get the scroll positions, get the saved
              * photo and populate the view with its values */
+            isDialogShown = savedInstanceState.getBoolean(IS_DIALOG_SHOWN_KEY);
             scrollX = savedInstanceState.getInt(SCROLL_POSITION_X);
             scrollY = savedInstanceState.getInt(SCROLL_POSITION_Y);
             getActivity().overridePendingTransition(0, 0);
             photo = savedInstanceState.getParcelable(photoKey);
             if (photo != null) {
                 populatePhoto(photo);
+            }
+            if (isDialogShown) {
+                showPhotoDialog();
             }
         }
         return rootView;
@@ -404,34 +413,7 @@ public class PhotoFragment extends Fragment {
                 photoImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        isImageFullScreen = true;
                         showPhotoDialog();
-//                        new AlertDialog.Builder(context)
-//                                .setNegativeButton(R.string.close, null)
-//                                .set
-//                                .setPositiveButton(R.string.open_location_settings, new DialogInterface.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-//                                        context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-//                                        locationActivatedNeedsToBeRefreshed = true;
-//                                    }
-//                                }).show();
-//                        Dialog dialog = new Dialog(context, R.style.AppBaseTheme);
-//                        dialog.setContentView(R.layout.fullscreen);
-//                        dialog.setCanceledOnTouchOutside(true);
-//                        picasso.load(photoUri).into((ImageView) dialog.findViewById(R.id.photo_full_screen_view));
-//                        dialog.show();
-
-//                        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//                            @Override
-//                            public void onCancel(DialogInterface dialog) {
-//                                dialog.dismiss();
-//                            }
-//                        });
-//                            picasso.load(photoUri).resize(R.dimen.photo_dimensions, R.dimen.photo_dimensions).into(photoImageView);
-//                            photoImageView.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT));
-//                            photoImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-//                        }
                     }
                 });
             }
@@ -492,6 +474,7 @@ public class PhotoFragment extends Fragment {
         }
         outState.putInt(SCROLL_POSITION_X, scrollX);
         outState.putInt(SCROLL_POSITION_Y, scrollY);
+        outState.putBoolean(IS_DIALOG_SHOWN_KEY, isDialogShown);
         super.onSaveInstanceState(outState);
     }
 
@@ -515,12 +498,14 @@ public class PhotoFragment extends Fragment {
     }
 
     void showPhotoDialog() {
-        Dialog dialog = new Dialog(context);
+        dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setContentView(R.layout.fullscreen);
         dialog.show();
+
+        isDialogShown = true;
 
         ImageView fullScreenImageView = dialog.findViewById(R.id.photo_full_screen_view);
         Picasso picasso = new Picasso.Builder(context).build();
@@ -529,7 +514,13 @@ public class PhotoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                isDialogShown = false;
             }
         });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 }

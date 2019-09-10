@@ -12,6 +12,10 @@
 #   public *;
 #}
 
+# Fix RuntimeException - Parcel Unmarshalling unknown type code 5111840 at offset 212
+-keepclassmembers class * implements android.os.Parcelable {
+    static ** CREATOR;
+}
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable

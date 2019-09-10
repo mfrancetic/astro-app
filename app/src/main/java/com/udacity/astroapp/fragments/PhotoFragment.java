@@ -1,12 +1,15 @@
 package com.udacity.astroapp.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -15,6 +18,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Message;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -28,7 +33,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -103,8 +110,12 @@ public class PhotoFragment extends Fragment {
 
     private Context context;
 
+    private Uri photoUri;
+
     /* Boolean that indicates the API call was not successful */
     private boolean jsonNotSuccessful;
+
+    private boolean isImageFullScreen;
 
     /* ViewModel and database instances */
     private PhotoViewModel photoViewModel;
@@ -382,13 +393,47 @@ public class PhotoFragment extends Fragment {
             photoImageView.setVisibility(View.VISIBLE);
 
             /* Get the photoUrl and load it into the photoImageView */
-            Uri photoUri = Uri.parse(photo.getPhotoUrl());
+            photoUri = Uri.parse(photo.getPhotoUrl());
             if (photoUri != null) {
                 Picasso picasso = new Picasso.Builder(context).build();
                 picasso.load(photoUri).into(photoImageView);
 
                 /* Set the content description of the photoImageView to inform the user about the photo's title */
                 photoImageView.setContentDescription(getString(R.string.photo_of_content_description) + " " + photoTitle);
+
+                photoImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        isImageFullScreen = true;
+                        showPhotoDialog();
+//                        new AlertDialog.Builder(context)
+//                                .setNegativeButton(R.string.close, null)
+//                                .set
+//                                .setPositiveButton(R.string.open_location_settings, new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+//                                        context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+//                                        locationActivatedNeedsToBeRefreshed = true;
+//                                    }
+//                                }).show();
+//                        Dialog dialog = new Dialog(context, R.style.AppBaseTheme);
+//                        dialog.setContentView(R.layout.fullscreen);
+//                        dialog.setCanceledOnTouchOutside(true);
+//                        picasso.load(photoUri).into((ImageView) dialog.findViewById(R.id.photo_full_screen_view));
+//                        dialog.show();
+
+//                        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//                            @Override
+//                            public void onCancel(DialogInterface dialog) {
+//                                dialog.dismiss();
+//                            }
+//                        });
+//                            picasso.load(photoUri).resize(R.dimen.photo_dimensions, R.dimen.photo_dimensions).into(photoImageView);
+//                            photoImageView.setLayoutParams(new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT));
+//                            photoImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//                        }
+                    }
+                });
             }
         }
 
@@ -462,10 +507,29 @@ public class PhotoFragment extends Fragment {
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, fileOutputStream);
             fileOutputStream.close();
             bitmapUri = FileProvider.getUriForFile(context, context.getApplicationContext()
-            .getPackageName() + ".provider", file);
+                    .getPackageName() + ".provider", file);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return bitmapUri;
+    }
+
+    void showPhotoDialog() {
+        Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setContentView(R.layout.fullscreen);
+        dialog.show();
+
+        ImageView fullScreenImageView = dialog.findViewById(R.id.photo_full_screen_view);
+        Picasso picasso = new Picasso.Builder(context).build();
+        picasso.load(photoUri).into(fullScreenImageView);
+        fullScreenImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 }

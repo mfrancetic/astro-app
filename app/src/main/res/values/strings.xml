@@ -74,4 +74,6 @@
     <string name="no_observatories_found_location_disabled">Location is disabled.</string>
     <string name="cancel">Cancel</string>
     <string name="open_location_settings">Open location settings</string>
+
+    <string name="dismiss_dialog">Close</string>
 </resources>

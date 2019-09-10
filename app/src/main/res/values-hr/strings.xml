@@ -47,4 +47,5 @@
     <string name="open_location_settings">Otvori postavke lokacije</string>
     <string name="grant_location_permission">Dopusti pristup lokaciji</string>
     <string name="no_internet_connection">Nema internetske veze. Niste na mreži.</string>
+    <string name="dismiss_dialog">Zatvori</string>
 </resources>

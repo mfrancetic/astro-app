@@ -133,6 +133,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     public boolean locationPermissionGranted;
 
+    private FusedLocationProviderClient fusedLocationProviderClient;
+
     public interface OnObservatoryClickListener {
         void onObservatorySelected(int position);
     }
@@ -173,6 +175,9 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         observatoryListLoadingIndicator.setVisibility(View.VISIBLE);
 
         context = observatoryListLoadingIndicator.getContext();
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
+
         appDatabase = AppDatabase.getInstance(context);
 
         ObservatoryViewModelFactory observatoryViewModelFactory = new ObservatoryViewModelFactory(appDatabase);
@@ -475,7 +480,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     /* Check if the activity has an ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION permissions.
      * If it doesn't request it*/
     public void checkLocationPermission() {
-        context.getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
         if (checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED &&
@@ -495,27 +500,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             /* In case the activity does have a permission, get the last known location and pass the location to the
            onLocationChangedMethod */
             locationPermissionGranted = true;
-            FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
-            fusedLocationProviderClient.getLastLocation()
-                    .addOnSuccessListener(new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // GPS location can be null if GPS is switched off
-                            if (location != null) {
-                                onLocationChanged(location);
-                                new ObservatoryAsyncTask().execute();
-                            }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(LOG_TAG, "Error trying to get last GPS location");
-                            e.printStackTrace();
-                        }
-                    });
-//            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//            onLocationChanged(location);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            onLocationChanged(location);
         }
     }
 

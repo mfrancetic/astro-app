@@ -8,6 +8,7 @@
     android:layout_marginTop="?android:actionBarSize">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/fragment_observatory_list_constraint_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

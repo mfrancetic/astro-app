@@ -19,6 +19,7 @@
         tools:ignore="Overdraw">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/photo_constraint_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 

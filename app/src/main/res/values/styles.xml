@@ -11,6 +11,8 @@
     <!-- Theme for the full screen layout -->
     <style name="AppBaseTheme" parent="Theme.Design.Light.NoActionBar" />
 
+    <style name="preferenceTheme">@style/PreferenceThemeOverlay</style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

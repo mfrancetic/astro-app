@@ -2,12 +2,15 @@ package com.udacity.astroapp.activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -36,6 +39,7 @@ import com.udacity.astroapp.fragments.ObservatoryListFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment.OnObservatoryClickListener;
 import com.udacity.astroapp.fragments.PhotoFragment;
 
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -46,7 +50,7 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        OnObservatoryClickListener {
+        OnObservatoryClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -74,6 +78,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+
+        setupSharedPreferences();
 
         /* Find toolbar and set the support action bar to the toolbar */
         setSupportActionBar(toolbar);
@@ -239,7 +245,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_refresh) {
+        int id = item.getItemId();
+        if (id == R.id.menu_refresh) {
             Timer timer = new Timer();
             TimerTask timerTask = new TimerTask();
             timer.schedule(timerTask, 2000);
@@ -248,8 +255,13 @@ public class MainActivity extends AppCompatActivity
 //            if (currentFragment != null) {
 //                fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
 //            }
+            return true;
+        } else if (id == R.id.menu_settings) {
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(intent);
+            return true;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -324,10 +336,29 @@ public class MainActivity extends AppCompatActivity
         super.onResumeFragments();
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.settings_language_key))) {
+
+        }
+    }
+
     private class TimerTask extends java.util.TimerTask {
         @Override
         public void run() {
             refreshFragment();
         }
+    }
+
+    private void setupSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 }

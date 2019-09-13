@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +34,9 @@ import com.udacity.astroapp.fragments.ObservatoryListFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment.OnObservatoryClickListener;
 import com.udacity.astroapp.fragments.PhotoFragment;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -41,6 +45,8 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         OnObservatoryClickListener {
+
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
     private boolean tabletSize;
@@ -230,11 +236,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_refresh) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            if (currentFragment != null) {
-                fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
-            }
+            Timer timer = new Timer();
+            TimerTask timerTask = new TimerTask();
+            timer.schedule(timerTask, 2000);
+//            FragmentManager fragmentManager = getSupportFragmentManager();
+//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//            if (currentFragment != null) {
+//                fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
+//            }
         }
         return true;
     }
@@ -279,7 +288,9 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         if (ObservatoryListFragment.locationActivatedNeedsToBeRefreshed) {
-            refreshFragment();
+            Timer timer = new Timer();
+            TimerTask timerTask = new TimerTask();
+            timer.schedule(timerTask, 4000);
             ObservatoryListFragment.locationActivatedNeedsToBeRefreshed = false;
         }
     }
@@ -301,5 +312,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResumeFragments() {
         super.onResumeFragments();
+    }
+
+    private class TimerTask extends java.util.TimerTask {
+        @Override
+        public void run() {
+            refreshFragment();
+        }
     }
 }

@@ -167,6 +167,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
 //        locationActivatedNeedsToBeRefreshed = false;
 
+
+
         /* Hide the empty views and show the loadingIndicator */
         observatoryListEmptyTextView.setVisibility(View.GONE);
         observatoryListEmptyImageView.setVisibility(View.GONE);
@@ -327,6 +329,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                         public void onClick(View v) {
                             requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                            setObservatoryListLoadingIndicator();
                             locationActivatedNeedsToBeRefreshed = true;
                         }
                     });
@@ -519,7 +522,18 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                         context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                         locationActivatedNeedsToBeRefreshed = true;
+                        setObservatoryListLoadingIndicator();
                     }
                 }).show();
+
+    }
+
+    public void setObservatoryListLoadingIndicator() {
+        observatoryRecyclerView.setVisibility(View.GONE);
+        observatoryListEmptyTextView.setVisibility(View.GONE);
+        observatoryListEmptyImageView.setVisibility(View.GONE);
+        grantLocationPermissionButton.setVisibility(View.GONE);
+        activateLocationButton.setVisibility(View.GONE);
+        observatoryListLoadingIndicator.setVisibility(View.VISIBLE);
     }
 }

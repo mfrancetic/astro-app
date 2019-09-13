@@ -169,10 +169,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
         mapFragment.getMapAsync(this);
 
-        /* Hide the empty views and show the loading indicator */
-        observatoryEmptyTextView.setVisibility(View.GONE);
-        observatoryEmptyImageView.setVisibility(View.GONE);
-        observatoryLoadingIndicator.setVisibility(View.VISIBLE);
+        setObservatoryLoadingIndicator();
 
         context = observatoryEmptyTextView.getContext();
         appDatabase = AppDatabase.getInstance(context);
@@ -412,5 +409,12 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         super.onSaveInstanceState(outState);
     }
 
-
+    public void setObservatoryLoadingIndicator() {
+        /* Hide the empty views and show the loading indicator */
+        observatoryEmptyImageView.setVisibility(View.GONE);
+        observatoryEmptyTextView.setVisibility(View.GONE);
+        observatoryEmptyTextView.setVisibility(View.GONE);
+        observatoryEmptyImageView.setVisibility(View.GONE);
+        observatoryLoadingIndicator.setVisibility(View.VISIBLE);
+    }
 }

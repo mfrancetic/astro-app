@@ -129,10 +129,7 @@ public class AsteroidFragment extends Fragment {
         /* Get the orientation of the device */
         orientation = getResources().getConfiguration().orientation;
 
-        /* Hide the empty views and show the loadingIndicator */
-        emptyTextView.setVisibility(View.GONE);
-        emptyImageView.setVisibility(View.GONE);
-        loadingIndicator.setVisibility(View.VISIBLE);
+        setAsteroidLoadingIndicator();
 
         if (savedInstanceState != null) {
             /* In case there is a savedInstanceState, retrieve the asteroidList */
@@ -334,7 +331,7 @@ public class AsteroidFragment extends Fragment {
     private void setDividers(int orientation) {
         if (isTablet && orientation == Configuration.ORIENTATION_LANDSCAPE) {
             /* In tablet landscape mode, add a horizontal divider and set the GridLayoutManager
-            * to the asteroidRecyclerView */
+             * to the asteroidRecyclerView */
             asteroidRecyclerView.addItemDecoration(new DividerItemDecoration(context,
                     DividerItemDecoration.HORIZONTAL));
             asteroidRecyclerView.setLayoutManager(new GridLayoutManager(context, 2));
@@ -345,5 +342,13 @@ public class AsteroidFragment extends Fragment {
         /* In all cases, add a vertical item decoration to the asteroidRecyclerView */
         asteroidRecyclerView.addItemDecoration(new DividerItemDecoration(context,
                 DividerItemDecoration.VERTICAL));
+    }
+
+    public void setAsteroidLoadingIndicator() {
+        /* Hide the empty views and show the loadingIndicator */
+        asteroidRecyclerView.setVisibility(View.GONE);
+        emptyTextView.setVisibility(View.GONE);
+        emptyImageView.setVisibility(View.GONE);
+        loadingIndicator.setVisibility(View.VISIBLE);
     }
 }

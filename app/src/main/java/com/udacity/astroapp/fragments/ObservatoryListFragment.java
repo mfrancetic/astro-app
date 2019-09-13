@@ -167,14 +167,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
 //        locationActivatedNeedsToBeRefreshed = false;
 
-
-
-        /* Hide the empty views and show the loadingIndicator */
-        observatoryListEmptyTextView.setVisibility(View.GONE);
-        observatoryListEmptyImageView.setVisibility(View.GONE);
-        activateLocationButton.setVisibility(View.GONE);
-        grantLocationPermissionButton.setVisibility(View.GONE);
-        observatoryListLoadingIndicator.setVisibility(View.VISIBLE);
+        setObservatoryListLoadingIndicator();
 
         context = observatoryListLoadingIndicator.getContext();
 
@@ -529,11 +522,11 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     }
 
     public void setObservatoryListLoadingIndicator() {
+        observatoryListLoadingIndicator.setVisibility(View.VISIBLE);
         observatoryRecyclerView.setVisibility(View.GONE);
         observatoryListEmptyTextView.setVisibility(View.GONE);
         observatoryListEmptyImageView.setVisibility(View.GONE);
         grantLocationPermissionButton.setVisibility(View.GONE);
         activateLocationButton.setVisibility(View.GONE);
-        observatoryListLoadingIndicator.setVisibility(View.VISIBLE);
     }
 }

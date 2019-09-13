@@ -24,6 +24,8 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.udacity.astroapp.R;
@@ -63,6 +65,8 @@ public class MainActivity extends AppCompatActivity
 
     private ActionBarDrawerToggle toggle;
     private Fragment currentFragment;
+
+    public static boolean isBeingRefreshed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -296,12 +300,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void refreshFragment() {
+        isBeingRefreshed = true;
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (currentFragment != null) {
+//            if (currentFragment.toString().contains("PhotoFragment")) {
+//                PhotoFragment.setPhotoLoadingIndicator();
+//            }
             fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
         }
+        isBeingRefreshed = false;
     }
+
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

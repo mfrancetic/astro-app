@@ -171,12 +171,14 @@ public class PhotoFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_photo, container, false);
         ButterKnife.bind(this, rootView);
 
-        /* Hide the playVideoButton and empty views, and show the loadingIndicator */
-        playVideoButton.setVisibility(View.GONE);
-        emptyTextView.setVisibility(View.GONE);
-        emptyImageView.setVisibility(View.GONE);
-        floatingActionButton.hide();
-        loadingIndicator.setVisibility(View.VISIBLE);
+        setPhotoLoadingIndicator();
+
+//        /* Hide the playVideoButton and empty views, and show the loadingIndicator */
+//        playVideoButton.setVisibility(View.GONE);
+//        emptyTextView.setVisibility(View.GONE);
+//        emptyImageView.setVisibility(View.GONE);
+//        floatingActionButton.hide();
+//        loadingIndicator.setVisibility(View.VISIBLE);
 
         appDatabase = AppDatabase.getInstance(getContext());
 
@@ -521,5 +523,21 @@ public class PhotoFragment extends Fragment {
         dialog.setOnDismissListener(dialog -> {
             isDialogShown = false;
         });
+    }
+
+    public void setPhotoLoadingIndicator() {
+        loadingIndicator.setVisibility(View.VISIBLE);
+        playVideoButton.setVisibility(View.GONE);
+        photoImageView.setVisibility(View.GONE);
+        emptyImageView.setVisibility(View.GONE);
+        emptyTextView.setVisibility(View.GONE);
+        photoDateTextView.setVisibility(View.GONE);
+        photoDescriptionTextView.setVisibility(View.GONE);
+        photoTitleTextView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }

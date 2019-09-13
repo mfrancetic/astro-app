@@ -17,6 +17,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -41,7 +42,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.udacity.astroapp.R;
@@ -68,6 +74,7 @@ import butterknife.ButterKnife;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.support.v4.content.ContextCompat.checkSelfPermission;
+import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class ObservatoryListFragment extends Fragment implements LocationListener {
 
@@ -133,7 +140,10 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     public boolean locationPermissionGranted;
 
-    private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationRequest mLocationRequest;
+
+    private long UPDATE_INTERVAL = 10 * 1000;
+    private long FASTEST_INTERVAL = 2000;
 
     public interface OnObservatoryClickListener {
         void onObservatorySelected(int position);
@@ -165,13 +175,17 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         /* Get the orientation of the device */
         orientation = getResources().getConfiguration().orientation;
 
+        context = observatoryListLoadingIndicator.getContext();
+
+        //TODO delete if not working
+        startLocationUpdates();
+
 //        locationActivatedNeedsToBeRefreshed = false;
 
         setObservatoryListLoadingIndicator();
 
-        context = observatoryListLoadingIndicator.getContext();
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
+        FusedLocationProviderClient fusedLocationProviderClient = getFusedLocationProviderClient(context);
 
         appDatabase = AppDatabase.getInstance(context);
 
@@ -236,6 +250,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         protected List<Observatory> doInBackground(String... strings) {
             try {
                 /* Create an URL and make a HTTP request */
+                getLastLocation();
                 URL url = QueryUtils.createObservatoryURL(currentLocation);
                 String observatoryJson = QueryUtils.makeHttpRequest(url);
 
@@ -528,5 +543,56 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         observatoryListEmptyImageView.setVisibility(View.GONE);
         grantLocationPermissionButton.setVisibility(View.GONE);
         activateLocationButton.setVisibility(View.GONE);
+    }
+
+
+    // Trigger new location updates at interval
+    protected void startLocationUpdates() {
+        // Create the location request to start receiving updates
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+
+        // Create LocationSettingsRequest object using location request
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(mLocationRequest);
+        LocationSettingsRequest locationSettingsRequest = builder.build();
+
+        // Check whether location settings are satisfied
+        SettingsClient settingsClient = LocationServices.getSettingsClient(context);
+        settingsClient.checkLocationSettings(locationSettingsRequest);
+
+        getFusedLocationProviderClient(context).requestLocationUpdates(mLocationRequest, new LocationCallback() {
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        // do work here
+                        onLocationChanged(locationResult.getLastLocation());
+                    }
+                },
+                Looper.myLooper());
+    }
+
+    public void getLastLocation() {
+        // Get last known recent location using new Google Play Services SDK (v11+)
+        FusedLocationProviderClient locationClient = getFusedLocationProviderClient(context);
+
+        locationClient.getLastLocation()
+                .addOnSuccessListener(new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // GPS location can be null if GPS is switched off
+                        if (location != null) {
+                            onLocationChanged(location);
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(LOG_TAG, "Error trying to get last GPS location");
+                        e.printStackTrace();
+                    }
+                });
     }
 }

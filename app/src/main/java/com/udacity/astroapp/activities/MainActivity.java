@@ -38,6 +38,7 @@ import com.udacity.astroapp.fragments.ObservatoryFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment.OnObservatoryClickListener;
 import com.udacity.astroapp.fragments.PhotoFragment;
+import com.udacity.astroapp.utils.LanguageHelper;
 
 import java.util.Set;
 import java.util.Timer;
@@ -339,7 +340,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(getString(R.string.settings_language_key))) {
-
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            String language = sharedPreferences.getString(
+                    getString(R.string.settings_language_key),
+                    getString(R.string.settings_language_default));
+//            String language = PreferenceManager.getDefaultSharedPreferencesName(getBaseContext());
+            LanguageHelper.changeLocale(this.getResources(), language);
+//            refreshFragment();
+            Intent intent = new Intent(this, MainActivity.class);
+            finish();
+            startActivity(intent);
+//            finish();
         }
     }
 

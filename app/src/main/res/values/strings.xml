@@ -47,8 +47,8 @@
 
     <string name="language_english">English</string>
     <string name="language_croatian">Croatian</string>
-    <string name="language_english_key">english</string>
-    <string name="language_croatian_key">croatian</string>
+    <string name="language_english_key" translatable="false">en</string>
+    <string name="language_croatian_key" translatable="false">hr</string>
 
     <!-- AstroAppWidget strings -->
     <string name="widget_photo_of_the_day">Photo of the day</string>

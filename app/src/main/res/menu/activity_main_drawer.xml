@@ -25,11 +25,16 @@
             android:icon="@drawable/ic_observatory"
             android:nextFocusForward="@id/nav_settings"
             android:title="@string/menu_observatories" />
-        <item
-            android:id="@+id/nav_settings"
-            android:contentDescription="@string/menu_settings_content_description"
-            android:icon="@drawable/ic_settings"
-            android:nextFocusForward="@id/nav_photo"
-            android:title="@string/menu_settings" />
     </group>
+    <item android:title="@string/settings_general">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:checkable="false"
+                android:contentDescription="@string/menu_settings_content_description"
+                android:icon="@drawable/ic_settings"
+                android:nextFocusForward="@id/nav_photo"
+                android:title="@string/menu_settings" />
+        </menu>
+    </item>
 </menu>

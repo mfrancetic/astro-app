@@ -59,6 +59,7 @@
     <!-- PhotoFragment strings -->
     <string name="no_photo_found">No photo found</string>
     <string name="play_video_button">Play video</string>
+    <string name="photo_video_source">Source: NASA</string>
 
     <!-- AsteroidFragment strings -->
     <string name="asteroid_hazardous_image">Asteroid hazardous indication</string>

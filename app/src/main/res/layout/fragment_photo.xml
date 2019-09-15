@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/photo_coordinator_layout"
@@ -23,13 +22,40 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/photo_empty_text_view"
-                style="@style/EmptyTextViewStyle"
-                android:text="@string/no_photo_found"
-                app:layout_constraintEnd_toEndOf="parent"
+            <FrameLayout
+                android:id="@+id/photo_video_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/photo_empty_image_view" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/photo_video_source_text_view"
+                    style="@style/ButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/photo_video_source"
+                    android:textAlignment="center" />
+
+                <Button
+                    android:id="@+id/play_video_button"
+                    style="@style/ButtonStyle"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/margin_list_item"
+                    android:nextFocusForward="@id/photo_title_text_view"
+                    android:text="@string/play_video_button" />
+
+                <ImageView
+                    android:id="@+id/photo_view"
+                    style="@style/PhotoImageView"
+                    android:layout_marginTop="@dimen/margin_list_item"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/photo_of_the_day_content_description"
+                    tools:src="@mipmap/ic_launcher" />
+
+            </FrameLayout>
 
             <ImageView
                 android:id="@+id/photo_empty_image_view"
@@ -43,28 +69,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <FrameLayout
-                android:id="@+id/photo_video_frame_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/margin"
+            <ProgressBar
+                android:id="@+id/photo_loading_indicator"
+                style="@style/LoadingIndicatorStyle"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/photo_view"
-                    style="@style/PhotoImageView"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/photo_of_the_day_content_description"
-                    tools:src="@mipmap/ic_launcher" />
-
-                <Button
-                    android:id="@+id/play_video_button"
-                    style="@style/ButtonStyle"
-                    android:layout_gravity="center"
-                    android:nextFocusForward="@id/photo_title_text_view"
-                    android:text="@string/play_video_button" />
-            </FrameLayout>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/photo_title_text_view"
@@ -76,13 +87,13 @@
                 app:layout_constraintTop_toBottomOf="@id/photo_video_frame_layout"
                 tools:text="Moons near Jupiter" />
 
-            <ProgressBar
-                android:id="@+id/photo_loading_indicator"
-                style="@style/LoadingIndicatorStyle"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <TextView
+                android:id="@+id/photo_empty_text_view"
+                style="@style/EmptyTextViewStyle"
+                android:text="@string/no_photo_found"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/photo_empty_image_view" />
 
             <TextView
                 android:id="@+id/photo_date_text_view"
@@ -105,13 +116,13 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:contentDescription="@string/share_content_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_share"
-        app:fabSize="normal"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/margin"
         android:layout_marginBottom="@dimen/margin"
+        android:contentDescription="@string/share_content_description"
+        android:src="@drawable/ic_share"
+        app:fabSize="normal"
         app:layout_anchorGravity="bottom|end" />
 </android.support.design.widget.CoordinatorLayout>

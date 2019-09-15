@@ -52,6 +52,7 @@ import com.udacity.astroapp.data.AstroAppWidget;
 import com.udacity.astroapp.data.PhotoViewModel;
 import com.udacity.astroapp.data.PhotoViewModelFactory;
 import com.udacity.astroapp.models.Photo;
+import com.udacity.astroapp.utils.LanguageHelper;
 import com.udacity.astroapp.utils.QueryUtils;
 
 import org.json.JSONException;
@@ -108,6 +109,9 @@ public class PhotoFragment extends Fragment {
 
     @BindView(R.id.fab)
     FloatingActionButton floatingActionButton;
+
+    @BindView(R.id.photo_video_source_text_view)
+    TextView photoVideoSourceTextView;
 
     private Context context;
 
@@ -171,14 +175,9 @@ public class PhotoFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_photo, container, false);
         ButterKnife.bind(this, rootView);
 
-        setPhotoLoadingIndicator();
+        context = photoDateTextView.getContext();
 
-//        /* Hide the playVideoButton and empty views, and show the loadingIndicator */
-//        playVideoButton.setVisibility(View.GONE);
-//        emptyTextView.setVisibility(View.GONE);
-//        emptyImageView.setVisibility(View.GONE);
-//        floatingActionButton.hide();
-//        loadingIndicator.setVisibility(View.VISIBLE);
+        setPhotoLoadingIndicator();
 
         appDatabase = AppDatabase.getInstance(getContext());
 
@@ -217,7 +216,8 @@ public class PhotoFragment extends Fragment {
             }
         });
 
-        context = photoDateTextView.getContext();
+
+
 
         if (photoScrollView != null) {
             photoScrollView.requestFocus();
@@ -368,6 +368,7 @@ public class PhotoFragment extends Fragment {
         photoImageView.setVisibility(View.VISIBLE);
         photoDateTextView.setVisibility(View.VISIBLE);
         photoTitleTextView.setVisibility(View.VISIBLE);
+        photoVideoSourceTextView.setVisibility(View.VISIBLE);
         photoDescriptionTextView.setVisibility(View.VISIBLE);
         floatingActionButton.show();
 
@@ -534,6 +535,7 @@ public class PhotoFragment extends Fragment {
         photoDateTextView.setVisibility(View.GONE);
         photoDescriptionTextView.setVisibility(View.GONE);
         photoTitleTextView.setVisibility(View.GONE);
+        photoVideoSourceTextView.setVisibility(View.GONE);
     }
 
     @Override

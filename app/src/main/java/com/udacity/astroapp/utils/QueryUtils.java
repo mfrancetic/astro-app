@@ -33,6 +33,7 @@ public class QueryUtils {
     private static final String GOOGLE_API_KEY_PARAM = "key";
     private static final String PLACE_ID_PARAM = "placeid";
     private static final String FIELDS_PARAM = "fields";
+    private static final String LANGUAGE_PARAM = "language";
     private static final String fieldsKey = "name, photo, opening_hours, website";
 
     /* API keys */
@@ -86,7 +87,7 @@ public class QueryUtils {
     /**
      * Create a URL for the observatories
      */
-    public static URL createObservatoryURL(String latitudeLongitude) {
+    public static URL createObservatoryURL(String latitudeLongitude, String language) {
         URL url = null;
         Uri baseUri = Uri.parse(OBSERVATORY_BASE_URL);
         Uri.Builder builder = baseUri.buildUpon();
@@ -94,6 +95,7 @@ public class QueryUtils {
                 .appendQueryParameter(LOCATION_PARAM, latitudeLongitude)
                 .appendQueryParameter(FIELDS_PARAM, fieldsKey)
                 .appendQueryParameter(RANKBY_PARAM, rankbyParam)
+                .appendQueryParameter(LANGUAGE_PARAM, language)
                 .build();
         try {
             url = new URL(builder.toString());
@@ -106,12 +108,13 @@ public class QueryUtils {
     /**
      * Create a URL for the observatory details
      */
-    public static URL createObservatoryDetailsUrl(String placeId) {
+    public static URL createObservatoryDetailsUrl(String placeId, String language) {
         URL url = null;
         Uri baseUri = Uri.parse(OBSERVATORY_DETAILS_BASE_URL);
         Uri.Builder builder = baseUri.buildUpon();
         builder.appendQueryParameter(GOOGLE_API_KEY_PARAM, googleApiKey)
                 .appendQueryParameter(PLACE_ID_PARAM, placeId)
+                .appendQueryParameter(LANGUAGE_PARAM, language)
                 .build();
         try {
             url = new URL(builder.toString());

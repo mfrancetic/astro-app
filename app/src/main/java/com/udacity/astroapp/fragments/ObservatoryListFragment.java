@@ -58,6 +58,7 @@ import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.ObservatoryViewModel;
 import com.udacity.astroapp.data.ObservatoryViewModelFactory;
 import com.udacity.astroapp.models.Observatory;
+import com.udacity.astroapp.utils.LanguageHelper;
 import com.udacity.astroapp.utils.QueryUtils;
 
 import org.json.JSONArray;
@@ -142,6 +143,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     private LocationRequest mLocationRequest;
 
+    private String language;
+
     private long UPDATE_INTERVAL = 10 * 1000;
     private long FASTEST_INTERVAL = 2000;
 
@@ -169,15 +172,16 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         View rootView = inflater.inflate(R.layout.fragment_observatory_list, container, false);
         ButterKnife.bind(this, rootView);
 
+        context = observatoryListLoadingIndicator.getContext();
+
+        language = LanguageHelper.getLocale(context);
+
         /* Get the boolean that indicates if a device is a tablet */
         isTablet = getResources().getBoolean(R.bool.isTablet);
 
         /* Get the orientation of the device */
         orientation = getResources().getConfiguration().orientation;
 
-        context = observatoryListLoadingIndicator.getContext();
-
-        //TODO delete if not working
         startLocationUpdates();
 
 //        locationActivatedNeedsToBeRefreshed = false;
@@ -251,7 +255,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             try {
                 /* Create an URL and make a HTTP request */
                 getLastLocation();
-                URL url = QueryUtils.createObservatoryURL(currentLocation);
+                URL url = QueryUtils.createObservatoryURL(currentLocation, language);
                 String observatoryJson = QueryUtils.makeHttpRequest(url);
 
                 JSONObject baseObservatoryResponse = new JSONObject(observatoryJson);

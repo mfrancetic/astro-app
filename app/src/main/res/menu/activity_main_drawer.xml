@@ -2,28 +2,34 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main_drawer_menu"
-    android:focusable="true"
     android:clickable="true"
+    android:focusable="true"
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_photo"
+            android:contentDescription="@string/menu_photo_content_description"
             android:icon="@drawable/ic_camera_alt"
             android:nextFocusForward="@id/nav_asteroids"
-            android:contentDescription="@string/menu_photo_content_description"
             android:title="@string/menu_photo" />
         <item
             android:id="@+id/nav_asteroids"
+            android:contentDescription="@string/menu_asteroids_content_description"
             android:icon="@drawable/ic_asteroid_nav"
             android:nextFocusForward="@id/nav_observatories"
-            android:contentDescription="@string/menu_asteroids_content_description"
             android:title="@string/menu_asteroids" />
         <item
             android:id="@+id/nav_observatories"
-            android:icon="@drawable/ic_observatory"
-            android:nextFocusForward="@id/nav_photo"
             android:contentDescription="@string/menu_observatories_content_description"
+            android:icon="@drawable/ic_observatory"
+            android:nextFocusForward="@id/nav_settings"
             android:title="@string/menu_observatories" />
+        <item
+            android:id="@+id/nav_settings"
+            android:contentDescription="@string/menu_settings_content_description"
+            android:icon="@drawable/ic_settings"
+            android:nextFocusForward="@id/nav_photo"
+            android:title="@string/menu_settings" />
     </group>
 </menu>

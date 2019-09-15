@@ -32,6 +32,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SettingsFragment settingsFragment;
 
+    private FragmentManager fragmentManager;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,9 +51,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         settingsFragment = new SettingsFragment();
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.activity_settings, settingsFragment)
-                .commit();
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.activity_settings, settingsFragment, getString(R.string.settings_fragment_key))
+                .commitNow();
     }
 
     @Override
@@ -64,17 +67,15 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        NavUtils.navigateUpFromSameTask(this);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().detach(settingsFragment)
-                .remove(settingsFragment)
-                .commit();
-        super.onBackPressed();
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onBackPressed() {
+        NavUtils.navigateUpFromSameTask(this);
+        super.onBackPressed();
     }
+
+
 }

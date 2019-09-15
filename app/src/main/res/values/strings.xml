@@ -45,6 +45,7 @@
     <!-- SettingFragment strings -->
     <string name="settings_language_key" translatable="false">language</string>
     <string name="settings_language">Language</string>
+    <string name="settings_fragment_key" translatable="false">settingsFragment</string>
     <string name="settings_language_default" translatable="false">@string/language_english_key</string>
     <string name="settings_fragment_name" translatable="false">SettingsFragment</string>
     <string name="language_english">English</string>

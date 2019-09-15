@@ -182,7 +182,8 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
                         R.anim.enter_from_left, R.anim.exit_to_right);
             }
-            fragmentTransaction.replace(R.id.fragment_container, fragment)
+            fragmentTransaction
+                    .replace(R.id.fragment_container, fragment)
                     .addToBackStack("fragment")
                     .commit();
 

@@ -12,26 +12,36 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.fragments.SettingsFragment;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class SettingsActivity extends AppCompatActivity {
+
+    @BindView(R.id.toolbar_settings)
+    Toolbar settingsToolbar;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        ButterKnife.bind(this);
+
+        setSupportActionBar(settingsToolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.activity_settings, new SettingsFragment())
                 .commit();
-
-        ActionBar actionBar = this.getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
 
     }
 
@@ -43,7 +53,4 @@ public class SettingsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
 }

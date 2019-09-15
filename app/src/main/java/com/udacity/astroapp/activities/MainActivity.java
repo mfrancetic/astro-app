@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity
 
     public static boolean isBeingRefreshed;
 
+    private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +83,12 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
 
         setupSharedPreferences();
+
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String language = sharedPreferences.getString(
+                getString(R.string.settings_language_key),
+                getString(R.string.settings_language_default));
+        LanguageHelper.changeLocale(this.getResources(), language);
 
         /* Find toolbar and set the support action bar to the toolbar */
         setSupportActionBar(toolbar);
@@ -266,7 +274,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -344,13 +353,10 @@ public class MainActivity extends AppCompatActivity
             String language = sharedPreferences.getString(
                     getString(R.string.settings_language_key),
                     getString(R.string.settings_language_default));
-//            String language = PreferenceManager.getDefaultSharedPreferencesName(getBaseContext());
             LanguageHelper.changeLocale(this.getResources(), language);
-//            refreshFragment();
             Intent intent = new Intent(this, MainActivity.class);
             finish();
             startActivity(intent);
-//            finish();
         }
     }
 
@@ -362,7 +368,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setupSharedPreferences() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         sharedPreferences.registerOnSharedPreferenceChangeListener(this);
     }
 

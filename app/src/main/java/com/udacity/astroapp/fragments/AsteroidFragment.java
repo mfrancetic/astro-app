@@ -351,4 +351,12 @@ public class AsteroidFragment extends Fragment {
         emptyImageView.setVisibility(View.GONE);
         loadingIndicator.setVisibility(View.VISIBLE);
     }
+
+    @Override
+    public void onPause() {
+        if (MainActivity.isBeingRefreshed) {
+            setAsteroidLoadingIndicator();
+        }
+        super.onPause();
+    }
 }

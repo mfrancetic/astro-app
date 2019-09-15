@@ -428,4 +428,11 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         observatoryLoadingIndicator.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onPause() {
+        if (MainActivity.isBeingRefreshed) {
+            setObservatoryLoadingIndicator();
+        }
+        super.onPause();
+    }
 }

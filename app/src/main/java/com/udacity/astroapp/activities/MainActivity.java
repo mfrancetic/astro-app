@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.menu_refresh) {
             Timer timer = new Timer();
             TimerTask timerTask = new TimerTask();
-            timer.schedule(timerTask, 2000);
+            timer.schedule(timerTask, 1800);
 //            FragmentManager fragmentManager = getSupportFragmentManager();
 //            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 //            if (currentFragment != null) {

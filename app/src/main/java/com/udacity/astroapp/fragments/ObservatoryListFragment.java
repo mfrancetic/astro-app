@@ -599,4 +599,12 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     }
                 });
     }
+
+    @Override
+    public void onPause() {
+        if (MainActivity.isBeingRefreshed) {
+            setObservatoryListLoadingIndicator();
+        }
+        super.onPause();
+    }
 }

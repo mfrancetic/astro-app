@@ -539,7 +539,11 @@ public class PhotoFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onPause() {
+        if (MainActivity.isBeingRefreshed) {
+            setPhotoLoadingIndicator();
+        }
+        super.onPause();
     }
+
 }

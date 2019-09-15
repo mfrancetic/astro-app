@@ -38,11 +38,13 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     }
 
     private void bindPreferenceSummaryToValue(android.support.v7.preference.Preference preference) {
-        preference.setOnPreferenceChangeListener(this);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        String preferenceString = preferences.getString(preference.getKey(), "");
-        if (preferenceString != null) {
-            onPreferenceChange(preference, preferenceString);
+        if (preference != null) {
+            preference.setOnPreferenceChangeListener(this);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+            String preferenceString = preferences.getString(preference.getKey(), "");
+            if (preferenceString != null) {
+                onPreferenceChange(preference, preferenceString);
+            }
         }
     }
 }

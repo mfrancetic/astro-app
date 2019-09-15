@@ -25,7 +25,7 @@
 
     <string name="no_internet_connection">No Internet connection. \nYou are offline.</string>
 
-    <string name="snackbar_location_disabled" translatable="false">Location is disabled. Please turn location for the purpose of finding observatories near you.</string>
+    <string name="snackbar_location_disabled">Location is disabled. Please turn location for the purpose of finding observatories near you.</string>
 
     <!-- Navigation drawer labels -->
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
@@ -44,10 +44,10 @@
 
     <string name="settings_language_key">language</string>
     <string name="settings_language">Language</string>
-    <string name="settings_language_default">@string/language_english</string>
+    <string name="settings_language_default" translatable="false">@string/language_english</string>
 
     <string name="language_english">English</string>
-    <string name="language_croatian">Croatian</string>
+    <string name="language_croatian">Croatian (hrvatski)</string>
     <string name="language_english_key" translatable="false">en</string>
     <string name="language_croatian_key" translatable="false">hr</string>
 

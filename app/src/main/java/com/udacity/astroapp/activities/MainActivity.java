@@ -266,113 +266,113 @@ public class MainActivity extends AppCompatActivity
 //            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 //            if (currentFragment != null) {
 //                fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
-            }
-            return true;
         }
+        return true;
+    }
 
-        @Override
-        public void onRequestPermissionsResult ( int requestCode, @NonNull String[] permissions,
-        @NonNull int[] grantResults){
-            switch (requestCode) {
-                case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                    // If request is cancelled, the result arrays are empty.
-                    if (grantResults.length > 0
-                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        Toast.makeText(getApplicationContext(), getString(R.string.location_permission_granted), Toast.LENGTH_SHORT).show();
-                        if (currentFragment != null && currentFragment.toString().contains(getResources().getString(R.string.observatory_list_fragment_name))) {
-                            refreshFragment();
-                        }
-                    } else {
-                        Toast.makeText(getApplicationContext(), getString(R.string.location_permission_declined), Toast.LENGTH_SHORT).show();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.location_permission_granted), Toast.LENGTH_SHORT).show();
+                    if (currentFragment != null && currentFragment.toString().contains(getResources().getString(R.string.observatory_list_fragment_name))) {
+                        refreshFragment();
                     }
-
-                }
-            }
-
-        }
-
-        public void checkLocationPermission () {
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
-                    PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
                 } else {
-                    ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                            PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                    Toast.makeText(getApplicationContext(), getString(R.string.location_permission_declined), Toast.LENGTH_SHORT).show();
                 }
+
             }
         }
 
-        @Override
-        protected void onResume () {
-            super.onResume();
-            if (ObservatoryListFragment.locationActivatedNeedsToBeRefreshed) {
-                Timer timer = new Timer();
-                TimerTask timerTask = new TimerTask();
-                timer.schedule(timerTask, 4000);
-                ObservatoryListFragment.locationActivatedNeedsToBeRefreshed = false;
+    }
+
+    public void checkLocationPermission() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             }
         }
+    }
 
-        public void refreshFragment () {
-            isBeingRefreshed = true;
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            if (currentFragment != null) {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (ObservatoryListFragment.locationActivatedNeedsToBeRefreshed) {
+            Timer timer = new Timer();
+            TimerTask timerTask = new TimerTask();
+            timer.schedule(timerTask, 4000);
+            ObservatoryListFragment.locationActivatedNeedsToBeRefreshed = false;
+        }
+    }
+
+    public void refreshFragment() {
+        isBeingRefreshed = true;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        if (currentFragment != null) {
 //            if (currentFragment.toString().contains("PhotoFragment")) {
 //                PhotoFragment.setPhotoLoadingIndicator();
 //            }
-                fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
-            }
-            isBeingRefreshed = false;
+            fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
         }
+        isBeingRefreshed = false;
+    }
 
 
-        public static boolean isNetworkAvailable (Context context){
-            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        }
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
-        @Override
-        protected void onResumeFragments () {
-            super.onResumeFragments();
-        }
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+    }
 
-        @Override
-        public void onSharedPreferenceChanged (SharedPreferences sharedPreferences, String key){
-            if (key.equals(getString(R.string.settings_language_key))) {
-                sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-                String language = sharedPreferences.getString(
-                        getString(R.string.settings_language_key),
-                        getString(R.string.settings_language_default));
-                LanguageHelper.changeLocale(this.getResources(), language);
-                Intent intent = new Intent(this, MainActivity.class);
-                finish();
-                startActivity(intent);
-            }
-        }
-
-        private class TimerTask extends java.util.TimerTask {
-            @Override
-            public void run() {
-                refreshFragment();
-            }
-        }
-
-        private void setupSharedPreferences () {
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.settings_language_key))) {
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-        }
-
-        @Override
-        protected void onDestroy () {
-            super.onDestroy();
-            android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(this)
-                    .unregisterOnSharedPreferenceChangeListener(this);
+            String language = sharedPreferences.getString(
+                    getString(R.string.settings_language_key),
+                    getString(R.string.settings_language_default));
+            LanguageHelper.changeLocale(this.getResources(), language);
+            Intent intent = new Intent(this, MainActivity.class);
+            finish();
+            startActivity(intent);
         }
     }
+
+    private class TimerTask extends java.util.TimerTask {
+        @Override
+        public void run() {
+            refreshFragment();
+        }
+    }
+
+    private void setupSharedPreferences() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(this)
+                .unregisterOnSharedPreferenceChangeListener(this);
+    }
+}

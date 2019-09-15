@@ -1,9 +1,11 @@
 package com.udacity.astroapp.activities;
 
 import android.app.ActionBar;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v14.preference.PreferenceFragment;
 import android.support.v4.app.Fragment;
@@ -17,6 +19,7 @@ import android.view.MenuItem;
 
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.fragments.SettingsFragment;
+import com.udacity.astroapp.utils.LanguageHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +33,10 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_settings);
+
+        setTitle(R.string.menu_settings);
 
         ButterKnife.bind(this);
 

@@ -12,7 +12,7 @@
         tools:node="replace">
         <activity
             android:name=".activities.MainActivity"
-            android:configChanges="orientation|screenSize|locale"
+            android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">

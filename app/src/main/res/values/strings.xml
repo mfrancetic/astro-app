@@ -42,9 +42,9 @@
     <string name="menu_settings">Settings</string>
     <string name="settings_general">General</string>
 
-    <string name="settings_language_key">language</string>
+    <string name="settings_language_key" translatable="false">language</string>
     <string name="settings_language">Language</string>
-    <string name="settings_language_default" translatable="false">@string/language_english</string>
+    <string name="settings_language_default" translatable="false">@string/language_english_key</string>
 
     <string name="language_english">English</string>
     <string name="language_croatian">Croatian (hrvatski)</string>

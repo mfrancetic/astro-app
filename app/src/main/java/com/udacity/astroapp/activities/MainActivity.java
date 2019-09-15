@@ -78,18 +78,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        ButterKnife.bind(this);
 
         setupSharedPreferences();
 
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String language = sharedPreferences.getString(
                 getString(R.string.settings_language_key),
                 getString(R.string.settings_language_default));
         LanguageHelper.changeLocale(this.getResources(), language);
 
+        setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
         /* Find toolbar and set the support action bar to the toolbar */
         setSupportActionBar(toolbar);
 
@@ -375,4 +375,5 @@ public class MainActivity extends AppCompatActivity
         android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
     }
+
 }

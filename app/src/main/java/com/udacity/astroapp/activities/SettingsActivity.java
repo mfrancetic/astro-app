@@ -1,6 +1,7 @@
 package com.udacity.astroapp.activities;
 
 import android.app.ActionBar;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -29,6 +30,7 @@ public class SettingsActivity extends AppCompatActivity {
     @BindView(R.id.toolbar_settings)
     Toolbar settingsToolbar;
 
+    private SettingsFragment settingsFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,10 +47,11 @@ public class SettingsActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.activity_settings, new SettingsFragment())
-                .commit();
+        settingsFragment = new SettingsFragment();
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.activity_settings, settingsFragment)
+                .commit();
     }
 
     @Override
@@ -58,5 +61,20 @@ public class SettingsActivity extends AppCompatActivity {
             NavUtils.navigateUpFromSameTask(this);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        NavUtils.navigateUpFromSameTask(this);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().detach(settingsFragment)
+                .remove(settingsFragment)
+                .commit();
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

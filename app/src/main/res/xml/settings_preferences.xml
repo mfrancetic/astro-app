@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/menu_settings">
     <ListPreference
         android:defaultValue="@string/settings_language_default"
@@ -7,4 +7,4 @@
         android:entryValues="@array/settings_language_values"
         android:key="@string/settings_language_key"
         android:title="@string/settings_language" />
-</PreferenceScreen>
+</android.support.v7.preference.PreferenceScreen>

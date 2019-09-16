@@ -9,7 +9,7 @@
     tools:context=".activities.SettingsActivity">
 
         <fragment
-            android:id="@+id/activity_settings"
+            android:id="@+id/fragment_container_settings"
             android:name="com.udacity.astroapp.fragments.SettingsFragment"
             android:layout_width="match_parent"
             android:layout_marginTop="?actionBarSize"

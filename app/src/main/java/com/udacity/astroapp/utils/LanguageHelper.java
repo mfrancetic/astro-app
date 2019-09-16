@@ -27,8 +27,8 @@ public class LanguageHelper {
     }
 
     public static String getLocale(Context context) {
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         String language = sharedPreferences.getString(
                 context.getString(R.string.settings_language_key),
                 context.getString(R.string.settings_language_default));

@@ -31,7 +31,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     @Override
     public void onCreatePreferences(Bundle bundle, String rootKey) {
 //        addPreferencesFromResource(R.xml.settings_preferences);
-        setPreferencesFromResource(R.xml.settings_preferences, rootKey);
+            setPreferencesFromResource(R.xml.settings_preferences, rootKey);
 
         android.support.v7.preference.Preference languagePreference = findPreference(getString(R.string.settings_language_key));
         bindPreferenceSummaryToValue(languagePreference);

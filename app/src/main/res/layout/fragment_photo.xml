@@ -43,14 +43,14 @@
                     android:id="@+id/play_video_button"
                     style="@style/ButtonStyle"
                     android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/margin_list_item"
+                    android:layout_marginTop="@dimen/photo_video_source_margin"
                     android:nextFocusForward="@id/photo_title_text_view"
                     android:text="@string/play_video_button" />
 
                 <ImageView
                     android:id="@+id/photo_view"
                     style="@style/PhotoImageView"
-                    android:layout_marginTop="@dimen/margin_list_item"
+                    android:layout_marginTop="@dimen/photo_video_source_margin"
                     android:layout_gravity="center"
                     android:contentDescription="@string/photo_of_the_day_content_description"
                     tools:src="@mipmap/ic_launcher" />

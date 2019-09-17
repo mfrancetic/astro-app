@@ -63,10 +63,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -236,10 +240,12 @@ public class PhotoFragment extends Fragment {
             });
         }
 
-        /* Get the current time, put in the SimpleDataFormat and format it to the localDate */
-        Date date = Calendar.getInstance().getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        localDate = simpleDateFormat.format(date);
+        /* Get the current time, put in the SimpleDataFormat and UTC time zone and format it to the localDate */
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        TimeZone timeZone = TimeZone.getTimeZone("UTC");
+        Date date = new Date();
+        formatter.setTimeZone(timeZone);
+        localDate = formatter.format(date);
 
         /* Check if there in a savedInstanceState */
         if (savedInstanceState == null) {

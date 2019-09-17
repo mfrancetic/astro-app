@@ -395,7 +395,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
             } else {
                 /* In case there are also no values stored in the database, hide all the
                  * views except the empty views */
-                if (!MainActivity.isNetworkAvailable(getContext())) {
+                if (context != null && !MainActivity.isNetworkAvailable(context)) {
                     observatoryEmptyTextView.setText(R.string.no_internet_connection);
                 }
                 observatoryLoadingIndicator.setVisibility(View.GONE);

@@ -50,6 +50,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.adapters.ObservatoryAdapter;
@@ -147,6 +148,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     private long UPDATE_INTERVAL = 10 * 1000;
     private long FASTEST_INTERVAL = 2000;
+
+    private LocationCallback locationCallback;
 
     public interface OnObservatoryClickListener {
         void onObservatorySelected(int position);
@@ -567,7 +570,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         SettingsClient settingsClient = LocationServices.getSettingsClient(context);
         settingsClient.checkLocationSettings(locationSettingsRequest);
 
-        getFusedLocationProviderClient(context).requestLocationUpdates(mLocationRequest, new LocationCallback() {
+        getFusedLocationProviderClient(context).requestLocationUpdates(mLocationRequest, locationCallback = new LocationCallback() {
                     @Override
                     public void onLocationResult(LocationResult locationResult) {
                         // do work here
@@ -605,6 +608,17 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         if (MainActivity.isBeingRefreshed) {
             setObservatoryListLoadingIndicator();
         }
+        stopLocationUpdates(locationCallback);
         super.onPause();
+    }
+
+    public void stopLocationUpdates(LocationCallback locationCallback) {
+            getFusedLocationProviderClient(context).removeLocationUpdates(locationCallback);
+    }
+
+    @Override
+    public void onResume() {
+        startLocationUpdates();
+        super.onResume();
     }
 }

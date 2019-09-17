@@ -156,6 +156,7 @@ public class MainActivity extends AppCompatActivity
             Intent openSettingsIntent = new Intent(this, SettingsActivity.class);
             startActivity(openSettingsIntent);
         }
+
         fragmentId = id;
         /* In phone mode, close the drawer and clear focus */
         if (!tabletSize) {

@@ -231,6 +231,9 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         checkLocationPermission();
 
         /* Check if there in a savedInstanceState */
+        if (observatoryList != null && !observatoryList.isEmpty()) {
+            populateObservatories(observatoryList);
+        }
         if (savedInstanceState == null) {
             /* In case there is no savedInstanceState, execute an ObservatoryAsycTask */
             new ObservatoryAsyncTask().execute();
@@ -256,6 +259,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         @Override
         protected List<Observatory> doInBackground(String... strings) {
             try {
+                observatoryList = new ArrayList<>();
                 /* Create an URL and make a HTTP request */
                 getLastLocation();
                 URL url = QueryUtils.createObservatoryURL(currentLocation, language);
@@ -302,10 +306,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     observatory.setObservatoryLongitude(observatoryLongitude);
                     observatory.setObservatoryUrl(observatoryUrl);
 
-                    if (observatoryList == null) {
-                        observatoryList = new ArrayList<>();
-                    }
-                    observatoryList.add(i, observatory);
+                        observatoryList.add(i, observatory);
                 }
             } catch (
                     IOException e) {
@@ -319,7 +320,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
         @Override
         protected void onPostExecute(List<Observatory> newObservatories) {
-            if (newObservatories != null) {
+            if (newObservatories != null && newObservatories.size() > 0) {
                 /* If there is a list of observatories available, populate the view with its values */
                 populateObservatories(newObservatories);
             } else if (observatoryViewModel.getObservatories().getValue() != null && observatoryViewModel.getObservatories()

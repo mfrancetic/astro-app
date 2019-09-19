@@ -28,12 +28,12 @@ public class QueryUtils {
     private static final String START_DATE_PARAM = "start_date";
     private static final String END_DATE_PARAM = "end_date";
     private static final String LOCATION_PARAM = "location";
-    private static final String RANKBY_PARAM = "rankby";
-    private static final String rankbyParam = "distance";
+    private static final String RADIUS_PARAM = "radius";
     private static final String GOOGLE_API_KEY_PARAM = "key";
     private static final String PLACE_ID_PARAM = "placeid";
     private static final String FIELDS_PARAM = "fields";
     private static final String LANGUAGE_PARAM = "language";
+    private static final String radiusKey = "50000";
     private static final String fieldsKey = "name, photo, opening_hours, website";
 
     /* API keys */
@@ -94,7 +94,7 @@ public class QueryUtils {
         builder.appendQueryParameter(GOOGLE_API_KEY_PARAM, googleApiKey)
                 .appendQueryParameter(LOCATION_PARAM, latitudeLongitude)
                 .appendQueryParameter(FIELDS_PARAM, fieldsKey)
-                .appendQueryParameter(RANKBY_PARAM, rankbyParam)
+                .appendQueryParameter(RADIUS_PARAM, radiusKey)
                 .appendQueryParameter(LANGUAGE_PARAM, language)
                 .build();
         try {

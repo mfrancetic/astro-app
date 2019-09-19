@@ -95,6 +95,18 @@
         app:layout_constraintTop_toTopOf="@id/asteroid_name_text_view"
         tools:src="@drawable/not_hazardous_image" />
 
+    <TextView
+        android:id="@+id/asteroid_hazardous_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorTextPrimary"
+        android:textAppearance="?android:textAppearanceSmall"
+        app:layout_constraintEnd_toEndOf="@id/asteroid_hazardous_image"
+        app:layout_constraintStart_toStartOf="@id/asteroid_hazardous_image"
+        app:layout_constraintTop_toBottomOf="@id/asteroid_hazardous_image"
+        tools:text="@string/asteroid_hazardous_text"
+        />
+
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"

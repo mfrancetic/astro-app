@@ -55,4 +55,6 @@
     <string name="widget_image_content_description">Slika dana</string>
     <string name="widget_photo_of_the_day">Slika dana</string>
     <string name="photo_video_source">Izvor: NASA</string>
+    <string name="asteroid_hazardous_text">Opasan</string>
+    <string name="asteroid_not_hazardous_text">Siguran</string>
 </resources>

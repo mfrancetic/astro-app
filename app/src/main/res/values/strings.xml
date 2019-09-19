@@ -70,6 +70,8 @@
     <string name="velocity_label">Velocity:</string>
     <string name="read_more_button">Read more</string>
     <string name="name_label">Asteroid name:</string>
+    <string name="asteroid_hazardous_text">Hazardous</string>
+    <string name="asteroid_not_hazardous_text">Safe</string>
 
     <!-- ObservatoryListFragment strings -->
     <string name="no_observatories_found">No observatories found</string>

@@ -52,6 +52,9 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
         @BindView(R.id.asteroid_diameter_label_text_view)
         TextView diameterLabelTextView;
 
+        @BindView(R.id.asteroid_hazardous_text_view)
+        TextView asteroidHazardousTextView;
+
         AsteroidViewHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -90,6 +93,7 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
         ImageView asteroidHazardousImage = viewHolder.asteroidHazardousImageView;
         Button readMoreButton = viewHolder.readMoreButton;
         TextView diameterLabelTextView = viewHolder.diameterLabelTextView;
+        TextView asteroidHazardousTextView = viewHolder.asteroidHazardousTextView;
 
         /* Get context */
         final Context context = asteroidVelocityTextView.getContext();
@@ -133,10 +137,12 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
         if (isHazardous) {
             asteroidHazardousImage.setImageResource(R.drawable.hazardous_image);
             asteroidHazardousImage.setContentDescription(context.getString(R.string.asteroid_is_hazardous_content_descriptions));
+            asteroidHazardousTextView.setText(R.string.asteroid_hazardous_text);
             TooltipCompat.setTooltipText(asteroidHazardousImage, context.getString(R.string.asteroid_is_hazardous_content_descriptions));
         } else {
             asteroidHazardousImage.setImageResource(R.drawable.not_hazardous_image);
             asteroidHazardousImage.setContentDescription(context.getString(R.string.asteroid_not_hazardous_content_description));
+            asteroidHazardousTextView.setText(R.string.asteroid_not_hazardous_text);
             TooltipCompat.setTooltipText(asteroidHazardousImage, context.getString(R.string.asteroid_not_hazardous_content_description));
         }
 

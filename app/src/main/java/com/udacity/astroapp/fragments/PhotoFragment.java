@@ -242,7 +242,7 @@ public class PhotoFragment extends Fragment {
 
         /* Get the current time, put in the SimpleDataFormat and UTC time zone and format it to the localDate */
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        TimeZone timeZone = TimeZone.getTimeZone("America/New_York");
+        TimeZone timeZone = TimeZone.getTimeZone("America/Chicago");
         Date date = new Date();
         formatter.setTimeZone(timeZone);
         localDate = formatter.format(date);

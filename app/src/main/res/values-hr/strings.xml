@@ -57,4 +57,6 @@
     <string name="photo_video_source">Izvor: NASA</string>
     <string name="asteroid_hazardous_text">Opasan</string>
     <string name="asteroid_not_hazardous_text">Siguran</string>
+    <string name="photo_next_content_description">Vidi sljedeću sliku</string>
+    <string name="photo_previous_content_description">Vidi prethodnu sliku</string>
 </resources>

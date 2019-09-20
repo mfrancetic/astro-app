@@ -1,7 +1,6 @@
 package com.udacity.astroapp.fragments;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.LiveData;
@@ -9,9 +8,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -19,8 +16,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Message;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -52,7 +47,6 @@ import com.udacity.astroapp.data.AstroAppWidget;
 import com.udacity.astroapp.data.PhotoViewModel;
 import com.udacity.astroapp.data.PhotoViewModelFactory;
 import com.udacity.astroapp.models.Photo;
-import com.udacity.astroapp.utils.LanguageHelper;
 import com.udacity.astroapp.utils.QueryUtils;
 
 import org.json.JSONException;
@@ -63,9 +57,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -117,6 +108,12 @@ public class PhotoFragment extends Fragment {
     @BindView(R.id.photo_video_source_text_view)
     TextView photoVideoSourceTextView;
 
+    @BindView(R.id.photo_previous_button)
+    ImageButton photoPreviousButton;
+
+    @BindView(R.id.photo_next_button)
+    ImageButton photoNextButton;
+
     private Context context;
 
     private Uri photoUri;
@@ -154,6 +151,12 @@ public class PhotoFragment extends Fragment {
     private int scrollY;
 
     private Dialog dialog;
+
+    private TimeZone timeZone;
+
+    private Date date;
+
+    private SimpleDateFormat formatter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -221,8 +224,6 @@ public class PhotoFragment extends Fragment {
         });
 
 
-
-
         if (photoScrollView != null) {
             photoScrollView.requestFocus();
             photoScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -241,9 +242,9 @@ public class PhotoFragment extends Fragment {
         }
 
         /* Get the current time, put in the SimpleDataFormat and UTC time zone and format it to the localDate */
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        TimeZone timeZone = TimeZone.getTimeZone("America/Chicago");
-        Date date = new Date();
+        formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        timeZone = TimeZone.getTimeZone("America/Chicago");
+        date = new Date();
         formatter.setTimeZone(timeZone);
         localDate = formatter.format(date);
 
@@ -350,6 +351,8 @@ public class PhotoFragment extends Fragment {
                 photoTitleTextView.setVisibility(View.GONE);
                 photoDescriptionTextView.setVisibility(View.GONE);
                 photoDateTextView.setVisibility(View.GONE);
+                photoPreviousButton.setVisibility(View.GONE);
+                photoNextButton.setVisibility(View.GONE);
                 floatingActionButton.hide();
                 photoImageView.setVisibility(View.INVISIBLE);
                 emptyTextView.setVisibility(View.VISIBLE);
@@ -377,6 +380,37 @@ public class PhotoFragment extends Fragment {
         photoVideoSourceTextView.setVisibility(View.VISIBLE);
         photoDescriptionTextView.setVisibility(View.VISIBLE);
         floatingActionButton.show();
+
+        photoPreviousButton.setVisibility(View.VISIBLE);
+        photoPreviousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                date = getPreviousDate(date);
+                localDate = formatter.format(date);
+                new PhotoAsyncTask().execute();
+            }
+        });
+        photoNextButton.setVisibility(View.VISIBLE);
+        Date currentDate = new Date();
+        Date nextDate = getNextDate(date);
+        if (nextDate.after(currentDate)) {
+            photoNextButton.setEnabled(false);
+            photoNextButton.setBackgroundColor(getResources().getColor(R.color.colorTextSecondary));
+            photoNextButton.setActivated(false);
+        } else {
+            photoNextButton.setEnabled(true);
+            photoNextButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            photoNextButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    date = getNextDate(date);
+                    localDate = formatter.format(date);
+                    new PhotoAsyncTask().execute();
+
+                }
+            });
+        }
+
 
         /* Set text of the photoTitleTextView, photoDateTextView and photoDescriptionTextView */
         if (photo.getPhotoTitle() != null && photo.getPhotoDate() != null && photo.getPhotoDescription() != null) {
@@ -542,6 +576,8 @@ public class PhotoFragment extends Fragment {
         photoDescriptionTextView.setVisibility(View.GONE);
         photoTitleTextView.setVisibility(View.GONE);
         photoVideoSourceTextView.setVisibility(View.GONE);
+        photoPreviousButton.setVisibility(View.GONE);
+        photoNextButton.setVisibility(View.GONE);
     }
 
     @Override
@@ -550,6 +586,22 @@ public class PhotoFragment extends Fragment {
             setPhotoLoadingIndicator();
         }
         super.onPause();
+    }
+
+    private Date getPreviousDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, -1);
+        return calendar.getTime();
+//        Date newDate = new Date(date* 1000 -  24 * 60 * 60 * 1000);
+//        return new Date (date* 24*60*60*1000);
+    }
+
+    private Date getNextDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, +1);
+        return calendar.getTime();
     }
 
 }

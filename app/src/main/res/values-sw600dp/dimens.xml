@@ -6,7 +6,7 @@
     <dimen name="fragment_margin_start">@dimen/drawer_width</dimen>
 
     <!-- PhotoFragment -->
-    <dimen name="photo_dimensions">400dp</dimen>
+    <dimen name="photo_dimensions">380dp</dimen>
     <dimen name="photo_description_text_size">18dp</dimen>
 
     <!-- AsteroidFragment -->

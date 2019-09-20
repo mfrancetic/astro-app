@@ -19,6 +19,8 @@
     <string name="menu_asteroids_content_description">Navigate to Asteroids</string>
     <string name="menu_observatories_content_description">Navigate to Observatories</string>
     <string name="menu_settings_content_description">Navigate to Settings</string>
+    <string name="photo_previous_content_description">See previous photo</string>
+    <string name="photo_next_content_description">See next photo</string>
 
     <!-- Snackbar text, that indicates the data is populated from the database -->
     <string name="snackbar_offline_mode">You are currently offline. Displaying local data</string>

@@ -47,13 +47,33 @@
                     android:nextFocusForward="@id/photo_title_text_view"
                     android:text="@string/play_video_button" />
 
+                <ImageButton
+                    style="@style/ButtonStyle"
+                    android:id="@+id/photo_previous_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_previous"
+                    android:contentDescription="@string/photo_previous_content_description"
+                    android:layout_gravity="center_vertical|start"/>
+
                 <ImageView
                     android:id="@+id/photo_view"
                     style="@style/PhotoImageView"
                     android:layout_marginTop="@dimen/photo_video_source_margin"
                     android:layout_gravity="center"
+                    android:padding="@dimen/margin"
                     android:contentDescription="@string/photo_of_the_day_content_description"
                     tools:src="@mipmap/ic_launcher" />
+
+                <ImageButton
+                    style="@style/ButtonStyle"
+                    android:id="@+id/photo_next_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_next"
+                    android:contentDescription="@string/photo_next_content_description"
+                    android:layout_gravity="center_vertical|end"
+                    />
 
             </FrameLayout>
 

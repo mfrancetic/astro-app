@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/photo_coordinator_layout"
+    android:background="@color/colorBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -48,9 +49,9 @@
                     android:text="@string/play_video_button" />
 
                 <ImageButton
-                    style="@style/ButtonStyle"
                     android:id="@+id/photo_previous_button"
                     android:layout_width="wrap_content"
+                    android:background="@color/colorBackground"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_previous"
                     android:contentDescription="@string/photo_previous_content_description"
@@ -66,10 +67,10 @@
                     tools:src="@mipmap/ic_launcher" />
 
                 <ImageButton
-                    style="@style/ButtonStyle"
                     android:id="@+id/photo_next_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@color/colorBackground"
                     android:src="@drawable/ic_next"
                     android:contentDescription="@string/photo_next_content_description"
                     android:layout_gravity="center_vertical|end"

@@ -390,16 +390,12 @@ public class PhotoFragment extends Fragment {
                 new PhotoAsyncTask().execute();
             }
         });
-        photoNextButton.setVisibility(View.VISIBLE);
         Date currentDate = new Date();
         Date nextDate = getNextDate(date);
         if (nextDate.after(currentDate)) {
-            photoNextButton.setEnabled(false);
-            photoNextButton.setBackgroundColor(getResources().getColor(R.color.colorTextSecondary));
-            photoNextButton.setActivated(false);
+            photoNextButton.setVisibility(View.GONE);
         } else {
-            photoNextButton.setEnabled(true);
-            photoNextButton.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+            photoNextButton.setVisibility(View.VISIBLE);
             photoNextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

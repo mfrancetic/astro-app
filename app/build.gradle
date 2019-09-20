@@ -23,8 +23,8 @@ android {
         applicationId "com.udacity.astroapp"
         minSdkVersion 17
         targetSdkVersion 28
-        versionCode 11
-        versionName "11.0"
+        versionCode 12
+        versionName "12.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

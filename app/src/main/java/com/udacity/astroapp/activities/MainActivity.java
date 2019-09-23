@@ -354,6 +354,9 @@ public class MainActivity extends AppCompatActivity
                     getString(R.string.settings_language_default));
             LanguageHelper.changeLocale(this.getResources(), language);
             Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             finish();
             startActivity(intent);
         }

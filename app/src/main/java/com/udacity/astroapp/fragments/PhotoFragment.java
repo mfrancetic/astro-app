@@ -27,6 +27,9 @@ import android.support.v4.content.FileProvider;
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -39,6 +42,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.squareup.picasso.Picasso;
@@ -118,9 +122,6 @@ public class PhotoFragment extends Fragment {
     @BindView(R.id.photo_next_button)
     ImageButton photoNextButton;
 
-    @BindView(R.id.photo_calendar_button)
-    ImageButton photoCalendarButton;
-
     private Context context;
 
     private Uri photoUri;
@@ -181,12 +182,14 @@ public class PhotoFragment extends Fragment {
             /* Set the title of the activity */
             getActivity().setTitle(R.string.menu_photo);
         }
+        setHasOptionsMenu(true);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         jsonNotSuccessful = false;
+
 
         calendar = Calendar.getInstance();
         currentYear = calendar.get(Calendar.YEAR);
@@ -400,36 +403,6 @@ public class PhotoFragment extends Fragment {
         photoTitleTextView.setVisibility(View.VISIBLE);
         photoVideoSourceTextView.setVisibility(View.VISIBLE);
         photoDescriptionTextView.setVisibility(View.VISIBLE);
-        photoCalendarButton.setVisibility(View.VISIBLE);
-
-        photoCalendarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                int minimumYear = 1995;
-                int minimumMonth = 6;
-                int minimumDayOfMonth = 16;
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
-
-                    @Override
-                    public void onDateSet(DatePicker view, final int year, int month, int dayOfMonth) {
-                        calendar.set(year, month, dayOfMonth);
-                        date = calendar.getTime();
-                        localDate = formatter.format(date);
-                        new PhotoAsyncTask().execute();
-
-                        currentYear = year;
-                        currentMonth = month;
-                        currentDayOfMonth = dayOfMonth;
-                    }
-                }, currentYear, currentMonth, currentDayOfMonth);
-                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-                // 16.06.1995
-                datePickerDialog.show();
-            }
-        });
 
         floatingActionButton.show();
 
@@ -617,7 +590,6 @@ public class PhotoFragment extends Fragment {
     public void setPhotoLoadingIndicator() {
         loadingIndicator.setVisibility(View.VISIBLE);
         playVideoButton.setVisibility(View.GONE);
-        photoCalendarButton.setVisibility(View.GONE);
         photoImageView.setVisibility(View.GONE);
         emptyImageView.setVisibility(View.GONE);
         emptyTextView.setVisibility(View.GONE);
@@ -653,4 +625,51 @@ public class PhotoFragment extends Fragment {
         return calendar.getTime();
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.menu_calendar).setVisible(true);
+
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_refresh) {
+            return false;
+        } else if (item.getItemId() == R.id.menu_calendar) {
+            createDatePickerDialog();
+            return true;
+        }
+        return false;
+    }
+
+    private void createDatePickerDialog() {
+        int minimumYear = 1995;
+        int minimumMonth = 6;
+        int minimumDayOfMonth = 16;
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, final int year, int month, int dayOfMonth) {
+                calendar.set(year, month, dayOfMonth);
+                date = calendar.getTime();
+                localDate = formatter.format(date);
+                new PhotoAsyncTask().execute();
+
+                currentYear = year;
+                currentMonth = month;
+                currentDayOfMonth = dayOfMonth;
+            }
+        }, currentYear, currentMonth, currentDayOfMonth);
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        // 16.06.1995
+        datePickerDialog.show();
+    }
 }

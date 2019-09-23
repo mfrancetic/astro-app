@@ -157,6 +157,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(openSettingsIntent);
         }
 
+
         fragmentId = id;
         /* In phone mode, close the drawer and clear focus */
         if (!tabletSize) {
@@ -254,6 +255,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.main, menu);
+
         return true;
     }
 
@@ -264,12 +266,15 @@ public class MainActivity extends AppCompatActivity
             Timer timer = new Timer();
             TimerTask timerTask = new TimerTask();
             timer.schedule(timerTask, 1800);
+            return true;
 //            FragmentManager fragmentManager = getSupportFragmentManager();
 //            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 //            if (currentFragment != null) {
 //                fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
+        } else if (id == R.id.menu_calendar) {
+            return false;
         }
-        return true;
+        return false;
     }
 
     @Override

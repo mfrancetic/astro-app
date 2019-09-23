@@ -21,6 +21,7 @@
     <string name="menu_settings_content_description">Navigate to Settings</string>
     <string name="photo_previous_content_description">See previous photo</string>
     <string name="photo_next_content_description">See next photo</string>
+    <string name="photo_calendar_content_description">Choose photo date</string>
 
     <!-- Snackbar text, that indicates the data is populated from the database -->
     <string name="snackbar_offline_mode">You are currently offline. Displaying local data</string>

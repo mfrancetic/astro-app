@@ -59,4 +59,5 @@
     <string name="asteroid_not_hazardous_text">Siguran</string>
     <string name="photo_next_content_description">Vidi sljedeću sliku</string>
     <string name="photo_previous_content_description">Vidi prethodnu sliku</string>
+    <string name="photo_calendar_content_description">Izaberi datum slike</string>
 </resources>

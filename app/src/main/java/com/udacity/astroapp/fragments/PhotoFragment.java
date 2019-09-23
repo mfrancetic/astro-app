@@ -1,6 +1,7 @@
 package com.udacity.astroapp.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.LiveData;
@@ -31,11 +32,14 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -114,6 +118,9 @@ public class PhotoFragment extends Fragment {
     @BindView(R.id.photo_next_button)
     ImageButton photoNextButton;
 
+    @BindView(R.id.photo_calendar_button)
+    ImageButton photoCalendarButton;
+
     private Context context;
 
     private Uri photoUri;
@@ -158,6 +165,14 @@ public class PhotoFragment extends Fragment {
 
     private SimpleDateFormat formatter;
 
+    private int currentYear;
+
+    private int currentMonth;
+
+    private int currentDayOfMonth;
+
+    private Calendar calendar;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -173,6 +188,11 @@ public class PhotoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         jsonNotSuccessful = false;
 
+        calendar = Calendar.getInstance();
+        currentYear = calendar.get(Calendar.YEAR);
+        currentMonth = calendar.get(Calendar.MONTH);
+        currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+
         if (getActivity() != null) {
             /* Set the title of the activity */
             getActivity().setTitle(R.string.menu_photo);
@@ -181,6 +201,7 @@ public class PhotoFragment extends Fragment {
         /* Inflate the fragment_photo.xml layout */
         View rootView = inflater.inflate(R.layout.fragment_photo, container, false);
         ButterKnife.bind(this, rootView);
+
 
         context = photoDateTextView.getContext();
 
@@ -379,6 +400,37 @@ public class PhotoFragment extends Fragment {
         photoTitleTextView.setVisibility(View.VISIBLE);
         photoVideoSourceTextView.setVisibility(View.VISIBLE);
         photoDescriptionTextView.setVisibility(View.VISIBLE);
+        photoCalendarButton.setVisibility(View.VISIBLE);
+
+        photoCalendarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                int minimumYear = 1995;
+                int minimumMonth = 6;
+                int minimumDayOfMonth = 16;
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, final int year, int month, int dayOfMonth) {
+                        calendar.set(year, month, dayOfMonth);
+                        date = calendar.getTime();
+                        localDate = formatter.format(date);
+                        new PhotoAsyncTask().execute();
+
+                        currentYear = year;
+                        currentMonth = month;
+                        currentDayOfMonth = dayOfMonth;
+                    }
+                }, currentYear, currentMonth, currentDayOfMonth);
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                // 16.06.1995
+                datePickerDialog.show();
+            }
+        });
+
         floatingActionButton.show();
 
         photoPreviousButton.setVisibility(View.VISIBLE);
@@ -565,6 +617,7 @@ public class PhotoFragment extends Fragment {
     public void setPhotoLoadingIndicator() {
         loadingIndicator.setVisibility(View.VISIBLE);
         playVideoButton.setVisibility(View.GONE);
+        photoCalendarButton.setVisibility(View.GONE);
         photoImageView.setVisibility(View.GONE);
         emptyImageView.setVisibility(View.GONE);
         emptyTextView.setVisibility(View.GONE);

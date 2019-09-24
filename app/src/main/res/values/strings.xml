@@ -18,7 +18,6 @@
     <string name="menu_photo_content_description">Navigate to Photo of the day</string>
     <string name="menu_asteroids_content_description">Navigate to Asteroids</string>
     <string name="menu_observatories_content_description">Navigate to Observatories</string>
-    <string name="menu_settings_content_description">Navigate to Settings</string>
     <string name="photo_previous_content_description">See previous photo</string>
     <string name="photo_next_content_description">See next photo</string>
     <string name="photo_calendar_content_description">Choose photo date</string>
@@ -29,6 +28,9 @@
     <string name="no_internet_connection">No Internet connection. \nYou are offline.</string>
 
     <string name="snackbar_location_disabled">Location is disabled. Please turn location for the purpose of finding observatories near you.</string>
+
+    <string name="croatian_language_key" translatable="false">hr</string>
+    <string name="english_language_key" translatable="false">en</string>
 
     <!-- Navigation drawer labels -->
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
@@ -44,19 +46,6 @@
 
     <string name="menu_refresh">Refresh</string>
     <string name="menu_calendar">Calendar</string>
-    <string name="menu_settings">Settings</string>
-    <string name="settings_general">General</string>
-
-    <!-- SettingFragment strings -->
-    <string name="settings_language_key" translatable="false">language</string>
-    <string name="settings_language">Language</string>
-    <string name="settings_fragment_key" translatable="false">settingsFragment</string>
-    <string name="settings_language_default" translatable="false">@string/language_english_key</string>
-    <string name="settings_fragment_name" translatable="false">SettingsFragment</string>
-    <string name="language_english">English</string>
-    <string name="language_croatian">Croatian (hrvatski)</string>
-    <string name="language_english_key" translatable="false">en</string>
-    <string name="language_croatian_key" translatable="false">hr</string>
 
     <!-- AstroAppWidget strings -->
     <string name="widget_photo_of_the_day">Photo of the day</string>

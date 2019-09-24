@@ -14,8 +14,6 @@
     <string name="diameter_label">Promjer:</string>
     <string name="dismiss_dialog">Zatvori</string>
     <string name="grant_location_permission">Dopusti pristup lokaciji</string>
-    <string name="language_croatian">Hrvatski</string>
-    <string name="language_english">Engleski (English)</string>
     <string name="location_access_not_granted_toast">Trebamo Vaše dopuštenje s ciljem korištenja Vaše lokacije za pronalaženje zvjezdarnica u Vašoj blizini. Molimo dopustite pristup lokaciji u postavkama Vašeg telefona.</string>
     <string name="location_permission_declined">Odbijeno dopuštenje pristupa lokaciji</string>
     <string name="location_permission_granted">Dopušten pristup lokaciji</string>
@@ -24,8 +22,6 @@
     <string name="menu_observatories_content_description">Navigirajte do zvjezdarnica</string>
     <string name="menu_photo_content_description">Navigirajte to slike dana</string>
     <string name="menu_refresh">Osvježi</string>
-    <string name="menu_settings">Postavke</string>
-    <string name="menu_settings_content_description">Navigirajte do postavki</string>
     <string name="name_label">Ime asteroida:</string>
     <string name="nav_header_nasa">Podaci zaprimljeni od NASA-e</string>
     <string name="nav_header_subtitle">Otkrijte svemir</string>
@@ -44,8 +40,6 @@
     <string name="play_video_button">Pokreni video</string>
     <string name="read_more_about_content_description">Pročitaj više o</string>
     <string name="read_more_button">Pročitaj više</string>
-    <string name="settings_general">Općenito</string>
-    <string name="settings_language">Jezik</string>
     <string name="share_content_description">Podijeli sadržaj</string>
     <string name="share_photo_content_description">Podijeli sliku</string>
     <string name="share_video_content_description">Podijeli videozapis</string>

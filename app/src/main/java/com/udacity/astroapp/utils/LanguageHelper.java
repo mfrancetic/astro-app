@@ -1,37 +1,22 @@
 package com.udacity.astroapp.utils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.preference.PreferenceManager;
 
 import com.udacity.astroapp.R;
-import com.udacity.astroapp.activities.MainActivity;
 
 import java.util.Locale;
 
 public class LanguageHelper {
 
-    public static void changeLocale(Resources resources, String locale) {
-        Configuration configuration;
+    public static String getSystemLanguage(Context context) {
 
-        configuration = new Configuration(resources.getConfiguration());
+        String language = Locale.getDefault().getLanguage();
 
-        if ("hr".equals(locale)) {
-            configuration.setLocale(new Locale("hr"));
+        if (language.equals(context.getResources().getString(R.string.croatian_language_key))) {
+            language = context.getResources().getString(R.string.croatian_language_key);
         } else {
-            configuration.setLocale(Locale.ENGLISH);
+            language = context.getResources().getString(R.string.english_language_key);
         }
-        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
-    }
-
-    public static String getLocale(Context context) {
-//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String language = sharedPreferences.getString(
-                context.getString(R.string.settings_language_key),
-                context.getString(R.string.settings_language_default));
         return language;
     }
 }

@@ -38,7 +38,6 @@ import com.udacity.astroapp.fragments.ObservatoryFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment.OnObservatoryClickListener;
 import com.udacity.astroapp.fragments.PhotoFragment;
-import com.udacity.astroapp.utils.LanguageHelper;
 
 import java.util.Set;
 import java.util.Timer;
@@ -51,7 +50,7 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        OnObservatoryClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
+        OnObservatoryClickListener {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -73,19 +72,9 @@ public class MainActivity extends AppCompatActivity
 
     public static boolean isBeingRefreshed;
 
-    private SharedPreferences sharedPreferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        setupSharedPreferences();
-
-//        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String language = sharedPreferences.getString(
-                getString(R.string.settings_language_key),
-                getString(R.string.settings_language_default));
-        LanguageHelper.changeLocale(this.getResources(), language);
 
         setContentView(R.layout.activity_main);
 
@@ -152,11 +141,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_observatories) {
             currentFragment = new ObservatoryListFragment();
             displayFragment(currentFragment);
-        } else if (id == R.id.nav_settings) {
-            Intent openSettingsIntent = new Intent(this, SettingsActivity.class);
-            startActivity(openSettingsIntent);
         }
-
 
         fragmentId = id;
         /* In phone mode, close the drawer and clear focus */
@@ -350,40 +335,11 @@ public class MainActivity extends AppCompatActivity
         super.onResumeFragments();
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.settings_language_key))) {
-            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-            String language = sharedPreferences.getString(
-                    getString(R.string.settings_language_key),
-                    getString(R.string.settings_language_default));
-            LanguageHelper.changeLocale(this.getResources(), language);
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            finish();
-            startActivity(intent);
-        }
-    }
-
     private class TimerTask extends java.util.TimerTask {
         @Override
         public void run() {
             refreshFragment();
         }
-    }
-
-    private void setupSharedPreferences() {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        android.support.v7.preference.PreferenceManager.getDefaultSharedPreferences(this)
-                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     @Override

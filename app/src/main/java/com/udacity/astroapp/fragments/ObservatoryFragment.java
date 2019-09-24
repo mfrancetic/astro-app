@@ -50,6 +50,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -138,7 +139,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
         context = observatoryEmptyTextView.getContext();
 
-        language = LanguageHelper.getLocale(context);
+        language = LanguageHelper.getSystemLanguage(context);
 
         jsonNotSuccessful = false;
         observatoryOpeningHoursDay = "";
@@ -179,7 +180,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         mapFragment.getMapAsync(this);
 
         setObservatoryLoadingIndicator();
-
 
 
         appDatabase = AppDatabase.getInstance(context);
@@ -435,4 +435,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         }
         super.onPause();
     }
+
+
 }

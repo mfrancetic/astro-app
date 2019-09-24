@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -50,7 +51,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.adapters.ObservatoryAdapter;
@@ -70,6 +70,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -172,12 +173,14 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             /* Set the title of the activity */
             getActivity().setTitle(R.string.menu_observatories);
         }
+
         View rootView = inflater.inflate(R.layout.fragment_observatory_list, container, false);
         ButterKnife.bind(this, rootView);
 
         context = observatoryListLoadingIndicator.getContext();
 
-        language = LanguageHelper.getLocale(context);
+        language = LanguageHelper.getSystemLanguage(context);
+
 
         /* Get the boolean that indicates if a device is a tablet */
         isTablet = getResources().getBoolean(R.bool.isTablet);

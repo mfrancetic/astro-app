@@ -180,6 +180,8 @@ public class PhotoFragment extends Fragment {
 
     private String minDateString = "1995-06-16";
 
+    private final static String currentDayKey = "currentDay";
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -196,21 +198,24 @@ public class PhotoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         jsonNotSuccessful = false;
 
+
         /* Get the current time, put in the SimpleDataFormat and UTC time zone and format it to the localDate */
         formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         timeZone = TimeZone.getTimeZone("America/Chicago");
         date = new Date();
         formatter.setTimeZone(timeZone);
-        localDate = formatter.format(date);
+//        localDate = formatter.format(date);
 
         calendar = Calendar.getInstance();
         calendar.setTimeZone(timeZone);
+        
+
         currentYear = calendar.get(Calendar.YEAR);
         currentMonth = calendar.get(Calendar.MONTH);
         currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
         if (getActivity() != null) {
-            /* Set the title of the activity */
+            /* Set the title of the activity*/
             getActivity().setTitle(R.string.menu_photo);
         }
 
@@ -281,11 +286,13 @@ public class PhotoFragment extends Fragment {
 
         /* Check if there in a savedInstanceState */
         if (savedInstanceState == null) {
+            localDate = formatter.format(date);
             /* In case there is no savedInstanceState, execute a PhotoAsyncTask */
             new PhotoAsyncTask().execute();
         } else {
             /* In case there is a savedInstanceState, get the scroll positions, get the saved
              * photo and populate the view with its values */
+            localDate = savedInstanceState.getString(currentDayKey);
             isDialogShown = savedInstanceState.getBoolean(IS_DIALOG_SHOWN_KEY);
             scrollX = savedInstanceState.getInt(SCROLL_POSITION_X);
             scrollY = savedInstanceState.getInt(SCROLL_POSITION_Y);
@@ -543,6 +550,7 @@ public class PhotoFragment extends Fragment {
             scrollX = photoScrollView.getScrollX();
             scrollY = photoScrollView.getScrollY();
         }
+        outState.putString(currentDayKey, localDate);
         outState.putInt(SCROLL_POSITION_X, scrollX);
         outState.putInt(SCROLL_POSITION_Y, scrollY);
         outState.putBoolean(IS_DIALOG_SHOWN_KEY, isDialogShown);
@@ -662,7 +670,7 @@ public class PhotoFragment extends Fragment {
 
         try {
             Date minDate = formatter.parse(minDateString);
-             minDateLong = minDate.getTime();
+            minDateLong = minDate.getTime();
         } catch (ParseException e) {
             Log.e(LOG_TAG, "Problem parsing the minDate");
         }

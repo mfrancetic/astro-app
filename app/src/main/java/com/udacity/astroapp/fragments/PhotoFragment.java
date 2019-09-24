@@ -196,7 +196,15 @@ public class PhotoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         jsonNotSuccessful = false;
 
+        /* Get the current time, put in the SimpleDataFormat and UTC time zone and format it to the localDate */
+        formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        timeZone = TimeZone.getTimeZone("America/Chicago");
+        date = new Date();
+        formatter.setTimeZone(timeZone);
+        localDate = formatter.format(date);
+
         calendar = Calendar.getInstance();
+        calendar.setTimeZone(timeZone);
         currentYear = calendar.get(Calendar.YEAR);
         currentMonth = calendar.get(Calendar.MONTH);
         currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
@@ -270,12 +278,6 @@ public class PhotoFragment extends Fragment {
             });
         }
 
-        /* Get the current time, put in the SimpleDataFormat and UTC time zone and format it to the localDate */
-        formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        timeZone = TimeZone.getTimeZone("America/Chicago");
-        date = new Date();
-        formatter.setTimeZone(timeZone);
-        localDate = formatter.format(date);
 
         /* Check if there in a savedInstanceState */
         if (savedInstanceState == null) {
@@ -670,6 +672,7 @@ public class PhotoFragment extends Fragment {
             @Override
             public void onDateSet(DatePicker view, final int year, int month, int dayOfMonth) {
                 calendar.set(year, month, dayOfMonth);
+                calendar.setTimeZone(timeZone);
                 date = calendar.getTime();
                 localDate = formatter.format(date);
                 new PhotoAsyncTask().execute();

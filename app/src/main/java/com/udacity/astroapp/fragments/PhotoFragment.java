@@ -64,7 +64,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -174,6 +178,8 @@ public class PhotoFragment extends Fragment {
 
     private Calendar calendar;
 
+    private String minDateString = "1995-06-16";
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,7 +195,6 @@ public class PhotoFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         jsonNotSuccessful = false;
-
 
         calendar = Calendar.getInstance();
         currentYear = calendar.get(Calendar.YEAR);
@@ -650,9 +655,15 @@ public class PhotoFragment extends Fragment {
     }
 
     private void createDatePickerDialog() {
-        int minimumYear = 1995;
-        int minimumMonth = 6;
-        int minimumDayOfMonth = 16;
+
+        long minDateLong = 0;
+
+        try {
+            Date minDate = formatter.parse(minDateString);
+             minDateLong = minDate.getTime();
+        } catch (ParseException e) {
+            Log.e(LOG_TAG, "Problem parsing the minDate");
+        }
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
 
@@ -669,7 +680,7 @@ public class PhotoFragment extends Fragment {
             }
         }, currentYear, currentMonth, currentDayOfMonth);
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-        // 16.06.1995
+        datePickerDialog.getDatePicker().setMinDate(minDateLong);
         datePickerDialog.show();
     }
 }

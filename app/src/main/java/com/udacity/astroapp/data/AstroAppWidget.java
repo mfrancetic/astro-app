@@ -14,6 +14,8 @@ import android.widget.RemoteViews;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.module.AppGlideModule;
 import com.bumptech.glide.request.target.AppWidgetTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -53,6 +55,8 @@ public class AstroAppWidget extends AppWidgetProvider {
                 GlideApp.with(context.getApplicationContext())
                         .asBitmap()
                         .load(photoUri)
+                        .placeholder(R.mipmap.ic_launcher)
+                        .transition(BitmapTransitionOptions.withCrossFade())
                         .centerCrop()
                         .into(appWidgetTarget);
 

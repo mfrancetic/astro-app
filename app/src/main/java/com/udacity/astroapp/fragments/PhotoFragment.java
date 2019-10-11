@@ -42,6 +42,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.TransitionOptions;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
@@ -480,6 +482,8 @@ public class PhotoFragment extends Fragment {
             if (photoUri != null) {
                 Glide.with(context)
                         .load(photoUri)
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .placeholder(R.mipmap.ic_launcher)
                         .centerCrop()
                         .into(photoImageView);
 

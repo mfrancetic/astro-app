@@ -41,6 +41,7 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
@@ -477,8 +478,10 @@ public class PhotoFragment extends Fragment {
             /* Get the photoUrl and load it into the photoImageView */
             photoUri = Uri.parse(photo.getPhotoUrl());
             if (photoUri != null) {
-                Picasso picasso = new Picasso.Builder(context).build();
-                picasso.load(photoUri).into(photoImageView);
+                Glide.with(context)
+                        .load(photoUri)
+                        .centerCrop()
+                        .into(photoImageView);
 
                 /* Set the content description of the photoImageView to inform the user about the photo's title */
                 photoImageView.setContentDescription(getString(R.string.photo_of_content_description) + " " + photoTitle);

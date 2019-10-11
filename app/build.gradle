@@ -83,6 +83,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
     implementation 'androidx.drawerlayout:drawerlayout:1.0.0'
 
+    implementation files ('libs/YouTubeAndroidPlayerApi.jar')
+
 }
 repositories {
     mavenCentral()

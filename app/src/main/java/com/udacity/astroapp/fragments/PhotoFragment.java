@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -33,19 +34,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.TransitionOptions;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.udacity.astroapp.R;
@@ -57,6 +61,7 @@ import com.udacity.astroapp.data.PhotoViewModel;
 import com.udacity.astroapp.data.PhotoViewModelFactory;
 import com.udacity.astroapp.models.Photo;
 import com.udacity.astroapp.utils.QueryUtils;
+import com.udacity.astroapp.utils.Secret;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,6 +77,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -109,9 +116,6 @@ public class PhotoFragment extends Fragment {
     @BindView(R.id.photo_empty_image_view)
     ImageView emptyImageView;
 
-    @BindView(R.id.play_video_button)
-    Button playVideoButton;
-
     @BindView(R.id.fab)
     FloatingActionButton floatingActionButton;
 
@@ -124,9 +128,16 @@ public class PhotoFragment extends Fragment {
     @BindView(R.id.photo_next_button)
     ImageButton photoNextButton;
 
+    @BindView(R.id.youtube_player_view)
+    FrameLayout youtubeFrameLayout;
+
+    private YouTubePlayer player;
+
     private Context context;
 
     private Uri photoUri;
+
+    private String videoId;
 
     /* Boolean that indicates the API call was not successful */
     private boolean jsonNotSuccessful;
@@ -180,6 +191,10 @@ public class PhotoFragment extends Fragment {
 
     private final static String currentDayKey = "currentDay";
 
+    private static final String YOUTUBE_API_KEY = Secret.youtube_api_key;
+
+    private FragmentTransaction transaction;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -220,7 +235,6 @@ public class PhotoFragment extends Fragment {
         /* Inflate the fragment_photo.xml layout */
         View rootView = inflater.inflate(R.layout.fragment_photo, container, false);
         ButterKnife.bind(this, rootView);
-
 
         context = photoDateTextView.getContext();
 
@@ -280,7 +294,6 @@ public class PhotoFragment extends Fragment {
                 }
             });
         }
-
 
         /* Check if there in a savedInstanceState */
         if (savedInstanceState == null) {
@@ -460,21 +473,44 @@ public class PhotoFragment extends Fragment {
              * parse it show the playVideoButton*/
             String videoUrl = photo.getPhotoUrl();
             if (videoUrl != null) {
-                videoUri = Uri.parse(videoUrl);
-                playVideoButton.setVisibility(View.VISIBLE);
+//                videoUri = Uri.parse(videoUrl);
                 photoImageView.setVisibility(View.GONE);
+                youtubeFrameLayout.setVisibility(View.VISIBLE);
+                videoId = extractYoutubeId(videoUrl);
+//                playVideoButton.setVisibility(View.VISIBLE);
 
-                /* Set an OnClickListener to the playVideoButton */
-                playVideoButton.setOnClickListener(v -> {
-                    /* OnClick, create and start an intent that opens the URL of the video */
-                    Intent openVideoIntent = new Intent(Intent.ACTION_VIEW);
-                    openVideoIntent.setData(videoUri);
-                    startActivity(openVideoIntent);
+                YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
+
+                transaction = getChildFragmentManager().beginTransaction();
+                transaction.replace(R.id.youtube_player_view, youTubePlayerFragment).commit();
+
+                youTubePlayerFragment.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
+
+                    @Override
+                    public void onInitializationSuccess(YouTubePlayer.Provider arg0, YouTubePlayer youTubePlayer, boolean b) {
+                        if (!b) {
+                            player = youTubePlayer;
+                            player.loadVideo(videoId);
+                            player.play();
+                        }
+                    }
+
+
+                    @Override
+                    public void onInitializationFailure(YouTubePlayer.Provider arg0, YouTubeInitializationResult arg1) {
+                    }
                 });
+
+//                /* Set an OnClickListener to the playVideoButton */
+//                playVideoButton.setOnClickListener(v -> {
+//                    /* OnClick, create and start an intent that opens the URL of the video */
+//                    Intent openVideoIntent = new Intent(Intent.ACTION_VIEW);
+//                    openVideoIntent.setData(videoUri);
+//                    startActivity(openVideoIntent);
+//                });
             }
         } else if (photo.getPhotoMediaType().equals("image")) {
-            /* In case the media type equals an image, hide the playVideoButton*/
-            playVideoButton.setVisibility(View.GONE);
+            youtubeFrameLayout.setVisibility(View.GONE);
             photoImageView.setVisibility(View.VISIBLE);
 
             /* Get the photoUrl and load it into the photoImageView */
@@ -605,8 +641,8 @@ public class PhotoFragment extends Fragment {
     }
 
     public void setPhotoLoadingIndicator() {
+        youtubeFrameLayout.setVisibility(View.GONE);
         loadingIndicator.setVisibility(View.VISIBLE);
-        playVideoButton.setVisibility(View.GONE);
         photoImageView.setVisibility(View.GONE);
         emptyImageView.setVisibility(View.GONE);
         emptyTextView.setVisibility(View.GONE);
@@ -695,5 +731,16 @@ public class PhotoFragment extends Fragment {
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.getDatePicker().setMinDate(minDateLong);
         datePickerDialog.show();
+    }
+
+    private String extractYoutubeId(String videoUrl) {
+        String videoId = null;
+        Pattern pattern = Pattern.compile("^https?://.*(?:youtu.be/|v/|u/\\w/|embed/|watch?v=)([^#&?]*).*$",
+                Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(videoUrl);
+        if (matcher.matches()) {
+            videoId = matcher.group(1);
+        }
+        return videoId;
     }
 }

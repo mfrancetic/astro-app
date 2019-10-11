@@ -23,21 +23,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+
             <FrameLayout
                 android:id="@+id/photo_video_frame_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/margin"
+                android:layout_margin="@dimen/margin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <Button
-                    android:id="@+id/play_video_button"
-                    style="@style/ButtonStyle"
+                <FrameLayout
+                    android:id="@+id/youtube_player_view"
+                    android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+                    android:layout_width="@dimen/youtube_dimensions"
+                    android:layout_height="@dimen/youtube_dimensions"
+                    android:layout_marginTop="@dimen/youtube_margin_top"
+                    android:layout_marginBottom="@dimen/margin"
                     android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/photo_video_source_margin"
-                    android:nextFocusForward="@id/photo_title_text_view"
-                    android:text="@string/play_video_button" />
+                    />
 
                 <ImageButton
                     android:id="@+id/photo_previous_button"
@@ -65,6 +68,7 @@
                     android:contentDescription="@string/photo_of_the_day_content_description"
                     android:padding="@dimen/margin"
                     tools:src="@mipmap/ic_launcher" />
+
 
                 <TextView
                     android:id="@+id/photo_video_source_text_view"

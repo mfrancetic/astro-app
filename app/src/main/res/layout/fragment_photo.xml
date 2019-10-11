@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/photo_coordinator_layout"
@@ -18,7 +18,7 @@
         android:paddingBottom="@dimen/margin_list_item"
         tools:ignore="Overdraw">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/photo_constraint_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -131,10 +131,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/photo_date_text_view"
                 tools:text="On May 20, a nearly Full Moon and Jupiter shared this telephoto field of view. On May 20, a nearly Full Moon and Jupiter shared this telephoto field of view." />
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -145,4 +145,4 @@
         android:src="@drawable/ic_share"
         app:fabSize="normal"
         app:layout_anchorGravity="bottom|end" />
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

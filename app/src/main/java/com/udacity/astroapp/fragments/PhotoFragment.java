@@ -50,6 +50,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.udacity.astroapp.R;
@@ -128,8 +129,8 @@ public class PhotoFragment extends Fragment {
     @BindView(R.id.photo_next_button)
     ImageButton photoNextButton;
 
-    @BindView(R.id.youtube_player_view)
-    FrameLayout youtubeFrameLayout;
+    @BindView(R.id.play_video_button)
+    ImageButton playVideoButton;
 
     private YouTubePlayer player;
 
@@ -473,44 +474,21 @@ public class PhotoFragment extends Fragment {
              * parse it show the playVideoButton*/
             String videoUrl = photo.getPhotoUrl();
             if (videoUrl != null) {
-//                videoUri = Uri.parse(videoUrl);
                 photoImageView.setVisibility(View.GONE);
-                youtubeFrameLayout.setVisibility(View.VISIBLE);
                 videoId = extractYoutubeId(videoUrl);
-//                playVideoButton.setVisibility(View.VISIBLE);
-
-                YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
-
-                transaction = getChildFragmentManager().beginTransaction();
-                transaction.replace(R.id.youtube_player_view, youTubePlayerFragment).commit();
-
-                youTubePlayerFragment.initialize(YOUTUBE_API_KEY, new YouTubePlayer.OnInitializedListener() {
-
+                playVideoButton.setVisibility(View.VISIBLE);
+                playVideoButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onInitializationSuccess(YouTubePlayer.Provider arg0, YouTubePlayer youTubePlayer, boolean b) {
-                        if (!b) {
-                            player = youTubePlayer;
-                            player.loadVideo(videoId);
-                            player.play();
+                    public void onClick(View view) {
+                        if (getActivity() != null) {
+                            Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), YOUTUBE_API_KEY, videoId);
+                            startActivity(intent);
                         }
                     }
-
-
-                    @Override
-                    public void onInitializationFailure(YouTubePlayer.Provider arg0, YouTubeInitializationResult arg1) {
-                    }
                 });
-
-//                /* Set an OnClickListener to the playVideoButton */
-//                playVideoButton.setOnClickListener(v -> {
-//                    /* OnClick, create and start an intent that opens the URL of the video */
-//                    Intent openVideoIntent = new Intent(Intent.ACTION_VIEW);
-//                    openVideoIntent.setData(videoUri);
-//                    startActivity(openVideoIntent);
-//                });
             }
         } else if (photo.getPhotoMediaType().equals("image")) {
-            youtubeFrameLayout.setVisibility(View.GONE);
+            playVideoButton.setVisibility(View.GONE);
             photoImageView.setVisibility(View.VISIBLE);
 
             /* Get the photoUrl and load it into the photoImageView */
@@ -641,7 +619,7 @@ public class PhotoFragment extends Fragment {
     }
 
     public void setPhotoLoadingIndicator() {
-        youtubeFrameLayout.setVisibility(View.GONE);
+        playVideoButton.setVisibility(View.GONE);
         loadingIndicator.setVisibility(View.VISIBLE);
         photoImageView.setVisibility(View.GONE);
         emptyImageView.setVisibility(View.GONE);

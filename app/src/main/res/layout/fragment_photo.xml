@@ -35,6 +35,17 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageButton
+                    android:id="@+id/play_video_button"
+                    style="@style/ButtonStyle"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginBottom="@dimen/margin"
+                    android:contentDescription="@string/play_video_button"
+                    android:src="@drawable/ic_play_arrow" />
+
+                <ImageButton
                     android:id="@+id/photo_previous_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -61,13 +72,6 @@
                     android:padding="@dimen/margin"
                     tools:src="@mipmap/ic_launcher" />
 
-                <ImageButton
-                    android:id="@+id/play_video_button"
-                    style="@style/ButtonStyle"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="25dp"
-                    android:contentDescription="@string/play_video_button"
-                    android:src="@drawable/ic_play_arrow" />
 
                 <TextView
                     android:id="@+id/photo_video_source_text_view"

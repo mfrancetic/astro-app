@@ -481,7 +481,7 @@ public class PhotoFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         if (getActivity() != null) {
-                            Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), YOUTUBE_API_KEY, videoId);
+                            Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), YOUTUBE_API_KEY, videoId, 0, true, true);
                             startActivity(intent);
                         }
                     }

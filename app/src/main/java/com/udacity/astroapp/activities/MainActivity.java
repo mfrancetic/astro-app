@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity
                     .commit();
 
             currentFragment = fragment;
-        }
+        }  
     }
 
     /**

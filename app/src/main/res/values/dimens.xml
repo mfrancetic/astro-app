@@ -4,7 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="margin">16dp</dimen>
     <dimen name="margin_list_item">8dp</dimen>
-    <dimen name="image_dimensions">64dp</dimen>
+    <dimen name="image_dimensions">48dp</dimen>
     <dimen name="app_bar_layout_main_elevation">4dp</dimen>
     <dimen name="fragment_margin_start">0dp</dimen>
     <dimen name="detail_toolbar_elevation">2dp</dimen>

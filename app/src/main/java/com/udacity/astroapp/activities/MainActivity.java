@@ -248,10 +248,6 @@ public class MainActivity extends AppCompatActivity
             TimerTask timerTask = new TimerTask();
             timer.schedule(timerTask, 1800);
             return true;
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//            if (currentFragment != null) {
-//                fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
         } else if (id == R.id.menu_calendar) {
             return false;
         }
@@ -311,9 +307,6 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (currentFragment != null) {
-//            if (currentFragment.toString().contains("PhotoFragment")) {
-//                PhotoFragment.setPhotoLoadingIndicator();
-//            }
             fragmentTransaction.detach(this.currentFragment).attach(this.currentFragment).commit();
         }
         isBeingRefreshed = false;

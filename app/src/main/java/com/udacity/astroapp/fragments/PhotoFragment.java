@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -39,27 +38,19 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.DatePicker;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.TransitionOptions;
-import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
-import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
@@ -141,8 +132,6 @@ public class PhotoFragment extends Fragment {
     @BindView(R.id.play_video_button)
     ImageButton playVideoButton;
 
-    private YouTubePlayer player;
-
     private Context context;
 
     private Uri photoUri;
@@ -203,8 +192,6 @@ public class PhotoFragment extends Fragment {
 
     private static final String YOUTUBE_API_KEY = Secret.youtube_api_key;
 
-    private FragmentTransaction transaction;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -221,17 +208,14 @@ public class PhotoFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         jsonNotSuccessful = false;
 
-
         /* Get the current time, put in the SimpleDataFormat and UTC time zone and format it to the localDate */
         formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         timeZone = TimeZone.getTimeZone("America/Chicago");
         date = new Date();
         formatter.setTimeZone(timeZone);
-//        localDate = formatter.format(date);
 
         calendar = Calendar.getInstance();
         calendar.setTimeZone(timeZone);
-
 
         currentYear = calendar.get(Calendar.YEAR);
         currentMonth = calendar.get(Calendar.MONTH);
@@ -287,7 +271,6 @@ public class PhotoFragment extends Fragment {
             }
         });
 
-
         if (photoScrollView != null) {
             photoScrollView.requestFocus();
             photoScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -341,7 +324,6 @@ public class PhotoFragment extends Fragment {
         protected Photo doInBackground(String... strings) {
             try {
                 /* Create an URL and make a HTTP request */
-
                 URL url = QueryUtils.createPhotoUrl(localDate);
                 String photoJson = QueryUtils.makeHttpRequest(url);
 
@@ -467,7 +449,6 @@ public class PhotoFragment extends Fragment {
             });
         }
 
-
         /* Set text of the photoTitleTextView, photoDateTextView and photoDescriptionTextView */
         if (photo.getPhotoTitle() != null && photo.getPhotoDate() != null && photo.getPhotoDescription() != null) {
             photoTitleTextView.setText(photo.getPhotoTitle());
@@ -540,14 +521,11 @@ public class PhotoFragment extends Fragment {
                                     intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(resource, context));
                                     startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_photo_content_description)));
                                 }
-
                                 @Override
                                 public void onLoadCleared(@Nullable Drawable placeholder) {
 
                                 }
                             });
-
-
                 } else if (photo.getPhotoMediaType().equals("video")) {
                     floatingActionButton.setContentDescription(getString(R.string.share_video_content_description));
                     intent.setType("text/plain");
@@ -661,8 +639,6 @@ public class PhotoFragment extends Fragment {
         calendar.setTime(date);
         calendar.add(Calendar.DATE, -1);
         return calendar.getTime();
-//        Date newDate = new Date(date* 1000 -  24 * 60 * 60 * 1000);
-//        return new Date (date* 24*60*60*1000);
     }
 
     private Date getNextDate(Date date) {
@@ -675,7 +651,6 @@ public class PhotoFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_calendar).setVisible(true);
-
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -697,7 +672,6 @@ public class PhotoFragment extends Fragment {
     }
 
     private void createDatePickerDialog() {
-
         long minDateLong = 0;
 
         try {

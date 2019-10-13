@@ -86,7 +86,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
 
-
     /* Views of the PhotoFragment */
     @BindView(R.id.observatory_list_recycler_view)
     RecyclerView observatoryRecyclerView;
@@ -181,7 +180,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
         language = LanguageHelper.getSystemLanguage(context);
 
-
         /* Get the boolean that indicates if a device is a tablet */
         isTablet = getResources().getBoolean(R.bool.isTablet);
 
@@ -190,10 +188,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
         startLocationUpdates();
 
-//        locationActivatedNeedsToBeRefreshed = false;
-
         setObservatoryListLoadingIndicator();
-
 
         FusedLocationProviderClient fusedLocationProviderClient = getFusedLocationProviderClient(context);
 
@@ -365,7 +360,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                         }
                     });
                 }
-
                 if (locationPermissionGranted && isLocationEnabled(context) && !MainActivity.isNetworkAvailable(context)) {
                     observatoryListEmptyTextView.setText(R.string.no_internet_connection);
                 }

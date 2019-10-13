@@ -179,7 +179,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
         setObservatoryLoadingIndicator();
 
-
         appDatabase = AppDatabase.getInstance(context);
 
         ObservatoryDetailViewModelFactory observatoryDetailViewModelFactory = new ObservatoryDetailViewModelFactory(appDatabase, observatoryId);
@@ -433,6 +432,4 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         }
         super.onPause();
     }
-
-
 }

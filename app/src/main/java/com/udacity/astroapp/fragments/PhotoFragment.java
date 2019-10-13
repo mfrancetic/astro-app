@@ -13,17 +13,21 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+
 import androidx.core.content.FileProvider;
+
 import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,20 +48,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.TransitionOptions;
+import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
 import com.google.android.youtube.player.YouTubeStandalonePlayer;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.AstroAppWidget;
+import com.udacity.astroapp.data.GlideApp;
 import com.udacity.astroapp.data.PhotoViewModel;
 import com.udacity.astroapp.data.PhotoViewModelFactory;
 import com.udacity.astroapp.models.Photo;
@@ -222,7 +231,7 @@ public class PhotoFragment extends Fragment {
 
         calendar = Calendar.getInstance();
         calendar.setTimeZone(timeZone);
-        
+
 
         currentYear = calendar.get(Calendar.YEAR);
         currentMonth = calendar.get(Calendar.MONTH);
@@ -520,23 +529,25 @@ public class PhotoFragment extends Fragment {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 if (photo.getPhotoMediaType().equals("image")) {
                     floatingActionButton.setContentDescription(getString(R.string.share_photo_content_description));
-                    Picasso picasso = new Picasso.Builder(context).build();
-                    picasso.load(photoUrl).into(new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            intent.setType("image/*");
-                            intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(bitmap, context));
-                            startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_photo_content_description)));
-                        }
+                    Glide.
+                            with(context)
+                            .asBitmap()
+                            .load(photoUrl)
+                            .into(new CustomTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                    intent.setType("image/*");
+                                    intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(resource, context));
+                                    startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_photo_content_description)));
+                                }
 
-                        @Override
-                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-                        }
+                                @Override
+                                public void onLoadCleared(@Nullable Drawable placeholder) {
 
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-                        }
-                    });
+                                }
+                            });
+
+
                 } else if (photo.getPhotoMediaType().equals("video")) {
                     floatingActionButton.setContentDescription(getString(R.string.share_video_content_description));
                     intent.setType("text/plain");
@@ -603,8 +614,13 @@ public class PhotoFragment extends Fragment {
         isDialogShown = true;
 
         ImageView fullScreenImageView = dialog.findViewById(R.id.photo_full_screen_view);
-        Picasso picasso = new Picasso.Builder(context).build();
-        picasso.load(photoUri).into(fullScreenImageView);
+
+        GlideApp.
+                with(context)
+                .load(photoUri)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(fullScreenImageView);
+
         fullScreenImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

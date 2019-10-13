@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -159,18 +160,18 @@ public class MainActivity extends AppCompatActivity
         /* In case there is no current fragment, replace it */
         if (currentFragment == null) {
             currentFragment = new PhotoFragment();
-            /* In phone mode, set an animation for entering and exiting the fragment */
-            if (!tabletSize) {
-                fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
-                        R.anim.enter_from_left, R.anim.exit_to_right);
-            }
-            fragmentTransaction
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack("fragment")
-                    .commit();
+        }
+        /* In phone mode, set an animation for entering and exiting the fragment */
+        if (!tabletSize) {
+            fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left,
+                    R.anim.enter_from_left, R.anim.exit_to_right);
+        }
+        fragmentTransaction
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack("fragment")
+                .commit();
 
-            currentFragment = fragment;
-        }  
+        currentFragment = fragment;
     }
 
     /**

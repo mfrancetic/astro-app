@@ -38,4 +38,11 @@
         <item name="android:elevation">@dimen/button_elevation_rested</item>
         <item name="android:translationZ">@dimen/button_elevation_pressed</item>
     </style>
+
+    <!-- Style of the loading indicator -->
+    <style name="LoadingIndicatorStyle" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:progressTint">@color/colorAccent</item>
+    </style>
 </resources>

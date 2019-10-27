@@ -6,7 +6,9 @@
     android:focusable="true"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/nav_group_fragments"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_photo"
             android:contentDescription="@string/menu_photo_content_description"
@@ -23,7 +25,18 @@
             android:id="@+id/nav_observatories"
             android:contentDescription="@string/menu_observatories_content_description"
             android:icon="@drawable/ic_observatory"
-            android:nextFocusForward="@id/nav_photo"
+            android:nextFocusForward="@id/nav_theme"
             android:title="@string/menu_observatories" />
+    </group>
+
+    <group
+        android:id="@+id/nav_group_settings"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_theme"
+            android:contentDescription="@string/menu_theme_content_description"
+            android:icon="@drawable/ic_style"
+            android:nextFocusForward="@id/nav_photo"
+            android:title="@string/menu_theme" />
     </group>
 </menu>

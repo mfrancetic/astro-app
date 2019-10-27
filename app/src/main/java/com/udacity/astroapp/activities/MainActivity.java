@@ -151,6 +151,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_observatories) {
             currentFragment = new ObservatoryListFragment();
             displayFragment(currentFragment);
+        } else if (id == R.id.nav_theme) {
+            changeThemeDialog();
         }
 
         fragmentId = id;
@@ -264,43 +266,6 @@ public class MainActivity extends AppCompatActivity
             return true;
         } else if (id == R.id.menu_calendar) {
             return false;
-        } else if (id == R.id.menu_theme) {
-            int checkedItem = 2;
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-            String[] themes;
-            if (androidVersion >= Build.VERSION_CODES.Q) {
-                themes = getResources().getStringArray(R.array.themes_array_v29);
-            } else {
-                themes = getResources().getStringArray(R.array.themes_array_default);
-            }
-            builder
-                    .setTitle(R.string.menu_theme)
-                    .setSingleChoiceItems(themes, checkedItem, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (which == 0) {
-                                themeId = AppCompatDelegate.MODE_NIGHT_NO;
-                            } else if (which == 1) {
-                                themeId = AppCompatDelegate.MODE_NIGHT_YES;
-                            } else {
-                                if (androidVersion >= Build.VERSION_CODES.Q) {
-                                    themeId = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-                                } else {
-                                    themeId = AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY;
-                                }
-                            }
-                        }
-                    });
-            builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    AppCompatDelegate.setDefaultNightMode(themeId);
-                }
-            });
-            builder.setNegativeButton(getString(R.string.cancel), null);
-            AlertDialog dialog = builder.create();
-            dialog.show();
         }
         return false;
     }
@@ -392,5 +357,44 @@ public class MainActivity extends AppCompatActivity
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
+    }
+
+    private void changeThemeDialog() {
+        int checkedItem = 2;
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        String[] themes;
+        if (androidVersion >= Build.VERSION_CODES.Q) {
+            themes = getResources().getStringArray(R.array.themes_array_v29);
+        } else {
+            themes = getResources().getStringArray(R.array.themes_array_default);
+        }
+        builder
+                .setTitle(R.string.menu_theme)
+                .setSingleChoiceItems(themes, checkedItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            themeId = AppCompatDelegate.MODE_NIGHT_NO;
+                        } else if (which == 1) {
+                            themeId = AppCompatDelegate.MODE_NIGHT_YES;
+                        } else {
+                            if (androidVersion >= Build.VERSION_CODES.Q) {
+                                themeId = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+                            } else {
+                                themeId = AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY;
+                            }
+                        }
+                    }
+                });
+        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                AppCompatDelegate.setDefaultNightMode(themeId);
+            }
+        });
+        builder.setNegativeButton(getString(R.string.cancel), null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

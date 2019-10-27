@@ -18,6 +18,7 @@
     <string name="menu_photo_content_description">Navigate to Photo of the day</string>
     <string name="menu_asteroids_content_description">Navigate to Asteroids</string>
     <string name="menu_observatories_content_description">Navigate to Observatories</string>
+    <string name="menu_theme_content_description">Navigate to Theme</string>
     <string name="photo_previous_content_description">See previous photo</string>
     <string name="photo_next_content_description">See next photo</string>
     <string name="photo_calendar_content_description">Choose photo date</string>

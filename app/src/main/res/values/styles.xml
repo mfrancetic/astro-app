@@ -1,12 +1,10 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorButtonNormal">@color/colorAccent</item>
-        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
-        <item name="android:textColorSecondary">@color/colorTextSecondary</item>
     </style>
 
     <!-- Theme for the full screen layout -->
@@ -89,7 +87,7 @@
     <style name="AsteroidLabelTextViewStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">@dimen/asteroid_text_size</item>
     </style>
 
@@ -108,7 +106,7 @@
     <style name="ObservatoryListItemSubtitleStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/colorTextSecondary</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle2
         </item>
     </style>
@@ -134,4 +132,14 @@
         <item name="android:textColor">@color/colorTextIcons</item>
         <item name="android:layout_centerHorizontal">true</item>
     </style>
+
+    <style name="AstroDialogTheme" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+<!--        <item name="colorControlNormal">@color/indigo</item>-->
+<!--        <item name="colorControlActivated">@color/pink</item>-->
+<!--        <item name="textColorAlertDialogListItem">@color/indigo</item>-->
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">?android:attr/textColorPrimary</item>
+        <item name="android:colorBackground">?android:attr/colorBackground</item>
+    </style>
+
 </resources>

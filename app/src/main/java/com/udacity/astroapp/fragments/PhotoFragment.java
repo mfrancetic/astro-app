@@ -1,6 +1,7 @@
 package com.udacity.astroapp.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.appwidget.AppWidgetManager;
@@ -521,6 +522,7 @@ public class PhotoFragment extends Fragment {
                                     intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(resource, context));
                                     startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_photo_content_description)));
                                 }
+
                                 @Override
                                 public void onLoadCleared(@Nullable Drawable placeholder) {
 
@@ -681,21 +683,24 @@ public class PhotoFragment extends Fragment {
             Log.e(LOG_TAG, "Problem parsing the minDate");
         }
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(context,
+//                R.style.AstroDialogTheme,
+//                R.style.Theme_AppCompat_DayNight_Dialog_Alert,
+                new DatePickerDialog.OnDateSetListener() {
 
-            @Override
-            public void onDateSet(DatePicker view, final int year, int month, int dayOfMonth) {
-                calendar.set(year, month, dayOfMonth);
-                calendar.setTimeZone(timeZone);
-                date = calendar.getTime();
-                localDate = formatter.format(date);
-                new PhotoAsyncTask().execute();
+                    @Override
+                    public void onDateSet(DatePicker view, final int year, int month, int dayOfMonth) {
+                        calendar.set(year, month, dayOfMonth);
+                        calendar.setTimeZone(timeZone);
+                        date = calendar.getTime();
+                        localDate = formatter.format(date);
+                        new PhotoAsyncTask().execute();
 
-                currentYear = year;
-                currentMonth = month;
-                currentDayOfMonth = dayOfMonth;
-            }
-        }, currentYear, currentMonth, currentDayOfMonth);
+                        currentYear = year;
+                        currentMonth = month;
+                        currentDayOfMonth = dayOfMonth;
+                    }
+                }, currentYear, currentMonth, currentDayOfMonth);
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.getDatePicker().setMinDate(minDateLong);
         datePickerDialog.show();

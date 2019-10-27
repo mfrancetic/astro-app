@@ -2,18 +2,23 @@ package com.udacity.astroapp.activities;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
@@ -37,6 +42,9 @@ import com.udacity.astroapp.fragments.ObservatoryListFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment.OnObservatoryClickListener;
 import com.udacity.astroapp.fragments.PhotoFragment;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 
 import butterknife.BindView;
@@ -68,6 +76,10 @@ public class MainActivity extends AppCompatActivity
 
     public static boolean isBeingRefreshed;
 
+    private int themeId;
+
+    private int androidVersion;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +89,8 @@ public class MainActivity extends AppCompatActivity
         ButterKnife.bind(this);
         /* Find toolbar and set the support action bar to the toolbar */
         setSupportActionBar(toolbar);
+
+        androidVersion = Build.VERSION.SDK_INT;
 
         /* Check if the device is a phone or a tablet */
         tabletSize = getResources().getBoolean(R.bool.isTablet);
@@ -250,6 +264,43 @@ public class MainActivity extends AppCompatActivity
             return true;
         } else if (id == R.id.menu_calendar) {
             return false;
+        } else if (id == R.id.menu_theme) {
+            int checkedItem = 2;
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+            String[] themes;
+            if (androidVersion >= Build.VERSION_CODES.Q) {
+                themes = getResources().getStringArray(R.array.themes_array_v29);
+            } else {
+                themes = getResources().getStringArray(R.array.themes_array_default);
+            }
+            builder
+                    .setTitle(R.string.menu_theme)
+                    .setSingleChoiceItems(themes, checkedItem, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (which == 0) {
+                                themeId = AppCompatDelegate.MODE_NIGHT_NO;
+                            } else if (which == 1) {
+                                themeId = AppCompatDelegate.MODE_NIGHT_YES;
+                            } else {
+                                if (androidVersion >= Build.VERSION_CODES.Q) {
+                                    themeId = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+                                } else {
+                                    themeId = AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY;
+                                }
+                            }
+                        }
+                    });
+            builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    AppCompatDelegate.setDefaultNightMode(themeId);
+                }
+            });
+            builder.setNegativeButton(getString(R.string.cancel), null);
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
         return false;
     }
@@ -269,10 +320,8 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     Toast.makeText(getApplicationContext(), getString(R.string.location_permission_declined), Toast.LENGTH_SHORT).show();
                 }
-
             }
         }
-
     }
 
     public void checkLocationPermission() {

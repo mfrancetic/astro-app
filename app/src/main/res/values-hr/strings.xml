@@ -55,4 +55,9 @@
     <string name="photo_previous_content_description">Vidi prethodnu sliku</string>
     <string name="photo_calendar_content_description">Izaberi datum slike</string>
     <string name="menu_calendar">Kalendar</string>
+    <string name="menu_theme">Tema</string>
+    <string name="theme_battery_saver">Određeno čuvanjem baterije</string>
+    <string name="theme_dark">Tamna</string>
+    <string name="theme_light">Svijetla</string>
+    <string name="theme_system_default">Određena sustavom</string>
 </resources>

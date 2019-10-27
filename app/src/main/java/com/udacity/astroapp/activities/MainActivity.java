@@ -103,11 +103,6 @@ public class MainActivity extends AppCompatActivity
 
         androidVersion = Build.VERSION.SDK_INT;
 
-        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        themeId = sharedPreferences.getInt(PREF_THEME, 0);
-        checkedTheme = sharedPreferences.getInt(PREF_CHECKED_THEME, 0);
-        updateTheme(themeId, checkedTheme);
-
         /* Check if the device is a phone or a tablet */
         tabletSize = getResources().getBoolean(R.bool.isTablet);
         checkLocationPermission();
@@ -143,6 +138,9 @@ public class MainActivity extends AppCompatActivity
         });
 
         if (savedInstanceState == null) {
+            sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            themeId = sharedPreferences.getInt(PREF_THEME, 0);
+            checkedTheme = sharedPreferences.getInt(PREF_CHECKED_THEME, 0);
             navigationView.setCheckedItem(R.id.nav_photo);
             navigationView.requestFocus();
             Fragment fragment = new PhotoFragment();
@@ -150,7 +148,10 @@ public class MainActivity extends AppCompatActivity
             displayFragment(fragment);
         } else {
             currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
+            checkedTheme = savedInstanceState.getInt(PREF_CHECKED_THEME);
+            themeId = savedInstanceState.getInt(PREF_THEME);
         }
+        updateTheme(themeId, checkedTheme);
     }
 
     @Override
@@ -239,6 +240,8 @@ public class MainActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         /* Add the fragment id to the savedInstanceState */
         outState.putInt(fragmentIdKey, fragmentId);
+        outState.putInt(PREF_THEME, themeId);
+        outState.putInt(PREF_CHECKED_THEME, checkedTheme);
         super.onSaveInstanceState(outState);
     }
 

@@ -8,11 +8,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -21,8 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -44,12 +51,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -103,6 +112,25 @@ public class AsteroidFragment extends Fragment {
     private int scrollX;
     private int scrollY;
 
+    private TimeZone timeZone;
+
+    private Date date;
+
+    private SimpleDateFormat formatter;
+
+    private int currentYear;
+
+    private int currentMonth;
+
+    private int currentDayOfMonth;
+
+    private Calendar calendar;
+
+    private String minDateString = "1995-06-16";
+
+    private final static String currentDayKey = "currentDay";
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +139,7 @@ public class AsteroidFragment extends Fragment {
             /* Set the title of the activity */
             getActivity().setTitle(R.string.menu_asteroids);
         }
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -120,6 +149,18 @@ public class AsteroidFragment extends Fragment {
             /* Set the title of the activity */
             getActivity().setTitle(R.string.menu_asteroids);
         }
+
+        /* Get the current time, put in the SimpleDataFormat and UTC time zone and format it to the localDate */
+        formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        timeZone = TimeZone.getTimeZone("America/Chicago");
+        date = new Date();
+        formatter.setTimeZone(timeZone);
+        calendar = Calendar.getInstance();
+        calendar.setTimeZone(timeZone);
+
+        currentYear = calendar.get(Calendar.YEAR);
+        currentMonth = calendar.get(Calendar.MONTH);
+        currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
         /* Inflate the fragment_asteroid.xml layout */
         View rootView = inflater.inflate(R.layout.fragment_asteroid, container, false);
@@ -184,6 +225,7 @@ public class AsteroidFragment extends Fragment {
         /* Check if there in a savedInstanceState */
         if (savedInstanceState == null) {
             /* In case there is no savedInstanceState, execute an AsteroidAsyncTask */
+            localDate = formatter.format(date);
             new AsteroidAsyncTask().execute();
         } else {
             /* In case there is a savedInstanceState, get the scroll positions, get the saved
@@ -325,6 +367,7 @@ public class AsteroidFragment extends Fragment {
         outState.putParcelableArrayList(asteroidListKey, (ArrayList<? extends Parcelable>) asteroidList);
         scrollX = scrollView.getScrollX();
         scrollY = scrollView.getScrollY();
+        outState.putString(currentDayKey, localDate);
         outState.putInt(SCROLL_POSITION_X, scrollX);
         outState.putInt(SCROLL_POSITION_Y, scrollY);
         super.onSaveInstanceState(outState);
@@ -360,5 +403,60 @@ public class AsteroidFragment extends Fragment {
             setAsteroidLoadingIndicator();
         }
         super.onPause();
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.menu_calendar).setVisible(true);
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_refresh) {
+            return false;
+        } else if (item.getItemId() == R.id.menu_calendar) {
+            createDatePickerDialog();
+            return true;
+        }
+        return false;
+    }
+
+    private void createDatePickerDialog() {
+        long minDateLong = 0;
+
+        try {
+            Date minDate = formatter.parse(minDateString);
+            minDateLong = minDate.getTime();
+        } catch (ParseException e) {
+            Log.e(LOG_TAG, "Problem parsing the minDate");
+        }
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(context,
+//                R.style.AstroDialogTheme,
+//                R.style.Theme_AppCompat_DayNight_Dialog_Alert,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, final int year, int month, int dayOfMonth) {
+                        calendar.set(year, month, dayOfMonth);
+                        calendar.setTimeZone(timeZone);
+                        date = calendar.getTime();
+                        localDate = formatter.format(date);
+                        new AsteroidAsyncTask().execute();
+
+                        currentYear = year;
+                        currentMonth = month;
+                        currentDayOfMonth = dayOfMonth;
+                    }
+                }, currentYear, currentMonth, currentDayOfMonth);
+        datePickerDialog.getDatePicker().setMinDate(minDateLong);
+        datePickerDialog.show();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

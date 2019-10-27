@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -80,6 +81,16 @@ public class MainActivity extends AppCompatActivity
 
     private int androidVersion;
 
+    private static final String PREFS_NAME = "prefs";
+
+    private static final String PREF_THEME = "theme";
+
+    private static final String PREF_CHECKED_THEME = "checkedTheme";
+
+    private SharedPreferences sharedPreferences;
+
+    private int checkedTheme;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +102,11 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         androidVersion = Build.VERSION.SDK_INT;
+
+        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        themeId = sharedPreferences.getInt(PREF_THEME, 0);
+        checkedTheme = sharedPreferences.getInt(PREF_CHECKED_THEME, 0);
+        updateTheme(themeId, checkedTheme);
 
         /* Check if the device is a phone or a tablet */
         tabletSize = getResources().getBoolean(R.bool.isTablet);
@@ -360,7 +376,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void changeThemeDialog() {
-        int checkedItem = 2;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
         String[] themes;
@@ -371,14 +387,17 @@ public class MainActivity extends AppCompatActivity
         }
         builder
                 .setTitle(R.string.menu_theme)
-                .setSingleChoiceItems(themes, checkedItem, new DialogInterface.OnClickListener() {
+                .setSingleChoiceItems(themes, checkedTheme, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == 0) {
+                            checkedTheme = which;
                             themeId = AppCompatDelegate.MODE_NIGHT_NO;
                         } else if (which == 1) {
+                            checkedTheme = which;
                             themeId = AppCompatDelegate.MODE_NIGHT_YES;
                         } else {
+                            checkedTheme = which;
                             if (androidVersion >= Build.VERSION_CODES.Q) {
                                 themeId = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
                             } else {
@@ -390,11 +409,19 @@ public class MainActivity extends AppCompatActivity
         builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                AppCompatDelegate.setDefaultNightMode(themeId);
+                updateTheme(themeId, checkedTheme);
             }
         });
         builder.setNegativeButton(getString(R.string.cancel), null);
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void updateTheme(int themeId, int checkedTheme) {
+        SharedPreferences.Editor editor = getSharedPreferences(PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putInt(PREF_THEME, themeId);
+        editor.putInt(PREF_CHECKED_THEME, checkedTheme);
+        editor.apply();
+        AppCompatDelegate.setDefaultNightMode(themeId);
     }
 }

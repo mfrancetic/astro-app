@@ -15,7 +15,6 @@
         android:id="@+id/asteroid_image_view"
         style="@style/AsteroidImageViewStyle"
         android:contentDescription="@string/asteroid_image_content_description"
-        android:padding="@dimen/margin_list_item"
         android:src="@drawable/asteroid_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

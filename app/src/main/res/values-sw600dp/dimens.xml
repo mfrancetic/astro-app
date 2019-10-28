@@ -11,6 +11,7 @@
 
     <!-- AsteroidFragment -->
     <dimen name="asteroid_text_size">16dp</dimen>
+    <dimen name="guideline_start">250dp</dimen>
 
     <!-- NavigationDrawer -->
     <dimen name="drawer_width">300dp</dimen>

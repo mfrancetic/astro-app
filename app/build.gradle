@@ -84,9 +84,17 @@ dependencies {
     androidTestImplementation 'com.android.support.test:rules:1.0.2'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'androidx.fragment:fragment-testing:1.1.0'
-
+    implementation 'androidx.fragment:fragment:1.2.0-rc02'
     implementation files ('libs/YouTubeAndroidPlayerApi.jar')
+    androidTestImplementation 'com.21buttons:fragment-test-rule:1.0.0'
+    debugImplementation 'com.21buttons:fragment-test-rule-extras:2.0.1'
 
+    androidTestImplementation "com.android.support.test.espresso:espresso-contrib:3.0.2"
+    implementation 'it.xabaras.android.espresso:recyclerview-child-actions:1.0'
+//
+//    debugImplementation 'androidx.fragment:fragment-testing:' + rootProject.androidxFragmentVersion
+//    implementation 'androidx.test:core:' + rootProject.coreVersion
+//    debugImplementation 'androidx.test:core:' + rootProject.coreVersion
 }
 repositories {
     mavenCentral()

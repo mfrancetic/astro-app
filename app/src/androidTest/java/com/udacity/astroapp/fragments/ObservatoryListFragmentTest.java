@@ -1,26 +1,13 @@
 package com.udacity.astroapp.fragments;
 
 import android.content.Intent;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.TextView;
 
-import androidx.fragment.app.testing.FragmentScenario;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
-import com.android21buttons.fragmenttestrule.FragmentTestRule;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
 
-import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,16 +17,14 @@ import org.junit.runner.RunWith;
 import it.xabaras.android.espresso.recyclerviewchildactions.RecyclerViewChildActions;
 
 import static androidx.test.espresso.Espresso.onView;
-
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
-public class AsteroidFragmentTest {
+public class ObservatoryListFragmentTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
@@ -50,20 +35,20 @@ public class AsteroidFragmentTest {
     @Before
     public void setUp() throws Exception {
         mainActivity = mainActivityActivityTestRule.getActivity();
-        AndroidTestHelper.chooseDrawerAction(R.id.nav_asteroids);
+        AndroidTestHelper.chooseDrawerAction(R.id.nav_observatories);
     }
 
     @Test
-    public void asteroidRecyclerViewIsDisplayed() {
-        onView(withId(R.id.asteroid_recycler_view)).check(matches(isDisplayed()));
+    public void observatoryListRecyclerViewIsDisplayed() {
+        onView(withId(R.id.observatory_list_recycler_view)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void testAsteroidReadMoreButton() {
-     onView(withId(R.id.asteroid_recycler_view)).perform(RecyclerViewChildActions.Companion.actionOnChild(
-             click(), R.id.asteroid_read_more_button));
-        Intent readMoreIntent = new Intent(Intent.ACTION_VIEW);
-        assertNotNull(readMoreIntent);
+    public void testObservatoryListItemButton() {
+        onView(withId(R.id.observatory_list_recycler_view)).perform(RecyclerViewChildActions.Companion.actionOnChild(
+                click(), R.id.observatory_list_item_button));
+        Intent seeObservatoryDetailsIntent = new Intent(mainActivity.getBaseContext(), ObservatoryFragment.class);
+        assertNotNull(seeObservatoryDetailsIntent);
     }
 
     @After

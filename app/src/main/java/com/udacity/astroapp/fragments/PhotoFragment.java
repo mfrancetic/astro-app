@@ -277,10 +277,12 @@ public class PhotoFragment extends Fragment {
                     scrollX = photoScrollView.getScrollX();
                     scrollY = photoScrollView.getScrollY();
                     /* Hide the floatingActionButton when scrolling down, and show it when scrolling up*/
-                    if (scrollY > 0 || scrollY < 0 && floatingActionButton.isShown()) {
-                        floatingActionButton.hide();
-                    } else {
-                        floatingActionButton.show();
+                    if (!isUnplayableVideo(photoUrl)) {
+                        if (scrollY > 0 || scrollY < 0 && floatingActionButton.isShown()) {
+                            floatingActionButton.hide();
+                        } else {
+                            floatingActionButton.show();
+                        }
                     }
                 }
             });
@@ -462,8 +464,9 @@ public class PhotoFragment extends Fragment {
              * parse it show the playVideoButton*/
             String videoUrl = photo.getPhotoUrl();
             if (videoUrl != null) {
-                if (videoUrl.contains("youtube")) {
+                if (!isUnplayableVideo(photoUrl)) {
                     photoImageView.setVisibility(View.GONE);
+                    floatingActionButton.show();
                     videoId = extractYoutubeId(videoUrl);
                     playVideoButton.setVisibility(View.VISIBLE);
                     playVideoButton.setOnClickListener(new View.OnClickListener() {
@@ -476,10 +479,13 @@ public class PhotoFragment extends Fragment {
                         }
                     });
                 } else {
-                   playVideoButton.setVisibility(View.GONE);
-                   photoImageView.setVisibility(View.VISIBLE);
-                   photoImageView.setImageResource(R.mipmap.ic_launcher);
-                   photoImageView.setClickable(false);
+                    // If there is another type of video, show a placeholder image and hide the
+                    // share button
+                    playVideoButton.setVisibility(View.GONE);
+                    photoImageView.setVisibility(View.VISIBLE);
+                    photoImageView.setImageResource(R.mipmap.ic_launcher);
+                    photoImageView.setClickable(false);
+                    floatingActionButton.hide();
                 }
             }
         } else if (photo.getPhotoMediaType().equals("image")) {
@@ -534,11 +540,16 @@ public class PhotoFragment extends Fragment {
                                 }
                             });
                 } else if (photo.getPhotoMediaType().equals("video")) {
-                    floatingActionButton.setContentDescription(getString(R.string.share_video_content_description));
-                    intent.setType("text/plain");
-                    intent.putExtra(Intent.EXTRA_TEXT, photoUrl);
-                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_video_content_description)));
+                    if (!isUnplayableVideo(photoUrl)) {
+                        floatingActionButton.show();
+                        floatingActionButton.setContentDescription(getString(R.string.share_video_content_description));
+                        intent.setType("text/plain");
+                        intent.putExtra(Intent.EXTRA_TEXT, photoUrl);
+                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_video_content_description)));
+                    } else {
+                        floatingActionButton.hide();
+                    }
                 }
             }
         });
@@ -720,5 +731,17 @@ public class PhotoFragment extends Fragment {
             videoId = matcher.group(1);
         }
         return videoId;
+    }
+
+    private boolean isUnplayableVideo(String photoUrl) {
+        if (photoMediaType != null && photoUrl != null) {
+            if (photoMediaType.contains("video") && !photoUrl.contains("youtube")) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }

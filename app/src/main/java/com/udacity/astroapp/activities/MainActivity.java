@@ -91,6 +91,16 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (savedInstanceState == null) {
+            sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            themeId = sharedPreferences.getInt(PREF_THEME, 0);
+            checkedTheme = sharedPreferences.getInt(PREF_CHECKED_THEME, 0);
+        } else {
+            checkedTheme = savedInstanceState.getInt(PREF_CHECKED_THEME);
+            themeId = savedInstanceState.getInt(PREF_THEME);
+        }
+        updateTheme(themeId, checkedTheme);
+
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
@@ -134,9 +144,6 @@ public class MainActivity extends AppCompatActivity
         });
 
         if (savedInstanceState == null) {
-            sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-            themeId = sharedPreferences.getInt(PREF_THEME, 0);
-            checkedTheme = sharedPreferences.getInt(PREF_CHECKED_THEME, 0);
             navigationView.setCheckedItem(R.id.nav_photo);
             navigationView.requestFocus();
             Fragment fragment = new PhotoFragment();
@@ -144,10 +151,7 @@ public class MainActivity extends AppCompatActivity
             displayFragment(fragment);
         } else {
             currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
-            checkedTheme = savedInstanceState.getInt(PREF_CHECKED_THEME);
-            themeId = savedInstanceState.getInt(PREF_THEME);
         }
-        updateTheme(themeId, checkedTheme);
     }
 
     @Override

@@ -200,7 +200,7 @@ public class AsteroidFragment extends Fragment {
                 .get(AsteroidViewModel.class);
 
         /* Observe the asteroids in the AsteroidFragment */
-        asteroidViewModel.getAsteroids().observe(AsteroidFragment.this, new Observer<List<Asteroid>>() {
+        asteroidViewModel.getAsteroids().observe(getViewLifecycleOwner(), new Observer<List<Asteroid>>() {
             @Override
             public void onChanged(@Nullable final List<Asteroid> asteroids) {
                 asteroidViewModel.getAsteroids().removeObserver(this);

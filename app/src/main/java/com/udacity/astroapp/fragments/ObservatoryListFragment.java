@@ -199,7 +199,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                 .get(ObservatoryViewModel.class);
 
         /* Observe the observatories in the ObservatoryListFragment */
-        observatoryViewModel.getObservatories().observe(ObservatoryListFragment.this, new Observer<List<Observatory>>() {
+        observatoryViewModel.getObservatories().observe(getViewLifecycleOwner(), new Observer<List<Observatory>>() {
             @Override
             public void onChanged(@Nullable final List<Observatory> observatories) {
                 observatoryViewModel.getObservatories().removeObserver(this);

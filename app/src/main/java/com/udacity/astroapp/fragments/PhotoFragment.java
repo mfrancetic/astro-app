@@ -242,7 +242,7 @@ public class PhotoFragment extends Fragment {
         photoViewModel = ViewModelProviders.of(PhotoFragment.this, photoViewModelFactory).get(PhotoViewModel.class);
 
         /* Observe the photos in the PhotoFragment */
-        photoViewModel.getPhotos().observe(PhotoFragment.this, new Observer<List<Photo>>() {
+        photoViewModel.getPhotos().observe(getViewLifecycleOwner(), new Observer<List<Photo>>() {
             @Override
             public void onChanged(@Nullable final List<Photo> photos) {
                 photoViewModel.getPhotos().removeObserver(this);

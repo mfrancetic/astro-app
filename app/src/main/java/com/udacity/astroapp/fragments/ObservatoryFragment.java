@@ -186,7 +186,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
                 .get(ObservatoryDetailViewModel.class);
 
         /* Observe the observatory in the ObservatoryFragment */
-        observatoryDetailViewModel.getObservatory().observe(ObservatoryFragment.this, new Observer<Observatory>() {
+        observatoryDetailViewModel.getObservatory().observe(getViewLifecycleOwner(), new Observer<Observatory>() {
             @Override
             public void onChanged(@Nullable final Observatory observatoryDatabase) {
                 observatoryDetailViewModel.getObservatory().removeObserver(this);

@@ -462,22 +462,30 @@ public class PhotoFragment extends Fragment {
              * parse it show the playVideoButton*/
             String videoUrl = photo.getPhotoUrl();
             if (videoUrl != null) {
-                photoImageView.setVisibility(View.GONE);
-                videoId = extractYoutubeId(videoUrl);
-                playVideoButton.setVisibility(View.VISIBLE);
-                playVideoButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (getActivity() != null) {
-                            Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), YOUTUBE_API_KEY, videoId, 0, true, true);
-                            startActivity(intent);
+                if (videoUrl.contains("youtube")) {
+                    photoImageView.setVisibility(View.GONE);
+                    videoId = extractYoutubeId(videoUrl);
+                    playVideoButton.setVisibility(View.VISIBLE);
+                    playVideoButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (getActivity() != null) {
+                                Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), YOUTUBE_API_KEY, videoId, 0, true, true);
+                                startActivity(intent);
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                   playVideoButton.setVisibility(View.GONE);
+                   photoImageView.setVisibility(View.VISIBLE);
+                   photoImageView.setImageResource(R.mipmap.ic_launcher);
+                   photoImageView.setClickable(false);
+                }
             }
         } else if (photo.getPhotoMediaType().equals("image")) {
             playVideoButton.setVisibility(View.GONE);
             photoImageView.setVisibility(View.VISIBLE);
+            photoImageView.setClickable(true);
 
             /* Get the photoUrl and load it into the photoImageView */
             photoUri = Uri.parse(photo.getPhotoUrl());

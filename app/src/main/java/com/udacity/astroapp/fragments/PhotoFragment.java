@@ -195,6 +195,8 @@ public class PhotoFragment extends Fragment {
 
     private Date selectedDate;
 
+    private DatePickerDialog datePickerDialog;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -430,6 +432,16 @@ public class PhotoFragment extends Fragment {
 
          selectedDate = getSelectedDate(photo.getPhotoDate());
         date = selectedDate;
+
+        createDatePickerDialog();
+
+        SimpleDateFormat simpleFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        String datePickerDate = simpleFormatter.format(selectedDate);
+        String monthString = datePickerDate.substring(5,7);
+        int month = Integer.parseInt(monthString);
+        datePickerDialog.getDatePicker().updateDate(Integer.parseInt(datePickerDate.substring(0, 4)),
+               month-1, Integer.parseInt(datePickerDate.substring(8, 10)));
+
         Date nextDate = getNextDate(date);
         Date todaysDate = getTodaysDate();
 
@@ -693,7 +705,7 @@ public class PhotoFragment extends Fragment {
         if (id == R.id.menu_refresh) {
             return false;
         } else if (id == R.id.menu_calendar) {
-            createDatePickerDialog();
+            datePickerDialog.show();
             return true;
         }
         return false;
@@ -711,7 +723,7 @@ public class PhotoFragment extends Fragment {
             Log.e(LOG_TAG, "Problem parsing the minDate");
         }
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(context,
+         datePickerDialog = new DatePickerDialog(context,
 //                R.style.AstroDialogTheme,
 //                R.style.Theme_AppCompat_DayNight_Dialog_Alert,
                 new DatePickerDialog.OnDateSetListener() {
@@ -731,7 +743,7 @@ public class PhotoFragment extends Fragment {
                 }, currentYear, currentMonth, currentDayOfMonth);
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.getDatePicker().setMinDate(minDateLong);
-        datePickerDialog.show();
+//        datePickerDialog.show();
     }
 
     private String extractYoutubeId(String videoUrl) {

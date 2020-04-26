@@ -437,8 +437,9 @@ public class PhotoFragment extends Fragment {
         photoPreviousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                date = getPreviousDate(selectedDate);
-                localDate = formatter.format(selectedDate);
+                date = getPreviousDate(selectedDate);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                localDate = formatter.format(date);
                 new PhotoAsyncTask().execute();
             }
         });

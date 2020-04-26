@@ -193,6 +193,8 @@ public class PhotoFragment extends Fragment {
 
     private static final int MILLIS_IN_DAY = 1000*60*60*24;
 
+    private Date selectedDate;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -426,7 +428,7 @@ public class PhotoFragment extends Fragment {
 
         floatingActionButton.show();
 
-        Date selectedDate = getSelectedDate(photo.getPhotoDate());
+         selectedDate = getSelectedDate(photo.getPhotoDate());
         date = selectedDate;
         Date nextDate = getNextDate(date);
         Date todaysDate = getTodaysDate();
@@ -435,13 +437,11 @@ public class PhotoFragment extends Fragment {
         photoPreviousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                date = getPreviousDate(date);
-                localDate = formatter.format(date);
+//                date = getPreviousDate(selectedDate);
+                localDate = formatter.format(selectedDate);
                 new PhotoAsyncTask().execute();
             }
         });
-//        Date currentDate = new Date();
-//        Date nextDate = getNextDate(date);
         if (nextDate.after(todaysDate)) {
             photoNextButton.setVisibility(View.GONE);
         } else {
@@ -449,7 +449,8 @@ public class PhotoFragment extends Fragment {
             photoNextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    date = getNextDate(date);
+                    date = getNextDate(selectedDate);
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                     localDate = formatter.format(date);
                     new PhotoAsyncTask().execute();
                 }
@@ -759,12 +760,12 @@ public class PhotoFragment extends Fragment {
         String yearString = selectedDate.substring(0, 4);
         String monthString = selectedDate.substring(5, 7);
         String dayString = selectedDate.substring(8, 10);
-        int month = Integer.valueOf(monthString);
+        int month = Integer.parseInt(monthString);
         month = month - 1;
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, Integer.valueOf(yearString));
+        cal.set(Calendar.YEAR, Integer.parseInt(yearString));
         cal.set(Calendar.MONTH, month);
-        cal.set(Calendar.DAY_OF_MONTH, Integer.valueOf(dayString));
+        cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayString));
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);

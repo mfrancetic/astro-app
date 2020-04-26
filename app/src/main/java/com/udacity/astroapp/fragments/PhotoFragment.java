@@ -71,6 +71,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -189,6 +190,8 @@ public class PhotoFragment extends Fragment {
     private final static String currentDayKey = "currentDay";
 
     private static final String YOUTUBE_API_KEY = Secret.youtube_api_key;
+
+    private static final int MILLIS_IN_DAY = 1000*60*60*24;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -423,6 +426,11 @@ public class PhotoFragment extends Fragment {
 
         floatingActionButton.show();
 
+        Date selectedDate = getSelectedDate(photo.getPhotoDate());
+        date = selectedDate;
+        Date nextDate = getNextDate(date);
+        Date todaysDate = getTodaysDate();
+
         photoPreviousButton.setVisibility(View.VISIBLE);
         photoPreviousButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -432,9 +440,9 @@ public class PhotoFragment extends Fragment {
                 new PhotoAsyncTask().execute();
             }
         });
-        Date currentDate = new Date();
-        Date nextDate = getNextDate(date);
-        if (nextDate.after(currentDate)) {
+//        Date currentDate = new Date();
+//        Date nextDate = getNextDate(date);
+        if (nextDate.after(todaysDate)) {
             photoNextButton.setVisibility(View.GONE);
         } else {
             photoNextButton.setVisibility(View.VISIBLE);
@@ -444,7 +452,6 @@ public class PhotoFragment extends Fragment {
                     date = getNextDate(date);
                     localDate = formatter.format(date);
                     new PhotoAsyncTask().execute();
-
                 }
             });
         }
@@ -660,6 +667,7 @@ public class PhotoFragment extends Fragment {
     }
 
     private Date getNextDate(Date date) {
+//        return date.getTime() + MILLIS_IN_DAY;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, +1);
@@ -694,8 +702,10 @@ public class PhotoFragment extends Fragment {
 
         try {
             Date minDate = formatter.parse(minDateString);
-            minDateLong = minDate.getTime();
-        } catch (ParseException e) {
+            if (minDate != null) {
+                minDateLong = minDate.getTime();
+            }
+        } catch (Exception e) {
             Log.e(LOG_TAG, "Problem parsing the minDate");
         }
 
@@ -743,5 +753,31 @@ public class PhotoFragment extends Fragment {
         } else {
             return false;
         }
+    }
+
+    private Date getSelectedDate(String selectedDate) {
+        String yearString = selectedDate.substring(0, 4);
+        String monthString = selectedDate.substring(5, 7);
+        String dayString = selectedDate.substring(8, 10);
+        int month = Integer.valueOf(monthString);
+        month = month - 1;
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, Integer.valueOf(yearString));
+        cal.set(Calendar.MONTH, month);
+        cal.set(Calendar.DAY_OF_MONTH, Integer.valueOf(dayString));
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
+    }
+
+    private Date getTodaysDate() {
+        timeZone = TimeZone.getTimeZone("America/Chicago");
+        Date todaysDate = new Date();
+        formatter.setTimeZone(timeZone);
+        calendar = Calendar.getInstance();
+        calendar.setTimeZone(timeZone);
+        return todaysDate;
     }
 }

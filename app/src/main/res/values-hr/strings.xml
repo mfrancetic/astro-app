@@ -36,7 +36,7 @@
     <string name="observatory_visit_homepage_button">Posjeti web stranicu</string>
     <string name="open_location_settings">Otvori postavke lokacije</string>
     <string name="photo_of_content_description">Slika</string>
-    <string name="photo_of_the_day_content_description">Slika dana</string>
+    <string name="earth_photo_content_description">Slika Zemlje</string>
     <string name="play_video_button">Pokreni video</string>
     <string name="read_more_about_content_description">Pročitaj više o</string>
     <string name="read_more_button">Pročitaj više</string>
@@ -61,4 +61,7 @@
     <string name="theme_light">Svijetla</string>
     <string name="theme_system_default">Određena sustavom</string>
     <string name="menu_theme_content_description">Navigirajte do teme</string>
+    <string name="menu_earth_photo_content_description">Navigirajte do slike zemlje</string>
+    <string name="menu_earth_photo">Slika Zemlje</string>
+    <string name="photo_content_description">Slika dana</string>
 </resources>

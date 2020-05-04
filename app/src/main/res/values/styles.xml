@@ -27,6 +27,12 @@
         <item name="android:layout_height">@dimen/photo_dimensions</item>
     </style>
 
+    <!-- Style of the Earth photo ImageView -->
+    <style name="EarthPhotoImageView">
+        <item name="android:layout_width">@dimen/earth_photo_dimensions</item>
+        <item name="android:layout_height">@dimen/earth_photo_dimensions</item>
+    </style>
+
     <!-- Style of the photo title TextView -->
     <style name="PhotoTitleTextView">
         <item name="android:layout_height">wrap_content</item>

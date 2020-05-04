@@ -29,6 +29,9 @@
     <!-- ObservatoryFragment -->
     <dimen name="map_fragment_height">300dp</dimen>
 
+    <!-- EarthPhotoFragment -->
+    <dimen name="earth_photo_dimensions">300dp</dimen>
+
     <!-- NavigationDrawer -->
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">200dp</dimen>

@@ -25,8 +25,14 @@
             android:id="@+id/nav_observatories"
             android:contentDescription="@string/menu_observatories_content_description"
             android:icon="@drawable/ic_observatory"
-            android:nextFocusForward="@id/nav_theme"
+            android:nextFocusForward="@id/nav_earth_photo"
             android:title="@string/menu_observatories" />
+        <item
+            android:id="@+id/nav_earth_photo"
+            android:contentDescription="@string/menu_earth_photo_content_description"
+            android:icon="@drawable/ic_camera_alt"
+            android:nextFocusForward="@id/nav_theme"
+            android:title="@string/menu_earth_photo" />
     </group>
 
     <group

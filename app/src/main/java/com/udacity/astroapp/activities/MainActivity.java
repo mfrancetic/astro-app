@@ -37,6 +37,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.adapters.ObservatoryAdapter;
 import com.udacity.astroapp.fragments.AsteroidFragment;
+import com.udacity.astroapp.fragments.EarthPhotoFragment;
 import com.udacity.astroapp.fragments.ObservatoryFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment.OnObservatoryClickListener;
@@ -167,6 +168,9 @@ public class MainActivity extends AppCompatActivity
             displayFragment(currentFragment);
         } else if (id == R.id.nav_observatories) {
             currentFragment = new ObservatoryListFragment();
+            displayFragment(currentFragment);
+        } else if(id == R.id.nav_earth_photo) {
+            currentFragment = new EarthPhotoFragment();
             displayFragment(currentFragment);
         } else if (id == R.id.nav_theme) {
             changeThemeDialog();

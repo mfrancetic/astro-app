@@ -1,19 +1,10 @@
 package com.udacity.astroapp.fragments;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.test.espresso.ViewInteraction;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
 
@@ -64,13 +55,13 @@ public class PhotoFragmentTest {
 
     @Test
     public void testSourceTextView() {
-        onView(withId(R.id.photo_video_source_text_view)).check(matches(withText(mainActivity
+        onView(withId(R.id.earth_photo_source_text_view)).check(matches(withText(mainActivity
         .getString(R.string.photo_video_source))));
     }
 
     @Test
     public void testPhoto() {
-        assertNotNull(withId(R.id.photo_video_frame_layout));
+        assertNotNull(withId(R.id.earth_photo_frame_layout));
     }
 
     @Test

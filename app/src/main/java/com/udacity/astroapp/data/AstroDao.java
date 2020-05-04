@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import com.udacity.astroapp.models.Asteroid;
+import com.udacity.astroapp.models.EarthPhoto;
 import com.udacity.astroapp.models.Observatory;
 import com.udacity.astroapp.models.Photo;
 
@@ -26,6 +27,9 @@ public interface AstroDao {
     @Query("SELECT * FROM observatory ORDER BY observatoryId")
     LiveData<List<Observatory>> loadAllObservatories();
 
+    @Query("SELECT * FROM earthPhoto")
+    LiveData<List<EarthPhoto>> loadAllEarthPhotos();
+
     @Query("SELECT * FROM observatory WHERE observatoryId = :observatoryId")
     LiveData<Observatory> loadObservatoryById(String observatoryId);
 
@@ -37,6 +41,9 @@ public interface AstroDao {
 
     @Query("DELETE FROM observatory")
     void deleteAllObservatories();
+
+    @Query("DELETE FROM earthPhoto")
+    void deleteAllEarthPhotos();
 
     @Query("DELETE FROM observatory WHERE observatoryId = :observatoryId")
     void deleteObservatory(String observatoryId);
@@ -50,6 +57,9 @@ public interface AstroDao {
 
     @Insert(onConflict = REPLACE)
     void addPhoto(Photo photo);
+
+    @Insert(onConflict = REPLACE)
+    void addEarthPhoto(EarthPhoto photo);
 
     @Insert(onConflict = REPLACE)
     void addAllObservatories(List<Observatory> observatories);

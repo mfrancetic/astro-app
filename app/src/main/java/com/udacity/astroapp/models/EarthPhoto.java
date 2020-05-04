@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "earthPhoto")
+@Entity(tableName = "earthphoto")
 public class EarthPhoto implements Parcelable {
 
     @PrimaryKey(autoGenerate = true)

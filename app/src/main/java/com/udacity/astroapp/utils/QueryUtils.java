@@ -21,6 +21,8 @@ public class QueryUtils {
     private static final String ASTEROID_BASE_URl = "https://api.nasa.gov/neo/rest/v1/feed?";
     private static final String OBSERVATORY_BASE_URL = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=planetarium&observatory";
     private static final String OBSERVATORY_DETAILS_BASE_URL = "https://maps.googleapis.com/maps/api/place/details/json?";
+    private static final String EARTH_PHOTO_IMAGE_BASE_URL = "https://api.nasa.gov/EPIC/archive/natural/";
+    private static final String EARTH_PHOTO_BASE_URL = "https://api.nasa.gov/EPIC/api/natural/date/";
 
     /* Respective parameters and keys of the API queries */
     private static final String API_PARAM = "api_key";
@@ -118,6 +120,50 @@ public class QueryUtils {
                 .build();
         try {
             url = new URL(builder.toString());
+        } catch (MalformedURLException e) {
+            Log.e(LOG_TAG, "Problem building the URL", e);
+        }
+        return url;
+    }
+
+    /**
+     * Create a URL for the EarthPhoto
+     */
+    public static URL createEarthPhotoUrl(String date) {
+        URL url = null;
+        Uri baserUri = Uri.parse(EARTH_PHOTO_BASE_URL);
+
+        Uri.Builder uriBuilder = baserUri.buildUpon();
+        uriBuilder
+                .appendPath(date)
+                .appendQueryParameter(API_PARAM, api_key)
+                .build();
+        try {
+            url = new URL(uriBuilder.toString());
+        } catch (MalformedURLException e) {
+            Log.e(LOG_TAG, "Problem building the URL", e);
+        }
+        return url;
+    }
+
+    /**
+     * Create a URL for the EarthPhoto image
+     */
+    public static URL createEarthPhotoImageUrl(String date, String image) {
+        URL url = null;
+        Uri baserUri = Uri.parse(EARTH_PHOTO_IMAGE_BASE_URL);
+
+        String formattedDate = date.replace("-", "/");
+
+        Uri.Builder uriBuilder = baserUri.buildUpon();
+        uriBuilder
+                .appendEncodedPath(formattedDate + "/")
+                .appendEncodedPath("png/")
+                .appendEncodedPath(image + ".png")
+                .appendQueryParameter(API_PARAM, api_key)
+                .build();
+        try {
+            url = new URL(uriBuilder.toString());
         } catch (MalformedURLException e) {
             Log.e(LOG_TAG, "Problem building the URL", e);
         }

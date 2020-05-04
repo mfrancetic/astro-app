@@ -1,12 +1,17 @@
 package com.udacity.astroapp.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,24 +22,43 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.data.AppDatabase;
+import com.udacity.astroapp.data.EarthPhotoViewModel;
+import com.udacity.astroapp.data.EarthPhotoViewModelFactory;
+import com.udacity.astroapp.data.PhotoViewModel;
+import com.udacity.astroapp.data.PhotoViewModelFactory;
+import com.udacity.astroapp.models.EarthPhoto;
+import com.udacity.astroapp.models.Photo;
 import com.udacity.astroapp.utils.PhotoUtils;
+import com.udacity.astroapp.utils.QueryUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class EarthPhotoFragment extends Fragment {
 
+    private static final String LOG_TAG = EarthPhotoFragment.class.getSimpleName();
+
     @BindView(R.id.earth_photo_coordinator_layout)
-     CoordinatorLayout earthPhotoCoordinatorLayout;
+    CoordinatorLayout earthPhotoCoordinatorLayout;
 
     @BindView(R.id.earth_photo_view)
-     ImageView earthPhotoView;
+    ImageView earthPhotoView;
 
     @BindView(R.id.earth_photo_caption_text_view)
-     TextView earthPhotoCaptionTextView;
+    TextView earthPhotoCaptionTextView;
 
     @BindView(R.id.earth_photo_date_time_text_view)
-     TextView earthPhotoDateTimeTextView;
+    TextView earthPhotoDateTimeTextView;
 
     @BindView(R.id.earth_photo_source_text_view)
     TextView earthPhotoSourceTextView;
@@ -59,6 +83,19 @@ public class EarthPhotoFragment extends Fragment {
 
     private Context context;
 
+    private String earthPhotoIdentifier;
+    private String earthPhotoCaption;
+    private String earthPhotoDateTime;
+    private String earthPhotoImageUrl;
+
+    private EarthPhoto earthPhoto;
+    private List<EarthPhoto> earthPhotos;
+
+    private boolean jsonNotSuccessful;
+    private AppDatabase appDatabase;
+    private EarthPhotoViewModelFactory earthPhotoViewModelFactory;
+    private EarthPhotoViewModel earthPhotoViewModel;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,20 +116,41 @@ public class EarthPhotoFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         setLoadingView();
-        displayPhoto();
+        setupDatabase();
+        new EarthPhotoAsyncTASK().execute();
 
         return rootView;
     }
 
-    private void displayPhoto() {
-        PhotoUtils.displayPhotoFromUrl(context, Uri.parse("https://api.nasa.gov/EPIC/archive/natural/2019/05/30/png/epic_1b_20190530011359.png?api_key=DEMO_KEY"), earthPhotoView);
+    private void setupDatabase() {
+        appDatabase = AppDatabase.getInstance(context);
+        /* In case there is an earthPhotoViewModelFactory, create a new instance */
+        if (earthPhotoViewModelFactory == null) {
+            earthPhotoViewModelFactory = new EarthPhotoViewModelFactory(appDatabase);
+        }
+        earthPhotoViewModel = ViewModelProviders.of(EarthPhotoFragment.this, earthPhotoViewModelFactory).get(EarthPhotoViewModel.class);
+
+        earthPhotoViewModel.getEarthPhotos().observe(getViewLifecycleOwner(), new Observer<List<EarthPhoto>>() {
+            @Override
+            public void onChanged(List<EarthPhoto> earthPhotos) {
+
+            }
+        });
+    }
+
+    private void populatePhoto(EarthPhoto photo) {
+        String photoDate = photo.getEarthPhotoDateTime().substring(0, 10);
+        URL earthPhotoUrl = QueryUtils.createEarthPhotoImageUrl(photoDate, photo.getEarthPhotoUrl());
+        Uri earthPhotoUri = Uri.parse(earthPhotoUrl.toString());
+        PhotoUtils.displayPhotoFromUrl(context, earthPhotoUri, earthPhotoView);
+
         earthPhotoView.setVisibility(View.VISIBLE);
         earthPhotoLoadingIndicator.setVisibility(View.GONE);
         earthPhotoSourceTextView.setVisibility(View.VISIBLE);
-        earthPhotoCaptionTextView.setText(getString(R.string.earth_photo_caption));
+        earthPhotoCaptionTextView.setText(photo.getEarthPhotoCaption());
         earthPhotoCaptionTextView.setVisibility(View.VISIBLE);
         earthPhotoDateTimeTextView.setVisibility(View.VISIBLE);
-        earthPhotoDateTimeTextView.setText("2019-05-30  14:01:05");
+        earthPhotoDateTimeTextView.setText(photo.getEarthPhotoDateTime());
     }
 
     private void setLoadingView() {
@@ -104,5 +162,62 @@ public class EarthPhotoFragment extends Fragment {
         earthPhotoView.setVisibility(View.GONE);
         earthPhotoFab.hide();
         earthPhotoSourceTextView.setVisibility(View.GONE);
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class EarthPhotoAsyncTASK extends AsyncTask<String, Void, List<EarthPhoto>> {
+
+        @Override
+        protected List<EarthPhoto> doInBackground(String... strings) {
+            try {
+                URL url = QueryUtils.createEarthPhotoUrl("2019-05-01");
+                String earthPhotoJson = QueryUtils.makeHttpRequest(url);
+
+                JSONArray earthPhotoArray = new JSONArray(earthPhotoJson);
+
+                for (int i = 0; i < earthPhotoArray.length(); i++) {
+                    JSONObject earthPhotoObject = earthPhotoArray.getJSONObject(i);
+                    earthPhotoIdentifier = earthPhotoObject.getString("identifier");
+                    earthPhotoCaption = earthPhotoObject.getString("caption");
+                    earthPhotoImageUrl = earthPhotoObject.getString("image");
+                    earthPhotoDateTime = earthPhotoObject.getString("date");
+
+                    earthPhoto = new EarthPhoto(earthPhotoIdentifier, earthPhotoCaption, earthPhotoImageUrl, earthPhotoDateTime);
+                    if (earthPhotos == null) {
+                        earthPhotos= new ArrayList<>();
+                    }
+                    earthPhotos.add(earthPhoto);
+                }
+                jsonNotSuccessful = false;
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Problem retrieving the photo JSON results");
+                jsonNotSuccessful = true;
+            } catch (JSONException e) {
+                Log.e(LOG_TAG, "Problem parsing the photo JSON response");
+                jsonNotSuccessful = true;
+            }
+            return earthPhotos;
+        }
+
+        @Override
+        protected void onPostExecute(List<EarthPhoto> newPhotos) {
+            if (newPhotos != null && !jsonNotSuccessful) {
+                populatePhoto(newPhotos.get(0));
+            } else {
+                displayEmptyView();
+            }
+            super.onPostExecute(newPhotos);
+        }
+    }
+
+    private void displayEmptyView() {
+        earthPhotoCaptionTextView.setVisibility(View.GONE);
+        earthPhotoDateTimeTextView.setVisibility(View.GONE);
+        earthPhotoView.setVisibility(View.GONE);
+        earthPhotoSourceTextView.setVisibility(View.GONE);
+        earthPhotoLoadingIndicator.setVisibility(View.GONE);
+
+        earthPhotoEmptyImageView.setVisibility(View.VISIBLE);
+        earthPhotoEmptyTextView.setVisibility(View.VISIBLE);
     }
 }

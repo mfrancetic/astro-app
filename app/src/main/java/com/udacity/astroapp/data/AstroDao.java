@@ -27,7 +27,7 @@ public interface AstroDao {
     @Query("SELECT * FROM observatory ORDER BY observatoryId")
     LiveData<List<Observatory>> loadAllObservatories();
 
-    @Query("SELECT * FROM earthPhoto")
+    @Query("SELECT * FROM earthphoto")
     LiveData<List<EarthPhoto>> loadAllEarthPhotos();
 
     @Query("SELECT * FROM observatory WHERE observatoryId = :observatoryId")
@@ -42,7 +42,7 @@ public interface AstroDao {
     @Query("DELETE FROM observatory")
     void deleteAllObservatories();
 
-    @Query("DELETE FROM earthPhoto")
+    @Query("DELETE FROM earthphoto")
     void deleteAllEarthPhotos();
 
     @Query("DELETE FROM observatory WHERE observatoryId = :observatoryId")
@@ -59,7 +59,7 @@ public interface AstroDao {
     void addPhoto(Photo photo);
 
     @Insert(onConflict = REPLACE)
-    void addEarthPhoto(EarthPhoto photo);
+    void addEarthPhoto(EarthPhoto earthPhoto);
 
     @Insert(onConflict = REPLACE)
     void addAllObservatories(List<Observatory> observatories);

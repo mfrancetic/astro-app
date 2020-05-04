@@ -7,10 +7,11 @@ import android.content.Context;
 import android.util.Log;
 
 import com.udacity.astroapp.models.Asteroid;
+import com.udacity.astroapp.models.EarthPhoto;
 import com.udacity.astroapp.models.Observatory;
 import com.udacity.astroapp.models.Photo;
 
-@Database(entities = {Photo.class, Asteroid.class, Observatory.class}, version = 1, exportSchema = false)
+@Database(entities = {Photo.class, Asteroid.class, Observatory.class, EarthPhoto.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     private static final String LOG_TAG = AppDatabase.class.getSimpleName();

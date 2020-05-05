@@ -31,6 +31,7 @@ import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.EarthPhotoViewModel;
 import com.udacity.astroapp.data.EarthPhotoViewModelFactory;
 import com.udacity.astroapp.models.EarthPhoto;
+import com.udacity.astroapp.utils.DateTimeUtils;
 import com.udacity.astroapp.utils.PhotoUtils;
 import com.udacity.astroapp.utils.QueryUtils;
 
@@ -40,8 +41,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -101,6 +106,12 @@ public class EarthPhotoFragment extends Fragment {
     private EarthPhotoViewModelFactory earthPhotoViewModelFactory;
     private EarthPhotoViewModel earthPhotoViewModel;
 
+    private String localDate;
+    private TimeZone timeZone;
+    private Date date;
+    private SimpleDateFormat formatter;
+    private Calendar calendar;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +130,8 @@ public class EarthPhotoFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_earth_photo, container, false);
         context = rootView.getContext();
         ButterKnife.bind(this, rootView);
+
+        localDate = DateTimeUtils.getCurrentLocalDate();
 
         setLoadingView();
         setupDatabase();
@@ -181,10 +194,18 @@ public class EarthPhotoFragment extends Fragment {
         @Override
         protected List<EarthPhoto> doInBackground(String... strings) {
             try {
-                URL url = QueryUtils.createEarthPhotoUrl("2019-05-01");
+                URL url = QueryUtils.createEarthPhotoUrl(localDate);
                 String earthPhotoJson = QueryUtils.makeHttpRequest(url);
 
                 JSONArray earthPhotoArray = new JSONArray(earthPhotoJson);
+                while (earthPhotoArray.length() < 1) {
+                    localDate = DateTimeUtils.getPreviousDate(localDate);
+                    if (localDate != null) {
+                        url = QueryUtils.createEarthPhotoUrl(localDate);
+                        earthPhotoJson = QueryUtils.makeHttpRequest(url);
+                        earthPhotoArray = new JSONArray(earthPhotoJson);
+                    }
+                }
 
                 for (int i = 0; i < earthPhotoArray.length(); i++) {
                     JSONObject earthPhotoObject = earthPhotoArray.getJSONObject(i);

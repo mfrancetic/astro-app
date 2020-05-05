@@ -61,7 +61,8 @@
     <string name="theme_light">Svijetla</string>
     <string name="theme_system_default">Određena sustavom</string>
     <string name="menu_theme_content_description">Navigirajte do teme</string>
-    <string name="menu_earth_photo_content_description">Navigirajte do slike zemlje</string>
+    <string name="menu_earth_photo_content_description">Navigirajte do slike Zemlje</string>
     <string name="menu_earth_photo">Slika Zemlje</string>
     <string name="photo_content_description">Slika dana</string>
+    <string name="earth_photo_caption">Ovu sliku snimila je NASA-ina kamera EPIC na letjelici NOAA DSCOVR</string>
 </resources>

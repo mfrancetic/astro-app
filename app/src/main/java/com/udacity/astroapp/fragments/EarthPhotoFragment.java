@@ -1,12 +1,13 @@
 package com.udacity.astroapp.fragments;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -15,8 +16,12 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -42,7 +47,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -108,6 +113,11 @@ public class EarthPhotoFragment extends Fragment {
     private EarthPhotoViewModel earthPhotoViewModel;
 
     private String localDate;
+    private DatePickerDialog datePickerDialog;
+
+    private int currentYear;
+    private int currentMonth;
+    private int currentDayOfMonth;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -129,12 +139,20 @@ public class EarthPhotoFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         localDate = DateTimeUtils.getCurrentLocalDate();
+        setLocalDateToCalendar(localDate);
 
         setLoadingView();
+        createDatePickerDialog();
         setupDatabase();
-        new EarthPhotoAsyncTASK().execute();
+        new EarthPhotoAsyncTask().execute();
 
         return rootView;
+    }
+
+    private void setLocalDateToCalendar(String localDate) {
+        currentYear = DateTimeUtils.getYear(localDate);
+        currentMonth = DateTimeUtils.getMonth(localDate);
+        currentDayOfMonth = DateTimeUtils.getDay(localDate);
     }
 
     private void setupDatabase() {
@@ -193,7 +211,7 @@ public class EarthPhotoFragment extends Fragment {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private class EarthPhotoAsyncTASK extends AsyncTask<String, Void, List<EarthPhoto>> {
+    private class EarthPhotoAsyncTask extends AsyncTask<String, Void, List<EarthPhoto>> {
 
         @Override
         protected List<EarthPhoto> doInBackground(String... strings) {
@@ -270,5 +288,49 @@ public class EarthPhotoFragment extends Fragment {
 
         earthPhotoEmptyImageView.setVisibility(View.VISIBLE);
         earthPhotoEmptyTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_refresh) {
+            return false;
+        } else if (id == R.id.menu_calendar) {
+            datePickerDialog.show();
+            return true;
+        }
+        return false;
+    }
+
+    private void createDatePickerDialog() {
+        datePickerDialog = new DatePickerDialog(context,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, final int year, int month, int dayOfMonth) {
+                        Calendar calendar = DateTimeUtils.getCalendar();
+                        calendar.set(year, month, dayOfMonth);
+                        calendar.setTimeZone(TimeZone.getDefault());
+                        Date date = calendar.getTime();
+                        localDate = DateTimeUtils.getFormattedDate(date);
+                        new EarthPhotoAsyncTask().execute();
+
+                        currentYear = year;
+                        currentMonth = month;
+                        currentDayOfMonth = dayOfMonth;
+                    }
+                }, currentYear, currentMonth, currentDayOfMonth);
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        menu.findItem(R.id.menu_calendar).setVisible(true);
+        super.onPrepareOptionsMenu(menu);
     }
 }

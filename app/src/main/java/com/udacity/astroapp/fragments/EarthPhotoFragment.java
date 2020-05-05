@@ -198,6 +198,8 @@ public class EarthPhotoFragment extends Fragment {
             }
         });
 
+        PhotoUtils.addScrollingFunctionalityToFab(earthScrollView, earthPhotoFab);
+
         earthPhotoView.setVisibility(View.VISIBLE);
         earthPhotoLoadingIndicator.setVisibility(View.GONE);
         earthPhotoSourceTextView.setVisibility(View.VISIBLE);

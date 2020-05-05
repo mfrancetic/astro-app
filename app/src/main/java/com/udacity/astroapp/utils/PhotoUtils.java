@@ -8,8 +8,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.data.GlideApp;
 
@@ -96,5 +99,23 @@ public class PhotoUtils {
             e.printStackTrace();
         }
         return bitmapUri;
+    }
+
+    public static void addScrollingFunctionalityToFab(ScrollView scrollView, FloatingActionButton floatingActionButton) {
+        if (scrollView != null) {
+            scrollView.requestFocus();
+            scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                @Override
+                public void onScrollChanged() {
+                    int scrollY = scrollView.getScrollY();
+                    /* Hide the floatingActionButton when scrolling down, and show it when scrolling up*/
+                    if (scrollY > 0 || scrollY < 0 && floatingActionButton.isShown()) {
+                        floatingActionButton.hide();
+                    } else {
+                        floatingActionButton.show();
+                    }
+                }
+            });
+        }
     }
 }

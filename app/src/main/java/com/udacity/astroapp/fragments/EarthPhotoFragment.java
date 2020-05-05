@@ -91,12 +91,6 @@ public class EarthPhotoFragment extends Fragment {
     @BindView(R.id.earth_photo_loading_indicator)
     ProgressBar earthPhotoLoadingIndicator;
 
-    @BindView(R.id.earth_photo_previous_button)
-    ImageButton earthPhotoPreviousButton;
-
-    @BindView(R.id.earth_photo_next_button)
-    ImageButton earthPhotoNextButton;
-
     private Context context;
 
     private String earthPhotoIdentifier;
@@ -211,8 +205,6 @@ public class EarthPhotoFragment extends Fragment {
 
     private void setLoadingView() {
         earthPhotoLoadingIndicator.setVisibility(View.VISIBLE);
-        earthPhotoPreviousButton.setVisibility(View.GONE);
-        earthPhotoNextButton.setVisibility(View.GONE);
         earthPhotoEmptyImageView.setVisibility(View.GONE);
         earthPhotoEmptyTextView.setVisibility(View.GONE);
         earthPhotoView.setVisibility(View.GONE);

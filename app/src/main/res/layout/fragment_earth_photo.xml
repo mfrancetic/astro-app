@@ -48,34 +48,12 @@
                 <ImageView
                     android:id="@+id/earth_photo_view"
                     style="@style/PhotoImageView"
+                    android:layout_width="@dimen/earth_photo_dimensions"
+                    android:layout_height="@dimen/earth_photo_dimensions"
                     android:layout_gravity="center"
                     android:contentDescription="@string/earth_photo_content_description"
                     tools:src="@mipmap/ic_launcher" />
             </FrameLayout>
-
-            <ImageButton
-                android:id="@+id/earth_photo_previous_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/colorBackground"
-                android:contentDescription="@string/photo_previous_content_description"
-                android:src="@drawable/ic_previous"
-                android:tint="?android:attr/textColorPrimary"
-                app:layout_constraintBottom_toBottomOf="@id/earth_photo_frame_layout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/earth_photo_frame_layout" />
-
-            <ImageButton
-                android:id="@+id/earth_photo_next_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/colorBackground"
-                android:contentDescription="@string/photo_next_content_description"
-                android:src="@drawable/ic_next"
-                android:tint="?android:attr/textColorPrimary"
-                app:layout_constraintBottom_toBottomOf="@id/earth_photo_frame_layout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/earth_photo_frame_layout" />
 
             <ImageView
                 android:id="@+id/earth_photo_empty_image_view"

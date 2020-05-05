@@ -1,6 +1,7 @@
 package com.udacity.astroapp.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -107,10 +108,6 @@ public class EarthPhotoFragment extends Fragment {
     private EarthPhotoViewModel earthPhotoViewModel;
 
     private String localDate;
-    private TimeZone timeZone;
-    private Date date;
-    private SimpleDateFormat formatter;
-    private Calendar calendar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -167,6 +164,13 @@ public class EarthPhotoFragment extends Fragment {
         URL earthPhotoUrl = QueryUtils.createEarthPhotoImageUrl(photoDate, photo.getEarthPhotoUrl());
         Uri earthPhotoUri = Uri.parse(earthPhotoUrl.toString());
         PhotoUtils.displayPhotoFromUrl(context, earthPhotoUri, earthPhotoView);
+
+        earthPhotoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PhotoUtils.displayPhotoDialog(context, earthPhotoUri);
+            }
+        });
 
         earthPhotoView.setVisibility(View.VISIBLE);
         earthPhotoLoadingIndicator.setVisibility(View.GONE);

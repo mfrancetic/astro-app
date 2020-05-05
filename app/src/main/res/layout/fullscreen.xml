@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fullscreen_frame_layout"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:background="@color/colorTextPrimary"
     android:layout_height="wrap_content">
 
@@ -11,5 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:scaleType="fitXY"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/earth_photo_content_description" />
 </FrameLayout>

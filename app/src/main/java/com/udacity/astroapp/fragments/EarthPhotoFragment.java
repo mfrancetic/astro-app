@@ -190,6 +190,14 @@ public class EarthPhotoFragment extends Fragment {
             }
         });
 
+        earthPhotoFab.show();
+        earthPhotoFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PhotoUtils.sharePhoto(context, String.valueOf(earthPhotoUri));
+            }
+        });
+
         earthPhotoView.setVisibility(View.VISIBLE);
         earthPhotoLoadingIndicator.setVisibility(View.GONE);
         earthPhotoSourceTextView.setVisibility(View.VISIBLE);

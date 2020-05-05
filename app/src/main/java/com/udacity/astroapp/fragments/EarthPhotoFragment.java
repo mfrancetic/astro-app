@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -18,17 +19,18 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.data.AppDatabase;
+import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.EarthPhotoViewModel;
 import com.udacity.astroapp.data.EarthPhotoViewModelFactory;
-import com.udacity.astroapp.data.PhotoViewModel;
-import com.udacity.astroapp.data.PhotoViewModelFactory;
 import com.udacity.astroapp.models.EarthPhoto;
-import com.udacity.astroapp.models.Photo;
 import com.udacity.astroapp.utils.PhotoUtils;
 import com.udacity.astroapp.utils.QueryUtils;
 
@@ -50,6 +52,9 @@ public class EarthPhotoFragment extends Fragment {
 
     @BindView(R.id.earth_photo_coordinator_layout)
     CoordinatorLayout earthPhotoCoordinatorLayout;
+
+    @BindView(R.id.earth_scroll_view)
+    ScrollView earthScrollView;
 
     @BindView(R.id.earth_photo_view)
     ImageView earthPhotoView;
@@ -132,8 +137,14 @@ public class EarthPhotoFragment extends Fragment {
 
         earthPhotoViewModel.getEarthPhotos().observe(getViewLifecycleOwner(), new Observer<List<EarthPhoto>>() {
             @Override
-            public void onChanged(List<EarthPhoto> earthPhotos) {
-
+            public void onChanged(List<EarthPhoto> databaseEarthPhotos) {
+                earthPhotoViewModel.getEarthPhotos().removeObserver(this);
+                if (earthPhotos != null && earthPhotos.size() > 0) {
+                    AppExecutors.getExecutors().diskIO().execute(() -> {
+                        appDatabase.astroDao().deleteAllEarthPhotos();
+                        appDatabase.astroDao().addAllEarthPhotos(earthPhotos);
+                    });
+                }
             }
         });
     }
@@ -184,7 +195,7 @@ public class EarthPhotoFragment extends Fragment {
 
                     earthPhoto = new EarthPhoto(earthPhotoIdentifier, earthPhotoCaption, earthPhotoImageUrl, earthPhotoDateTime);
                     if (earthPhotos == null) {
-                        earthPhotos= new ArrayList<>();
+                        earthPhotos = new ArrayList<>();
                     }
                     earthPhotos.add(earthPhoto);
                 }
@@ -202,7 +213,17 @@ public class EarthPhotoFragment extends Fragment {
         @Override
         protected void onPostExecute(List<EarthPhoto> newPhotos) {
             if (newPhotos != null && !jsonNotSuccessful) {
-                populatePhoto(newPhotos.get(0));
+                // display the latest Earth photo
+                populatePhoto(newPhotos.get(newPhotos.size() - 1));
+            } else if (earthPhotoViewModel.getEarthPhotos().getValue() != null && earthPhotoViewModel.getEarthPhotos().getValue().size() != 0) {
+                LiveData<List<EarthPhoto>> earthPhotosDatabase = earthPhotoViewModel.getEarthPhotos();
+                List<EarthPhoto> earthPhotosList = earthPhotosDatabase.getValue();
+                if (earthPhotosList.size() > 0) {
+                    earthPhotos = earthPhotosList;
+                    populatePhoto(earthPhotos.get(earthPhotos.size() - 1));
+                }
+                Snackbar snackbar = Snackbar.make(earthScrollView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);
+                snackbar.show();
             } else {
                 displayEmptyView();
             }
@@ -211,6 +232,11 @@ public class EarthPhotoFragment extends Fragment {
     }
 
     private void displayEmptyView() {
+        if (!MainActivity.isNetworkAvailable(context)) {
+            earthPhotoEmptyTextView.setText(R.string.no_internet_connection);
+        } else {
+            earthPhotoEmptyTextView.setText(R.string.no_photo_found);
+        }
         earthPhotoCaptionTextView.setVisibility(View.GONE);
         earthPhotoDateTimeTextView.setVisibility(View.GONE);
         earthPhotoView.setVisibility(View.GONE);

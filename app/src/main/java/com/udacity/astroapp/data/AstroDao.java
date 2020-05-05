@@ -59,7 +59,7 @@ public interface AstroDao {
     void addPhoto(Photo photo);
 
     @Insert(onConflict = REPLACE)
-    void addEarthPhoto(EarthPhoto earthPhoto);
+    void addAllEarthPhotos(List<EarthPhoto> earthPhoto);
 
     @Insert(onConflict = REPLACE)
     void addAllObservatories(List<Observatory> observatories);

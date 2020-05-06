@@ -97,7 +97,7 @@
 
     <!-- EarthPhotoFragment strings -->
     <string name="menu_earth_photo_content_description">Go to Earth photo</string>
-    <string name="menu_earth_photo">Earth Photo</string>
+    <string name="menu_earth_photo">Earth photo</string>
     <string name="earth_photo_content_description">Photo of the Earth</string>
     <string name="earth_photo_caption">This image was taken by NASA\'s EPIC camera onboard the NOAA DSCOVR spacecraft</string>
 </resources>

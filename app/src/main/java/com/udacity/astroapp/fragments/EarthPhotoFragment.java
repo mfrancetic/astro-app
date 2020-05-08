@@ -24,13 +24,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
@@ -40,7 +38,6 @@ import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.EarthPhotoViewModel;
 import com.udacity.astroapp.data.EarthPhotoViewModelFactory;
 import com.udacity.astroapp.models.EarthPhoto;
-import com.udacity.astroapp.models.Photo;
 import com.udacity.astroapp.utils.DateTimeUtils;
 import com.udacity.astroapp.utils.PhotoUtils;
 import com.udacity.astroapp.utils.QueryUtils;
@@ -82,14 +79,14 @@ public class EarthPhotoFragment extends Fragment {
     @BindView(R.id.earth_photo_source_text_view)
     TextView earthPhotoSourceTextView;
 
-    @BindView(R.id.earth_photo_fab)
-    FloatingActionButton earthPhotoFab;
-
     @BindView(R.id.earth_photo_empty_image_view)
     ImageView earthPhotoEmptyImageView;
 
     @BindView(R.id.earth_photo_empty_text_view)
     TextView earthPhotoEmptyTextView;
+
+    @BindView(R.id.earth_loading_indicator)
+    ProgressBar earthPhotoLoadingIndicator;
 
     private Context context;
 
@@ -202,42 +199,21 @@ public class EarthPhotoFragment extends Fragment {
         earthPhotoDateTimeTextView.setText(photoDate);
 
         earthPhotoCaptionTextView.setText(firstPhoto.getEarthPhotoCaption());
+        adapter.setPhotos(earthPhotos);
         adapter.notifyDataSetChanged();
-//        URL earthPhotoUrl = QueryUtils.createEarthPhotoImageUrl(photoDate, photo.getEarthPhotoUrl());
-//        Uri earthPhotoUri = Uri.parse(earthPhotoUrl.toString());
-//        PhotoUtils.displayPhotoFromUrl(context, earthPhotoUri, earthPhotoView, earthPhotoLoadingIndicator);
 
-//        earthPhotoView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PhotoUtils.displayPhotoDialog(context, earthPhotoUri);
-//            }
-//        });
-//
-//        earthPhotoFab.show();
-//        earthPhotoFab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PhotoUtils.sharePhoto(context, String.valueOf(earthPhotoUri));
-//            }
-//        });
-
-        PhotoUtils.addScrollingFunctionalityToFab(earthScrollView, earthPhotoFab);
-
-//        earthPhotoView.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+        earthPhotoLoadingIndicator.setVisibility(View.GONE);
         earthPhotoSourceTextView.setVisibility(View.VISIBLE);
-//        earthPhotoCaptionTextView.setText(photo.getEarthPhotoCaption());
         earthPhotoCaptionTextView.setVisibility(View.VISIBLE);
         earthPhotoDateTimeTextView.setVisibility(View.VISIBLE);
-//        earthPhotoDateTimeTextView.setText(photo.getEarthPhotoDateTime());
     }
 
     private void setLoadingView() {
-//        earthPhotoLoadingIndicator.setVisibility(View.VISIBLE);
+        earthPhotoLoadingIndicator.setVisibility(View.VISIBLE);
         earthPhotoEmptyImageView.setVisibility(View.GONE);
         earthPhotoEmptyTextView.setVisibility(View.GONE);
-//        earthPhotoView.setVisibility(View.GONE);
-        earthPhotoFab.hide();
+        recyclerView.setVisibility(View.GONE);
         earthPhotoSourceTextView.setVisibility(View.GONE);
     }
 
@@ -246,6 +222,7 @@ public class EarthPhotoFragment extends Fragment {
 
         @Override
         protected List<EarthPhoto> doInBackground(String... strings) {
+
             try {
                 URL url = QueryUtils.createEarthPhotoUrl(localDate);
                 String earthPhotoJson = QueryUtils.makeHttpRequest(url);
@@ -313,10 +290,9 @@ public class EarthPhotoFragment extends Fragment {
         }
         earthPhotoCaptionTextView.setVisibility(View.GONE);
         earthPhotoDateTimeTextView.setVisibility(View.GONE);
-//        earthPhotoView.setVisibility(View.GONE);
+        recyclerView.setVisibility(View.GONE);
         earthPhotoSourceTextView.setVisibility(View.GONE);
-//        earthPhotoLoadingIndicator.setVisibility(View.GONE);
-
+        earthPhotoLoadingIndicator.setVisibility(View.GONE);
         earthPhotoEmptyImageView.setVisibility(View.VISIBLE);
         earthPhotoEmptyTextView.setVisibility(View.VISIBLE);
     }
@@ -340,21 +316,19 @@ public class EarthPhotoFragment extends Fragment {
 
     private void createDatePickerDialog() {
         datePickerDialog = new DatePickerDialog(context,
-                new DatePickerDialog.OnDateSetListener() {
+                (view, year, month, dayOfMonth) -> {
+                    Calendar calendar = DateTimeUtils.getCalendar();
+                    calendar.set(year, month, dayOfMonth);
+                    calendar.setTimeZone(TimeZone.getDefault());
+                    Date date = calendar.getTime();
+                    localDate = DateTimeUtils.getFormattedDate(date);
+                    earthPhotos = new ArrayList<>();
+                    setLoadingView();
+                    new EarthPhotoAsyncTask().execute();
 
-                    @Override
-                    public void onDateSet(DatePicker view, final int year, int month, int dayOfMonth) {
-                        Calendar calendar = DateTimeUtils.getCalendar();
-                        calendar.set(year, month, dayOfMonth);
-                        calendar.setTimeZone(TimeZone.getDefault());
-                        Date date = calendar.getTime();
-                        localDate = DateTimeUtils.getFormattedDate(date);
-                        new EarthPhotoAsyncTask().execute();
-
-                        currentYear = year;
-                        currentMonth = month;
-                        currentDayOfMonth = dayOfMonth;
-                    }
+                    currentYear = year;
+                    currentMonth = month;
+                    currentDayOfMonth = dayOfMonth;
                 }, currentYear, currentMonth, currentDayOfMonth);
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
     }

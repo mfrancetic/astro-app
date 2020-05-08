@@ -236,8 +236,6 @@ public class PhotoFragment extends Fragment {
 
         context = photoDateTextView.getContext();
 
-        setPhotoLoadingIndicator();
-
         appDatabase = AppDatabase.getInstance(getContext());
 
         /* In case there is a photoViewModelFactory, create a new instance */
@@ -246,6 +244,8 @@ public class PhotoFragment extends Fragment {
         }
 
         photoViewModel = ViewModelProviders.of(PhotoFragment.this, photoViewModelFactory).get(PhotoViewModel.class);
+
+        setLoadingView();
 
         /* Observe the photos in the PhotoFragment */
         photoViewModel.getPhotos().observe(getViewLifecycleOwner(), new Observer<List<Photo>>() {
@@ -645,9 +645,9 @@ public class PhotoFragment extends Fragment {
         });
     }
 
-    public void setPhotoLoadingIndicator() {
+    public void setLoadingView() {
+        loadingIndicator.setVisibility(View.GONE);
         playVideoButton.setVisibility(View.GONE);
-        loadingIndicator.setVisibility(View.VISIBLE);
         photoImageView.setVisibility(View.GONE);
         emptyImageView.setVisibility(View.GONE);
         emptyTextView.setVisibility(View.GONE);
@@ -662,7 +662,7 @@ public class PhotoFragment extends Fragment {
     @Override
     public void onPause() {
         if (MainActivity.isBeingRefreshed) {
-            setPhotoLoadingIndicator();
+            setLoadingView();
         }
         super.onPause();
     }

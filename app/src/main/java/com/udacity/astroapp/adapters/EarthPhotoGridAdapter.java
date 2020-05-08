@@ -89,4 +89,8 @@ public class EarthPhotoGridAdapter extends RecyclerView.Adapter<EarthPhotoGridAd
             onItemClickListener.onClick(v, getAdapterPosition());
         }
     }
+
+    public void setPhotos(List<EarthPhoto> photos) {
+        this.photos = photos;
+    }
 }

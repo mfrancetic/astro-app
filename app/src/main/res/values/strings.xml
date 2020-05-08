@@ -44,7 +44,6 @@
     <string name="menu_asteroids">Asteroids</string>
     <string name="menu_observatories">Observatories</string>
 
-
     <string name="menu_refresh">Refresh</string>
     <string name="menu_calendar">Calendar</string>
     <string name="menu_theme">Theme</string>
@@ -96,8 +95,8 @@
     <string name="dismiss_dialog">Close</string>
 
     <!-- EarthPhotoFragment strings -->
-    <string name="menu_earth_photo_content_description">Go to Earth photo</string>
-    <string name="menu_earth_photo">Earth photo</string>
-    <string name="earth_photo_content_description">Photo of the Earth</string>
-    <string name="earth_photo_caption">This image was taken by NASA\'s EPIC camera onboard the NOAA DSCOVR spacecraft</string>
+    <string name="menu_earth_photo_content_description">Go to Earth photos</string>
+    <string name="menu_earth_photo">Earth photos</string>
+    <string name="earth_photo_content_description">Photos of the Earth</string>
+    <string name="earth_photo_caption">This images were taken by NASA\'s EPIC camera onboard the NOAA DSCOVR spacecraft</string>
 </resources>

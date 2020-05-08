@@ -213,6 +213,8 @@ public class EarthPhotoFragment extends Fragment {
         earthPhotoLoadingIndicator.setVisibility(View.VISIBLE);
         earthPhotoEmptyImageView.setVisibility(View.GONE);
         earthPhotoEmptyTextView.setVisibility(View.GONE);
+        earthPhotoDateTimeTextView.setVisibility(View.GONE);
+        earthPhotoCaptionTextView.setVisibility(View.GONE);
         recyclerView.setVisibility(View.GONE);
         earthPhotoSourceTextView.setVisibility(View.GONE);
     }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/earth_photo_coordinator_layout"
@@ -35,6 +34,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/earth_photo_date_time_text_view"
+                style="@style/SubtitleTextView"
+                android:padding="@dimen/margin"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/earth_photo_source_text_view"
+                tools:text="2019-06-01" />
+
+            <TextView
+                android:id="@+id/earth_photo_caption_text_view"
+                style="@style/PhotoDescriptionTextView"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:paddingStart="@dimen/margin_list_item"
+                android:paddingEnd="@dimen/margin_list_item"
+                android:textStyle="normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/earth_photo_date_time_text_view"
+                tools:text="This image was taken by NASA's EPIC camera onboard the NOAA DSCOVR spacecraft" />
+
             <FrameLayout
                 android:id="@+id/earth_photo_frame_layout"
                 android:layout_width="match_parent"
@@ -43,16 +65,14 @@
                 android:paddingTop="@dimen/margin"
                 android:paddingEnd="@dimen/margin"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/earth_photo_source_text_view">
+                app:layout_constraintTop_toBottomOf="@id/earth_photo_caption_text_view">
 
-                <ImageView
-                    android:id="@+id/earth_photo_view"
-                    style="@style/PhotoImageView"
-                    android:layout_width="@dimen/earth_photo_dimensions"
-                    android:layout_height="@dimen/earth_photo_dimensions"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/image_thumbnail_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:contentDescription="@string/earth_photo_content_description"
-                    tools:src="@mipmap/ic_launcher" />
+                    tools:listitem="@layout/image_thumbnail_grid_item" />
             </FrameLayout>
 
             <ImageView
@@ -66,37 +86,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <ProgressBar
-                android:id="@+id/earth_photo_loading_indicator"
-                style="@style/LoadingIndicatorStyle"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/earth_photo_date_time_text_view"
-                style="@style/SubtitleTextView"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:padding="@dimen/margin"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/earth_photo_frame_layout"
-                tools:text="2019-06-01 01:09:10" />
-
-            <TextView
-                android:id="@+id/earth_photo_caption_text_view"
-                style="@style/PhotoDescriptionTextView"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:textStyle="normal"
-                android:paddingStart="@dimen/margin_list_item"
-                android:paddingEnd="@dimen/margin_list_item"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/earth_photo_date_time_text_view"
-                tools:text="This image was taken by NASA's EPIC camera onboard the NOAA DSCOVR spacecraft" />
 
             <TextView
                 android:id="@+id/earth_photo_empty_text_view"

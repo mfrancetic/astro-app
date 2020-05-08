@@ -3,7 +3,6 @@ package com.udacity.astroapp.fragments;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -13,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +23,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -32,11 +32,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
+import com.udacity.astroapp.adapters.EarthPhotoGridAdapter;
 import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.EarthPhotoViewModel;
 import com.udacity.astroapp.data.EarthPhotoViewModelFactory;
 import com.udacity.astroapp.models.EarthPhoto;
+import com.udacity.astroapp.models.Photo;
 import com.udacity.astroapp.utils.DateTimeUtils;
 import com.udacity.astroapp.utils.PhotoUtils;
 import com.udacity.astroapp.utils.QueryUtils;
@@ -47,7 +49,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -67,8 +68,8 @@ public class EarthPhotoFragment extends Fragment {
     @BindView(R.id.earth_scroll_view)
     ScrollView earthScrollView;
 
-    @BindView(R.id.earth_photo_view)
-    ImageView earthPhotoView;
+    @BindView(R.id.image_thumbnail_recycler_view)
+    RecyclerView recyclerView;
 
     @BindView(R.id.earth_photo_caption_text_view)
     TextView earthPhotoCaptionTextView;
@@ -88,10 +89,9 @@ public class EarthPhotoFragment extends Fragment {
     @BindView(R.id.earth_photo_empty_text_view)
     TextView earthPhotoEmptyTextView;
 
-    @BindView(R.id.earth_photo_loading_indicator)
-    ProgressBar earthPhotoLoadingIndicator;
-
     private Context context;
+
+    private EarthPhotoGridAdapter adapter;
 
     private String earthPhotoIdentifier;
     private String earthPhotoCaption;
@@ -136,11 +136,20 @@ public class EarthPhotoFragment extends Fragment {
         setLocalDateToCalendar(localDate);
 
         setLoadingView();
+        setRecyclerView();
         createDatePickerDialog();
         setupDatabase();
         new EarthPhotoAsyncTask().execute();
 
         return rootView;
+    }
+
+    private void setRecyclerView() {
+        earthPhotos = new ArrayList<>();
+        adapter = new EarthPhotoGridAdapter(earthPhotos);
+        recyclerView.setAdapter(adapter);
+        GridLayoutManager layoutManager = new GridLayoutManager(context, 3);
+        recyclerView.setLayoutManager(layoutManager);
     }
 
     private void setLocalDateToCalendar(String localDate) {
@@ -171,42 +180,47 @@ public class EarthPhotoFragment extends Fragment {
         });
     }
 
-    private void populatePhoto(EarthPhoto photo) {
-        String photoDate = photo.getEarthPhotoDateTime().substring(0, 10);
-        URL earthPhotoUrl = QueryUtils.createEarthPhotoImageUrl(photoDate, photo.getEarthPhotoUrl());
-        Uri earthPhotoUri = Uri.parse(earthPhotoUrl.toString());
-        PhotoUtils.displayPhotoFromUrl(context, earthPhotoUri, earthPhotoView, earthPhotoLoadingIndicator);
+    private void populatePhotos(List<EarthPhoto> photos) {
+        EarthPhoto firstPhoto = photos.get(0);
+        String photoDate = DateTimeUtils.getFormattedDateFromString(firstPhoto.getEarthPhotoDateTime());
+        earthPhotoDateTimeTextView.setText(photoDate);
 
-        earthPhotoView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PhotoUtils.displayPhotoDialog(context, earthPhotoUri);
-            }
-        });
+        earthPhotoCaptionTextView.setText(firstPhoto.getEarthPhotoCaption());
+        adapter.notifyDataSetChanged();
+//        URL earthPhotoUrl = QueryUtils.createEarthPhotoImageUrl(photoDate, photo.getEarthPhotoUrl());
+//        Uri earthPhotoUri = Uri.parse(earthPhotoUrl.toString());
+//        PhotoUtils.displayPhotoFromUrl(context, earthPhotoUri, earthPhotoView, earthPhotoLoadingIndicator);
 
-        earthPhotoFab.show();
-        earthPhotoFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PhotoUtils.sharePhoto(context, String.valueOf(earthPhotoUri));
-            }
-        });
+//        earthPhotoView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                PhotoUtils.displayPhotoDialog(context, earthPhotoUri);
+//            }
+//        });
+//
+//        earthPhotoFab.show();
+//        earthPhotoFab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                PhotoUtils.sharePhoto(context, String.valueOf(earthPhotoUri));
+//            }
+//        });
 
         PhotoUtils.addScrollingFunctionalityToFab(earthScrollView, earthPhotoFab);
 
-        earthPhotoView.setVisibility(View.VISIBLE);
+//        earthPhotoView.setVisibility(View.VISIBLE);
         earthPhotoSourceTextView.setVisibility(View.VISIBLE);
-        earthPhotoCaptionTextView.setText(photo.getEarthPhotoCaption());
+//        earthPhotoCaptionTextView.setText(photo.getEarthPhotoCaption());
         earthPhotoCaptionTextView.setVisibility(View.VISIBLE);
         earthPhotoDateTimeTextView.setVisibility(View.VISIBLE);
-        earthPhotoDateTimeTextView.setText(photo.getEarthPhotoDateTime());
+//        earthPhotoDateTimeTextView.setText(photo.getEarthPhotoDateTime());
     }
 
     private void setLoadingView() {
-        earthPhotoLoadingIndicator.setVisibility(View.VISIBLE);
+//        earthPhotoLoadingIndicator.setVisibility(View.VISIBLE);
         earthPhotoEmptyImageView.setVisibility(View.GONE);
         earthPhotoEmptyTextView.setVisibility(View.GONE);
-        earthPhotoView.setVisibility(View.GONE);
+//        earthPhotoView.setVisibility(View.GONE);
         earthPhotoFab.hide();
         earthPhotoSourceTextView.setVisibility(View.GONE);
     }
@@ -230,7 +244,7 @@ public class EarthPhotoFragment extends Fragment {
                     }
                 }
 
-                for (int i = earthPhotoArray.length() -1; i < earthPhotoArray.length(); i++) {
+                for (int i = 0; i < earthPhotoArray.length(); i++) {
                     JSONObject earthPhotoObject = earthPhotoArray.getJSONObject(i);
                     earthPhotoIdentifier = earthPhotoObject.getString("identifier");
                     earthPhotoCaption = earthPhotoObject.getString("caption");
@@ -258,13 +272,13 @@ public class EarthPhotoFragment extends Fragment {
         protected void onPostExecute(List<EarthPhoto> newPhotos) {
             if (newPhotos != null && !jsonNotSuccessful) {
                 // display the latest Earth photo
-                populatePhoto(newPhotos.get(newPhotos.size() - 1));
+                populatePhotos(newPhotos);
             } else if (earthPhotoViewModel.getEarthPhotos().getValue() != null && earthPhotoViewModel.getEarthPhotos().getValue().size() != 0) {
                 LiveData<List<EarthPhoto>> earthPhotosDatabase = earthPhotoViewModel.getEarthPhotos();
                 List<EarthPhoto> earthPhotosList = earthPhotosDatabase.getValue();
                 if (earthPhotosList.size() > 0) {
                     earthPhotos = earthPhotosList;
-                    populatePhoto(earthPhotos.get(earthPhotos.size() - 1));
+                    populatePhotos(earthPhotos);
                 }
                 Snackbar snackbar = Snackbar.make(earthScrollView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);
                 snackbar.show();
@@ -283,9 +297,9 @@ public class EarthPhotoFragment extends Fragment {
         }
         earthPhotoCaptionTextView.setVisibility(View.GONE);
         earthPhotoDateTimeTextView.setVisibility(View.GONE);
-        earthPhotoView.setVisibility(View.GONE);
+//        earthPhotoView.setVisibility(View.GONE);
         earthPhotoSourceTextView.setVisibility(View.GONE);
-        earthPhotoLoadingIndicator.setVisibility(View.GONE);
+//        earthPhotoLoadingIndicator.setVisibility(View.GONE);
 
         earthPhotoEmptyImageView.setVisibility(View.VISIBLE);
         earthPhotoEmptyTextView.setVisibility(View.VISIBLE);

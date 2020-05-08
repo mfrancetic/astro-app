@@ -60,4 +60,8 @@ public class DateTimeUtils {
     public static int getDay(String date) {
         return Integer.parseInt(date.substring(8, 10));
     }
+
+    public static String getFormattedDateFromString (String date) {
+        return date.substring(0, 10);
+    }
 }

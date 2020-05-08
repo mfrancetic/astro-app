@@ -175,7 +175,7 @@ public class EarthPhotoFragment extends Fragment {
         String photoDate = photo.getEarthPhotoDateTime().substring(0, 10);
         URL earthPhotoUrl = QueryUtils.createEarthPhotoImageUrl(photoDate, photo.getEarthPhotoUrl());
         Uri earthPhotoUri = Uri.parse(earthPhotoUrl.toString());
-        PhotoUtils.displayPhotoFromUrl(context, earthPhotoUri, earthPhotoView);
+        PhotoUtils.displayPhotoFromUrl(context, earthPhotoUri, earthPhotoView, earthPhotoLoadingIndicator);
 
         earthPhotoView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,7 +195,6 @@ public class EarthPhotoFragment extends Fragment {
         PhotoUtils.addScrollingFunctionalityToFab(earthScrollView, earthPhotoFab);
 
         earthPhotoView.setVisibility(View.VISIBLE);
-        earthPhotoLoadingIndicator.setVisibility(View.GONE);
         earthPhotoSourceTextView.setVisibility(View.VISIBLE);
         earthPhotoCaptionTextView.setText(photo.getEarthPhotoCaption());
         earthPhotoCaptionTextView.setVisibility(View.VISIBLE);
@@ -231,7 +230,7 @@ public class EarthPhotoFragment extends Fragment {
                     }
                 }
 
-                for (int i = 0; i < earthPhotoArray.length(); i++) {
+                for (int i = earthPhotoArray.length() -1; i < earthPhotoArray.length(); i++) {
                     JSONObject earthPhotoObject = earthPhotoArray.getJSONObject(i);
                     earthPhotoIdentifier = earthPhotoObject.getString("identifier");
                     earthPhotoCaption = earthPhotoObject.getString("caption");

@@ -59,6 +59,7 @@ import com.udacity.astroapp.data.GlideApp;
 import com.udacity.astroapp.data.PhotoViewModel;
 import com.udacity.astroapp.data.PhotoViewModelFactory;
 import com.udacity.astroapp.models.Photo;
+import com.udacity.astroapp.utils.PhotoUtils;
 import com.udacity.astroapp.utils.QueryUtils;
 import com.udacity.astroapp.utils.Secret;
 
@@ -189,7 +190,7 @@ public class PhotoFragment extends Fragment {
 
     private static final String YOUTUBE_API_KEY = Secret.youtube_api_key;
 
-    private static final int MILLIS_IN_DAY = 1000*60*60*24;
+    private static final int MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
 
     private Date selectedDate;
 
@@ -428,17 +429,17 @@ public class PhotoFragment extends Fragment {
 
         floatingActionButton.show();
 
-         selectedDate = getSelectedDate(photo.getPhotoDate());
+        selectedDate = getSelectedDate(photo.getPhotoDate());
         date = selectedDate;
 
         createDatePickerDialog();
 
         SimpleDateFormat simpleFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
         String datePickerDate = simpleFormatter.format(selectedDate);
-        String monthString = datePickerDate.substring(5,7);
+        String monthString = datePickerDate.substring(5, 7);
         int month = Integer.parseInt(monthString);
         datePickerDialog.getDatePicker().updateDate(Integer.parseInt(datePickerDate.substring(0, 4)),
-               month-1, Integer.parseInt(datePickerDate.substring(8, 10)));
+                month - 1, Integer.parseInt(datePickerDate.substring(8, 10)));
 
         Date nextDate = getNextDate(date);
         Date todaysDate = getTodaysDate();
@@ -515,12 +516,7 @@ public class PhotoFragment extends Fragment {
             /* Get the photoUrl and load it into the photoImageView */
             photoUri = Uri.parse(photo.getPhotoUrl());
             if (photoUri != null) {
-                Glide.with(context)
-                        .load(photoUri)
-                        .transition(DrawableTransitionOptions.withCrossFade())
-                        .placeholder(R.mipmap.ic_launcher)
-                        .centerCrop()
-                        .into(photoImageView);
+                PhotoUtils.displayPhotoFromUrl(context, photoUri, photoImageView, loadingIndicator);
 
                 /* Set the content description of the photoImageView to inform the user about the photo's title */
                 photoImageView.setContentDescription(getString(R.string.photo_of_content_description) + " " + photoTitle);
@@ -721,7 +717,7 @@ public class PhotoFragment extends Fragment {
             Log.e(LOG_TAG, "Problem parsing the minDate");
         }
 
-         datePickerDialog = new DatePickerDialog(context,
+        datePickerDialog = new DatePickerDialog(context,
 //                R.style.AstroDialogTheme,
 //                R.style.Theme_AppCompat_DayNight_Dialog_Alert,
                 new DatePickerDialog.OnDateSetListener() {

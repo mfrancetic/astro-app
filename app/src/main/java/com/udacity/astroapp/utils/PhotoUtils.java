@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
@@ -18,8 +19,12 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.udacity.astroapp.R;
@@ -31,11 +36,24 @@ import java.io.IOException;
 
 public class PhotoUtils {
 
-    public static void displayPhotoFromUrl(Context context, Uri photoUri, ImageView photoImageView) {
+    public static void displayPhotoFromUrl(Context context, Uri photoUri, ImageView photoImageView, ProgressBar loadingIndicator) {
+        loadingIndicator.setVisibility(View.VISIBLE);
         Glide.with(context)
                 .load(photoUri)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        loadingIndicator.setVisibility(View.GONE);
+                        return false;
+                    }
+                })
+                .error(R.mipmap.ic_launcher)
                 .transition(DrawableTransitionOptions.withCrossFade())
-                .placeholder(R.mipmap.ic_launcher)
                 .centerCrop()
                 .into(photoImageView);
     }

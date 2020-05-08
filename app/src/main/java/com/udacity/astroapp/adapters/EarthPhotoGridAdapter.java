@@ -27,9 +27,11 @@ public class EarthPhotoGridAdapter extends RecyclerView.Adapter<EarthPhotoGridAd
 
     private List<EarthPhoto> photos;
     private Context context;
+    private EarthPhotoOnItemClickListener onItemClickListener;
 
-    public EarthPhotoGridAdapter(List<EarthPhoto> photos) {
+    public EarthPhotoGridAdapter(List<EarthPhoto> photos, EarthPhotoOnItemClickListener onItemClickListener) {
         this.photos = photos;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @NonNull
@@ -38,13 +40,13 @@ public class EarthPhotoGridAdapter extends RecyclerView.Adapter<EarthPhotoGridAd
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View itemView = inflater.inflate(R.layout.image_thumbnail_grid_item, parent, false);
-        return new EarthPhotoViewHolder(itemView);
+        return new EarthPhotoViewHolder(itemView, onItemClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull EarthPhotoGridAdapter.EarthPhotoViewHolder holder, int position) {
         EarthPhoto photo = photos.get(position);
-        String photoDate = DateTimeUtils.getFormattedDateFromString(photo.getEarthPhotoDateTime());
+        String photoDate = photo.getEarthPhotoDateTime();
 
         ImageView earthPhotoImageView = holder.earthPhotoImageView;
         ProgressBar earthPhotoLoadingIndicator = holder.earthPhotoLoadingIndicator;
@@ -62,7 +64,11 @@ public class EarthPhotoGridAdapter extends RecyclerView.Adapter<EarthPhotoGridAd
         return 0;
     }
 
-    class EarthPhotoViewHolder extends RecyclerView.ViewHolder {
+    public interface EarthPhotoOnItemClickListener {
+        void onClick (View view, int position);
+    }
+
+    class EarthPhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.earth_photo_image_view)
         ImageView earthPhotoImageView;
@@ -70,9 +76,17 @@ public class EarthPhotoGridAdapter extends RecyclerView.Adapter<EarthPhotoGridAd
         @BindView(R.id.earth_photo_loading_indicator)
         ProgressBar earthPhotoLoadingIndicator;
 
-        public EarthPhotoViewHolder(@NonNull View itemView) {
+        public EarthPhotoViewHolder(@NonNull View itemView, EarthPhotoOnItemClickListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            onItemClickListener = listener;
+            earthPhotoImageView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onItemClickListener.onClick(v, getAdapterPosition());
         }
     }
 }

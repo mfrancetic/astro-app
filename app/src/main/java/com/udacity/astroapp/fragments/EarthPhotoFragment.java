@@ -3,6 +3,8 @@ package com.udacity.astroapp.fragments;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -146,9 +148,23 @@ public class EarthPhotoFragment extends Fragment {
 
     private void setRecyclerView() {
         earthPhotos = new ArrayList<>();
-        adapter = new EarthPhotoGridAdapter(earthPhotos);
+        adapter = new EarthPhotoGridAdapter(earthPhotos, new EarthPhotoGridAdapter.EarthPhotoOnItemClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                EarthPhoto photo = earthPhotos.get(position);
+                String photoDate = photo.getEarthPhotoDateTime();
+                URL earthPhotoUrl = QueryUtils.createEarthPhotoImageUrl(photoDate, photo.getEarthPhotoUrl());
+                Uri earthPhotoUri = Uri.parse(earthPhotoUrl.toString());
+                PhotoUtils.displayPhotoDialog(context, earthPhotoUri);
+            }
+        });
         recyclerView.setAdapter(adapter);
-        GridLayoutManager layoutManager = new GridLayoutManager(context, 3);
+        GridLayoutManager layoutManager;
+        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            layoutManager = new GridLayoutManager(context, 3);
+        } else {
+            layoutManager = new GridLayoutManager(context, 5);
+        }
         recyclerView.setLayoutManager(layoutManager);
     }
 
@@ -249,7 +265,7 @@ public class EarthPhotoFragment extends Fragment {
                     earthPhotoIdentifier = earthPhotoObject.getString("identifier");
                     earthPhotoCaption = earthPhotoObject.getString("caption");
                     earthPhotoImageUrl = earthPhotoObject.getString("image");
-                    earthPhotoDateTime = earthPhotoObject.getString("date");
+                    earthPhotoDateTime = DateTimeUtils.getFormattedDateFromString(earthPhotoObject.getString("date"));
 
                     earthPhoto = new EarthPhoto(earthPhotoIdentifier, earthPhotoCaption, earthPhotoImageUrl, earthPhotoDateTime);
                     if (earthPhotos == null) {

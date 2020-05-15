@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity
 
         /* Check if the device is a phone or a tablet */
         tabletSize = getResources().getBoolean(R.bool.isTablet);
-        checkLocationPermission();
+//        checkLocationPermission();
 
         /* Set NavigationView and focusable and request focus */
         navigationView.requestFocus();
@@ -166,9 +166,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_asteroids) {
             currentFragment = new AsteroidFragment();
             displayFragment(currentFragment);
-        } else if (id == R.id.nav_observatories) {
-            currentFragment = new ObservatoryListFragment();
-            displayFragment(currentFragment);
+//        } else if (id == R.id.nav_observatories) {
+//            currentFragment = new ObservatoryListFragment();
+//            displayFragment(currentFragment);
         } else if(id == R.id.nav_earth_photo) {
             currentFragment = new EarthPhotoFragment();
             displayFragment(currentFragment);
@@ -261,14 +261,14 @@ public class MainActivity extends AppCompatActivity
 
         /* If heading back from the ObservatoryFragment, go back to the ObservatoryListFragment.
          * If not, close the application. */
-        if (getSupportFragmentManager().getBackStackEntryCount() > 1 && currentFragment != null &&
-                currentFragment.toString().contains(getResources().getString(R.string.observatory_fragment_name))) {
-            getSupportFragmentManager().popBackStack();
-            currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
-        } else {
+//        if (getSupportFragmentManager().getBackStackEntryCount() > 1 && currentFragment != null &&
+//                currentFragment.toString().contains(getResources().getString(R.string.observatory_fragment_name))) {
+//            getSupportFragmentManager().popBackStack();
+//            currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
+//        } else {
             currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
             finish();
-        }
+//        }
     }
 
     @Override
@@ -331,12 +331,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        if (ObservatoryListFragment.locationActivatedNeedsToBeRefreshed) {
-            Timer timer = new Timer();
-            TimerTask timerTask = new TimerTask();
-            timer.schedule(timerTask, 4000);
-            ObservatoryListFragment.locationActivatedNeedsToBeRefreshed = false;
-        }
+//        if (ObservatoryListFragment.locationActivatedNeedsToBeRefreshed) {
+//            Timer timer = new Timer();
+//            TimerTask timerTask = new TimerTask();
+//            timer.schedule(timerTask, 4000);
+//            ObservatoryListFragment.locationActivatedNeedsToBeRefreshed = false;
+//        }
     }
 
     public void refreshFragment() {

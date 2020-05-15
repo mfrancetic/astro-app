@@ -25,14 +25,9 @@
             android:id="@+id/nav_asteroids"
             android:contentDescription="@string/menu_asteroids_content_description"
             android:icon="@drawable/ic_asteroid_nav"
-            android:nextFocusForward="@id/nav_observatories"
-            android:title="@string/menu_asteroids" />
-        <item
-            android:id="@+id/nav_observatories"
-            android:contentDescription="@string/menu_observatories_content_description"
-            android:icon="@drawable/ic_observatory"
             android:nextFocusForward="@id/nav_theme"
-            android:title="@string/menu_observatories" />
+            android:title="@string/menu_asteroids" />
+
     </group>
 
     <group

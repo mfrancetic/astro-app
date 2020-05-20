@@ -94,7 +94,10 @@ dependencies {
 
     androidTestImplementation "com.android.support.test.espresso:espresso-contrib:3.0.2"
     implementation 'it.xabaras.android.espresso:recyclerview-child-actions:1.0'
-//
+
+    implementation 'com.squareup.retrofit2:retrofit:2.8.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
 //    debugImplementation 'androidx.fragment:fragment-testing:' + rootProject.androidxFragmentVersion
 //    implementation 'androidx.test:core:' + rootProject.coreVersion
 //    debugImplementation 'androidx.test:core:' + rootProject.coreVersion

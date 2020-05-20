@@ -103,4 +103,5 @@
     <string name="menu_mars_photo">Mars Photos</string>
     <string name="launch_date">"Launch date: "</string>
     <string name="landing_date">"Landing date: "</string>
+    <string name="camera">"Camera: "</string>
 </resources>

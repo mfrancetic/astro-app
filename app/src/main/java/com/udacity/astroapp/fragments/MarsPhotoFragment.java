@@ -95,6 +95,8 @@ public class MarsPhotoFragment extends Fragment {
     private int currentMonth;
     private int currentDayOfMonth;
 
+    private int currentMarsPhotoIndex;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         if (getActivity() != null) {
@@ -137,6 +139,22 @@ public class MarsPhotoFragment extends Fragment {
             public void onClick(View v) {
                 Uri photoUri = Uri.parse(currentMarsPhoto.getImageUrl());
                 PhotoUtils.displayPhotoDialog(context, photoUri);
+            }
+        });
+
+        previousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentMarsPhoto = marsPhotos.get(currentMarsPhotoIndex - 1);
+                displayPhoto(currentMarsPhoto);
+            }
+        });
+
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentMarsPhoto = marsPhotos.get(currentMarsPhotoIndex + 1);
+                displayPhoto(currentMarsPhoto);
             }
         });
     }
@@ -193,7 +211,9 @@ public class MarsPhotoFragment extends Fragment {
 
     private void displayPhoto(MarsPhotoObject.MarsPhoto photo) {
         dateTextView.setText(photo.getEarthDate());
-        cameraTextView.setText(photo.getCamera().getCameraFullName());
+
+        String camera = getString(R.string.camera) + photo.getCamera().getCameraFullName();
+        cameraTextView.setText(camera);
         roverNameTextView.setText(photo.getRover().getRoverName());
 
         String launchDate = getString(R.string.launch_date) + photo.getRover().getLaunchDate();
@@ -214,6 +234,19 @@ public class MarsPhotoFragment extends Fragment {
         fab.show();
         landingDateTextView.setVisibility(View.VISIBLE);
         loadingIndicator.setVisibility(View.GONE);
+
+        currentMarsPhotoIndex = marsPhotos.indexOf(currentMarsPhoto);
+        if (currentMarsPhotoIndex == 0) {
+            previousButton.setVisibility(View.GONE);
+        } else {
+            previousButton.setVisibility(View.VISIBLE);
+        }
+
+        if (currentMarsPhotoIndex == marsPhotos.size() - 1) {
+            nextButton.setVisibility(View.GONE);
+        } else {
+            nextButton.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setLoadingView() {

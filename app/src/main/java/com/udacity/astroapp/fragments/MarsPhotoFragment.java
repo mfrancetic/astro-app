@@ -20,6 +20,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.models.MarsPhotoObject;
 import com.udacity.astroapp.utils.Constants;
+import com.udacity.astroapp.utils.DateTimeUtils;
 import com.udacity.astroapp.utils.MarsPhotoService;
 import com.udacity.astroapp.utils.PhotoUtils;
 import com.udacity.astroapp.utils.RetrofitClientInstance;
@@ -76,8 +77,9 @@ public class MarsPhotoFragment extends Fragment {
 
     private MarsPhotoService marsPhotoService;
     private List<MarsPhotoObject.MarsPhoto> marsPhotos = new ArrayList<>();
-
     private MarsPhotoObject.MarsPhoto currentMarsPhoto;
+
+    private String localDate;
 
     private Context context;
 
@@ -98,9 +100,11 @@ public class MarsPhotoFragment extends Fragment {
         context = rootView.getContext();
         ButterKnife.bind(this, rootView);
 
+        localDate = DateTimeUtils.getCurrentLocalDate();
+
         setupLoadingView();
         setOnClickListeners();
-        getPhotoDateFromUrl();
+        getPhotoDataFromUrl(localDate);
 
         return rootView;
     }
@@ -122,9 +126,9 @@ public class MarsPhotoFragment extends Fragment {
         });
     }
 
-    private void getPhotoDateFromUrl() {
+    private void getPhotoDataFromUrl(String localDate) {
         marsPhotoService = RetrofitClientInstance.getRetrofitInstance().create(MarsPhotoService.class);
-        Call<MarsPhotoObject> marsPhotoCalls = marsPhotoService.getMarsPhotoObject("2020-5-19", Constants.NASA_API_KEY,
+        Call<MarsPhotoObject> marsPhotoCalls = marsPhotoService.getMarsPhotoObject(localDate, Constants.NASA_API_KEY,
                 Constants.PAGE_NUMBER);
 
         marsPhotoCalls.enqueue(new Callback<MarsPhotoObject>() {
@@ -135,15 +139,34 @@ public class MarsPhotoFragment extends Fragment {
                     if (marsPhotos.size() > 0) {
                         currentMarsPhoto = marsPhotos.get(0);
                         displayPhoto(currentMarsPhoto);
+                    } else {
+                        getPhotoDataFromUrl(DateTimeUtils.getPreviousDate(localDate));
                     }
                 }
             }
 
             @Override
             public void onFailure(Call<MarsPhotoObject> call, Throwable t) {
-                Toast.makeText(context, t.getMessage(), Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
+                setEmptyView();
             }
         });
+    }
+
+    private void setEmptyView() {
+        loadingIndicator.setVisibility(View.GONE);
+        emptyTextView.setVisibility(View.VISIBLE);
+        emptyImageView.setVisibility(View.VISIBLE);
+        previousButton.setVisibility(View.GONE);
+        nextButton.setVisibility(View.GONE);
+        photoView.setVisibility(View.INVISIBLE);
+        dateTextView.setVisibility(View.GONE);
+        cameraTextView.setVisibility(View.GONE);
+        launchDateTextView.setVisibility(View.GONE);
+        roverNameTextView.setVisibility(View.GONE);
+        landingDateTextView.setVisibility(View.GONE);
+        sourceTextView.setVisibility(View.GONE);
+        fab.hide();
     }
 
     private void displayPhoto(MarsPhotoObject.MarsPhoto photo) {

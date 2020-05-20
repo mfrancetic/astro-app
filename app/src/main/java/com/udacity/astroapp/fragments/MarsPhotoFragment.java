@@ -77,6 +77,8 @@ public class MarsPhotoFragment extends Fragment {
     private MarsPhotoService marsPhotoService;
     private List<MarsPhotoObject.MarsPhoto> marsPhotos = new ArrayList<>();
 
+    private MarsPhotoObject.MarsPhoto currentMarsPhoto;
+
     private Context context;
 
     @Override
@@ -97,9 +99,19 @@ public class MarsPhotoFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         setupLoadingView();
+        setButtonOnClickListeners();
         getPhotoDateFromUrl();
 
         return rootView;
+    }
+
+    private void setButtonOnClickListeners() {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PhotoUtils.sharePhoto(context, currentMarsPhoto.getImageUrl());
+            }
+        });
     }
 
     private void getPhotoDateFromUrl() {
@@ -113,7 +125,8 @@ public class MarsPhotoFragment extends Fragment {
                 if (response.body() != null) {
                     marsPhotos = response.body().getPhotos();
                     if (marsPhotos.size() > 0) {
-                        displayPhoto(marsPhotos.get(0));
+                        currentMarsPhoto = marsPhotos.get(0);
+                        displayPhoto(currentMarsPhoto);
                     }
                 }
             }

@@ -65,4 +65,10 @@
     <string name="menu_earth_photo">Slika Zemlje</string>
     <string name="photo_content_description">Slika dana</string>
     <string name="earth_photo_caption">Ovu sliku snimila je NASA-ina kamera EPIC na letjelici NOAA DSCOVR</string>
+    <string name="menu_mars_photo_content_description">Navigirajte to slike Marsa</string>
+    <string name="menu_mars_photo">Slika Marsa</string>
+    <string name="launch_date">"Datum lansiranja: "</string>
+    <string name="landing_date">"Datum slijetanja: "</string>
+    <string name="camera">"Kamera: "</string>
+    <string name="rover">"Rover "</string>
 </resources>

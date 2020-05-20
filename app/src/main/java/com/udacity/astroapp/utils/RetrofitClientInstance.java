@@ -26,8 +26,8 @@ public class RetrofitClientInstance {
         if (client == null) {
             client = new OkHttpClient.Builder();
         }
-        client.connectTimeout(10, TimeUnit.SECONDS);
-        client.readTimeout(10, TimeUnit.SECONDS);
+        client.connectTimeout(20, TimeUnit.SECONDS);
+        client.readTimeout(20, TimeUnit.SECONDS);
         return client;
     }
 }

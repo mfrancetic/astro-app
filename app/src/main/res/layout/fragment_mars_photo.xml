@@ -142,7 +142,6 @@
                 android:textAlignment="viewStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:textColor="@color/colorTextPrimary"
                 app:layout_constraintTop_toBottomOf="@id/mars_photo_camera_text_view"
                 tools:text="Launch date: 2011-11-26" />
 
@@ -150,7 +149,6 @@
                 android:id="@+id/mars_photo_landing_date_text_view"
                 style="@style/PhotoDescriptionTextView"
                 android:textAlignment="viewStart"
-                android:textColor="@color/colorTextPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/mars_photo_launch_date_text_view"

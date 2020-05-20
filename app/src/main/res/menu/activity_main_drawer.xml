@@ -25,7 +25,7 @@
         <item
             android:id="@+id/nav_mars_photo"
             android:contentDescription="@string/menu_mars_photo_content_description"
-            android:icon="@drawable/ic_camera_alt"
+            android:icon="@mipmap/ic_earth_foreground"
             android:nextFocusForward="@id/nav_asteroids"
             android:title="@string/menu_mars_photo" />
 

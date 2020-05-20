@@ -214,7 +214,9 @@ public class MarsPhotoFragment extends Fragment {
 
         String camera = getString(R.string.camera) + photo.getCamera().getCameraFullName();
         cameraTextView.setText(camera);
-        roverNameTextView.setText(photo.getRover().getRoverName());
+
+        String rover = getString(R.string.rover) + photo.getRover().getRoverName();
+        roverNameTextView.setText(rover);
 
         String launchDate = getString(R.string.launch_date) + photo.getRover().getLaunchDate();
         String landingDate = getString(R.string.landing_date) + photo.getRover().getLandingDate();

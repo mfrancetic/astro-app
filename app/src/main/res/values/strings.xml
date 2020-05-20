@@ -101,4 +101,6 @@
     <string name="earth_photo_caption">This images were taken by NASA\'s EPIC camera onboard the NOAA DSCOVR spacecraft</string>
     <string name="menu_mars_photo_content_description">Go to Mars photos</string>
     <string name="menu_mars_photo">Mars Photos</string>
+    <string name="launch_date">"Launch date: "</string>
+    <string name="landing_date">"Landing date: "</string>
 </resources>

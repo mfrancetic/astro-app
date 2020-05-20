@@ -1,6 +1,6 @@
 package com.udacity.astroapp.utils;
 
-import com.udacity.astroapp.models.MarsPhoto;
+import com.udacity.astroapp.models.MarsPhotoObject;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import retrofit2.http.Query;
 public interface MarsPhotoService {
 
     @GET("photos?")
-    Call<List<MarsPhoto>> marsPhotoList(@Query("earth_date") String date, @Query("api_key") String apiKey,
-                                        @Query("page") String page);
+    Call<MarsPhotoObject> getMarsPhotoObject(@Query("earth_date") String date, @Query("api_key") String apiKey,
+                                             @Query("page") String page);
 
 }

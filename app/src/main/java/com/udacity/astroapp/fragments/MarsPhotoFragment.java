@@ -99,17 +99,25 @@ public class MarsPhotoFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         setupLoadingView();
-        setButtonOnClickListeners();
+        setOnClickListeners();
         getPhotoDateFromUrl();
 
         return rootView;
     }
 
-    private void setButtonOnClickListeners() {
+    private void setOnClickListeners() {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 PhotoUtils.sharePhoto(context, currentMarsPhoto.getImageUrl());
+            }
+        });
+
+        photoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri photoUri = Uri.parse(currentMarsPhoto.getImageUrl());
+                PhotoUtils.displayPhotoDialog(context, photoUri);
             }
         });
     }

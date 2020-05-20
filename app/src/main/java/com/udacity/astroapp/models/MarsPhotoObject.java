@@ -1,6 +1,7 @@
 package com.udacity.astroapp.models;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -8,14 +9,14 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity(tableName = "marsphoto")
 public class MarsPhotoObject {
 
     @SerializedName("photos")
     private
     List<MarsPhoto> photos = new ArrayList<>();
 
-    public class MarsPhoto {
+    @Entity(tableName = "marsphoto")
+    public static class MarsPhoto {
 
         public MarsPhoto() {
         }
@@ -33,9 +34,11 @@ public class MarsPhotoObject {
         @SerializedName("earth_date")
         private String earthDate;
 
+        @Ignore
         @SerializedName("camera")
         private Camera camera;
 
+        @Ignore
         @SerializedName("rover")
         private Rover rover;
 
@@ -86,74 +89,76 @@ public class MarsPhotoObject {
         public void setRover(Rover rover) {
             this.rover = rover;
         }
+
+        public class Camera {
+
+            public Camera() {
+            }
+
+            @SerializedName("name")
+            private String cameraName;
+
+            @SerializedName("full_name")
+            private String cameraFullName;
+
+            public String getCameraName() {
+                return cameraName;
+            }
+
+            public void setCameraName(String cameraName) {
+                this.cameraName = cameraName;
+            }
+
+            public String getCameraFullName() {
+                return cameraFullName;
+            }
+
+            public void setCameraFullName(String cameraFullName) {
+                this.cameraFullName = cameraFullName;
+            }
+        }
+
+        public class Rover {
+
+            public Rover() {
+            }
+
+            @SerializedName("name")
+            private String roverName;
+
+            @SerializedName("launch_date")
+            private String launchDate;
+
+            @SerializedName("landing_date")
+            private String landingDate;
+
+            public String getRoverName() {
+                return roverName;
+            }
+
+            public void setRoverName(String roverName) {
+                this.roverName = roverName;
+            }
+
+            public String getLaunchDate() {
+                return launchDate;
+            }
+
+            public void setLaunchDate(String launchDate) {
+                this.launchDate = launchDate;
+            }
+
+            public String getLandingDate() {
+                return landingDate;
+            }
+
+            public void setLandingDate(String landingDate) {
+                this.landingDate = landingDate;
+            }
+        }
     }
 
-    public class Camera {
 
-        public Camera() {
-        }
-
-        @SerializedName("name")
-        private String cameraName;
-
-        @SerializedName("full_name")
-        private String cameraFullName;
-
-        public String getCameraName() {
-            return cameraName;
-        }
-
-        public void setCameraName(String cameraName) {
-            this.cameraName = cameraName;
-        }
-
-        public String getCameraFullName() {
-            return cameraFullName;
-        }
-
-        public void setCameraFullName(String cameraFullName) {
-            this.cameraFullName = cameraFullName;
-        }
-    }
-
-    public class Rover {
-
-        public Rover() {
-        }
-
-        @SerializedName("name")
-        private String roverName;
-
-        @SerializedName("launch_date")
-        private String launchDate;
-
-        @SerializedName("landing_date")
-        private String landingDate;
-
-        public String getRoverName() {
-            return roverName;
-        }
-
-        public void setRoverName(String roverName) {
-            this.roverName = roverName;
-        }
-
-        public String getLaunchDate() {
-            return launchDate;
-        }
-
-        public void setLaunchDate(String launchDate) {
-            this.launchDate = launchDate;
-        }
-
-        public String getLandingDate() {
-            return landingDate;
-        }
-
-        public void setLandingDate(String landingDate) {
-            this.landingDate = landingDate;
-        }
-    }
 
     public MarsPhotoObject() {
     }

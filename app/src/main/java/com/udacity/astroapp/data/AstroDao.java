@@ -7,10 +7,13 @@ import androidx.room.Query;
 
 import com.udacity.astroapp.models.Asteroid;
 import com.udacity.astroapp.models.EarthPhoto;
+import com.udacity.astroapp.models.MarsPhotoObject;
 import com.udacity.astroapp.models.Observatory;
 import com.udacity.astroapp.models.Photo;
 
 import java.util.List;
+
+import butterknife.BindView;
 
 import static androidx.room.OnConflictStrategy.REPLACE;
 
@@ -30,6 +33,9 @@ public interface AstroDao {
     @Query("SELECT * FROM earthphoto")
     LiveData<List<EarthPhoto>> loadAllEarthPhotos();
 
+    @Query("SELECT * FROM marsphoto")
+    LiveData<List<MarsPhotoObject.MarsPhoto>> loadAllMarsPhotos();
+
     @Query("SELECT * FROM observatory WHERE observatoryId = :observatoryId")
     LiveData<Observatory> loadObservatoryById(String observatoryId);
 
@@ -44,6 +50,9 @@ public interface AstroDao {
 
     @Query("DELETE FROM earthphoto")
     void deleteAllEarthPhotos();
+
+    @Query("DELETE FROM marsphoto")
+    void deleteAllMarsPhotos();
 
     @Query("DELETE FROM observatory WHERE observatoryId = :observatoryId")
     void deleteObservatory(String observatoryId);
@@ -69,4 +78,7 @@ public interface AstroDao {
 
     @Insert(onConflict = REPLACE)
     void addAllAsteroids(List<Asteroid> asteroids);
+
+    @Insert(onConflict = REPLACE)
+    void addAllMarsPhotos(List<MarsPhotoObject.MarsPhoto> marsPhotos);
 }

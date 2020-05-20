@@ -13,14 +13,26 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.data.AppDatabase;
+import com.udacity.astroapp.data.AppExecutors;
+import com.udacity.astroapp.data.EarthPhotoViewModel;
+import com.udacity.astroapp.data.EarthPhotoViewModelFactory;
+import com.udacity.astroapp.data.MarsPhotoViewModel;
+import com.udacity.astroapp.data.MarsPhotoViewModelFactory;
+import com.udacity.astroapp.models.EarthPhoto;
 import com.udacity.astroapp.models.MarsPhotoObject;
 import com.udacity.astroapp.utils.Constants;
 import com.udacity.astroapp.utils.DateTimeUtils;
@@ -41,6 +53,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MarsPhotoFragment extends Fragment {
+
+    @BindView(R.id.mars_photo_scroll_view)
+    ScrollView scrollView;
 
     @BindView(R.id.mars_photo_loading_indicator)
     ProgressBar loadingIndicator;
@@ -97,6 +112,10 @@ public class MarsPhotoFragment extends Fragment {
 
     private int currentMarsPhotoIndex;
 
+    private AppDatabase database;
+    private MarsPhotoViewModelFactory viewModelFactory;
+    private MarsPhotoViewModel viewModel;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         if (getActivity() != null) {
@@ -120,10 +139,35 @@ public class MarsPhotoFragment extends Fragment {
 
         createDatePickerDialog();
         setLoadingView();
+        setupDatabase();
         setOnClickListeners();
         getPhotoDataFromUrl();
 
         return rootView;
+    }
+
+    private void setupDatabase() {
+        database = AppDatabase.getInstance(context);
+        /* In case there is a MarsPhotoViewModelFactory, create a new instance */
+        if (viewModelFactory == null) {
+            viewModelFactory = new MarsPhotoViewModelFactory(database);
+        }
+        viewModel = ViewModelProviders.of(MarsPhotoFragment.this, viewModelFactory).get(MarsPhotoViewModel.class);
+
+        viewModel.getMarsPhotos().observe(getViewLifecycleOwner(), new Observer<List<MarsPhotoObject.MarsPhoto>>() {
+            @Override
+            public void onChanged(@Nullable final List<MarsPhotoObject.MarsPhoto> databaseMarsPhotos) {
+                viewModel.getMarsPhotos().removeObserver(this);
+                if (databaseMarsPhotos != null) {
+                    AppExecutors.getExecutors().diskIO().execute(() -> {
+                        if (marsPhotos != null && marsPhotos.size() > 0) {
+                            database.astroDao().deleteAllMarsPhotos();
+                            database.astroDao().addAllMarsPhotos(marsPhotos);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void setOnClickListeners() {
@@ -174,8 +218,9 @@ public class MarsPhotoFragment extends Fragment {
             @Override
             public void onResponse(Call<MarsPhotoObject> call, Response<MarsPhotoObject> response) {
                 if (response.body() != null) {
-                    marsPhotos = response.body().getPhotos();
-                    if (marsPhotos.size() > 0) {
+                    if (response.body().getPhotos().size() > 0) {
+                        marsPhotos = new ArrayList<>();
+                        marsPhotos.addAll(response.body().getPhotos());
                         currentMarsPhoto = marsPhotos.get(0);
                         displayPhoto(currentMarsPhoto);
                     } else {
@@ -188,7 +233,19 @@ public class MarsPhotoFragment extends Fragment {
             @Override
             public void onFailure(Call<MarsPhotoObject> call, Throwable t) {
                 t.printStackTrace();
-                setEmptyView();
+
+                if (viewModel.getMarsPhotos().getValue() != null && viewModel.getMarsPhotos().getValue().size() != 0) {
+                    LiveData<List<MarsPhotoObject.MarsPhoto>> marsPhotosDatabase = viewModel.getMarsPhotos();
+                    List<MarsPhotoObject.MarsPhoto> marsPhotosDatabaseList = marsPhotosDatabase.getValue();
+                    if (marsPhotosDatabaseList.size() > 0) {
+                        marsPhotos = marsPhotosDatabaseList;
+                        displayPhoto(marsPhotos.get(0));
+                    }
+                    Snackbar snackbar = Snackbar.make(scrollView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                } else {
+                    setEmptyView();
+                }
             }
         });
     }

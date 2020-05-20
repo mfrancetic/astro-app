@@ -1,16 +1,19 @@
 package com.udacity.astroapp.fragments;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,7 +29,10 @@ import com.udacity.astroapp.utils.PhotoUtils;
 import com.udacity.astroapp.utils.RetrofitClientInstance;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,12 +89,19 @@ public class MarsPhotoFragment extends Fragment {
 
     private Context context;
 
+    private DatePickerDialog datePickerDialog;
+
+    private int currentYear;
+    private int currentMonth;
+    private int currentDayOfMonth;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         if (getActivity() != null) {
             getActivity().setTitle(getString(R.string.menu_mars_photo));
         }
         setRetainInstance(true);
+        setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }
 
@@ -101,10 +114,12 @@ public class MarsPhotoFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         localDate = DateTimeUtils.getCurrentLocalDate();
+        setLocalDateToCalendar(localDate);
 
-        setupLoadingView();
+        createDatePickerDialog();
+        setLoadingView();
         setOnClickListeners();
-        getPhotoDataFromUrl(localDate);
+        getPhotoDataFromUrl();
 
         return rootView;
     }
@@ -126,7 +141,13 @@ public class MarsPhotoFragment extends Fragment {
         });
     }
 
-    private void getPhotoDataFromUrl(String localDate) {
+    private void setLocalDateToCalendar(String localDate) {
+        currentYear = DateTimeUtils.getYear(localDate);
+        currentMonth = DateTimeUtils.getMonth(localDate);
+        currentDayOfMonth = DateTimeUtils.getDay(localDate);
+    }
+
+    private void getPhotoDataFromUrl() {
         marsPhotoService = RetrofitClientInstance.getRetrofitInstance().create(MarsPhotoService.class);
         Call<MarsPhotoObject> marsPhotoCalls = marsPhotoService.getMarsPhotoObject(localDate, Constants.NASA_API_KEY,
                 Constants.PAGE_NUMBER);
@@ -140,7 +161,8 @@ public class MarsPhotoFragment extends Fragment {
                         currentMarsPhoto = marsPhotos.get(0);
                         displayPhoto(currentMarsPhoto);
                     } else {
-                        getPhotoDataFromUrl(DateTimeUtils.getPreviousDate(localDate));
+                        localDate = DateTimeUtils.getPreviousDate(localDate);
+                        getPhotoDataFromUrl();
                     }
                 }
             }
@@ -194,7 +216,7 @@ public class MarsPhotoFragment extends Fragment {
         loadingIndicator.setVisibility(View.GONE);
     }
 
-    private void setupLoadingView() {
+    private void setLoadingView() {
         loadingIndicator.setVisibility(View.VISIBLE);
         emptyImageView.setVisibility(View.GONE);
         emptyTextView.setVisibility(View.GONE);
@@ -208,5 +230,46 @@ public class MarsPhotoFragment extends Fragment {
         landingDateTextView.setVisibility(View.GONE);
         sourceTextView.setVisibility(View.GONE);
         fab.hide();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        menu.findItem(R.id.menu_calendar).setVisible(true);
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_refresh) {
+            return false;
+        } else if (id == R.id.menu_calendar) {
+            datePickerDialog.show();
+            return true;
+        }
+        return false;
+    }
+
+    private void createDatePickerDialog() {
+        datePickerDialog = new DatePickerDialog(context,
+                (view, year, month, dayOfMonth) -> {
+                    Calendar calendar = DateTimeUtils.getCalendar();
+                    calendar.set(year, month, dayOfMonth);
+                    calendar.setTimeZone(TimeZone.getDefault());
+                    Date date = calendar.getTime();
+                    localDate = DateTimeUtils.getFormattedDate(date);
+                    setLoadingView();
+                    getPhotoDataFromUrl();
+
+                    currentYear = year;
+                    currentMonth = month;
+                    currentDayOfMonth = dayOfMonth;
+                }, currentYear, currentMonth, currentDayOfMonth);
+        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
     }
 }

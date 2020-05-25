@@ -30,11 +30,8 @@ import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
-import com.udacity.astroapp.data.EarthPhotoViewModel;
-import com.udacity.astroapp.data.EarthPhotoViewModelFactory;
 import com.udacity.astroapp.data.MarsPhotoViewModel;
 import com.udacity.astroapp.data.MarsPhotoViewModelFactory;
-import com.udacity.astroapp.models.EarthPhoto;
 import com.udacity.astroapp.models.MarsPhotoObject;
 import com.udacity.astroapp.utils.Constants;
 import com.udacity.astroapp.utils.DateTimeUtils;
@@ -119,6 +116,7 @@ public class MarsPhotoFragment extends Fragment {
     private MarsPhotoViewModel viewModel;
     private int scrollX;
     private int scrollY;
+    private Observer<List<MarsPhotoObject.MarsPhoto>> observer;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -188,8 +186,7 @@ public class MarsPhotoFragment extends Fragment {
             viewModelFactory = new MarsPhotoViewModelFactory(database);
         }
         viewModel = ViewModelProviders.of(MarsPhotoFragment.this, viewModelFactory).get(MarsPhotoViewModel.class);
-
-        viewModel.getMarsPhotos().observe(getViewLifecycleOwner(), new Observer<List<MarsPhotoObject.MarsPhoto>>() {
+        observer = new Observer<List<MarsPhotoObject.MarsPhoto>>() {
             @Override
             public void onChanged(@Nullable final List<MarsPhotoObject.MarsPhoto> databaseMarsPhotos) {
                 viewModel.getMarsPhotos().removeObserver(this);
@@ -202,7 +199,8 @@ public class MarsPhotoFragment extends Fragment {
                     });
                 }
             }
-        });
+        };
+        viewModel.getMarsPhotos().observe(getViewLifecycleOwner(), observer);
     }
 
     private void setOnClickListeners() {
@@ -254,6 +252,7 @@ public class MarsPhotoFragment extends Fragment {
             public void onResponse(Call<MarsPhotoObject> call, Response<MarsPhotoObject> response) {
                 if (response.body() != null) {
                     if (response.body().getPhotos().size() > 0) {
+                        viewModel.getMarsPhotos().observe(getViewLifecycleOwner(), observer);
                         marsPhotos = new ArrayList<>();
                         marsPhotos.addAll(response.body().getPhotos());
                         currentMarsPhoto = marsPhotos.get(0);
@@ -268,14 +267,11 @@ public class MarsPhotoFragment extends Fragment {
             @Override
             public void onFailure(Call<MarsPhotoObject> call, Throwable t) {
                 t.printStackTrace();
-
-                if (viewModel.getMarsPhotos().getValue() != null && viewModel.getMarsPhotos().getValue().size() != 0) {
-                    LiveData<List<MarsPhotoObject.MarsPhoto>> marsPhotosDatabase = viewModel.getMarsPhotos();
-                    List<MarsPhotoObject.MarsPhoto> marsPhotosDatabaseList = marsPhotosDatabase.getValue();
-                    if (marsPhotosDatabaseList.size() > 0) {
-                        marsPhotos = marsPhotosDatabaseList;
-                        displayPhoto(marsPhotos.get(0));
-                    }
+                LiveData<List<MarsPhotoObject.MarsPhoto>> marsPhotosDatabase = viewModel.getMarsPhotos();
+                List<MarsPhotoObject.MarsPhoto> marsPhotosDatabaseList = marsPhotosDatabase.getValue();
+                if (marsPhotosDatabaseList != null && marsPhotosDatabaseList.size() > 0) {
+                    marsPhotos = marsPhotosDatabaseList;
+                    displayPhoto(marsPhotos.get(0));
                     Snackbar snackbar = Snackbar.make(scrollView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);
                     snackbar.show();
                 } else {
@@ -309,16 +305,22 @@ public class MarsPhotoFragment extends Fragment {
     private void displayPhoto(MarsPhotoObject.MarsPhoto photo) {
         dateTextView.setText(photo.getEarthDate());
 
-        String camera = getString(R.string.camera) + photo.getCamera().getCameraFullName();
-        cameraTextView.setText(camera);
+        MarsPhotoObject.MarsPhoto.Camera camera = photo.getCamera();
+        if (camera != null) {
+            String cameraName = getString(R.string.camera) + photo.getCamera().getCameraFullName();
+            cameraTextView.setText(cameraName);
+        }
 
-        String rover = getString(R.string.rover) + photo.getRover().getRoverName();
-        roverNameTextView.setText(rover);
+        MarsPhotoObject.MarsPhoto.Rover rover = photo.getRover();
+        if (rover != null) {
+            String roverName = getString(R.string.rover) + rover.getRoverName();
+            roverNameTextView.setText(roverName);
 
-        String launchDate = getString(R.string.launch_date) + photo.getRover().getLaunchDate();
-        String landingDate = getString(R.string.landing_date) + photo.getRover().getLandingDate();
-        launchDateTextView.setText(launchDate);
-        landingDateTextView.setText(landingDate);
+            String launchDate = getString(R.string.launch_date) + rover.getLaunchDate();
+            String landingDate = getString(R.string.landing_date) + rover.getLandingDate();
+            launchDateTextView.setText(launchDate);
+            landingDateTextView.setText(landingDate);
+        }
 
         Uri photoUri = Uri.parse(photo.getImageUrl());
         PhotoUtils.displayPhotoFromUrl(context, photoUri, photoView, loadingIndicator);

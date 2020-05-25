@@ -21,10 +21,10 @@ public class EarthPhoto implements Parcelable {
     private String earthPhotoDateTime;
 
     public EarthPhoto(Parcel in) {
-        in.writeInt(earthPhotoId);
-        in.writeString(earthPhotoCaption);
-        in.writeString(earthPhotoUrl);
-        in.writeString(earthPhotoDateTime);
+        earthPhotoId = in.readInt();
+        earthPhotoCaption = in.readString();
+        earthPhotoUrl = in.readString();
+        earthPhotoDateTime = in.readString();
     }
 
     public EarthPhoto(String earthPhotoIdentifier, String earthPhotoCaption, String

@@ -1,5 +1,8 @@
 package com.udacity.astroapp.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -16,7 +19,7 @@ public class MarsPhotoObject {
     List<MarsPhoto> photos = new ArrayList<>();
 
     @Entity(tableName = "marsphoto")
-    public static class MarsPhoto {
+    public static class MarsPhoto implements Parcelable {
 
         public MarsPhoto() {
         }
@@ -41,6 +44,27 @@ public class MarsPhotoObject {
         @Ignore
         @SerializedName("rover")
         private Rover rover;
+
+        public MarsPhoto(Parcel in) {
+            id = in.readInt();
+            sol = in.readString();
+            imageUrl = in.readString();
+            earthDate = in.readString();
+            camera = in.readParcelable(Camera.class.getClassLoader());
+            rover = in.readParcelable(Rover.class.getClassLoader());
+        }
+
+        public static final Creator<MarsPhoto> CREATOR = new Creator<MarsPhoto>() {
+            @Override
+            public MarsPhoto createFromParcel(Parcel in) {
+                return new MarsPhoto(in);
+            }
+
+            @Override
+            public MarsPhoto[] newArray(int size) {
+                return new MarsPhoto[size];
+            }
+        };
 
         public int getId() {
             return id;
@@ -90,7 +114,22 @@ public class MarsPhotoObject {
             this.rover = rover;
         }
 
-        public class Camera {
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(id);
+            dest.writeString(sol);
+            dest.writeString(imageUrl);
+            dest.writeString(earthDate);
+            dest.writeParcelable(camera, 0);
+            dest.writeParcelable(rover, 0);
+        }
+
+        public static class Camera implements Parcelable {
 
             public Camera() {
             }
@@ -100,6 +139,23 @@ public class MarsPhotoObject {
 
             @SerializedName("full_name")
             private String cameraFullName;
+
+            protected Camera(Parcel in) {
+                cameraName = in.readString();
+                cameraFullName = in.readString();
+            }
+
+            public static Creator<Camera> CREATOR = new Creator<Camera>() {
+                @Override
+                public Camera createFromParcel(Parcel in) {
+                    return new Camera(in);
+                }
+
+                @Override
+                public Camera[] newArray(int size) {
+                    return new Camera[size];
+                }
+            };
 
             public String getCameraName() {
                 return cameraName;
@@ -116,9 +172,20 @@ public class MarsPhotoObject {
             public void setCameraFullName(String cameraFullName) {
                 this.cameraFullName = cameraFullName;
             }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(cameraName);
+                dest.writeString(cameraFullName);
+            }
         }
 
-        public class Rover {
+        public static class Rover implements Parcelable {
 
             public Rover() {
             }
@@ -131,6 +198,25 @@ public class MarsPhotoObject {
 
             @SerializedName("landing_date")
             private String landingDate;
+
+            public Rover(Parcel in) {
+                roverName = in.readString();
+                launchDate = in.readString();
+                landingDate = in.readString();
+            }
+
+            public static Creator<Rover> CREATOR = new Creator<Rover>() {
+
+                @Override
+                public Rover createFromParcel(Parcel in) {
+                    return new Rover(in);
+                }
+
+                @Override
+                public Rover[] newArray(int size) {
+                    return new Rover[size];
+                }
+            };
 
             public String getRoverName() {
                 return roverName;
@@ -155,10 +241,20 @@ public class MarsPhotoObject {
             public void setLandingDate(String landingDate) {
                 this.landingDate = landingDate;
             }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(roverName);
+                dest.writeString(launchDate);
+                dest.writeString(landingDate);
+            }
         }
     }
-
-
 
     public MarsPhotoObject() {
     }

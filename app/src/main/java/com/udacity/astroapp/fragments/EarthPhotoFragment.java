@@ -24,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -38,6 +39,7 @@ import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.EarthPhotoViewModel;
 import com.udacity.astroapp.data.EarthPhotoViewModelFactory;
 import com.udacity.astroapp.models.EarthPhoto;
+import com.udacity.astroapp.utils.Constants;
 import com.udacity.astroapp.utils.DateTimeUtils;
 import com.udacity.astroapp.utils.PhotoUtils;
 import com.udacity.astroapp.utils.QueryUtils;
@@ -111,6 +113,8 @@ public class EarthPhotoFragment extends Fragment {
     private int currentYear;
     private int currentMonth;
     private int currentDayOfMonth;
+    private int scrollX;
+    private int scrollY;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -138,9 +142,38 @@ public class EarthPhotoFragment extends Fragment {
         setRecyclerView();
         createDatePickerDialog();
         setupDatabase();
-        new EarthPhotoAsyncTask().execute();
-
+        setScrollListeners();
+        if (savedInstanceState == null) {
+            new EarthPhotoAsyncTask().execute();
+        } else {
+            getDataFromSavedInstanceState(savedInstanceState);
+        }
         return rootView;
+    }
+
+    private void getDataFromSavedInstanceState(Bundle savedInstanceState) {
+        localDate = savedInstanceState.getString(Constants.EARTH_CURRENT_DATE_KEY);
+        setLocalDateToCalendar(localDate);
+        scrollX = savedInstanceState.getInt(Constants.EARTH_SCROLL_POSITION_X_KEY);
+        scrollY = savedInstanceState.getInt(Constants.EARTH_SCROLL_POSITION_Y_KEY);
+        earthPhoto = savedInstanceState.getParcelable(Constants.EARTH_PHOTO_KEY);
+        earthPhotos = savedInstanceState.getParcelableArrayList(Constants.EARTH_PHOTOS_KEY);
+        if (earthPhotos != null) {
+            populatePhotos(earthPhotos);
+        }
+    }
+
+    private void setScrollListeners() {
+        if (earthScrollView != null) {
+            earthScrollView.requestFocus();
+            earthScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                @Override
+                public void onScrollChanged() {
+                    scrollX = earthScrollView.getScrollX();
+                    scrollY = earthScrollView.getScrollY();
+                }
+            });
+        }
     }
 
     private void setRecyclerView() {
@@ -339,5 +372,19 @@ public class EarthPhotoFragment extends Fragment {
     public void onPrepareOptionsMenu(@NonNull Menu menu) {
         menu.findItem(R.id.menu_calendar).setVisible(true);
         super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(Constants.EARTH_PHOTO_KEY, earthPhoto);
+        outState.putParcelableArrayList(Constants.EARTH_PHOTOS_KEY, (ArrayList<EarthPhoto>) earthPhotos);
+        if (earthScrollView != null) {
+            scrollX = earthScrollView.getScrollX();
+            scrollY = earthScrollView.getScrollY();
+        }
+        outState.putString(Constants.EARTH_CURRENT_DATE_KEY, localDate);
+        outState.putInt(Constants.EARTH_SCROLL_POSITION_X_KEY, scrollX);
+        outState.putInt(Constants.EARTH_SCROLL_POSITION_Y_KEY, scrollY);
+        super.onSaveInstanceState(outState);
     }
 }

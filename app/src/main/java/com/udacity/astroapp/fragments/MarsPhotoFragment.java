@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -116,6 +117,8 @@ public class MarsPhotoFragment extends Fragment {
     private AppDatabase database;
     private MarsPhotoViewModelFactory viewModelFactory;
     private MarsPhotoViewModel viewModel;
+    private int scrollX;
+    private int scrollY;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -141,10 +144,41 @@ public class MarsPhotoFragment extends Fragment {
         createDatePickerDialog();
         setLoadingView();
         setupDatabase();
+        setScrollListeners();
         setOnClickListeners();
-        getPhotoDataFromUrl();
+
+        if (savedInstanceState == null) {
+            getPhotoDataFromUrl();
+        } else {
+            getDataFromSavedInstanceState(savedInstanceState);
+        }
 
         return rootView;
+    }
+
+    private void setScrollListeners() {
+        if (scrollView != null) {
+            scrollView.requestFocus();
+            scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+                @Override
+                public void onScrollChanged() {
+                    scrollX = scrollView.getScrollX();
+                    scrollY = scrollView.getScrollY();
+                }
+            });
+        }
+    }
+
+    private void getDataFromSavedInstanceState(Bundle savedInstanceState) {
+        localDate = savedInstanceState.getString(Constants.MARS_CURRENT_DATE_KEY);
+        setLocalDateToCalendar(localDate);
+        scrollX = savedInstanceState.getInt(Constants.MARS_SCROLL_POSITION_X_KEY);
+        scrollY = savedInstanceState.getInt(Constants.MARS_SCROLL_POSITION_Y_KEY);
+        currentMarsPhoto = savedInstanceState.getParcelable(Constants.MARS_PHOTO_KEY);
+        marsPhotos = savedInstanceState.getParcelableArrayList(Constants.MARS_PHOTOS_KEY);
+        if (currentMarsPhoto != null) {
+            displayPhoto(currentMarsPhoto);
+        }
     }
 
     private void setupDatabase() {
@@ -367,5 +401,18 @@ public class MarsPhotoFragment extends Fragment {
                     currentDayOfMonth = dayOfMonth;
                 }, currentYear, currentMonth, currentDayOfMonth);
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(Constants.MARS_PHOTO_KEY, currentMarsPhoto);
+        outState.putParcelableArrayList(Constants.MARS_PHOTOS_KEY, (ArrayList<MarsPhotoObject.MarsPhoto>) marsPhotos);
+        if (scrollView != null) {
+            scrollX = scrollView.getScrollX();
+            scrollY = scrollView.getScrollY();
+        }
+        outState.putString(Constants.MARS_CURRENT_DATE_KEY, localDate);
+        outState.putInt(Constants.MARS_SCROLL_POSITION_X_KEY, scrollX);
+        outState.putInt(Constants.MARS_SCROLL_POSITION_Y_KEY, scrollY);
     }
 }

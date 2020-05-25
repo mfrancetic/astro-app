@@ -4,7 +4,9 @@ import androidx.room.TypeConverter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.udacity.astroapp.models.Camera;
 import com.udacity.astroapp.models.MarsPhotoObject;
+import com.udacity.astroapp.models.Rover;
 
 import java.lang.reflect.Type;
 
@@ -14,26 +16,26 @@ import java.lang.reflect.Type;
 public class Converters {
 
     @TypeConverter
-    public static MarsPhotoObject.MarsPhoto.Camera cameraFromString(String cameraValue) {
-        Type cameraType = new TypeToken<MarsPhotoObject.MarsPhoto.Camera>() {
+    public static Camera cameraFromString(String cameraValue) {
+        Type cameraType = new TypeToken<Camera>() {
         }.getType();
         return new Gson().fromJson(cameraValue, cameraType);
     }
 
     @TypeConverter
-    public static String cameraToString(MarsPhotoObject.MarsPhoto.Camera camera) {
+    public static String cameraToString(Camera camera) {
         return new Gson().toJson(camera);
     }
 
     @TypeConverter
-    public static MarsPhotoObject.MarsPhoto.Rover roverFromString(String roverValue) {
-        Type roverType = new TypeToken<MarsPhotoObject.MarsPhoto.Rover>() {
+    public static Rover roverFromString(String roverValue) {
+        Type roverType = new TypeToken<Rover>() {
         }.getType();
         return new Gson().fromJson(roverValue, roverType);
     }
 
     @TypeConverter
-    public static String roverToString(MarsPhotoObject.MarsPhoto.Rover rover) {
+    public static String roverToString(Rover rover) {
         return new Gson().toJson(rover);
     }
 }

@@ -4,20 +4,21 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.udacity.astroapp.models.MarsPhoto;
 import com.udacity.astroapp.models.MarsPhotoObject;
 
 import java.util.List;
 
 public class MarsPhotoViewModel extends ViewModel {
 
-    private LiveData<List<MarsPhotoObject.MarsPhoto>> marsPhotos;
+    private LiveData<List<MarsPhoto>> marsPhotos;
 
     /* Constructor which initializes the list of MarsPhotos and receives the database */
     MarsPhotoViewModel(@NonNull AppDatabase appDatabase) {
         marsPhotos = appDatabase.astroDao().loadAllMarsPhotos();
     }
 
-    public LiveData<List<MarsPhotoObject.MarsPhoto>> getMarsPhotos() {
+    public LiveData<List<MarsPhoto>> getMarsPhotos() {
         return marsPhotos;
     }
 }

@@ -32,7 +32,10 @@ import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.MarsPhotoViewModel;
 import com.udacity.astroapp.data.MarsPhotoViewModelFactory;
+import com.udacity.astroapp.models.Camera;
+import com.udacity.astroapp.models.MarsPhoto;
 import com.udacity.astroapp.models.MarsPhotoObject;
+import com.udacity.astroapp.models.Rover;
 import com.udacity.astroapp.utils.Constants;
 import com.udacity.astroapp.utils.DateTimeUtils;
 import com.udacity.astroapp.utils.MarsPhotoService;
@@ -96,8 +99,8 @@ public class MarsPhotoFragment extends Fragment {
     FloatingActionButton fab;
 
     private MarsPhotoService marsPhotoService;
-    private List<MarsPhotoObject.MarsPhoto> marsPhotos = new ArrayList<>();
-    private MarsPhotoObject.MarsPhoto currentMarsPhoto;
+    private List<MarsPhoto> marsPhotos = new ArrayList<>();
+    private MarsPhoto currentMarsPhoto;
 
     private String localDate;
 
@@ -116,7 +119,7 @@ public class MarsPhotoFragment extends Fragment {
     private MarsPhotoViewModel viewModel;
     private int scrollX;
     private int scrollY;
-    private Observer<List<MarsPhotoObject.MarsPhoto>> observer;
+    private Observer<List<MarsPhoto>> observer;
 
     private boolean apiIsSuccessful = false;
 
@@ -188,9 +191,9 @@ public class MarsPhotoFragment extends Fragment {
             viewModelFactory = new MarsPhotoViewModelFactory(database);
         }
         viewModel = ViewModelProviders.of(MarsPhotoFragment.this, viewModelFactory).get(MarsPhotoViewModel.class);
-        observer = new Observer<List<MarsPhotoObject.MarsPhoto>>() {
+        observer = new Observer<List<MarsPhoto>>() {
             @Override
-            public void onChanged(List<MarsPhotoObject.MarsPhoto> databaseMarsPhotos) {
+            public void onChanged(List<MarsPhoto> databaseMarsPhotos) {
                 viewModel.getMarsPhotos().removeObserver(this);
                 if (databaseMarsPhotos != null) {
                     if (databaseMarsPhotos.size() > 0 && marsPhotos.size() == 0) {
@@ -280,8 +283,8 @@ public class MarsPhotoFragment extends Fragment {
                 apiIsSuccessful = false;
                 viewModel.getMarsPhotos().observe(getViewLifecycleOwner(), observer);
                 t.printStackTrace();
-                LiveData<List<MarsPhotoObject.MarsPhoto>> marsPhotosDatabase = viewModel.getMarsPhotos();
-                List<MarsPhotoObject.MarsPhoto> marsPhotosDatabaseList = marsPhotosDatabase.getValue();
+                LiveData<List<MarsPhoto>> marsPhotosDatabase = viewModel.getMarsPhotos();
+                List<MarsPhoto> marsPhotosDatabaseList = marsPhotosDatabase.getValue();
                 if (marsPhotosDatabaseList != null && marsPhotosDatabaseList.size() > 0) {
                     marsPhotos = marsPhotosDatabaseList;
                     displayPhoto(marsPhotos.get(0));
@@ -315,16 +318,16 @@ public class MarsPhotoFragment extends Fragment {
         fab.hide();
     }
 
-    private void displayPhoto(MarsPhotoObject.MarsPhoto photo) {
+    private void displayPhoto(MarsPhoto photo) {
         dateTextView.setText(photo.getEarthDate());
 
-        MarsPhotoObject.MarsPhoto.Camera camera = photo.getCamera();
+        Camera camera = photo.getCamera();
         if (camera != null) {
             String cameraName = getString(R.string.camera) + photo.getCamera().getCameraFullName();
             cameraTextView.setText(cameraName);
         }
 
-        MarsPhotoObject.MarsPhoto.Rover rover = photo.getRover();
+        Rover rover = photo.getRover();
         if (rover != null) {
             String roverName = getString(R.string.rover) + rover.getRoverName();
             roverNameTextView.setText(roverName);
@@ -423,7 +426,7 @@ public class MarsPhotoFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelable(Constants.MARS_PHOTO_KEY, currentMarsPhoto);
-        outState.putParcelableArrayList(Constants.MARS_PHOTOS_KEY, (ArrayList<MarsPhotoObject.MarsPhoto>) marsPhotos);
+        outState.putParcelableArrayList(Constants.MARS_PHOTOS_KEY, (ArrayList<MarsPhoto>) marsPhotos);
         if (scrollView != null) {
             scrollX = scrollView.getScrollX();
             scrollY = scrollView.getScrollY();

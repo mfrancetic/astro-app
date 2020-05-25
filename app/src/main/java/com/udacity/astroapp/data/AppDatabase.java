@@ -10,12 +10,13 @@ import android.util.Log;
 
 import com.udacity.astroapp.models.Asteroid;
 import com.udacity.astroapp.models.EarthPhoto;
+import com.udacity.astroapp.models.MarsPhoto;
 import com.udacity.astroapp.models.MarsPhotoObject;
 import com.udacity.astroapp.models.Observatory;
 import com.udacity.astroapp.models.Photo;
 import com.udacity.astroapp.utils.Converters;
 
-@Database(entities = {Photo.class, Asteroid.class, Observatory.class, EarthPhoto.class, MarsPhotoObject.MarsPhoto.class}, version = 3, exportSchema = false)
+@Database(entities = {Photo.class, Asteroid.class, Observatory.class, EarthPhoto.class, MarsPhoto.class}, version = 3, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 

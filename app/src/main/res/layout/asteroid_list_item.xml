@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/asteroid_list_item_constraint_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/asteroid_list_item_constraint_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_list_item"
-    android:focusable="true"
+    android:layout_marginBottom="@dimen/margin_list_item"
     android:descendantFocusability="afterDescendants"
-    android:layout_marginBottom="@dimen/margin_list_item">
+    android:focusable="true">
 
     <ImageView
         android:id="@+id/asteroid_image_view"
@@ -98,13 +97,12 @@
         android:id="@+id/asteroid_hazardous_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?android:attr/textColorPrimary"
         android:textAppearance="?android:textAppearanceSmall"
+        android:textColor="?android:attr/textColorPrimary"
         app:layout_constraintEnd_toEndOf="@id/asteroid_hazardous_image"
         app:layout_constraintStart_toStartOf="@id/asteroid_hazardous_image"
         app:layout_constraintTop_toBottomOf="@id/asteroid_hazardous_image"
-        tools:text="@string/asteroid_hazardous_text"
-        />
+        tools:text="@string/asteroid_hazardous_text" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

@@ -292,8 +292,6 @@ public class MarsPhotoFragment extends Fragment {
         cameraTextView.setVisibility(View.VISIBLE);
         fab.show();
         landingDateTextView.setVisibility(View.VISIBLE);
-        loadingIndicator.setVisibility(View.GONE);
-
         currentMarsPhotoIndex = marsPhotos.indexOf(currentMarsPhoto);
         if (currentMarsPhotoIndex == 0) {
             previousButton.setVisibility(View.GONE);

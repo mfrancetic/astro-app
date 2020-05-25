@@ -121,7 +121,7 @@ public class MarsPhotoFragment extends Fragment {
     private int scrollY;
     private Observer<List<MarsPhoto>> observer;
 
-    private boolean apiIsSuccessful = false;
+    private boolean apiIsSuccessful = true;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

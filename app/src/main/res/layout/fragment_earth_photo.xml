@@ -100,6 +100,8 @@
                 android:id="@+id/earth_photo_empty_text_view"
                 style="@style/EmptyTextViewStyle"
                 android:text="@string/no_photo_found"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/earth_photo_empty_image_view" />

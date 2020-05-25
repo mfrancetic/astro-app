@@ -112,36 +112,47 @@
             <TextView
                 android:id="@+id/mars_photo_empty_text_view"
                 style="@style/EmptyTextViewStyle"
-                android:text="@string/no_photo_found"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
+                android:text="@string/no_photo_found"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/mars_photo_empty_image_view" />
 
             <TextView
+                android:layout_marginTop="@dimen/margin"
                 android:id="@+id/mars_photo_date_text_view"
                 style="@style/SubtitleTextView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/mars_photo_rover_name"
-                tools:text="2019-06-01" />
+                tools:text="Earth date: 2019-06-01" />
 
             <TextView
-                android:layout_marginTop="@dimen/margin"
-                android:id="@+id/mars_photo_camera_text_view"
-                style="@style/PhotoDescriptionTextView"
+                android:id="@+id/mars_photo_sol_text_view"
+                style="@style/SubtitleTextView"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/mars_photo_date_text_view"
+                tools:text="Sol: 2767" />
+
+            <TextView
+                android:id="@+id/mars_photo_camera_text_view"
+                style="@style/PhotoDescriptionTextView"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/margin"
+                android:gravity="center_horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mars_photo_sol_text_view"
                 tools:text="Front Hazard Avoidance Camera" />
 
             <TextView
-                android:layout_marginTop="@dimen/margin"
                 android:id="@+id/mars_photo_launch_date_text_view"
-                style="@style/PhotoDescriptionTextView"
+                style="@style/SubtitleTextView"
+                android:layout_marginTop="@dimen/margin"
                 android:textAlignment="viewStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -150,7 +161,7 @@
 
             <TextView
                 android:id="@+id/mars_photo_landing_date_text_view"
-                style="@style/PhotoDescriptionTextView"
+                style="@style/SubtitleTextView"
                 android:textAlignment="viewStart"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

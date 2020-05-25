@@ -71,4 +71,6 @@
     <string name="landing_date">"Datum slijetanja: "</string>
     <string name="camera">"Kamera: "</string>
     <string name="rover">"Rover "</string>
+    <string name="sol">"Datum na Marsu (sol): "</string>
+    <string name="earth_date">"Datum na Zemlji: "</string>
 </resources>

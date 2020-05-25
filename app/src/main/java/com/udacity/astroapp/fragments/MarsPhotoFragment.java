@@ -77,6 +77,9 @@ public class MarsPhotoFragment extends Fragment {
     @BindView(R.id.mars_photo_landing_date_text_view)
     TextView landingDateTextView;
 
+    @BindView(R.id.mars_photo_sol_text_view)
+    TextView solTextView;
+
     @BindView(R.id.mars_photo_camera_text_view)
     TextView cameraTextView;
 
@@ -227,8 +230,10 @@ public class MarsPhotoFragment extends Fragment {
         photoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri photoUri = Uri.parse(currentMarsPhoto.getImageUrl());
-                PhotoUtils.displayPhotoDialog(context, photoUri);
+                if (currentMarsPhoto != null) {
+                    Uri photoUri = Uri.parse(currentMarsPhoto.getImageUrl());
+                    PhotoUtils.displayPhotoDialog(context, photoUri);
+                }
             }
         });
 
@@ -315,11 +320,19 @@ public class MarsPhotoFragment extends Fragment {
         roverNameTextView.setVisibility(View.GONE);
         landingDateTextView.setVisibility(View.GONE);
         sourceTextView.setVisibility(View.GONE);
+        solTextView.setVisibility(View.GONE);
         fab.hide();
     }
 
     private void displayPhoto(MarsPhoto photo) {
-        dateTextView.setText(photo.getEarthDate());
+
+        String earthDate = getString(R.string.earth_date) + photo.getEarthDate();
+        dateTextView.setText(earthDate);
+
+        if (photo.getSol() != null) {
+            String sol = getString(R.string.sol) + photo.getSol();
+            solTextView.setText(sol);
+        }
 
         Camera camera = photo.getCamera();
         if (camera != null) {
@@ -341,6 +354,7 @@ public class MarsPhotoFragment extends Fragment {
         Uri photoUri = Uri.parse(photo.getImageUrl());
         PhotoUtils.displayPhotoFromUrl(context, photoUri, photoView, loadingIndicator);
 
+        solTextView.setVisibility(View.VISIBLE);
         photoView.setVisibility(View.VISIBLE);
         dateTextView.setVisibility(View.VISIBLE);
         launchDateTextView.setVisibility(View.VISIBLE);

@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.EarthPhotoViewModel;
@@ -251,6 +252,11 @@ public class MarsPhotoFragment extends Fragment {
     }
 
     private void setEmptyView() {
+        if (!MainActivity.isNetworkAvailable(context)) {
+            emptyTextView.setText(R.string.no_internet_connection);
+        } else {
+            emptyTextView.setText(R.string.no_photo_found);
+        }
         loadingIndicator.setVisibility(View.GONE);
         emptyTextView.setVisibility(View.VISIBLE);
         emptyImageView.setVisibility(View.VISIBLE);

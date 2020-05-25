@@ -3,11 +3,16 @@ package com.udacity.astroapp.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 
 import com.google.gson.annotations.SerializedName;
+import com.udacity.astroapp.utils.Constants;
+import com.udacity.astroapp.utils.Converters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +42,13 @@ public class MarsPhotoObject {
         @SerializedName("earth_date")
         private String earthDate;
 
-        @Ignore
+        @TypeConverters(Converters.class)
+        @ColumnInfo(name = "camera")
         @SerializedName("camera")
         private Camera camera;
 
-        @Ignore
+        @TypeConverters(Converters.class)
+        @ColumnInfo(name = "rover")
         @SerializedName("rover")
         private Rover rover;
 

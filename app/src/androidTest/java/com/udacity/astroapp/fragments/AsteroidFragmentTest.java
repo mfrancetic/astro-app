@@ -1,26 +1,13 @@
 package com.udacity.astroapp.fragments;
 
 import android.content.Intent;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.TextView;
 
-import androidx.fragment.app.testing.FragmentScenario;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.contrib.DrawerActions;
-import androidx.test.espresso.contrib.NavigationViewActions;
-import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
-import com.android21buttons.fragmenttestrule.FragmentTestRule;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
 
-import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,7 +20,6 @@ import static androidx.test.espresso.Espresso.onView;
 
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.contrib.DrawerMatchers.isClosed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.junit.Assert.*;
@@ -42,13 +28,13 @@ import static org.junit.Assert.*;
 public class AsteroidFragmentTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
+    public final ActivityTestRule<MainActivity> mainActivityActivityTestRule =
             new ActivityTestRule<>(MainActivity.class);
 
     private MainActivity mainActivity = null;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mainActivity = mainActivityActivityTestRule.getActivity();
         AndroidTestHelper.chooseDrawerAction(R.id.nav_asteroids);
     }
@@ -67,7 +53,7 @@ public class AsteroidFragmentTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         mainActivity = null;
     }
 }

@@ -24,7 +24,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -54,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -166,31 +166,25 @@ public class EarthPhotoFragment extends Fragment {
     private void setScrollListeners() {
         if (earthScrollView != null) {
             earthScrollView.requestFocus();
-            earthScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                @Override
-                public void onScrollChanged() {
-                    scrollX = earthScrollView.getScrollX();
-                    scrollY = earthScrollView.getScrollY();
-                }
+            earthScrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+                scrollX = earthScrollView.getScrollX();
+                scrollY = earthScrollView.getScrollY();
             });
         }
     }
 
     private void setRecyclerView() {
         earthPhotos = new ArrayList<>();
-        adapter = new EarthPhotoGridAdapter(earthPhotos, new EarthPhotoGridAdapter.EarthPhotoOnItemClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                EarthPhoto photo = earthPhotos.get(position);
-                String photoDate = photo.getEarthPhotoDateTime();
-                URL earthPhotoUrl = QueryUtils.createEarthPhotoImageUrl(photoDate, photo.getEarthPhotoUrl());
-                Uri earthPhotoUri = Uri.parse(earthPhotoUrl.toString());
-                PhotoUtils.displayPhotoDialog(context, earthPhotoUri);
-            }
+        adapter = new EarthPhotoGridAdapter(earthPhotos, (view, position) -> {
+            EarthPhoto photo = earthPhotos.get(position);
+            String photoDate = photo.getEarthPhotoDateTime();
+            URL earthPhotoUrl = QueryUtils.createEarthPhotoImageUrl(photoDate, photo.getEarthPhotoUrl());
+            Uri earthPhotoUri = Uri.parse(earthPhotoUrl.toString());
+            PhotoUtils.displayPhotoDialog(context, earthPhotoUri);
         });
         recyclerView.setAdapter(adapter);
         GridLayoutManager layoutManager;
-        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             layoutManager = new GridLayoutManager(context, 3);
         } else {
             layoutManager = new GridLayoutManager(context, 5);

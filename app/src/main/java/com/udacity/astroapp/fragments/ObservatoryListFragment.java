@@ -11,7 +11,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -49,8 +48,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
@@ -71,6 +68,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -146,8 +144,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     private String language;
 
-    private long UPDATE_INTERVAL = 10 * 1000;
-    private long FASTEST_INTERVAL = 2000;
+    private final long UPDATE_INTERVAL = 10 * 1000;
+    private final long FASTEST_INTERVAL = 2000;
 
     private LocationCallback locationCallback;
 
@@ -338,26 +336,20 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                 if (!locationPermissionGranted) {
                     observatoryListEmptyTextView.setText(R.string.location_permission_declined);
                     grantLocationPermissionButton.setVisibility(View.VISIBLE);
-                    grantLocationPermissionButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-                            setObservatoryListLoadingIndicator();
-                            locationActivatedNeedsToBeRefreshed = true;
-                        }
+                    grantLocationPermissionButton.setOnClickListener(v -> {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                        setObservatoryListLoadingIndicator();
+                        locationActivatedNeedsToBeRefreshed = true;
                     });
                 }
 
                 if (locationPermissionGranted && !isLocationEnabled(context)) {
                     observatoryListEmptyTextView.setText(getString(R.string.no_observatories_found_location_disabled));
                     activateLocationButton.setVisibility(View.VISIBLE);
-                    activateLocationButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            activateLocation();
-                            locationActivatedNeedsToBeRefreshed = true;
-                        }
+                    activateLocationButton.setOnClickListener(v -> {
+                        activateLocation();
+                        locationActivatedNeedsToBeRefreshed = true;
                     });
                 }
                 if (locationPermissionGranted && isLocationEnabled(context) && !MainActivity.isNetworkAvailable(context)) {
@@ -442,7 +434,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         orientation = getResources().getConfiguration().orientation;
         setDividers(orientation);
         super.onConfigurationChanged(newConfig);
@@ -476,7 +468,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     }
 
     public static boolean isLocationEnabled(Context context) {
-        int locationMode = 0;
+        int locationMode;
         String locationProviders;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -516,7 +508,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             /* In case the activity does have a permission, get the last known location and pass the location to the
            onLocationChangedMethod */
             locationPermissionGranted = true;
-            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            location = Objects.requireNonNull(locationManager).getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             onLocationChanged(location);
         }
     }
@@ -530,13 +522,10 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         new AlertDialog.Builder(context)
                 .setMessage(R.string.snackbar_location_disabled)
                 .setNegativeButton(R.string.cancel, null)
-                .setPositiveButton(R.string.open_location_settings, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                        context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        locationActivatedNeedsToBeRefreshed = true;
-                        setObservatoryListLoadingIndicator();
-                    }
+                .setPositiveButton(R.string.open_location_settings, (paramDialogInterface, paramInt) -> {
+                    context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    locationActivatedNeedsToBeRefreshed = true;
+                    setObservatoryListLoadingIndicator();
                 }).show();
 
     }
@@ -583,21 +572,15 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         FusedLocationProviderClient locationClient = getFusedLocationProviderClient(context);
 
         locationClient.getLastLocation()
-                .addOnSuccessListener(new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        // GPS location can be null if GPS is switched off
-                        if (location != null) {
-                            onLocationChanged(location);
-                        }
+                .addOnSuccessListener(location -> {
+                    // GPS location can be null if GPS is switched off
+                    if (location != null) {
+                        onLocationChanged(location);
                     }
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(LOG_TAG, "Error trying to get last GPS location");
-                        e.printStackTrace();
-                    }
+                .addOnFailureListener(e -> {
+                    Log.d(LOG_TAG, "Error trying to get last GPS location");
+                    e.printStackTrace();
                 });
     }
 

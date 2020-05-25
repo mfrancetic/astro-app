@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
  */
 public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.AsteroidViewHolder> {
 
-    class AsteroidViewHolder extends RecyclerView.ViewHolder {
+    static class AsteroidViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.asteroid_name_text_view)
         TextView asteroidNameTextView;

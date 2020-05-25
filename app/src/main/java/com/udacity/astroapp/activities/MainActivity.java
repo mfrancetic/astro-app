@@ -2,7 +2,6 @@ package com.udacity.astroapp.activities;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -40,10 +39,10 @@ import com.udacity.astroapp.fragments.AsteroidFragment;
 import com.udacity.astroapp.fragments.EarthPhotoFragment;
 import com.udacity.astroapp.fragments.MarsPhotoFragment;
 import com.udacity.astroapp.fragments.ObservatoryFragment;
-import com.udacity.astroapp.fragments.ObservatoryListFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment.OnObservatoryClickListener;
 import com.udacity.astroapp.fragments.PhotoFragment;
 
+import java.util.Objects;
 import java.util.Timer;
 
 import butterknife.BindView;
@@ -236,7 +235,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         /* In phone mode, override the pending transition */
         if (!tabletSize) {
@@ -300,18 +299,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getApplicationContext(), getString(R.string.location_permission_granted), Toast.LENGTH_SHORT).show();
-                    if (currentFragment != null && currentFragment.toString().contains(getResources().getString(R.string.observatory_list_fragment_name))) {
-                        refreshFragment();
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.location_permission_declined), Toast.LENGTH_SHORT).show();
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getApplicationContext(), getString(R.string.location_permission_granted), Toast.LENGTH_SHORT).show();
+                if (currentFragment != null && currentFragment.toString().contains(getResources().getString(R.string.observatory_list_fragment_name))) {
+                    refreshFragment();
                 }
+            } else {
+                Toast.makeText(getApplicationContext(), getString(R.string.location_permission_declined), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -332,17 +328,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        if (ObservatoryListFragment.locationActivatedNeedsToBeRefreshed) {
-//            Timer timer = new Timer();
-//            TimerTask timerTask = new TimerTask();
-//            timer.schedule(timerTask, 4000);
-//            ObservatoryListFragment.locationActivatedNeedsToBeRefreshed = false;
-//        }
-    }
-
     public void refreshFragment() {
         isBeingRefreshed = true;
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -356,13 +341,8 @@ public class MainActivity extends AppCompatActivity
 
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        NetworkInfo activeNetworkInfo = Objects.requireNonNull(connectivityManager).getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    @Override
-    protected void onResumeFragments() {
-        super.onResumeFragments();
     }
 
     private class TimerTask extends java.util.TimerTask {
@@ -373,7 +353,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         /* Fix bug with unmarshalling unknown type code exception while resuming */
         try {
             super.onRestoreInstanceState(savedInstanceState);
@@ -398,31 +378,23 @@ public class MainActivity extends AppCompatActivity
         }
         builder
                 .setTitle(R.string.menu_theme)
-                .setSingleChoiceItems(themes, checkedTheme, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == 0) {
-                            checkedTheme = which;
-                            themeId = AppCompatDelegate.MODE_NIGHT_NO;
-                        } else if (which == 1) {
-                            checkedTheme = which;
-                            themeId = AppCompatDelegate.MODE_NIGHT_YES;
+                .setSingleChoiceItems(themes, checkedTheme, (dialog, which) -> {
+                    if (which == 0) {
+                        checkedTheme = which;
+                        themeId = AppCompatDelegate.MODE_NIGHT_NO;
+                    } else if (which == 1) {
+                        checkedTheme = which;
+                        themeId = AppCompatDelegate.MODE_NIGHT_YES;
+                    } else {
+                        checkedTheme = which;
+                        if (androidVersion >= Build.VERSION_CODES.Q) {
+                            themeId = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
                         } else {
-                            checkedTheme = which;
-                            if (androidVersion >= Build.VERSION_CODES.Q) {
-                                themeId = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-                            } else {
-                                themeId = AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY;
-                            }
+                            themeId = AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY;
                         }
                     }
                 });
-        builder.setPositiveButton(getString(R.string.ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                updateTheme(themeId, checkedTheme);
-            }
-        });
+        builder.setPositiveButton(getString(R.string.ok), (dialogInterface, i) -> updateTheme(themeId, checkedTheme));
         builder.setNegativeButton(getString(R.string.cancel), null);
         AlertDialog dialog = builder.create();
         dialog.show();

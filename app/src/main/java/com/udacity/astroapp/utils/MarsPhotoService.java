@@ -2,8 +2,6 @@ package com.udacity.astroapp.utils;
 
 import com.udacity.astroapp.models.MarsPhotoObject;
 
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

@@ -34,9 +34,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -184,7 +182,7 @@ public class PhotoFragment extends Fragment {
 
     private Calendar calendar;
 
-    private String minDateString = "1995-06-16";
+    private final String minDateString = "1995-06-16";
 
     private final static String currentDayKey = "currentDay";
 
@@ -277,18 +275,15 @@ public class PhotoFragment extends Fragment {
 
         if (photoScrollView != null) {
             photoScrollView.requestFocus();
-            photoScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                @Override
-                public void onScrollChanged() {
-                    scrollX = photoScrollView.getScrollX();
-                    scrollY = photoScrollView.getScrollY();
-                    /* Hide the floatingActionButton when scrolling down, and show it when scrolling up*/
-                    if (!isUnplayableVideo(photoUrl)) {
-                        if (scrollY > 0 || scrollY < 0 && floatingActionButton.isShown()) {
-                            floatingActionButton.hide();
-                        } else {
-                            floatingActionButton.show();
-                        }
+            photoScrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+                scrollX = photoScrollView.getScrollX();
+                scrollY = photoScrollView.getScrollY();
+                /* Hide the floatingActionButton when scrolling down, and show it when scrolling up*/
+                if (!isUnplayableVideo(photoUrl)) {
+                    if (scrollY > 0 || scrollY < 0 && floatingActionButton.isShown()) {
+                        floatingActionButton.hide();
+                    } else {
+                        floatingActionButton.show();
                     }
                 }
             });
@@ -445,27 +440,21 @@ public class PhotoFragment extends Fragment {
         Date todaysDate = getTodaysDate();
 
         photoPreviousButton.setVisibility(View.VISIBLE);
-        photoPreviousButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                date = getPreviousDate(selectedDate);
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-                localDate = formatter.format(date);
-                new PhotoAsyncTask().execute();
-            }
+        photoPreviousButton.setOnClickListener(v -> {
+            date = getPreviousDate(selectedDate);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            localDate = formatter.format(date);
+            new PhotoAsyncTask().execute();
         });
         if (nextDate.after(todaysDate)) {
             photoNextButton.setVisibility(View.GONE);
         } else {
             photoNextButton.setVisibility(View.VISIBLE);
-            photoNextButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    date = getNextDate(selectedDate);
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-                    localDate = formatter.format(date);
-                    new PhotoAsyncTask().execute();
-                }
+            photoNextButton.setOnClickListener(v -> {
+                date = getNextDate(selectedDate);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                localDate = formatter.format(date);
+                new PhotoAsyncTask().execute();
             });
         }
 
@@ -489,13 +478,10 @@ public class PhotoFragment extends Fragment {
                     floatingActionButton.show();
                     videoId = extractYoutubeId(videoUrl);
                     playVideoButton.setVisibility(View.VISIBLE);
-                    playVideoButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (getActivity() != null) {
-                                Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), YOUTUBE_API_KEY, videoId, 0, true, true);
-                                startActivity(intent);
-                            }
+                    playVideoButton.setOnClickListener(view -> {
+                        if (getActivity() != null) {
+                            Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), YOUTUBE_API_KEY, videoId, 0, true, true);
+                            startActivity(intent);
                         }
                     });
                 } else {
@@ -521,50 +507,42 @@ public class PhotoFragment extends Fragment {
                 /* Set the content description of the photoImageView to inform the user about the photo's title */
                 photoImageView.setContentDescription(getString(R.string.photo_of_content_description) + " " + photoTitle);
 
-                photoImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showPhotoDialog();
-                    }
-                });
+                photoImageView.setOnClickListener(v -> showPhotoDialog());
             }
         }
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                if (photo.getPhotoMediaType().equals("image")) {
-                    floatingActionButton.setContentDescription(getString(R.string.share_photo_content_description));
-                    Glide.
-                            with(context)
-                            .asBitmap()
-                            .load(photoUrl)
-                            .into(new CustomTarget<Bitmap>() {
-                                @Override
-                                public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                                    intent.setType("image/*");
-                                    intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(resource, context));
-                                    startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_photo_content_description)));
-                                }
+        floatingActionButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (photo.getPhotoMediaType().equals("image")) {
+                floatingActionButton.setContentDescription(getString(R.string.share_photo_content_description));
+                Glide.
+                        with(context)
+                        .asBitmap()
+                        .load(photoUrl)
+                        .into(new CustomTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                intent.setType("image/*");
+                                intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(resource, context));
+                                startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_photo_content_description)));
+                            }
 
-                                @Override
-                                public void onLoadCleared(@Nullable Drawable placeholder) {
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
 
-                                }
-                            });
-                } else if (photo.getPhotoMediaType().equals("video")) {
-                    if (!isUnplayableVideo(photoUrl)) {
-                        floatingActionButton.show();
-                        floatingActionButton.setContentDescription(getString(R.string.share_video_content_description));
-                        intent.setType("text/plain");
-                        intent.putExtra(Intent.EXTRA_TEXT, photoUrl);
-                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                        startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_video_content_description)));
-                    } else {
-                        floatingActionButton.hide();
-                    }
+                            }
+                        });
+            } else if (photo.getPhotoMediaType().equals("video")) {
+                if (!isUnplayableVideo(photoUrl)) {
+                    floatingActionButton.show();
+                    floatingActionButton.setContentDescription(getString(R.string.share_video_content_description));
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT, photoUrl);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_video_content_description)));
+                } else {
+                    floatingActionButton.hide();
                 }
             }
         });
@@ -632,12 +610,9 @@ public class PhotoFragment extends Fragment {
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(fullScreenImageView);
 
-        fullScreenImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isDialogShown = false;
-                dialog.dismiss();
-            }
+        fullScreenImageView.setOnClickListener(v -> {
+            isDialogShown = false;
+            dialog.dismiss();
         });
 
         dialog.setOnDismissListener(dialog -> {
@@ -689,7 +664,7 @@ public class PhotoFragment extends Fragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -720,20 +695,16 @@ public class PhotoFragment extends Fragment {
         datePickerDialog = new DatePickerDialog(context,
 //                R.style.AstroDialogTheme,
 //                R.style.Theme_AppCompat_DayNight_Dialog_Alert,
-                new DatePickerDialog.OnDateSetListener() {
+                (view, year, month, dayOfMonth) -> {
+                    calendar.set(year, month, dayOfMonth);
+                    calendar.setTimeZone(timeZone);
+                    date = calendar.getTime();
+                    localDate = formatter.format(date);
+                    new PhotoAsyncTask().execute();
 
-                    @Override
-                    public void onDateSet(DatePicker view, final int year, int month, int dayOfMonth) {
-                        calendar.set(year, month, dayOfMonth);
-                        calendar.setTimeZone(timeZone);
-                        date = calendar.getTime();
-                        localDate = formatter.format(date);
-                        new PhotoAsyncTask().execute();
-
-                        currentYear = year;
-                        currentMonth = month;
-                        currentDayOfMonth = dayOfMonth;
-                    }
+                    currentYear = year;
+                    currentMonth = month;
+                    currentDayOfMonth = dayOfMonth;
                 }, currentYear, currentMonth, currentDayOfMonth);
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.getDatePicker().setMinDate(minDateLong);
@@ -753,11 +724,7 @@ public class PhotoFragment extends Fragment {
 
     private boolean isUnplayableVideo(String photoUrl) {
         if (photoMediaType != null && photoUrl != null) {
-            if (photoMediaType.contains("video") && !photoUrl.contains("youtube")) {
-                return true;
-            } else {
-                return false;
-            }
+            return photoMediaType.contains("video") && !photoUrl.contains("youtube");
         } else {
             return false;
         }

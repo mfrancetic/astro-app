@@ -1,25 +1,15 @@
 package com.udacity.astroapp.utils;
 
-import android.app.DatePickerDialog;
-import android.content.Context;
-import android.security.ConfirmationAlreadyPresentingException;
-import android.widget.DatePicker;
-
-import com.udacity.astroapp.fragments.EarthPhotoFragment;
-import com.udacity.astroapp.fragments.PhotoFragment;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.TimeZone;
 
 public class DateTimeUtils {
 
-    private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+    private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
 
     public static String getCurrentLocalDate() {
         return formatter.format(getCalendar().getTime());

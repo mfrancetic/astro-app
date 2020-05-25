@@ -27,13 +27,13 @@ import static org.junit.Assert.*;
 public class ObservatoryListFragmentTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
+    public final ActivityTestRule<MainActivity> mainActivityActivityTestRule =
             new ActivityTestRule<>(MainActivity.class);
 
     private MainActivity mainActivity = null;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mainActivity = mainActivityActivityTestRule.getActivity();
         AndroidTestHelper.chooseDrawerAction(R.id.nav_observatories);
     }
@@ -52,7 +52,7 @@ public class ObservatoryListFragmentTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         mainActivity = null;
     }
 }

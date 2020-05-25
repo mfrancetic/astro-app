@@ -29,7 +29,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -58,6 +57,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -126,7 +126,7 @@ public class AsteroidFragment extends Fragment {
 
     private Calendar calendar;
 
-    private String minDateString = "1995-06-16";
+    private final String minDateString = "1995-06-16";
 
     private final static String currentDayKey = "currentDay";
 
@@ -355,7 +355,7 @@ public class AsteroidFragment extends Fragment {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         orientation = getResources().getConfiguration().orientation;
         setDividers(orientation);
         super.onConfigurationChanged(newConfig);
@@ -428,7 +428,7 @@ public class AsteroidFragment extends Fragment {
 
         try {
             Date minDate = formatter.parse(minDateString);
-            minDateLong = minDate.getTime();
+            minDateLong = Objects.requireNonNull(minDate).getTime();
         } catch (ParseException e) {
             Log.e(LOG_TAG, "Problem parsing the minDate");
         }
@@ -436,27 +436,23 @@ public class AsteroidFragment extends Fragment {
         DatePickerDialog datePickerDialog = new DatePickerDialog(context,
 //                R.style.AstroDialogTheme,
 //                R.style.Theme_AppCompat_DayNight_Dialog_Alert,
-                new DatePickerDialog.OnDateSetListener() {
+                (view, year, month, dayOfMonth) -> {
+                    calendar.set(year, month, dayOfMonth);
+                    calendar.setTimeZone(timeZone);
+                    date = calendar.getTime();
+                    localDate = formatter.format(date);
+                    new AsteroidAsyncTask().execute();
 
-                    @Override
-                    public void onDateSet(DatePicker view, final int year, int month, int dayOfMonth) {
-                        calendar.set(year, month, dayOfMonth);
-                        calendar.setTimeZone(timeZone);
-                        date = calendar.getTime();
-                        localDate = formatter.format(date);
-                        new AsteroidAsyncTask().execute();
-
-                        currentYear = year;
-                        currentMonth = month;
-                        currentDayOfMonth = dayOfMonth;
-                    }
+                    currentYear = year;
+                    currentMonth = month;
+                    currentDayOfMonth = dayOfMonth;
                 }, currentYear, currentMonth, currentDayOfMonth);
         datePickerDialog.getDatePicker().setMinDate(minDateLong);
         datePickerDialog.show();
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
     }
 }

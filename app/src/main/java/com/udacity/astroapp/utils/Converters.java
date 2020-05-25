@@ -5,7 +5,6 @@ import androidx.room.TypeConverter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.udacity.astroapp.models.Camera;
-import com.udacity.astroapp.models.MarsPhotoObject;
 import com.udacity.astroapp.models.Rover;
 
 import java.lang.reflect.Type;

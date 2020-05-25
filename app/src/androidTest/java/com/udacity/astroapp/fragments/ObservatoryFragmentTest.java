@@ -1,7 +1,5 @@
 package com.udacity.astroapp.fragments;
 
-import android.content.Intent;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
@@ -26,13 +24,13 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 public class ObservatoryFragmentTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
+    public final ActivityTestRule<MainActivity> mainActivityActivityTestRule =
             new ActivityTestRule<>(MainActivity.class);
 
     private MainActivity mainActivity = null;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mainActivity = mainActivityActivityTestRule.getActivity();
         AndroidTestHelper.chooseDrawerAction(R.id.nav_observatories);
         onView(withId(R.id.observatory_list_recycler_view)).perform(RecyclerViewChildActions.Companion.actionOnChild(
@@ -47,7 +45,7 @@ public class ObservatoryFragmentTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         mainActivity = null;
     }
 }

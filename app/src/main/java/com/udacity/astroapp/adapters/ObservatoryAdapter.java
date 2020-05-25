@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
  */
 public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.ObservatoryViewHolder> {
 
-    class ObservatoryViewHolder extends RecyclerView.ViewHolder {
+    static class ObservatoryViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.observatory_list_item_name)
         TextView observatoryListItemNameTextView;

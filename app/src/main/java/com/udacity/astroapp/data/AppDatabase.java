@@ -11,7 +11,6 @@ import android.util.Log;
 import com.udacity.astroapp.models.Asteroid;
 import com.udacity.astroapp.models.EarthPhoto;
 import com.udacity.astroapp.models.MarsPhoto;
-import com.udacity.astroapp.models.MarsPhotoObject;
 import com.udacity.astroapp.models.Observatory;
 import com.udacity.astroapp.models.Photo;
 import com.udacity.astroapp.utils.Converters;

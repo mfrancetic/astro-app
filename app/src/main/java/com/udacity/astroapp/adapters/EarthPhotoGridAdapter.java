@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.models.EarthPhoto;
-import com.udacity.astroapp.utils.DateTimeUtils;
 import com.udacity.astroapp.utils.PhotoUtils;
 import com.udacity.astroapp.utils.QueryUtils;
 

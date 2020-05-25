@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mars_photo_coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:id="@+id/mars_photo_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/fragment_margin_start"
+        android:layout_marginTop="?actionBarSize"
+        android:paddingStart="@dimen/margin_list_item"
+        android:paddingEnd="@dimen/margin_list_item"
+        android:paddingBottom="@dimen/margin_list_item"
+        tools:ignore="Overdraw">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/photo_constraint_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/mars_photo_source_text_view"
+                style="@style/ButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin"
+                android:text="@string/photo_video_source"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <FrameLayout
+                android:id="@+id/mars_photo_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/margin"
+                android:paddingTop="@dimen/margin"
+                android:paddingEnd="@dimen/margin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mars_photo_source_text_view">
+
+                <ImageView
+                    android:id="@+id/mars_photo_view"
+                    style="@style/PhotoImageView"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/photo_content_description"
+                    tools:src="@mipmap/ic_launcher" />
+            </FrameLayout>
+
+            <ImageButton
+                android:id="@+id/mars_photo_previous_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/colorBackground"
+                android:contentDescription="@string/photo_previous_content_description"
+                android:src="@drawable/ic_previous"
+                android:tint="?android:attr/textColorPrimary"
+                app:layout_constraintBottom_toBottomOf="@id/mars_photo_frame_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/mars_photo_frame_layout" />
+
+            <ImageButton
+                android:id="@+id/mars_photo_next_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/colorBackground"
+                android:contentDescription="@string/photo_next_content_description"
+                android:src="@drawable/ic_next"
+                android:tint="?android:attr/textColorPrimary"
+                app:layout_constraintBottom_toBottomOf="@id/mars_photo_frame_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/mars_photo_frame_layout" />
+
+            <ImageView
+                android:id="@+id/mars_photo_empty_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:paddingTop="@dimen/margin"
+                android:paddingBottom="@dimen/margin"
+                android:src="@drawable/ic_nothing_found"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/mars_photo_loading_indicator"
+                style="@style/LoadingIndicatorStyle"
+                app:layout_constraintBottom_toBottomOf="@id/mars_photo_frame_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/mars_photo_frame_layout" />
+
+            <TextView
+                android:id="@+id/mars_photo_rover_name"
+                style="@style/PhotoTitleTextView"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:paddingStart="@dimen/margin_list_item"
+                android:paddingEnd="@dimen/margin_list_item"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mars_photo_frame_layout"
+                tools:text="Rover Curiosity" />
+
+            <TextView
+                android:id="@+id/mars_photo_empty_text_view"
+                style="@style/EmptyTextViewStyle"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:text="@string/no_photo_found"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mars_photo_empty_image_view" />
+
+            <TextView
+                android:layout_marginTop="@dimen/margin"
+                android:id="@+id/mars_photo_date_text_view"
+                style="@style/SubtitleTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mars_photo_rover_name"
+                tools:text="Earth date: 2019-06-01" />
+
+            <TextView
+                android:id="@+id/mars_photo_sol_text_view"
+                style="@style/SubtitleTextView"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mars_photo_date_text_view"
+                tools:text="Sol: 2767" />
+
+            <TextView
+                android:id="@+id/mars_photo_camera_text_view"
+                style="@style/PhotoDescriptionTextView"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/margin"
+                android:gravity="center_horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mars_photo_sol_text_view"
+                tools:text="Front Hazard Avoidance Camera" />
+
+            <TextView
+                android:id="@+id/mars_photo_launch_date_text_view"
+                style="@style/SubtitleTextView"
+                android:layout_marginTop="@dimen/margin"
+                android:textAlignment="viewStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mars_photo_camera_text_view"
+                tools:text="Launch date: 2011-11-26" />
+
+            <TextView
+                android:id="@+id/mars_photo_landing_date_text_view"
+                style="@style/SubtitleTextView"
+                android:textAlignment="viewStart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mars_photo_launch_date_text_view"
+                tools:text="Landing date: 2011-08-06" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_mars_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginBottom="@dimen/margin"
+        android:backgroundTint="@color/colorAccent"
+        android:contentDescription="@string/share_content_description"
+        android:src="@drawable/ic_share"
+        app:fabSize="normal"
+        app:layout_anchorGravity="bottom|end" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

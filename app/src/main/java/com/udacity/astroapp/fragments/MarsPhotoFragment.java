@@ -10,7 +10,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -165,12 +164,9 @@ public class MarsPhotoFragment extends Fragment {
     private void setScrollListeners() {
         if (scrollView != null) {
             scrollView.requestFocus();
-            scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                @Override
-                public void onScrollChanged() {
-                    scrollX = scrollView.getScrollX();
-                    scrollY = scrollView.getScrollY();
-                }
+            scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+                scrollX = scrollView.getScrollX();
+                scrollY = scrollView.getScrollY();
             });
         }
     }
@@ -220,37 +216,23 @@ public class MarsPhotoFragment extends Fragment {
     }
 
     private void setOnClickListeners() {
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                PhotoUtils.sharePhoto(context, currentMarsPhoto.getImageUrl());
+        fab.setOnClickListener(v -> PhotoUtils.sharePhoto(context, currentMarsPhoto.getImageUrl()));
+
+        photoView.setOnClickListener(v -> {
+            if (currentMarsPhoto != null) {
+                Uri photoUri = Uri.parse(currentMarsPhoto.getImageUrl());
+                PhotoUtils.displayPhotoDialog(context, photoUri);
             }
         });
 
-        photoView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentMarsPhoto != null) {
-                    Uri photoUri = Uri.parse(currentMarsPhoto.getImageUrl());
-                    PhotoUtils.displayPhotoDialog(context, photoUri);
-                }
-            }
+        previousButton.setOnClickListener(v -> {
+            currentMarsPhoto = marsPhotos.get(currentMarsPhotoIndex - 1);
+            displayPhoto(currentMarsPhoto);
         });
 
-        previousButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentMarsPhoto = marsPhotos.get(currentMarsPhotoIndex - 1);
-                displayPhoto(currentMarsPhoto);
-            }
-        });
-
-        nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                currentMarsPhoto = marsPhotos.get(currentMarsPhotoIndex + 1);
-                displayPhoto(currentMarsPhoto);
-            }
+        nextButton.setOnClickListener(v -> {
+            currentMarsPhoto = marsPhotos.get(currentMarsPhotoIndex + 1);
+            displayPhoto(currentMarsPhoto);
         });
     }
 
@@ -267,7 +249,7 @@ public class MarsPhotoFragment extends Fragment {
 
         marsPhotoCalls.enqueue(new Callback<MarsPhotoObject>() {
             @Override
-            public void onResponse(Call<MarsPhotoObject> call, Response<MarsPhotoObject> response) {
+            public void onResponse(@NonNull Call<MarsPhotoObject> call, @NonNull Response<MarsPhotoObject> response) {
                 if (response.body() != null) {
                     if (response.body().getPhotos().size() > 0) {
                         viewModel.getMarsPhotos().observe(getViewLifecycleOwner(), observer);
@@ -284,7 +266,7 @@ public class MarsPhotoFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<MarsPhotoObject> call, Throwable t) {
+            public void onFailure(@NonNull Call<MarsPhotoObject> call, @NonNull Throwable t) {
                 apiIsSuccessful = false;
                 viewModel.getMarsPhotos().observe(getViewLifecycleOwner(), observer);
                 t.printStackTrace();
@@ -393,6 +375,7 @@ public class MarsPhotoFragment extends Fragment {
         roverNameTextView.setVisibility(View.GONE);
         landingDateTextView.setVisibility(View.GONE);
         sourceTextView.setVisibility(View.GONE);
+        solTextView.setVisibility(View.GONE);
         fab.hide();
     }
 

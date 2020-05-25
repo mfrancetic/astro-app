@@ -8,7 +8,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -75,12 +74,7 @@ public class PhotoUtils {
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(fullScreenImageView);
 
-        fullScreenImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        fullScreenImageView.setOnClickListener(v -> dialog.dismiss());
     }
 
     public static void sharePhoto(Context context, String photoUrl) {
@@ -123,16 +117,13 @@ public class PhotoUtils {
     public static void addScrollingFunctionalityToFab(ScrollView scrollView, FloatingActionButton floatingActionButton) {
         if (scrollView != null) {
             scrollView.requestFocus();
-            scrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-                @Override
-                public void onScrollChanged() {
-                    int scrollY = scrollView.getScrollY();
-                    /* Hide the floatingActionButton when scrolling down, and show it when scrolling up*/
-                    if (scrollY > 0 || scrollY < 0 && floatingActionButton.isShown()) {
-                        floatingActionButton.hide();
-                    } else {
-                        floatingActionButton.show();
-                    }
+            scrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+                int scrollY = scrollView.getScrollY();
+                /* Hide the floatingActionButton when scrolling down, and show it when scrolling up*/
+                if (scrollY > 0 || scrollY < 0 && floatingActionButton.isShown()) {
+                    floatingActionButton.hide();
+                } else {
+                    floatingActionButton.show();
                 }
             });
         }

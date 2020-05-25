@@ -19,21 +19,19 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class PhotoFragmentTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mainActivityActivityTestRule =
+    public final ActivityTestRule<MainActivity> mainActivityActivityTestRule =
             new ActivityTestRule<>(MainActivity.class);
 
     private MainActivity mainActivity = null;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mainActivity = mainActivityActivityTestRule.getActivity();
         mainActivityActivityTestRule.getActivity()
                 .getSupportFragmentManager().beginTransaction();
@@ -70,7 +68,7 @@ public class PhotoFragmentTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         mainActivity = null;
     }
 }

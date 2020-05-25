@@ -118,6 +118,8 @@ public class MarsPhotoFragment extends Fragment {
     private int scrollY;
     private Observer<List<MarsPhotoObject.MarsPhoto>> observer;
 
+    private boolean apiIsSuccessful = false;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         if (getActivity() != null) {
@@ -188,9 +190,17 @@ public class MarsPhotoFragment extends Fragment {
         viewModel = ViewModelProviders.of(MarsPhotoFragment.this, viewModelFactory).get(MarsPhotoViewModel.class);
         observer = new Observer<List<MarsPhotoObject.MarsPhoto>>() {
             @Override
-            public void onChanged(@Nullable final List<MarsPhotoObject.MarsPhoto> databaseMarsPhotos) {
+            public void onChanged(List<MarsPhotoObject.MarsPhoto> databaseMarsPhotos) {
                 viewModel.getMarsPhotos().removeObserver(this);
                 if (databaseMarsPhotos != null) {
+                    if (databaseMarsPhotos.size() > 0 && marsPhotos.size() == 0) {
+                        marsPhotos = databaseMarsPhotos;
+                        displayPhoto(marsPhotos.get(0));
+                        if (!apiIsSuccessful) {
+                            Snackbar snackbar = Snackbar.make(scrollView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                        }
+                    }
                     AppExecutors.getExecutors().diskIO().execute(() -> {
                         if (marsPhotos != null && marsPhotos.size() > 0) {
                             database.astroDao().deleteAllMarsPhotos();
@@ -257,6 +267,7 @@ public class MarsPhotoFragment extends Fragment {
                         marsPhotos.addAll(response.body().getPhotos());
                         currentMarsPhoto = marsPhotos.get(0);
                         displayPhoto(currentMarsPhoto);
+                        apiIsSuccessful = true;
                     } else {
                         localDate = DateTimeUtils.getPreviousDate(localDate);
                         getPhotoDataFromUrl();
@@ -266,6 +277,8 @@ public class MarsPhotoFragment extends Fragment {
 
             @Override
             public void onFailure(Call<MarsPhotoObject> call, Throwable t) {
+                apiIsSuccessful = false;
+                viewModel.getMarsPhotos().observe(getViewLifecycleOwner(), observer);
                 t.printStackTrace();
                 LiveData<List<MarsPhotoObject.MarsPhoto>> marsPhotosDatabase = viewModel.getMarsPhotos();
                 List<MarsPhotoObject.MarsPhoto> marsPhotosDatabaseList = marsPhotosDatabase.getValue();
@@ -332,10 +345,12 @@ public class MarsPhotoFragment extends Fragment {
         sourceTextView.setVisibility(View.VISIBLE);
         roverNameTextView.setVisibility(View.VISIBLE);
         cameraTextView.setVisibility(View.VISIBLE);
+        emptyTextView.setVisibility(View.GONE);
+        emptyImageView.setVisibility(View.GONE);
         fab.show();
         landingDateTextView.setVisibility(View.VISIBLE);
         currentMarsPhotoIndex = marsPhotos.indexOf(currentMarsPhoto);
-        if (currentMarsPhotoIndex == 0) {
+        if (currentMarsPhotoIndex < 1) {
             previousButton.setVisibility(View.GONE);
         } else {
             previousButton.setVisibility(View.VISIBLE);

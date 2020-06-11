@@ -255,7 +255,7 @@ public class PhotoFragment extends Fragment {
                     AppExecutors.getExecutors().diskIO().execute(() -> {
                         /* In case the photo is not null and it does not have empty values,
                          * delete all photos and add the photo to the database */
-                        if (photo != null && !photo.getPhotoDate().isEmpty()) {
+                        if (photo != null && !photo.getPhotoUrl().isEmpty()) {
                             appDatabase.astroDao().deleteAllPhotos();
                             appDatabase.astroDao().addPhoto(photo);
                         }
@@ -356,7 +356,7 @@ public class PhotoFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Photo newPhoto) {
-            if (newPhoto != null && !jsonNotSuccessful) {
+            if (newPhoto != null && newPhoto.getPhotoUrl() != null && !jsonNotSuccessful) {
                 /* If there is a photo available, and the API call was successful,
                 populate the photo in the view */
                 populatePhoto(newPhoto);
@@ -365,7 +365,7 @@ public class PhotoFragment extends Fragment {
                 LiveData<List<Photo>> photoDatabaseList = photoViewModel.getPhotos();
                 List<Photo> photos = photoDatabaseList.getValue();
                 photo = photos.get(0);
-                if (photo != null && photo.getPhotoDescription() != null && !photo.getPhotoDescription().isEmpty()) {
+                if (photo != null && photo.getPhotoUrl() != null && !photo.getPhotoUrl().isEmpty()) {
                     /* In case there is a photo in the database, retrieve its values and populate
                      * the views */
                     int photoId = photo.getPhotoId();
@@ -445,9 +445,15 @@ public class PhotoFragment extends Fragment {
         setPreviousAndNextButtons();
 
         /* Set text of the photoTitleTextView, photoDateTextView and photoDescriptionTextView */
-        if (photo.getPhotoTitle() != null && photo.getPhotoDate() != null && photo.getPhotoDescription() != null) {
+        if (photo.getPhotoTitle() != null) {
             photoTitleTextView.setText(photo.getPhotoTitle());
+        }
+
+        if (photo.getPhotoDate() != null) {
             photoDateTextView.setText(photo.getPhotoDate());
+        }
+
+        if (photo.getPhotoDescription() != null) {
             photoDescriptionTextView.setText(photo.getPhotoDescription());
         }
         if (Build.VERSION.SDK_INT >= 26) {

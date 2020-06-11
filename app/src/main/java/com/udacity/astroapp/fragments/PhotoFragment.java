@@ -365,7 +365,7 @@ public class PhotoFragment extends Fragment {
                 LiveData<List<Photo>> photoDatabaseList = photoViewModel.getPhotos();
                 List<Photo> photos = photoDatabaseList.getValue();
                 photo = photos.get(0);
-                if (photo != null) {
+                if (photo != null && photo.getPhotoDescription() != null && !photo.getPhotoDescription().isEmpty()) {
                     /* In case there is a photo in the database, retrieve its values and populate
                      * the views */
                     int photoId = photo.getPhotoId();
@@ -390,21 +390,21 @@ public class PhotoFragment extends Fragment {
             } else {
                 if (!MainActivity.isNetworkAvailable(context)) {
                     emptyTextView.setText(R.string.no_internet_connection);
+                } else {
+                    emptyTextView.setText(R.string.no_photo_found);
                 }
                 /* In case there are also no values stored in the database, hide all the
                  * views except the empty views */
-                loadingIndicator.setVisibility(View.INVISIBLE);
-                photoTitleTextView.setVisibility(View.INVISIBLE);
-                photoDescriptionTextView.setVisibility(View.INVISIBLE);
-                photoDateTextView.setVisibility(View.INVISIBLE);
+                loadingIndicator.setVisibility(View.GONE);
+                photoTitleTextView.setVisibility(View.GONE);
+                photoDescriptionTextView.setVisibility(View.GONE);
+                photoDateTextView.setVisibility(View.GONE);
                 setPreviousAndNextButtons();
-//                photoPreviousButton.setVisibility(View.GONE);
-//                photoNextButton.setVisibility(View.GONE);
-                floatingActionButton.hide();
                 photoVideoSourceTextView.setVisibility(View.INVISIBLE);
                 photoImageView.setVisibility(View.INVISIBLE);
                 emptyTextView.setVisibility(View.VISIBLE);
                 emptyImageView.setVisibility(View.VISIBLE);
+                floatingActionButton.hide();
             }
             super.onPostExecute(photo);
         }

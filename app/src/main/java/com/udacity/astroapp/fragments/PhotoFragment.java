@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -338,14 +339,17 @@ public class PhotoFragment extends Fragment {
                 photoUrl = photoObject.getString("url");
                 photoMediaType = photoObject.getString("media_type");
 
+                jsonNotSuccessful = false;
                 /* Create a new Photo object and set the values to it */
                 photo = new Photo(0, photoTitle, photoDate, photoDescription, photoUrl, photoMediaType);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Problem retrieving the photo JSON results");
                 jsonNotSuccessful = true;
+                photo = new Photo(localDate);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, "Problem parsing the photo JSON response");
                 jsonNotSuccessful = true;
+                photo = new Photo(localDate);
             }
             return photo;
         }
@@ -389,13 +393,15 @@ public class PhotoFragment extends Fragment {
                 }
                 /* In case there are also no values stored in the database, hide all the
                  * views except the empty views */
-                loadingIndicator.setVisibility(View.GONE);
-                photoTitleTextView.setVisibility(View.GONE);
-                photoDescriptionTextView.setVisibility(View.GONE);
-                photoDateTextView.setVisibility(View.GONE);
-                photoPreviousButton.setVisibility(View.GONE);
-                photoNextButton.setVisibility(View.GONE);
+                loadingIndicator.setVisibility(View.INVISIBLE);
+                photoTitleTextView.setVisibility(View.INVISIBLE);
+                photoDescriptionTextView.setVisibility(View.INVISIBLE);
+                photoDateTextView.setVisibility(View.INVISIBLE);
+                setPreviousAndNextButtons();
+//                photoPreviousButton.setVisibility(View.GONE);
+//                photoNextButton.setVisibility(View.GONE);
                 floatingActionButton.hide();
+                photoVideoSourceTextView.setVisibility(View.INVISIBLE);
                 photoImageView.setVisibility(View.INVISIBLE);
                 emptyTextView.setVisibility(View.VISIBLE);
                 emptyImageView.setVisibility(View.VISIBLE);
@@ -436,27 +442,7 @@ public class PhotoFragment extends Fragment {
         datePickerDialog.getDatePicker().updateDate(Integer.parseInt(datePickerDate.substring(0, 4)),
                 month - 1, Integer.parseInt(datePickerDate.substring(8, 10)));
 
-        Date nextDate = getNextDate(date);
-        Date todaysDate = getTodaysDate();
-
-        photoPreviousButton.setVisibility(View.VISIBLE);
-        photoPreviousButton.setOnClickListener(v -> {
-            date = getPreviousDate(selectedDate);
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-            localDate = formatter.format(date);
-            new PhotoAsyncTask().execute();
-        });
-        if (nextDate.after(todaysDate)) {
-            photoNextButton.setVisibility(View.GONE);
-        } else {
-            photoNextButton.setVisibility(View.VISIBLE);
-            photoNextButton.setOnClickListener(v -> {
-                date = getNextDate(selectedDate);
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-                localDate = formatter.format(date);
-                new PhotoAsyncTask().execute();
-            });
-        }
+        setPreviousAndNextButtons();
 
         /* Set text of the photoTitleTextView, photoDateTextView and photoDescriptionTextView */
         if (photo.getPhotoTitle() != null && photo.getPhotoDate() != null && photo.getPhotoDescription() != null) {
@@ -556,6 +542,31 @@ public class PhotoFragment extends Fragment {
         int[] ids = appWidgetManager.getAppWidgetIds(new ComponentName(context.getPackageName(), AstroAppWidget.class.getName()));
         widgetIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         context.sendBroadcast(widgetIntent);
+    }
+
+    private void setPreviousAndNextButtons() {
+        selectedDate = getSelectedDate(photo.getPhotoDate());
+        Date nextDate = getNextDate(selectedDate);
+        Date todaysDate = getTodaysDate();
+
+        photoPreviousButton.setVisibility(View.VISIBLE);
+        photoPreviousButton.setOnClickListener(v -> {
+            date = getPreviousDate(selectedDate);
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            localDate = formatter.format(date);
+            new PhotoAsyncTask().execute();
+        });
+        if (nextDate.after(todaysDate)) {
+            photoNextButton.setVisibility(View.GONE);
+        } else {
+            photoNextButton.setVisibility(View.VISIBLE);
+            photoNextButton.setOnClickListener(v -> {
+                date = getNextDate(selectedDate);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                localDate = formatter.format(date);
+                new PhotoAsyncTask().execute();
+            });
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.udacity.astroapp.models;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -15,6 +16,11 @@ public class Photo implements Parcelable {
     private String photoDescription;
     private String photoUrl;
     private String photoMediaType;
+
+    @Ignore
+    public Photo(String photoDate){
+        this.photoDate = photoDate;
+    }
 
     public Photo(int photoId, String photoTitle, String photoDate,
                  String photoDescription, String photoUrl, String photoMediaType) {

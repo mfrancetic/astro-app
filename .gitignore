@@ -4,7 +4,11 @@ secret_strings.xml
 keystore.properties
 app-debug.apk
 app-release.apk
+KeystoreAstroApp.jks
+jarRepositories.xml
 
+/app/keystore
+/app/keystore/KeystoreAstroApp.jks
 .gradle
 /local.properties
 /.idea/caches
@@ -12,6 +16,7 @@ app-release.apk
 /.idea/modules.xml
 /.idea/workspace.xml
 /.idea/navEditor.xml
+/app/release
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build

@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
@@ -19,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.graphics.text.LineBreaker;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -80,6 +82,8 @@ import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
 
 public class PhotoFragment extends Fragment {
 
@@ -255,7 +259,7 @@ public class PhotoFragment extends Fragment {
                     AppExecutors.getExecutors().diskIO().execute(() -> {
                         /* In case the photo is not null and it does not have empty values,
                          * delete all photos and add the photo to the database */
-                        if (photo != null && !photo.getPhotoUrl().isEmpty()) {
+                        if (photo != null && photo.getPhotoUrl() != null && !photo.getPhotoUrl().isEmpty()) {
                             appDatabase.astroDao().deleteAllPhotos();
                             appDatabase.astroDao().addPhoto(photo);
                         }
@@ -399,7 +403,8 @@ public class PhotoFragment extends Fragment {
                 photoTitleTextView.setVisibility(View.GONE);
                 photoDescriptionTextView.setVisibility(View.GONE);
                 photoDateTextView.setVisibility(View.GONE);
-                setPreviousAndNextButtons();
+                photoPreviousButton.setVisibility(View.GONE);
+                photoNextButton.setVisibility(View.GONE);
                 photoVideoSourceTextView.setVisibility(View.INVISIBLE);
                 photoImageView.setVisibility(View.INVISIBLE);
                 emptyTextView.setVisibility(View.VISIBLE);
@@ -456,8 +461,8 @@ public class PhotoFragment extends Fragment {
         if (photo.getPhotoDescription() != null) {
             photoDescriptionTextView.setText(photo.getPhotoDescription());
         }
-        if (Build.VERSION.SDK_INT >= 26) {
-            photoDescriptionTextView.setJustificationMode(Layout.JUSTIFICATION_MODE_INTER_WORD);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            photoDescriptionTextView.setJustificationMode(LineBreaker.JUSTIFICATION_MODE_INTER_WORD);
         }
 
         if (photoMediaType != null && photoMediaType.equals("video")) {
@@ -486,7 +491,7 @@ public class PhotoFragment extends Fragment {
                     floatingActionButton.hide();
                 }
             }
-        } else if (photo.getPhotoMediaType().equals("image")) {
+        } else if (photo.getPhotoMediaType() != null && photo.getPhotoMediaType().equals("image")) {
             playVideoButton.setVisibility(View.GONE);
             photoImageView.setVisibility(View.VISIBLE);
             photoImageView.setClickable(true);

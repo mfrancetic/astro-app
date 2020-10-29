@@ -1,5 +1,6 @@
 package com.udacity.astroapp.utils;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -36,66 +37,72 @@ import java.io.IOException;
 public class PhotoUtils {
 
     public static void displayPhotoFromUrl(Context context, Uri photoUri, ImageView photoImageView, ProgressBar loadingIndicator) {
-        loadingIndicator.setVisibility(View.VISIBLE);
-        Glide.with(context)
-                .load(photoUri)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        loadingIndicator.setVisibility(View.GONE);
-                        return false;
-                    }
+        if (isValidContextForGlide(context)) {
+            loadingIndicator.setVisibility(View.VISIBLE);
+            Glide.with(context)
+                    .load(photoUri)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            loadingIndicator.setVisibility(View.GONE);
+                            return false;
+                        }
 
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        loadingIndicator.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .error(R.mipmap.ic_launcher)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .centerCrop()
-                .into(photoImageView);
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            loadingIndicator.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .error(R.mipmap.ic_launcher)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .centerCrop()
+                    .into(photoImageView);
+        }
     }
 
     public static void displayPhotoDialog(Context context, Uri photoUri) {
-        Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.setContentView(R.layout.fullscreen);
-        dialog.show();
+        if (isValidContextForGlide(context)) {
+            Dialog dialog = new Dialog(context);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.setContentView(R.layout.fullscreen);
+            dialog.show();
 
-        ImageView fullScreenImageView = dialog.findViewById(R.id.photo_full_screen_view);
+            ImageView fullScreenImageView = dialog.findViewById(R.id.photo_full_screen_view);
 
-        GlideApp.
-                with(context)
-                .load(photoUri)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(fullScreenImageView);
+            GlideApp.
+                    with(context)
+                    .load(photoUri)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(fullScreenImageView);
 
-        fullScreenImageView.setOnClickListener(v -> dialog.dismiss());
+            fullScreenImageView.setOnClickListener(v -> dialog.dismiss());
+        }
     }
 
     public static void sharePhoto(Context context, String photoUrl) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        Glide.
-                with(context)
-                .asBitmap()
-                .load(photoUrl)
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        intent.setType("image/*");
-                        intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(context, resource));
-                        context.startActivity(Intent.createChooser(intent, context.getResources().getString(R.string.share_photo_content_description)));
-                    }
+        if (isValidContextForGlide(context)) {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Glide.
+                    with(context)
+                    .asBitmap()
+                    .load(photoUrl)
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            intent.setType("image/*");
+                            intent.putExtra(Intent.EXTRA_STREAM, getLocalBitmapUri(context, resource));
+                            context.startActivity(Intent.createChooser(intent, context.getResources().getString(R.string.share_photo_content_description)));
+                        }
 
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                    }
-                });
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                        }
+                    });
+        }
     }
 
     private static Uri getLocalBitmapUri(Context context, Bitmap bitmap) {
@@ -127,5 +134,16 @@ public class PhotoUtils {
                 }
             });
         }
+    }
+
+    public static boolean isValidContextForGlide(final Context context) {
+        if (context == null) {
+            return false;
+        }
+        if (context instanceof Activity) {
+            final Activity activity = (Activity) context;
+            return !activity.isDestroyed() && !activity.isFinishing();
+        }
+        return true;
     }
 }

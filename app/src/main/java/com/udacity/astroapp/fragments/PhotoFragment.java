@@ -76,6 +76,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -306,7 +307,7 @@ public class PhotoFragment extends Fragment {
             isDialogShown = savedInstanceState.getBoolean(IS_DIALOG_SHOWN_KEY);
             scrollX = savedInstanceState.getInt(SCROLL_POSITION_X);
             scrollY = savedInstanceState.getInt(SCROLL_POSITION_Y);
-            getActivity().overridePendingTransition(0, 0);
+            requireActivity().overridePendingTransition(0, 0);
             photo = savedInstanceState.getParcelable(photoKey);
             if (photo != null) {
                 populatePhoto(photo);

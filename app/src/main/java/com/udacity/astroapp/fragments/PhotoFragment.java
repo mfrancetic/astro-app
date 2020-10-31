@@ -697,6 +697,9 @@ public class PhotoFragment extends Fragment {
         if (id == R.id.menu_refresh) {
             return false;
         } else if (id == R.id.menu_calendar) {
+            if (datePickerDialog == null) {
+                createDatePickerDialog();
+            }
             datePickerDialog.show();
             return true;
         }

@@ -7,9 +7,6 @@ import android.appwidget.AppWidgetManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -29,7 +26,6 @@ import android.os.Environment;
 
 import androidx.core.content.FileProvider;
 
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -59,6 +55,7 @@ import com.udacity.astroapp.data.AstroAppWidget;
 import com.udacity.astroapp.data.GlideApp;
 import com.udacity.astroapp.data.PhotoViewModel;
 import com.udacity.astroapp.data.PhotoViewModelFactory;
+import com.udacity.astroapp.databinding.FragmentPhotoBinding;
 import com.udacity.astroapp.models.Photo;
 import com.udacity.astroapp.utils.PhotoUtils;
 import com.udacity.astroapp.utils.QueryUtils;
@@ -76,63 +73,43 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import static android.text.Layout.JUSTIFICATION_MODE_INTER_WORD;
 
 public class PhotoFragment extends Fragment {
 
     /* Tag for log messages */
     private static final String LOG_TAG = PhotoFragment.class.getSimpleName();
 
+    private FragmentPhotoBinding binding;
+
     /* Views of the PhotoFragment */
-    @BindView(R.id.photo_coordinator_layout)
-    CoordinatorLayout photoCoordinatorLayout;
+    private ImageView photoImageView;
 
-    @BindView(R.id.photo_view)
-    ImageView photoImageView;
+    private TextView photoTitleTextView;
 
-    @BindView(R.id.photo_title_text_view)
-    TextView photoTitleTextView;
+    private TextView photoDateTextView;
 
-    @BindView(R.id.photo_date_text_view)
-    TextView photoDateTextView;
+    private TextView photoDescriptionTextView;
 
-    @BindView(R.id.photo_description_text_view)
-    TextView photoDescriptionTextView;
+    private ScrollView photoScrollView;
 
-    @BindView(R.id.photo_scroll_view)
-    ScrollView photoScrollView;
+    private TextView emptyTextView;
 
-    @BindView(R.id.photo_empty_text_view)
-    TextView emptyTextView;
+    private ProgressBar loadingIndicator;
 
-    @BindView(R.id.photo_loading_indicator)
-    ProgressBar loadingIndicator;
+    private ImageView emptyImageView;
 
-    @BindView(R.id.photo_empty_image_view)
-    ImageView emptyImageView;
+    private FloatingActionButton floatingActionButton;
 
-    @BindView(R.id.fab)
-    FloatingActionButton floatingActionButton;
+    private TextView photoVideoSourceTextView;
 
-    @BindView(R.id.photo_video_source_text_view)
-    TextView photoVideoSourceTextView;
+    private ImageButton photoPreviousButton;
 
-    @BindView(R.id.photo_previous_button)
-    ImageButton photoPreviousButton;
+    private ImageButton photoNextButton;
 
-    @BindView(R.id.photo_next_button)
-    ImageButton photoNextButton;
-
-    @BindView(R.id.play_video_button)
-    ImageButton playVideoButton;
+    private ImageButton playVideoButton;
 
     private Context context;
 
@@ -235,8 +212,10 @@ public class PhotoFragment extends Fragment {
         }
 
         /* Inflate the fragment_photo.xml layout */
-        View rootView = inflater.inflate(R.layout.fragment_photo, container, false);
-        ButterKnife.bind(this, rootView);
+        binding = FragmentPhotoBinding.inflate(inflater, container, false);
+        View rootView = binding.getRoot();
+
+        findViews();
 
         context = photoDateTextView.getContext();
 
@@ -302,7 +281,7 @@ public class PhotoFragment extends Fragment {
             new PhotoAsyncTask().execute();
         } else {
             /* In case there is a savedInstanceState, get the scroll positions, get the saved
-             * photo and populate the view with its values */
+             * photo and populate the rootView with its values */
             localDate = savedInstanceState.getString(currentDayKey);
             isDialogShown = savedInstanceState.getBoolean(IS_DIALOG_SHOWN_KEY);
             scrollX = savedInstanceState.getInt(SCROLL_POSITION_X);
@@ -317,6 +296,22 @@ public class PhotoFragment extends Fragment {
             }
         }
         return rootView;
+    }
+
+    private void findViews() {
+        photoImageView = binding.photoView;
+        photoTitleTextView = binding.photoTitleTextView;
+        photoDateTextView = binding.photoDateTextView;
+        photoDescriptionTextView = binding.photoDescriptionTextView;
+        photoScrollView = binding.photoScrollView;
+        emptyTextView = binding.photoEmptyTextView;
+        emptyImageView = binding.photoEmptyImageView;
+        loadingIndicator = binding.photoLoadingIndicator;
+        photoVideoSourceTextView = binding.photoVideoSourceTextView;
+        floatingActionButton = binding.fab;
+        photoPreviousButton = binding.photoPreviousButton;
+        photoNextButton = binding.photoNextButton;
+        playVideoButton = binding.playVideoButton;
     }
 
     /**
@@ -780,5 +775,11 @@ public class PhotoFragment extends Fragment {
         calendar = Calendar.getInstance();
         calendar.setTimeZone(timeZone);
         return todaysDate;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

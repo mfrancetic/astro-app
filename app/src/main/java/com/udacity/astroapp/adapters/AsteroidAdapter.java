@@ -16,14 +16,12 @@ import androidx.appcompat.widget.TooltipCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.databinding.AsteroidListItemBinding;
 import com.udacity.astroapp.models.Asteroid;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * RecyclerView Adapter for displaying the list of asteroids in the AsteroidFragment
@@ -32,33 +30,39 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
 
     static class AsteroidViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.asteroid_name_text_view)
-        TextView asteroidNameTextView;
+        private final AsteroidListItemBinding binding;
 
-        @BindView(R.id.asteroid_diameter_text_view)
-        TextView asteroidDiameterTextView;
+        private TextView asteroidNameTextView;
 
-        @BindView(R.id.asteroid_approach_date_text_view)
-        TextView asteroidApproachDateTextView;
+        private TextView asteroidDiameterTextView;
 
-        @BindView(R.id.asteroid_velocity_text_view)
-        TextView asteroidVelocityTextView;
+        private TextView asteroidApproachDateTextView;
 
-        @BindView(R.id.asteroid_read_more_button)
-        Button readMoreButton;
+        private TextView asteroidVelocityTextView;
 
-        @BindView(R.id.asteroid_hazardous_image)
-        ImageView asteroidHazardousImageView;
+        private Button readMoreButton;
 
-        @BindView(R.id.asteroid_diameter_label_text_view)
-        TextView diameterLabelTextView;
+        private ImageView asteroidHazardousImageView;
 
-        @BindView(R.id.asteroid_hazardous_text_view)
-        TextView asteroidHazardousTextView;
+        private TextView diameterLabelTextView;
+
+        private TextView asteroidHazardousTextView;
 
         AsteroidViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            binding = AsteroidListItemBinding.bind(itemView);
+            findViews();
+        }
+
+        private void findViews() {
+            asteroidNameTextView = binding.asteroidNameTextView;
+            asteroidDiameterTextView = binding.asteroidDiameterTextView;
+            asteroidApproachDateTextView = binding.asteroidApproachDateTextView;
+            asteroidVelocityTextView = binding.asteroidVelocityTextView;
+            readMoreButton = binding.asteroidReadMoreButton;
+            asteroidHazardousImageView = binding.asteroidHazardousImage;
+            diameterLabelTextView = binding.asteroidDiameterLabelTextView;
+            asteroidHazardousTextView = binding.asteroidHazardousTextView;
         }
     }
 

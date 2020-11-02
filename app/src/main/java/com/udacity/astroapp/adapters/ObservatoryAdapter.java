@@ -11,13 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.databinding.ObservatoryListItemBinding;
 import com.udacity.astroapp.fragments.ObservatoryListFragment;
 import com.udacity.astroapp.models.Observatory;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * RecyclerView Adapter for displaying the list of observatories in the ObservatoryListFragment
@@ -26,21 +24,27 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
 
     static class ObservatoryViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.observatory_list_item_name)
-        TextView observatoryListItemNameTextView;
+        private final ObservatoryListItemBinding binding;
 
-        @BindView(R.id.observatory_list_item_address)
-        TextView observatoryListItemAddressTextView;
+        private TextView observatoryListItemNameTextView;
 
-        @BindView(R.id.observatory_list_item_opening_hours)
-        TextView observatoryListItemOpenNowTextView;
+        private TextView observatoryListItemAddressTextView;
 
-        @BindView(R.id.observatory_list_item_button)
-        ImageButton observatoryListItemButton;
+        private TextView observatoryListItemOpeningHoursTextView;
+
+        private ImageButton observatoryListItemButton;
 
         ObservatoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            binding = ObservatoryListItemBinding.bind(itemView);
+            findViews();
+        }
+
+        private void findViews() {
+            observatoryListItemNameTextView = binding.observatoryListItemName;
+            observatoryListItemAddressTextView = binding.observatoryListItemAddress;
+            observatoryListItemOpeningHoursTextView = binding.observatoryListItemOpeningHours;
+            observatoryListItemButton = binding.observatoryListItemButton;
         }
     }
 
@@ -70,7 +74,7 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
         /* Set the views to its views in the viewHolder */
         TextView observatoryListItemNameTextView = viewHolder.observatoryListItemNameTextView;
         TextView observatoryListItemAddressTextView = viewHolder.observatoryListItemAddressTextView;
-        TextView observatoryListItemOpenNowTextView = viewHolder.observatoryListItemOpenNowTextView;
+        TextView observatoryListItemOpenNowTextView = viewHolder.observatoryListItemOpeningHoursTextView;
 
         /* Set the observatoryName to the observatoryListItemNameTextView */
         String observatoryName = observatory.getObservatoryName();
@@ -119,5 +123,10 @@ public class ObservatoryAdapter extends RecyclerView.Adapter<ObservatoryAdapter.
     public void setObservatories(List<Observatory> observatories) {
         ObservatoryAdapter.observatories = observatories;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
     }
 }

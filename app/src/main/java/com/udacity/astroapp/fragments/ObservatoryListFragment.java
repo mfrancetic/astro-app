@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,6 +24,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.Parcelable;
 import android.provider.Settings;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -56,6 +58,7 @@ import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.ObservatoryViewModel;
 import com.udacity.astroapp.data.ObservatoryViewModelFactory;
+import com.udacity.astroapp.databinding.FragmentObservatoryListBinding;
 import com.udacity.astroapp.models.Observatory;
 import com.udacity.astroapp.utils.LanguageHelper;
 import com.udacity.astroapp.utils.QueryUtils;
@@ -70,9 +73,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
@@ -82,29 +82,24 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     /* Tag for log messages */
     private static final String LOG_TAG = ObservatoryListFragment.class.getSimpleName();
 
+    private FragmentObservatoryListBinding binding;
+
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
 
     /* Views of the PhotoFragment */
-    @BindView(R.id.observatory_list_recycler_view)
-    RecyclerView observatoryRecyclerView;
+    private RecyclerView observatoryRecyclerView;
 
-    @BindView(R.id.observatory_list_scroll_view)
-    NestedScrollView scrollView;
+    private NestedScrollView scrollView;
 
-    @BindView(R.id.observatory_list_empty_text_view)
-    TextView observatoryListEmptyTextView;
+    private TextView observatoryListEmptyTextView;
 
-    @BindView(R.id.observatory_list_loading_indicator)
-    ProgressBar observatoryListLoadingIndicator;
+    private ProgressBar observatoryListLoadingIndicator;
 
-    @BindView(R.id.observatory_list_empty_image_view)
-    ImageView observatoryListEmptyImageView;
+    private ImageView observatoryListEmptyImageView;
 
-    @BindView(R.id.activate_location_button)
-    Button activateLocationButton;
+    private Button activateLocationButton;
 
-    @BindView(R.id.grant_location_permission_button)
-    Button grantLocationPermissionButton;
+    private Button grantLocationPermissionButton;
 
     private ObservatoryAdapter observatoryAdapter;
     private static final String observatoryListKey = "observatoryList";
@@ -171,8 +166,9 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
             getActivity().setTitle(R.string.menu_observatories);
         }
 
-        View rootView = inflater.inflate(R.layout.fragment_observatory_list, container, false);
-        ButterKnife.bind(this, rootView);
+        binding = FragmentObservatoryListBinding.inflate(inflater, container, false);
+        View rootView = binding.getRoot();
+        findViews();
 
         context = observatoryListLoadingIndicator.getContext();
 
@@ -244,6 +240,16 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         return rootView;
     }
 
+    private void findViews() {
+        observatoryRecyclerView = binding.observatoryListRecyclerView;
+        scrollView = binding.observatoryListScrollView;
+        observatoryListEmptyTextView = binding.observatoryListEmptyTextView;
+        observatoryListEmptyImageView = binding.observatoryListEmptyImageView;
+        observatoryListLoadingIndicator = binding.observatoryListLoadingIndicator;
+        activateLocationButton = binding.activateLocationButton;
+        grantLocationPermissionButton = binding.grantLocationPermissionButton;
+    }
+
     /**
      * ObservatoryAsyncTask class that creates the URL for loading the observatoryList, makes the HTTP request and
      * parses the JSON String in order to create a new List<Observatory> object.
@@ -302,7 +308,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
                     observatory.setObservatoryLongitude(observatoryLongitude);
                     observatory.setObservatoryUrl(observatoryUrl);
 
-                        observatoryList.add(i, observatory);
+                    observatoryList.add(i, observatory);
                 }
             } catch (
                     IOException e) {
@@ -594,7 +600,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     }
 
     public void stopLocationUpdates(LocationCallback locationCallback) {
-            getFusedLocationProviderClient(context).removeLocationUpdates(locationCallback);
+        getFusedLocationProviderClient(context).removeLocationUpdates(locationCallback);
     }
 
     @Override

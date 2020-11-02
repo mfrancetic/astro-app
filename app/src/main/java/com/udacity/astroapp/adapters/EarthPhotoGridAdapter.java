@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.udacity.astroapp.R;
+import com.udacity.astroapp.databinding.ImageThumbnailGridItemBinding;
 import com.udacity.astroapp.models.EarthPhoto;
 import com.udacity.astroapp.utils.PhotoUtils;
 import com.udacity.astroapp.utils.QueryUtils;
@@ -19,11 +20,9 @@ import com.udacity.astroapp.utils.QueryUtils;
 import java.net.URL;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class EarthPhotoGridAdapter extends RecyclerView.Adapter<EarthPhotoGridAdapter.EarthPhotoViewHolder> {
 
+    private ImageThumbnailGridItemBinding binding;
     private List<EarthPhoto> photos;
     private Context context;
     private EarthPhotoOnItemClickListener onItemClickListener;
@@ -64,23 +63,27 @@ public class EarthPhotoGridAdapter extends RecyclerView.Adapter<EarthPhotoGridAd
     }
 
     public interface EarthPhotoOnItemClickListener {
-        void onClick (View view, int position);
+        void onClick(View view, int position);
     }
 
     class EarthPhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.earth_photo_image_view)
-        ImageView earthPhotoImageView;
+        private ImageView earthPhotoImageView;
 
-        @BindView(R.id.earth_photo_loading_indicator)
-        ProgressBar earthPhotoLoadingIndicator;
+        private ProgressBar earthPhotoLoadingIndicator;
 
         public EarthPhotoViewHolder(@NonNull View itemView, EarthPhotoOnItemClickListener listener) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            binding = ImageThumbnailGridItemBinding.bind(itemView);
+            findViews();
 
             onItemClickListener = listener;
             earthPhotoImageView.setOnClickListener(this);
+        }
+
+        private void findViews() {
+            earthPhotoImageView = binding.earthPhotoImageView;
+            earthPhotoLoadingIndicator = binding.earthPhotoLoadingIndicator;
         }
 
         @Override

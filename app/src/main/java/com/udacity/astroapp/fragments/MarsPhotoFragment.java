@@ -31,6 +31,7 @@ import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.MarsPhotoViewModel;
 import com.udacity.astroapp.data.MarsPhotoViewModelFactory;
+import com.udacity.astroapp.databinding.FragmentMarsPhotoBinding;
 import com.udacity.astroapp.models.Camera;
 import com.udacity.astroapp.models.MarsPhoto;
 import com.udacity.astroapp.models.MarsPhotoObject;
@@ -47,58 +48,43 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MarsPhotoFragment extends Fragment {
 
-    @BindView(R.id.mars_photo_scroll_view)
-    ScrollView scrollView;
+    private FragmentMarsPhotoBinding binding;
 
-    @BindView(R.id.mars_photo_loading_indicator)
-    ProgressBar loadingIndicator;
+    private ScrollView scrollView;
 
-    @BindView(R.id.mars_photo_empty_image_view)
-    ImageView emptyImageView;
+    private ProgressBar loadingIndicator;
 
-    @BindView(R.id.mars_photo_empty_text_view)
-    TextView emptyTextView;
+    private ImageView emptyImageView;
 
-    @BindView(R.id.mars_photo_date_text_view)
-    TextView dateTextView;
+    private TextView emptyTextView;
 
-    @BindView(R.id.mars_photo_launch_date_text_view)
-    TextView launchDateTextView;
+    private TextView dateTextView;
 
-    @BindView(R.id.mars_photo_landing_date_text_view)
-    TextView landingDateTextView;
+    private TextView launchDateTextView;
 
-    @BindView(R.id.mars_photo_sol_text_view)
-    TextView solTextView;
+    private TextView landingDateTextView;
 
-    @BindView(R.id.mars_photo_camera_text_view)
-    TextView cameraTextView;
+    private TextView solTextView;
 
-    @BindView(R.id.mars_photo_source_text_view)
-    TextView sourceTextView;
+    private TextView cameraTextView;
 
-    @BindView(R.id.mars_photo_rover_name)
-    TextView roverNameTextView;
+    private TextView sourceTextView;
 
-    @BindView(R.id.mars_photo_view)
-    ImageView photoView;
+    private TextView roverNameTextView;
 
-    @BindView(R.id.mars_photo_previous_button)
-    ImageButton previousButton;
+    private ImageView photoView;
 
-    @BindView(R.id.mars_photo_next_button)
-    ImageButton nextButton;
+    private ImageButton previousButton;
 
-    @BindView(R.id.fab_mars_photo)
-    FloatingActionButton fab;
+    private ImageButton nextButton;
+
+    private FloatingActionButton fab;
 
     private MarsPhotoService marsPhotoService;
     private List<MarsPhoto> marsPhotos = new ArrayList<>();
@@ -139,9 +125,11 @@ public class MarsPhotoFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_mars_photo, container, false);
+        binding = FragmentMarsPhotoBinding.inflate(inflater, container, false);
+        View rootView = binding.getRoot();
+
         context = rootView.getContext();
-        ButterKnife.bind(this, rootView);
+        findViews();
 
         localDate = DateTimeUtils.getCurrentLocalDate();
         setLocalDateToCalendar(localDate);
@@ -159,6 +147,24 @@ public class MarsPhotoFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    private void findViews() {
+        scrollView = binding.marsPhotoScrollView;
+        loadingIndicator = binding.marsPhotoLoadingIndicator;
+        emptyImageView = binding.marsPhotoEmptyImageView;
+        emptyTextView = binding.marsPhotoEmptyTextView;
+        dateTextView = binding.marsPhotoDateTextView;
+        launchDateTextView = binding.marsPhotoLaunchDateTextView;
+        landingDateTextView = binding.marsPhotoLandingDateTextView;
+        solTextView = binding.marsPhotoSolTextView;
+        cameraTextView = binding.marsPhotoCameraTextView;
+        sourceTextView = binding.marsPhotoSourceTextView;
+        roverNameTextView = binding.marsPhotoRoverName;
+        photoView = binding.marsPhotoView;
+        previousButton = binding.marsPhotoPreviousButton;
+        nextButton = binding.marsPhotoNextButton;
+        fab = binding.fabMarsPhoto;
     }
 
     private void setScrollListeners() {

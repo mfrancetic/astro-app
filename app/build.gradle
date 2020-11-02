@@ -53,6 +53,10 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     buildToolsVersion = '29.0.3'
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -76,8 +80,6 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-    implementation 'com.jakewharton:butterknife:8.0.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.0.1'
     implementation 'com.google.android.libraries.places:places:2.4.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.1.0'

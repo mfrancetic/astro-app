@@ -25,6 +25,7 @@ import androidx.core.view.GravityCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -35,6 +36,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.adapters.ObservatoryAdapter;
+import com.udacity.astroapp.databinding.ActivityMainBinding;
 import com.udacity.astroapp.fragments.AsteroidFragment;
 import com.udacity.astroapp.fragments.EarthPhotoFragment;
 import com.udacity.astroapp.fragments.MarsPhotoFragment;
@@ -45,29 +47,24 @@ import com.udacity.astroapp.fragments.PhotoFragment;
 import java.util.Objects;
 import java.util.Timer;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         OnObservatoryClickListener {
 
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private ActivityMainBinding binding;
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 101;
     private boolean tabletSize;
     private final static String fragmentIdKey = "fragmentId";
     private int fragmentId;
-    @BindView(R.id.nav_view)
-    NavigationView navigationView;
 
-    @BindView(R.id.drawer_layout)
-    DrawerLayout drawer;
+    private NavigationView navigationView;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    private DrawerLayout drawer;
+
+    private Toolbar toolbar;
 
     private ActionBarDrawerToggle toggle;
     private Fragment currentFragment;
@@ -92,6 +89,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         if (savedInstanceState == null) {
             sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             themeId = sharedPreferences.getInt(PREF_THEME, 0);
@@ -102,9 +100,12 @@ public class MainActivity extends AppCompatActivity
         }
         updateTheme(themeId, checkedTheme);
 
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
-        ButterKnife.bind(this);
+        findViews();
+
         /* Find toolbar and set the support action bar to the toolbar */
         setSupportActionBar(toolbar);
 
@@ -155,6 +156,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void findViews() {
+        drawer = binding.drawerLayout;
+        navigationView = binding.navView;
+        toolbar = findViewById(R.id.toolbar);
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         navigationView.requestFocus();
@@ -169,7 +176,7 @@ public class MainActivity extends AppCompatActivity
 //        } else if (id == R.id.nav_observatories) {
 //            currentFragment = new ObservatoryListFragment();
 //            displayFragment(currentFragment);
-        } else if(id == R.id.nav_earth_photo) {
+        } else if (id == R.id.nav_earth_photo) {
             currentFragment = new EarthPhotoFragment();
             displayFragment(currentFragment);
         } else if (id == R.id.nav_mars_photo) {
@@ -269,8 +276,8 @@ public class MainActivity extends AppCompatActivity
 //            getSupportFragmentManager().popBackStack();
 //            currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
 //        } else {
-            currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
-            finish();
+        currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
+        finish();
 //        }
     }
 
@@ -299,6 +306,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -406,5 +414,11 @@ public class MainActivity extends AppCompatActivity
         editor.putInt(PREF_CHECKED_THEME, checkedTheme);
         editor.apply();
         AppCompatDelegate.setDefaultNightMode(themeId);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
     }
 }

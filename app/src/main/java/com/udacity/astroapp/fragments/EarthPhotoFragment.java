@@ -37,6 +37,7 @@ import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.EarthPhotoViewModel;
 import com.udacity.astroapp.data.EarthPhotoViewModelFactory;
+import com.udacity.astroapp.databinding.FragmentEarthPhotoBinding;
 import com.udacity.astroapp.models.EarthPhoto;
 import com.udacity.astroapp.utils.Constants;
 import com.udacity.astroapp.utils.DateTimeUtils;
@@ -53,42 +54,29 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.TimeZone;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class EarthPhotoFragment extends Fragment {
 
     private static final String LOG_TAG = EarthPhotoFragment.class.getSimpleName();
 
-    @BindView(R.id.earth_photo_coordinator_layout)
-    CoordinatorLayout earthPhotoCoordinatorLayout;
+    private FragmentEarthPhotoBinding binding;
 
-    @BindView(R.id.earth_scroll_view)
-    ScrollView earthScrollView;
+    private ScrollView earthScrollView;
 
-    @BindView(R.id.image_thumbnail_recycler_view)
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
 
-    @BindView(R.id.earth_photo_caption_text_view)
-    TextView earthPhotoCaptionTextView;
+    private TextView earthPhotoCaptionTextView;
 
-    @BindView(R.id.earth_photo_date_time_text_view)
-    TextView earthPhotoDateTimeTextView;
+    private TextView earthPhotoDateTimeTextView;
 
-    @BindView(R.id.earth_photo_source_text_view)
-    TextView earthPhotoSourceTextView;
+    private TextView earthPhotoSourceTextView;
 
-    @BindView(R.id.earth_photo_empty_image_view)
-    ImageView earthPhotoEmptyImageView;
+    private ImageView earthPhotoEmptyImageView;
 
-    @BindView(R.id.earth_photo_empty_text_view)
-    TextView earthPhotoEmptyTextView;
+    private TextView earthPhotoEmptyTextView;
 
-    @BindView(R.id.earth_loading_indicator)
-    ProgressBar earthPhotoLoadingIndicator;
+    private ProgressBar earthPhotoLoadingIndicator;
 
     private Context context;
 
@@ -131,9 +119,11 @@ public class EarthPhotoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_earth_photo, container, false);
+        binding = FragmentEarthPhotoBinding.inflate(inflater, container, false);
+        View rootView = binding.getRoot();
+
         context = rootView.getContext();
-        ButterKnife.bind(this, rootView);
+        findViews();
 
         localDate = DateTimeUtils.getCurrentLocalDate();
         setLocalDateToCalendar(localDate);
@@ -149,6 +139,17 @@ public class EarthPhotoFragment extends Fragment {
             getDataFromSavedInstanceState(savedInstanceState);
         }
         return rootView;
+    }
+
+    private void findViews() {
+        earthScrollView = binding.earthScrollView;
+        recyclerView = binding.imageThumbnailRecyclerView;
+        earthPhotoCaptionTextView = binding.earthPhotoCaptionTextView;
+        earthPhotoDateTimeTextView = binding.earthPhotoDateTimeTextView;
+        earthPhotoSourceTextView = binding.earthPhotoSourceTextView;
+        earthPhotoEmptyImageView = binding.earthPhotoEmptyImageView;
+        earthPhotoEmptyTextView = binding.earthPhotoEmptyTextView;
+        earthPhotoLoadingIndicator = binding.earthLoadingIndicator;
     }
 
     private void getDataFromSavedInstanceState(Bundle savedInstanceState) {
@@ -184,7 +185,7 @@ public class EarthPhotoFragment extends Fragment {
         });
         recyclerView.setAdapter(adapter);
         GridLayoutManager layoutManager;
-        if (Objects.requireNonNull(getActivity()).getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (requireActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             layoutManager = new GridLayoutManager(context, 3);
         } else {
             layoutManager = new GridLayoutManager(context, 5);

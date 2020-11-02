@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -39,6 +40,7 @@ import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.ObservatoryDetailViewModel;
 import com.udacity.astroapp.data.ObservatoryDetailViewModelFactory;
+import com.udacity.astroapp.databinding.FragmentObservatoryBinding;
 import com.udacity.astroapp.models.Observatory;
 import com.udacity.astroapp.utils.LanguageHelper;
 import com.udacity.astroapp.utils.QueryUtils;
@@ -50,13 +52,12 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class ObservatoryFragment extends Fragment implements OnMapReadyCallback {
 
     /* Tag for log messages */
     private static final String LOG_TAG = ObservatoryFragment.class.getSimpleName();
+
+    private FragmentObservatoryBinding binding;
 
     /* Observatory object and its values*/
     private Observatory observatory;
@@ -72,35 +73,24 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
     private boolean observatoryOpenNow;
 
     /* Views of the PhotoFragment */
-    @BindView(R.id.observatory_name)
-    TextView observatoryNameTextView;
+    private TextView observatoryNameTextView;
 
-    @BindView(R.id.observatory_address)
-    TextView observatoryAddressTextView;
+    private TextView observatoryAddressTextView;
 
-    @BindView(R.id.observatory_open_now)
-    TextView observatoryOpenNowTextView;
+    private TextView observatoryOpenNowTextView;
 
-    @BindView(R.id.observatory_scroll_view)
-    ScrollView observatoryScrollView;
+    private ScrollView observatoryScrollView;
 
-    @BindView(R.id.observatory_visit_homepage_button)
-    Button visitObservatoryHomepageButton;
+    private Button visitObservatoryHomepageButton;
+    private TextView observatoryOpeningHoursTextView;
 
-    @BindView(R.id.observatory_opening_hours)
-    TextView observatoryOpeningHoursTextView;
+    private TextView observatoryPhoneNumberTextView;
 
-    @BindView(R.id.observatory_phone_number)
-    TextView observatoryPhoneNumberTextView;
+    private TextView observatoryEmptyTextView;
 
-    @BindView(R.id.observatory_empty_text_view)
-    TextView observatoryEmptyTextView;
+    private ImageView observatoryEmptyImageView;
 
-    @BindView(R.id.observatory_empty_image_view)
-    ImageView observatoryEmptyImageView;
-
-    @BindView(R.id.observatory_loading_indicator)
-    ProgressBar observatoryLoadingIndicator;
+    private ProgressBar observatoryLoadingIndicator;
 
     /* Instances of the AppDatabase and ObservatoryDetailViewModel */
     private AppDatabase appDatabase;
@@ -132,8 +122,9 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         /* Inflate the fragment_observatory.xml view */
-        View rootView = inflater.inflate(R.layout.fragment_observatory, container, false);
-        ButterKnife.bind(this, rootView);
+        binding = FragmentObservatoryBinding.inflate(inflater, container, false);
+        View rootView = binding.getRoot();
+        findViews();
 
         context = observatoryEmptyTextView.getContext();
 
@@ -218,6 +209,19 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
             populateObservatory(observatory);
         }
         return rootView;
+    }
+
+    private void findViews() {
+        observatoryScrollView = binding.observatoryScrollView;
+        observatoryNameTextView = binding.observatoryName;
+        observatoryAddressTextView = binding.observatoryAddress;
+        observatoryOpenNowTextView = binding.observatoryOpenNow;
+        visitObservatoryHomepageButton = binding.observatoryVisitHomepageButton;
+        observatoryOpeningHoursTextView = binding.observatoryOpeningHours;
+        observatoryPhoneNumberTextView = binding.observatoryPhoneNumber;
+        observatoryEmptyTextView = binding.observatoryEmptyTextView;
+        observatoryEmptyImageView = binding.observatoryEmptyImageView;
+        observatoryLoadingIndicator = binding.observatoryLoadingIndicator;
     }
 
     public void setObservatory(Observatory observatory) {

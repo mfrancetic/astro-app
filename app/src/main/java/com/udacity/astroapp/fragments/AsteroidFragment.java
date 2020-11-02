@@ -41,6 +41,7 @@ import com.udacity.astroapp.data.AppDatabase;
 import com.udacity.astroapp.data.AppExecutors;
 import com.udacity.astroapp.data.AsteroidViewModel;
 import com.udacity.astroapp.data.AsteroidViewModelFactory;
+import com.udacity.astroapp.databinding.FragmentAsteroidBinding;
 import com.udacity.astroapp.models.Asteroid;
 import com.udacity.astroapp.utils.QueryUtils;
 
@@ -60,9 +61,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class AsteroidFragment extends Fragment {
 
     /* Tag for log messages */
@@ -73,23 +71,20 @@ public class AsteroidFragment extends Fragment {
     private List<Asteroid> asteroidList;
     private static final String asteroidListKey = "asteroidList";
 
+    private FragmentAsteroidBinding binding;
+
     private Context context;
 
     /* Views of the PhotoFragment */
-    @BindView(R.id.asteroid_scroll_view)
-    NestedScrollView scrollView;
+    private NestedScrollView scrollView;
 
-    @BindView(R.id.asteroid_recycler_view)
-    RecyclerView asteroidRecyclerView;
+    private RecyclerView asteroidRecyclerView;
 
-    @BindView(R.id.asteroid_empty_text_view)
-    TextView emptyTextView;
+    private TextView emptyTextView;
 
-    @BindView(R.id.asteroid_loading_indicator)
-    ProgressBar loadingIndicator;
+    private ProgressBar loadingIndicator;
 
-    @BindView(R.id.asteroid_empty_image_view)
-    ImageView emptyImageView;
+    private ImageView emptyImageView;
 
     /* Instances of the AppDatabase and ViewModel */
     private AppDatabase appDatabase;
@@ -163,8 +158,10 @@ public class AsteroidFragment extends Fragment {
         currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
         /* Inflate the fragment_asteroid.xml layout */
-        View rootView = inflater.inflate(R.layout.fragment_asteroid, container, false);
-        ButterKnife.bind(this, rootView);
+        binding = FragmentAsteroidBinding.inflate(inflater, container, false);
+        View rootView = binding.getRoot();
+
+        findViews();
 
         /* Get the boolean that indicates if a device is a tablet */
         isTablet = getResources().getBoolean(R.bool.isTablet);
@@ -236,6 +233,14 @@ public class AsteroidFragment extends Fragment {
             populateAsteroids(asteroidList);
         }
         return rootView;
+    }
+
+    private void findViews() {
+        scrollView = binding.asteroidScrollView;
+        asteroidRecyclerView = binding.asteroidRecyclerView;
+        emptyTextView = binding.asteroidEmptyTextView;
+        emptyImageView = binding.asteroidEmptyImageView;
+        loadingIndicator = binding.asteroidLoadingIndicator;
     }
 
     /**
@@ -454,5 +459,11 @@ public class AsteroidFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

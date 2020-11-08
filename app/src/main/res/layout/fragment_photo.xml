@@ -66,13 +66,13 @@
                 android:id="@+id/photo_previous_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:tint="?android:attr/textColorPrimary"
                 android:background="?android:attr/colorBackground"
                 android:contentDescription="@string/photo_previous_content_description"
                 android:src="@drawable/ic_previous"
                 app:layout_constraintBottom_toBottomOf="@id/photo_frame_layout"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/photo_frame_layout" />
+                app:layout_constraintTop_toTopOf="@id/photo_frame_layout"
+                app:tint="?android:attr/textColorPrimary" />
 
             <ImageButton
                 android:id="@+id/photo_next_button"
@@ -81,10 +81,10 @@
                 android:background="?android:attr/colorBackground"
                 android:contentDescription="@string/photo_next_content_description"
                 android:src="@drawable/ic_next"
-                android:tint="?android:attr/textColorPrimary"
                 app:layout_constraintBottom_toBottomOf="@id/photo_frame_layout"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/photo_frame_layout" />
+                app:layout_constraintTop_toTopOf="@id/photo_frame_layout"
+                app:tint="?android:attr/textColorPrimary" />
 
             <ImageView
                 android:id="@+id/photo_empty_image_view"
@@ -108,7 +108,7 @@
 
             <TextView
                 android:id="@+id/photo_title_text_view"
-                style="@style/PhotoTitleTextView"
+                style="@style/TitleTextView"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
                 android:paddingStart="@dimen/margin_list_item"

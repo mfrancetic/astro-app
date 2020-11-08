@@ -45,7 +45,17 @@
             android:id="@+id/nav_theme"
             android:contentDescription="@string/menu_theme_content_description"
             android:icon="@drawable/ic_style"
-            android:nextFocusForward="@id/nav_photo"
+            android:nextFocusForward="@id/nav_about"
             android:title="@string/menu_theme" />
+    </group>
+    <group
+        android:id="@+id/nav_group_information"
+        android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_about"
+            android:contentDescription="@string/menu_theme_content_description"
+            android:icon="@drawable/ic_action_info"
+            android:nextFocusForward="@id/nav_photo"
+            android:title="@string/menu_about" />
     </group>
 </menu>

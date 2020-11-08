@@ -1,8 +1,6 @@
 package com.udacity.astroapp.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.databinding.AsteroidListItemBinding;
 import com.udacity.astroapp.models.Asteroid;
+import com.udacity.astroapp.utils.WebIntentUtils;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -153,7 +152,6 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
 
         /* Get and parse the asteroidUrl */
         String asteroidUrl = asteroid.getAsteroidUrl();
-        final Uri asteroidUri = Uri.parse(asteroidUrl);
 
         /* Set the content description of the readMoreButton to indicate the name of the asteroid */
         readMoreButton.setContentDescription(context.getString(R.string.read_more_about_content_description)
@@ -162,9 +160,7 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
         /* Set an OnClickListener to the readMoreButton */
         readMoreButton.setOnClickListener(v -> {
             /* OnClick, create and start an intent that opens details of the selected asteroid */
-            Intent openAsteroidDetailsIntent = new Intent(Intent.ACTION_VIEW);
-            openAsteroidDetailsIntent.setData(asteroidUri);
-            context.startActivity(openAsteroidDetailsIntent);
+            WebIntentUtils.openWebsiteFromStringUrl(context, asteroidUrl);
         });
     }
 

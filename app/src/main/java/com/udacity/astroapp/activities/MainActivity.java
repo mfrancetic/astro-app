@@ -43,6 +43,8 @@ import com.udacity.astroapp.fragments.MarsPhotoFragment;
 import com.udacity.astroapp.fragments.ObservatoryFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment.OnObservatoryClickListener;
 import com.udacity.astroapp.fragments.PhotoFragment;
+import com.udacity.astroapp.utils.Constants;
+import com.udacity.astroapp.utils.WebIntentUtils;
 
 import java.util.Objects;
 import java.util.Timer;
@@ -184,6 +186,8 @@ public class MainActivity extends AppCompatActivity
             displayFragment(currentFragment);
         } else if (id == R.id.nav_theme) {
             changeThemeDialog();
+        } else if (id == R.id.nav_about) {
+            WebIntentUtils.openWebsiteFromStringUrl(this, Constants.DEVELOPER_WEBSITE_URL);
         }
 
         fragmentId = id;

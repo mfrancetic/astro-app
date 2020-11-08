@@ -41,4 +41,5 @@
     <!-- AppWidget -->
     <dimen name="app_widget_dimensions">150dp</dimen>
     <dimen name="widget_image_dimensions">110dp</dimen>
+    <dimen name="logo_dimens">40dp</dimen>
 </resources>

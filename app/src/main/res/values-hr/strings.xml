@@ -73,4 +73,5 @@
     <string name="rover">"Rover "</string>
     <string name="sol">"Datum na Marsu (sol): "</string>
     <string name="earth_date">"Datum na Zemlji: "</string>
+    <string name="menu_about">O autoru</string>
 </resources>

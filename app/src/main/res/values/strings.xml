@@ -107,4 +107,5 @@
     <string name="rover">"Rover "</string>
     <string name="sol">"Mars date (sol): "</string>
     <string name="earth_date">"Earth date: "</string>
+    <string name="menu_about">About</string>
 </resources>

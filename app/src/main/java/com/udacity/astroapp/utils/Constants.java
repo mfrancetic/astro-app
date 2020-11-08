@@ -19,4 +19,6 @@ public class Constants {
     public static final String MARS_SCROLL_POSITION_Y_KEY = "marsPhotoY";
     public static final String MARS_IS_DIALOG_SHOWN_KEY = "marsPhotoIsDialogShown";
     public static final String MARS_PHOTOS_KEY = "marsPhotos";
+
+    public static final String DEVELOPER_WEBSITE_URL = "https://mfrancetic.gitlab.io/cv-website/";
 }

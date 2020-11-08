@@ -99,7 +99,7 @@
 
             <TextView
                 android:id="@+id/mars_photo_rover_name"
-                style="@style/PhotoTitleTextView"
+                style="@style/TitleTextView"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center_horizontal"
                 android:paddingStart="@dimen/margin_list_item"

@@ -153,7 +153,9 @@ public class MainActivity extends AppCompatActivity
             Fragment fragment = new PhotoFragment();
             currentFragment = fragment;
             displayFragment(fragment);
+            fragmentId = R.id.nav_photo;
         } else {
+            fragmentId = savedInstanceState.getInt(fragmentIdKey);
             currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
         }
     }
@@ -169,28 +171,33 @@ public class MainActivity extends AppCompatActivity
         navigationView.requestFocus();
         /* Get the MenuItem id and create and display the appropriate fragment */
         int id = item.getItemId();
-        if (id == R.id.nav_photo) {
-            currentFragment = new PhotoFragment();
-            displayFragment(currentFragment);
-        } else if (id == R.id.nav_asteroids) {
-            currentFragment = new AsteroidFragment();
-            displayFragment(currentFragment);
+
+        if (id != fragmentId){
+            if (id == R.id.nav_photo) {
+                currentFragment = new PhotoFragment();
+                displayFragment(currentFragment);
+            } else if (id == R.id.nav_asteroids) {
+                currentFragment = new AsteroidFragment();
+                displayFragment(currentFragment);
 //        } else if (id == R.id.nav_observatories) {
 //            currentFragment = new ObservatoryListFragment();
 //            displayFragment(currentFragment);
-        } else if (id == R.id.nav_earth_photo) {
-            currentFragment = new EarthPhotoFragment();
-            displayFragment(currentFragment);
-        } else if (id == R.id.nav_mars_photo) {
-            currentFragment = new MarsPhotoFragment();
-            displayFragment(currentFragment);
-        } else if (id == R.id.nav_theme) {
-            changeThemeDialog();
-        } else if (id == R.id.nav_about) {
-            WebIntentUtils.openWebsiteFromStringUrl(this, Constants.DEVELOPER_WEBSITE_URL);
+            } else if (id == R.id.nav_earth_photo) {
+                currentFragment = new EarthPhotoFragment();
+                displayFragment(currentFragment);
+            } else if (id == R.id.nav_mars_photo) {
+                currentFragment = new MarsPhotoFragment();
+                displayFragment(currentFragment);
+            } else if (id == R.id.nav_theme) {
+                changeThemeDialog();
+            } else if (id == R.id.nav_about) {
+                WebIntentUtils.openWebsiteFromStringUrl(this, Constants.DEVELOPER_WEBSITE_URL);
+            }
         }
 
-        fragmentId = id;
+        if (id != R.id.nav_theme && id != R.id.nav_about){
+            fragmentId = id;
+        }
         /* In phone mode, close the drawer and clear focus */
         if (!tabletSize) {
             drawer.closeDrawer(GravityCompat.START);

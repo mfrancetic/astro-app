@@ -440,8 +440,6 @@ public class PhotoFragment extends Fragment {
         datePickerDialog.getDatePicker().updateDate(Integer.parseInt(datePickerDate.substring(0, 4)),
                 month - 1, Integer.parseInt(datePickerDate.substring(8, 10)));
 
-        setPreviousAndNextButtons();
-
         /* Set text of the photoTitleTextView, photoDateTextView and photoDescriptionTextView */
         if (photo.getPhotoTitle() != null) {
             photoTitleTextView.setText(photo.getPhotoTitle());
@@ -536,6 +534,8 @@ public class PhotoFragment extends Fragment {
                 }
             }
         });
+
+        setPreviousAndNextButtons();
 
         /* Update the app widget */
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

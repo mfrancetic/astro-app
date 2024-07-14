@@ -216,6 +216,8 @@ public class MarsPhotoFragment extends Fragment {
                         }
                     });
                 }
+
+
             }
         };
         viewModel.getMarsPhotos().observe(getViewLifecycleOwner(), observer);
@@ -265,9 +267,10 @@ public class MarsPhotoFragment extends Fragment {
                         displayPhoto(currentMarsPhoto);
                         apiIsSuccessful = true;
                     } else {
-                        localDate = DateTimeUtils.getPreviousDate(localDate);
-                        getPhotoDataFromUrl();
+                        setEmptyView();
                     }
+                } else {
+                    setEmptyView();
                 }
             }
 

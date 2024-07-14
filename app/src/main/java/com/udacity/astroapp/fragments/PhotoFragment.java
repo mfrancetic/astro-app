@@ -287,6 +287,8 @@ public class PhotoFragment extends Fragment {
             photo = savedInstanceState.getParcelable(photoKey);
             if (photo != null) {
                 populatePhoto(photo);
+            } else {
+                showEmptyView();
             }
             if (isDialogShown) {
                 showPhotoDialog();
@@ -392,17 +394,7 @@ public class PhotoFragment extends Fragment {
                 }
                 /* In case there are also no values stored in the database, hide all the
                  * views except the empty views */
-                loadingIndicator.setVisibility(View.GONE);
-                photoTitleTextView.setVisibility(View.GONE);
-                photoDescriptionTextView.setVisibility(View.GONE);
-                photoDateTextView.setVisibility(View.GONE);
-                photoPreviousButton.setVisibility(View.GONE);
-                photoNextButton.setVisibility(View.GONE);
-                photoVideoSourceTextView.setVisibility(View.INVISIBLE);
-                photoImageView.setVisibility(View.INVISIBLE);
-                emptyTextView.setVisibility(View.VISIBLE);
-                emptyImageView.setVisibility(View.VISIBLE);
-                floatingActionButton.hide();
+                showEmptyView();
             }
             super.onPostExecute(photo);
         }
@@ -571,6 +563,20 @@ public class PhotoFragment extends Fragment {
                 new PhotoAsyncTask().execute();
             });
         }
+    }
+
+    private void showEmptyView(){
+        loadingIndicator.setVisibility(View.GONE);
+        photoTitleTextView.setVisibility(View.GONE);
+        photoDescriptionTextView.setVisibility(View.GONE);
+        photoDateTextView.setVisibility(View.GONE);
+        photoPreviousButton.setVisibility(View.GONE);
+        photoNextButton.setVisibility(View.GONE);
+        photoVideoSourceTextView.setVisibility(View.INVISIBLE);
+        photoImageView.setVisibility(View.INVISIBLE);
+        emptyTextView.setVisibility(View.VISIBLE);
+        emptyImageView.setVisibility(View.VISIBLE);
+        floatingActionButton.hide();
     }
 
     @Override

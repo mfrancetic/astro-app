@@ -101,6 +101,7 @@ public class EarthPhotoFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         if (getActivity() != null) {
             /* Set the title of the activity */
             getActivity().setTitle(R.string.menu_earth_photo);

@@ -115,6 +115,7 @@ public class MarsPhotoFragment extends Fragment {
         if (getActivity() != null) {
             getActivity().setTitle(getString(R.string.menu_mars_photo));
         }
+        setRetainInstance(true);
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }

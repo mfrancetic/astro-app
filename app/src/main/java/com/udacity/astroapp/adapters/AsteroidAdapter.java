@@ -127,9 +127,7 @@ public class AsteroidAdapter extends RecyclerView.Adapter<AsteroidAdapter.Astero
         /* Set the asteroidVelocity value to the asteroidVelocityTextView */
         String asteroidVelocity = asteroid.getAsteroidVelocity();
         String asteroidVelocityDecimal = getVelocityDecimal(asteroidVelocity) + " km/s";
-        if (!asteroidVelocityDecimal.equals("0.00")) {
-            asteroidVelocityTextView.setText(asteroidVelocityDecimal);
-        }
+        asteroidVelocityTextView.setText(asteroidVelocityDecimal);
 
         /* Set the approachDate to the asteroidApproachDateTextView */
         String approachDate = asteroid.getAsteroidApproachDate();

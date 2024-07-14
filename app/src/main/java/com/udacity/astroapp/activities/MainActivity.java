@@ -39,7 +39,6 @@ import com.udacity.astroapp.adapters.ObservatoryAdapter;
 import com.udacity.astroapp.databinding.ActivityMainBinding;
 import com.udacity.astroapp.fragments.AsteroidFragment;
 import com.udacity.astroapp.fragments.EarthPhotoFragment;
-import com.udacity.astroapp.fragments.MarsPhotoFragment;
 import com.udacity.astroapp.fragments.ObservatoryFragment;
 import com.udacity.astroapp.fragments.ObservatoryListFragment.OnObservatoryClickListener;
 import com.udacity.astroapp.fragments.PhotoFragment;
@@ -83,17 +82,14 @@ public class MainActivity extends AppCompatActivity
 
     private static final String PREF_CHECKED_THEME = "checkedTheme";
 
-    private SharedPreferences sharedPreferences;
-
     private int checkedTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         if (savedInstanceState == null) {
-            sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
             themeId = sharedPreferences.getInt(PREF_THEME, 0);
             checkedTheme = sharedPreferences.getInt(PREF_CHECKED_THEME, 0);
         } else {
@@ -185,9 +181,9 @@ public class MainActivity extends AppCompatActivity
             } else if (id == R.id.nav_earth_photo) {
                 currentFragment = new EarthPhotoFragment();
                 displayFragment(currentFragment);
-            } else if (id == R.id.nav_mars_photo) {
-                currentFragment = new MarsPhotoFragment();
-                displayFragment(currentFragment);
+//            } else if (id == R.id.nav_mars_photo) {
+//                currentFragment = new MarsPhotoFragment();
+//                displayFragment(currentFragment);
             } else if (id == R.id.nav_theme) {
                 changeThemeDialog();
             } else if (id == R.id.nav_about) {
@@ -337,13 +333,8 @@ public class MainActivity extends AppCompatActivity
                 PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                        PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-            }
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
 

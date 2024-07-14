@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -82,11 +81,6 @@ public class EarthPhotoFragment extends Fragment {
 
     private EarthPhotoGridAdapter adapter;
 
-    private String earthPhotoIdentifier;
-    private String earthPhotoCaption;
-    private String earthPhotoDateTime;
-    private String earthPhotoImageUrl;
-
     private EarthPhoto earthPhoto;
     private List<EarthPhoto> earthPhotos;
 
@@ -107,7 +101,6 @@ public class EarthPhotoFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         if (getActivity() != null) {
             /* Set the title of the activity */
             getActivity().setTitle(R.string.menu_earth_photo);
@@ -211,7 +204,7 @@ public class EarthPhotoFragment extends Fragment {
             @Override
             public void onChanged(List<EarthPhoto> databaseEarthPhotos) {
                 earthPhotoViewModel.getEarthPhotos().removeObserver(this);
-                if (earthPhotos != null && earthPhotos.size() > 0) {
+                if (earthPhotos != null && !earthPhotos.isEmpty()) {
                     AppExecutors.getExecutors().diskIO().execute(() -> {
                         appDatabase.astroDao().deleteAllEarthPhotos();
                         appDatabase.astroDao().addAllEarthPhotos(earthPhotos);
@@ -269,10 +262,10 @@ public class EarthPhotoFragment extends Fragment {
 
                 for (int i = 0; i < earthPhotoArray.length(); i++) {
                     JSONObject earthPhotoObject = earthPhotoArray.getJSONObject(i);
-                    earthPhotoIdentifier = earthPhotoObject.getString("identifier");
-                    earthPhotoCaption = earthPhotoObject.getString("caption");
-                    earthPhotoImageUrl = earthPhotoObject.getString("image");
-                    earthPhotoDateTime = DateTimeUtils.getFormattedDateFromString(earthPhotoObject.getString("date"));
+                    String earthPhotoIdentifier = earthPhotoObject.getString("identifier");
+                    String earthPhotoCaption = earthPhotoObject.getString("caption");
+                    String earthPhotoImageUrl = earthPhotoObject.getString("image");
+                    String earthPhotoDateTime = DateTimeUtils.getFormattedDateFromString(earthPhotoObject.getString("date"));
 
                     earthPhoto = new EarthPhoto(earthPhotoIdentifier, earthPhotoCaption, earthPhotoImageUrl, earthPhotoDateTime);
                     if (earthPhotos == null) {
@@ -296,10 +289,10 @@ public class EarthPhotoFragment extends Fragment {
             if (newPhotos != null && !jsonNotSuccessful) {
                 // display the latest Earth photo
                 populatePhotos(newPhotos);
-            } else if (earthPhotoViewModel.getEarthPhotos().getValue() != null && earthPhotoViewModel.getEarthPhotos().getValue().size() != 0) {
+            } else if (earthPhotoViewModel.getEarthPhotos().getValue() != null && !earthPhotoViewModel.getEarthPhotos().getValue().isEmpty()) {
                 LiveData<List<EarthPhoto>> earthPhotosDatabase = earthPhotoViewModel.getEarthPhotos();
                 List<EarthPhoto> earthPhotosList = earthPhotosDatabase.getValue();
-                if (earthPhotosList.size() > 0) {
+                if (!earthPhotosList.isEmpty()) {
                     earthPhotos = earthPhotosList;
                     populatePhotos(earthPhotos);
                 }

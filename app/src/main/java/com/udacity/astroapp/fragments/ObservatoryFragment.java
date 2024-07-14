@@ -111,12 +111,6 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
 
     private String language;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -152,19 +146,7 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
         }
 
         /* Get the childFragmentManager and find fragment by its tag */
-        FragmentManager fragmentManager = getChildFragmentManager();
-        SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager
-                .findFragmentByTag(mapFragmentTag);
-
-        if (mapFragment == null) {
-            /* If the mapFragment is null, create a new SupportMapFragment and execute the
-             * adding of the fragment*/
-            mapFragment = new SupportMapFragment();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.map_fragment_container, mapFragment, mapFragmentTag);
-            fragmentTransaction.commit();
-            fragmentManager.executePendingTransactions();
-        }
+        SupportMapFragment mapFragment = getSupportMapFragment(mapFragmentTag);
 
         mapFragment.getMapAsync(this);
 
@@ -209,6 +191,23 @@ public class ObservatoryFragment extends Fragment implements OnMapReadyCallback 
             populateObservatory(observatory);
         }
         return rootView;
+    }
+
+    private @NonNull SupportMapFragment getSupportMapFragment(String mapFragmentTag) {
+        FragmentManager fragmentManager = getChildFragmentManager();
+        SupportMapFragment mapFragment = (SupportMapFragment) fragmentManager
+                .findFragmentByTag(mapFragmentTag);
+
+        if (mapFragment == null) {
+            /* If the mapFragment is null, create a new SupportMapFragment and execute the
+             * adding of the fragment*/
+            mapFragment = new SupportMapFragment();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.add(R.id.map_fragment_container, mapFragment, mapFragmentTag);
+            fragmentTransaction.commit();
+            fragmentManager.executePendingTransactions();
+        }
+        return mapFragment;
     }
 
     private void findViews() {

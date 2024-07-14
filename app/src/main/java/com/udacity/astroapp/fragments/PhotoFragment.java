@@ -162,8 +162,6 @@ public class PhotoFragment extends Fragment {
 
     private Calendar calendar;
 
-    private final String minDateString = "1995-06-16";
-
     private final static String currentDayKey = "currentDay";
 
     private static final String YOUTUBE_API_KEY = Secret.youtube_api_key;
@@ -177,7 +175,6 @@ public class PhotoFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         if (getActivity() != null) {
             /* Set the title of the activity */
             getActivity().setTitle(R.string.menu_photo);
@@ -359,7 +356,7 @@ public class PhotoFragment extends Fragment {
                 /* If there is a photo available, and the API call was successful,
                 populate the photo in the view */
                 populatePhoto(newPhoto);
-            } else if (photoViewModel.getPhotos().getValue() != null && photoViewModel.getPhotos().getValue().size() != 0) {
+            } else if (photoViewModel.getPhotos().getValue() != null && !photoViewModel.getPhotos().getValue().isEmpty()) {
                 /* In case there are values stored in the PhotoViewModel, retrieve those values */
                 LiveData<List<Photo>> photoDatabaseList = photoViewModel.getPhotos();
                 List<Photo> photos = photoDatabaseList.getValue();
@@ -636,9 +633,7 @@ public class PhotoFragment extends Fragment {
             dialog.dismiss();
         });
 
-        dialog.setOnDismissListener(dialog -> {
-            isDialogShown = false;
-        });
+        dialog.setOnDismissListener(dialog -> isDialogShown = false);
     }
 
     public void setLoadingView() {
@@ -708,6 +703,7 @@ public class PhotoFragment extends Fragment {
         long minDateLong = 0;
 
         try {
+            String minDateString = "1995-06-16";
             Date minDate = formatter.parse(minDateString);
             if (minDate != null) {
                 minDateLong = minDate.getTime();

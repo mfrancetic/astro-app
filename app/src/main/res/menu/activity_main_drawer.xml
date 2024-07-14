@@ -19,15 +19,15 @@
             android:id="@+id/nav_earth_photo"
             android:contentDescription="@string/menu_earth_photo_content_description"
             android:icon="@mipmap/ic_earth_foreground"
-            android:nextFocusForward="@id/nav_mars_photo"
+            android:nextFocusForward="@id/nav_asteroids"
             android:title="@string/menu_earth_photo" />
 
-        <item
-            android:id="@+id/nav_mars_photo"
-            android:contentDescription="@string/menu_mars_photo_content_description"
-            android:icon="@mipmap/ic_earth_foreground"
-            android:nextFocusForward="@id/nav_asteroids"
-            android:title="@string/menu_mars_photo" />
+<!--        <item-->
+<!--            android:id="@+id/nav_mars_photo"-->
+<!--            android:contentDescription="@string/menu_mars_photo_content_description"-->
+<!--            android:icon="@mipmap/ic_earth_foreground"-->
+<!--            android:nextFocusForward="@id/nav_asteroids"-->
+<!--            android:title="@string/menu_mars_photo" />-->
 
         <item
             android:id="@+id/nav_asteroids"

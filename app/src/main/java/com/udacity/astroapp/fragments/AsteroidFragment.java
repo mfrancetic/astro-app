@@ -121,15 +121,12 @@ public class AsteroidFragment extends Fragment {
 
     private Calendar calendar;
 
-    private final String minDateString = "1995-06-16";
-
     private final static String currentDayKey = "currentDay";
 
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         if (getActivity() != null) {
             /* Set the title of the activity */
             getActivity().setTitle(R.string.menu_asteroids);
@@ -323,7 +320,7 @@ public class AsteroidFragment extends Fragment {
             if (newAsteroids != null) {
                 /* If there is a list of asteroids available, populate the view with its values */
                 populateAsteroids(newAsteroids);
-            } else if (asteroidViewModel.getAsteroids().getValue() != null && asteroidViewModel.getAsteroids().getValue().size() != 0) {
+            } else if (asteroidViewModel.getAsteroids().getValue() != null && !asteroidViewModel.getAsteroids().getValue().isEmpty()) {
                 /* In case there are values stored in the AsteroidViewModel, retrieve those values */
                 LiveData<List<Asteroid>> asteroidDatabaseList = asteroidViewModel.getAsteroids();
                 asteroidList = asteroidDatabaseList.getValue();
@@ -432,6 +429,7 @@ public class AsteroidFragment extends Fragment {
         long minDateLong = 0;
 
         try {
+            String minDateString = "1995-06-16";
             Date minDate = formatter.parse(minDateString);
             minDateLong = Objects.requireNonNull(minDate).getTime();
         } catch (ParseException e) {

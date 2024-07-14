@@ -86,7 +86,6 @@ public class MarsPhotoFragment extends Fragment {
 
     private FloatingActionButton fab;
 
-    private MarsPhotoService marsPhotoService;
     private List<MarsPhoto> marsPhotos = new ArrayList<>();
     private MarsPhoto currentMarsPhoto;
 
@@ -116,7 +115,6 @@ public class MarsPhotoFragment extends Fragment {
         if (getActivity() != null) {
             getActivity().setTitle(getString(R.string.menu_mars_photo));
         }
-        setRetainInstance(true);
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }
@@ -201,7 +199,7 @@ public class MarsPhotoFragment extends Fragment {
             public void onChanged(List<MarsPhoto> databaseMarsPhotos) {
                 viewModel.getMarsPhotos().removeObserver(this);
                 if (databaseMarsPhotos != null) {
-                    if (databaseMarsPhotos.size() > 0 && marsPhotos.size() == 0) {
+                    if (!databaseMarsPhotos.isEmpty() && marsPhotos.isEmpty()) {
                         marsPhotos = databaseMarsPhotos;
                         displayPhoto(marsPhotos.get(0));
                         if (!apiIsSuccessful) {
@@ -210,12 +208,14 @@ public class MarsPhotoFragment extends Fragment {
                         }
                     }
                     AppExecutors.getExecutors().diskIO().execute(() -> {
-                        if (marsPhotos != null && marsPhotos.size() > 0) {
+                        if (marsPhotos != null && !marsPhotos.isEmpty()) {
                             database.astroDao().deleteAllMarsPhotos();
                             database.astroDao().addAllMarsPhotos(marsPhotos);
                         }
                     });
                 }
+
+
             }
         };
         viewModel.getMarsPhotos().observe(getViewLifecycleOwner(), observer);
@@ -249,7 +249,7 @@ public class MarsPhotoFragment extends Fragment {
     }
 
     private void getPhotoDataFromUrl() {
-        marsPhotoService = RetrofitClientInstance.getRetrofitInstance().create(MarsPhotoService.class);
+        MarsPhotoService marsPhotoService = RetrofitClientInstance.getRetrofitInstance().create(MarsPhotoService.class);
         Call<MarsPhotoObject> marsPhotoCalls = marsPhotoService.getMarsPhotoObject(localDate, Constants.NASA_API_KEY,
                 Constants.PAGE_NUMBER);
 
@@ -257,7 +257,7 @@ public class MarsPhotoFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call<MarsPhotoObject> call, @NonNull Response<MarsPhotoObject> response) {
                 if (response.body() != null) {
-                    if (response.body().getPhotos().size() > 0) {
+                    if (!response.body().getPhotos().isEmpty()) {
                         viewModel.getMarsPhotos().observe(getViewLifecycleOwner(), observer);
                         marsPhotos = new ArrayList<>();
                         marsPhotos.addAll(response.body().getPhotos());
@@ -265,9 +265,10 @@ public class MarsPhotoFragment extends Fragment {
                         displayPhoto(currentMarsPhoto);
                         apiIsSuccessful = true;
                     } else {
-                        localDate = DateTimeUtils.getPreviousDate(localDate);
-                        getPhotoDataFromUrl();
+                        setEmptyView();
                     }
+                } else {
+                    setEmptyView();
                 }
             }
 
@@ -278,7 +279,7 @@ public class MarsPhotoFragment extends Fragment {
                 t.printStackTrace();
                 LiveData<List<MarsPhoto>> marsPhotosDatabase = viewModel.getMarsPhotos();
                 List<MarsPhoto> marsPhotosDatabaseList = marsPhotosDatabase.getValue();
-                if (marsPhotosDatabaseList != null && marsPhotosDatabaseList.size() > 0) {
+                if (marsPhotosDatabaseList != null && !marsPhotosDatabaseList.isEmpty()) {
                     marsPhotos = marsPhotosDatabaseList;
                     displayPhoto(marsPhotos.get(0));
                     Snackbar snackbar = Snackbar.make(scrollView, getString(R.string.snackbar_offline_mode), Snackbar.LENGTH_LONG);

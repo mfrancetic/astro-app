@@ -135,11 +135,8 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
 
     public boolean locationPermissionGranted;
 
-    private LocationRequest mLocationRequest;
-
     private String language;
 
-    private final long UPDATE_INTERVAL = 10 * 1000;
     private final long FASTEST_INTERVAL = 2000;
 
     private LocationCallback locationCallback;
@@ -151,7 +148,6 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         if (getActivity() != null) {
             /* Set the title of the activity */
             getActivity().setTitle(R.string.menu_observatories);
@@ -429,7 +425,7 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
         try {
             onObservatoryClickListener = (OnObservatoryClickListener) context;
         } catch (ClassCastException e) {
-            throw new RuntimeException(context.toString() + "must implement OnObservatoryClickListener");
+            throw new RuntimeException(context + "must implement OnObservatoryClickListener");
         }
     }
 
@@ -549,8 +545,9 @@ public class ObservatoryListFragment extends Fragment implements LocationListene
     // Trigger new location updates at interval
     protected void startLocationUpdates() {
         // Create the location request to start receiving updates
-        mLocationRequest = new LocationRequest();
+        LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        long UPDATE_INTERVAL = 10 * 1000;
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
 

@@ -14,7 +14,7 @@
     <string name="diameter_label">Promjer:</string>
     <string name="dismiss_dialog">Zatvori</string>
     <string name="grant_location_permission">Dopusti pristup lokaciji</string>
-    <string name="video_not_playable">Nema dostupnih aplikacija za prikazati videozapis</string>
+    <string name="video_not_playable">Problem s prikazom videozapisa</string>
     <string name="location_access_not_granted_toast">Trebamo Vaše dopuštenje s ciljem korištenja Vaše lokacije za pronalaženje zvjezdarnica u Vašoj blizini. Molimo dopustite pristup lokaciji u postavkama Vašeg telefona.</string>
     <string name="location_permission_declined">Odbijeno dopuštenje pristupa lokaciji</string>
     <string name="location_permission_granted">Dopušten pristup lokaciji</string>

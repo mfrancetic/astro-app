@@ -91,7 +91,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'androidx.fragment:fragment-testing:1.7.1'
     implementation 'androidx.fragment:fragment:1.7.1'
-    implementation files('libs/YouTubeAndroidPlayerApi.jar')
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.1'
     androidTestImplementation 'com.21buttons:fragment-test-rule:1.0.0'
     debugImplementation 'com.21buttons:fragment-test-rule-extras:2.0.1'
 

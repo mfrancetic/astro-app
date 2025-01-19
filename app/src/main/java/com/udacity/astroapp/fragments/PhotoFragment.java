@@ -669,7 +669,10 @@ public class PhotoFragment extends Fragment {
             dialog.dismiss();
         });
 
-        dialog.setOnDismissListener(dialog -> isDialogShown = false);
+        dialog.setOnDismissListener(dialog -> {
+            isDialogShown = false;
+            fullScreenVideoPlayerView.release();
+        });
     }
 
     public void setLoadingView() {

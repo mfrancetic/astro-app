@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -459,7 +460,12 @@ public class PhotoFragment extends Fragment {
                     playVideoButton.setOnClickListener(view -> {
                         if (getActivity() != null) {
                             Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), YOUTUBE_API_KEY, videoId, 0, true, true);
-                            startActivity(intent);
+                            try {
+                                startActivity(intent);
+                            } catch (Exception e) {
+                                Toast.makeText(getActivity(), getString(R.string.video_not_playable), Toast.LENGTH_SHORT).show();
+                                Log.e(LOG_TAG, "Failed to open a video with URL" + videoId, e);
+                            }
                         }
                     });
                 } else {
@@ -563,7 +569,7 @@ public class PhotoFragment extends Fragment {
         }
     }
 
-    private void showEmptyView(){
+    private void showEmptyView() {
         loadingIndicator.setVisibility(View.GONE);
         photoTitleTextView.setVisibility(View.GONE);
         photoDescriptionTextView.setVisibility(View.GONE);

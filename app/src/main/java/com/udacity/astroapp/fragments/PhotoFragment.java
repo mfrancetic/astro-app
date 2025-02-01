@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.text.LineBreaker;
@@ -28,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,7 +45,10 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.youtube.player.YouTubeStandalonePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 import com.udacity.astroapp.R;
 import com.udacity.astroapp.activities.MainActivity;
 import com.udacity.astroapp.data.AppDatabase;
@@ -56,7 +61,6 @@ import com.udacity.astroapp.databinding.FragmentPhotoBinding;
 import com.udacity.astroapp.models.Photo;
 import com.udacity.astroapp.utils.PhotoUtils;
 import com.udacity.astroapp.utils.QueryUtils;
-import com.udacity.astroapp.utils.Secret;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -163,8 +167,6 @@ public class PhotoFragment extends Fragment {
     private Calendar calendar;
 
     private final static String currentDayKey = "currentDay";
-
-    private static final String YOUTUBE_API_KEY = Secret.youtube_api_key;
 
     private static final int MILLIS_IN_DAY = 1000 * 60 * 60 * 24;
 
@@ -458,8 +460,7 @@ public class PhotoFragment extends Fragment {
                     playVideoButton.setVisibility(View.VISIBLE);
                     playVideoButton.setOnClickListener(view -> {
                         if (getActivity() != null) {
-                            Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), YOUTUBE_API_KEY, videoId, 0, true, true);
-                            startActivity(intent);
+                            showVideoDialog();
                         }
                     });
                 } else {
@@ -563,7 +564,7 @@ public class PhotoFragment extends Fragment {
         }
     }
 
-    private void showEmptyView(){
+    private void showEmptyView() {
         loadingIndicator.setVisibility(View.GONE);
         photoTitleTextView.setVisibility(View.GONE);
         photoDescriptionTextView.setVisibility(View.GONE);
@@ -635,6 +636,52 @@ public class PhotoFragment extends Fragment {
         });
 
         dialog.setOnDismissListener(dialog -> isDialogShown = false);
+    }
+
+    void showVideoDialog() {
+        dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setContentView(R.layout.fullscreen_video);
+        dialog.show();
+
+        isDialogShown = true;
+        if (getActivity() != null) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+
+        YouTubePlayerView fullScreenVideoPlayerView = dialog.findViewById(R.id.youtube_player_view);
+        getLifecycle().addObserver(fullScreenVideoPlayerView);
+
+        fullScreenVideoPlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+            @Override
+            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                youTubePlayer.loadVideo(videoId, 0);
+            }
+
+            @Override
+            public void onError(@NonNull YouTubePlayer youTubePlayer, @NonNull PlayerConstants.PlayerError error) {
+                Toast.makeText(getActivity(), getString(R.string.video_not_playable), Toast.LENGTH_SHORT).show();
+                Log.e(LOG_TAG, "Failed to open a video with URL " + videoId + error.name());
+                super.onError(youTubePlayer, error);
+                isDialogShown = false;
+                dialog.dismiss();
+            }
+        });
+
+        fullScreenVideoPlayerView.setOnClickListener(v -> {
+            isDialogShown = false;
+            dialog.dismiss();
+        });
+
+        dialog.setOnDismissListener(dialog -> {
+            isDialogShown = false;
+            fullScreenVideoPlayerView.release();
+            if (getActivity() != null) {
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+            }
+        });
     }
 
     public void setLoadingView() {

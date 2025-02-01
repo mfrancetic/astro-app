@@ -9,6 +9,8 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
+    namespace = "com.udacity.astroapp"
+
     signingConfigs {
         config {
             keyAlias keystoreProperties['keyAlias']
@@ -17,14 +19,14 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-    compileSdk 34
+    compileSdk 35
     defaultConfig {
         resConfigs "hr", "en"
         applicationId "com.udacity.astroapp"
         minSdkVersion 19
-        targetSdkVersion 34
-        versionCode 31
-        versionName "1.0.0+$versionCode"
+        targetSdkVersion 35
+        versionCode 32
+        versionName "1.0.1+$versionCode"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -89,7 +91,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'androidx.fragment:fragment-testing:1.7.1'
     implementation 'androidx.fragment:fragment:1.7.1'
-    implementation files('libs/YouTubeAndroidPlayerApi.jar')
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.1'
     androidTestImplementation 'com.21buttons:fragment-test-rule:1.0.0'
     debugImplementation 'com.21buttons:fragment-test-rule-extras:2.0.1'
 

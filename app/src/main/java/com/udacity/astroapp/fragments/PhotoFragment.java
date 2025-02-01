@@ -7,6 +7,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.text.LineBreaker;
@@ -646,6 +647,9 @@ public class PhotoFragment extends Fragment {
         dialog.show();
 
         isDialogShown = true;
+        if (getActivity() != null) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
 
         YouTubePlayerView fullScreenVideoPlayerView = dialog.findViewById(R.id.youtube_player_view);
         getLifecycle().addObserver(fullScreenVideoPlayerView);
@@ -661,6 +665,8 @@ public class PhotoFragment extends Fragment {
                 Toast.makeText(getActivity(), getString(R.string.video_not_playable), Toast.LENGTH_SHORT).show();
                 Log.e(LOG_TAG, "Failed to open a video with URL " + videoId + error.name());
                 super.onError(youTubePlayer, error);
+                isDialogShown = false;
+                dialog.dismiss();
             }
         });
 
@@ -672,6 +678,9 @@ public class PhotoFragment extends Fragment {
         dialog.setOnDismissListener(dialog -> {
             isDialogShown = false;
             fullScreenVideoPlayerView.release();
+            if (getActivity() != null) {
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
+            }
         });
     }
 

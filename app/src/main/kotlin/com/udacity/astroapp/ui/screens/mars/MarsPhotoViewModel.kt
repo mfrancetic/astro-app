@@ -21,7 +21,9 @@ class MarsPhotoViewModel(
     private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     init {
-        loadMarsPhotosBySol(container.stateFlow.value.selectedSol)
+        intent {
+            loadMarsPhotosByDate(state.selectedDate)
+        }
     }
 
     fun loadMarsPhotosBySol(sol: String, forceRefresh: Boolean = false) = intent {

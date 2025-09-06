@@ -1,6 +1,5 @@
 package com.udacity.astroapp.ui.screens.mars
 
-import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,14 +43,14 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.skydoves.landscapist.glide.GlideImage
 import com.udacity.astroapp.models.MarsPhoto
+import com.udacity.astroapp.ui.components.AstroDatePickerDialog
 import com.udacity.astroapp.ui.components.SearchTextField
+import com.udacity.astroapp.ui.screens.photo.FullScreenPhotoDialog
 import com.udacity.astroapp.utils.ImageSharingUtils
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import androidx.core.net.toUri
-import com.udacity.astroapp.ui.components.AstroDatePickerDialog
 import java.util.Locale
 
 @Destination
@@ -66,6 +65,7 @@ fun MarsPhotoScreen(
     val coroutineScope = rememberCoroutineScope()
 
     var showDatePicker by rememberSaveable { mutableStateOf(false) }
+    var fullScreenPhoto by rememberSaveable { mutableStateOf<MarsPhoto?>(null) }
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
@@ -87,14 +87,7 @@ fun MarsPhotoScreen(
             }
 
             is MarsPhotoSideEffect.OpenPhotoInFullscreen -> {
-                val intent = Intent(Intent.ACTION_VIEW).apply {
-                    setDataAndType(sideEffect.photo.imageUrl?.toUri(), "image/*")
-                }
-                try {
-                    context.startActivity(intent)
-                } catch (e: Exception) {
-                    // Could trigger error state in ViewModel
-                }
+                fullScreenPhoto = sideEffect.photo
             }
 
             MarsPhotoSideEffect.ShowDatePicker -> {
@@ -119,6 +112,16 @@ fun MarsPhotoScreen(
                 showDatePicker = false
             },
             date = state.selectedDate
+        )
+    }
+
+    fullScreenPhoto?.imageUrl?.let { url ->
+        FullScreenPhotoDialog(
+            photoUrl = url,
+            photoTitle = fullScreenPhoto?.earthDate,
+            onDismiss = {
+                fullScreenPhoto = null
+            }
         )
     }
 

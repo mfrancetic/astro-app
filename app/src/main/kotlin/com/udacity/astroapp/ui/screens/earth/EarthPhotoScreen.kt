@@ -176,9 +176,8 @@ fun EarthPhotoGridItem(
     ) {
         Box {
             GlideImage(
-                imageModel = photo.earthPhotoUrl,
+                imageModel = { photo.earthPhotoUrl },
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
                 loading = {
                     Box(
                         modifier = Modifier.fillMaxSize(),
@@ -225,11 +224,10 @@ fun EarthPhotoListItem(
     ) {
         Column {
             GlideImage(
-                imageModel = photo.earthPhotoUrl,
+                imageModel = { photo.earthPhotoUrl },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp),
-                contentScale = ContentScale.Crop,
                 loading = {
                     Box(
                         modifier = Modifier.fillMaxSize(),

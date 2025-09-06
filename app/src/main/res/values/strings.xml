@@ -45,7 +45,7 @@
     <string name="menu_observatories">Observatories</string>
 
     <string name="menu_refresh">Refresh</string>
-    <string name="menu_calendar">Calendar</string>
+    <string name="calendar">Calendar</string>
     <string name="menu_theme">Theme</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
@@ -109,4 +109,34 @@
     <string name="sol">"Mars date (sol): "</string>
     <string name="earth_date">"Earth date: "</string>
     <string name="menu_about">About</string>
+    
+    <!-- Modern Compose screens (new strings not already defined above) -->
+    <string name="location_permission_title">Location Permission Needed</string>
+    <string name="location_permission_message">Enable location access to find observatories near you</string>
+    <string name="location_enabled">Location enabled</string>
+    <string name="grant">Grant</string>
+    <string name="loading_observatories">Loading observatories...</string>
+    <string name="unknown_observatory">Unknown Observatory</string>
+    <string name="address_unknown">Address unknown</string>
+    <string name="observatory_closed">Closed</string>
+    <string name="contact_information">Contact Information</string>
+    <string name="call">Call</string>
+    <string name="website">Website</string>
+    <string name="visit">Visit</string>
+    <string name="location">Location</string>
+    <string name="open_in_maps">Open in Maps</string>
+    
+    <!-- Content descriptions for Compose -->
+    
+    <!-- Bottom Navigation -->
+    
+    <!-- Modern Screen titles -->
+    <string name="earth_imagery">Earth Imagery</string>
+    
+    <!-- Observatory screen strings -->
+    <string name="retry">Retry</string>
+    <string name="no_observatories_found_location_enabled">No observatories found near your location</string>
+    <string name="no_observatories_found_no_location">No observatories found. Enable location to find nearby observatories</string>
+    
+    <!-- Error messages -->
 </resources>

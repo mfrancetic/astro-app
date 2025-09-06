@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DangerousOff
+import androidx.compose.material.icons.filled.Dangerous
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Warning
@@ -103,7 +103,7 @@ fun AsteroidScreen(
                 label = { Text("Hazardous Only") },
                 leadingIcon = {
                     Icon(
-                        if (state.showHazardousOnly) Icons.Default.Warning else Icons.Default.DangerousOff,
+                        if (state.showHazardousOnly) Icons.Default.Warning else Icons.Default.Dangerous,
                         contentDescription = "Hazardous filter"
                     )
                 }

@@ -72,7 +72,7 @@ fun PhotoScreen(
                 IconButton(onClick = { viewModel.onDatePickerClicked() }) {
                     Icon(
                         Icons.Default.CalendarToday, 
-                        contentDescription = stringResource(R.string.cd_calendar)
+                        contentDescription = stringResource(R.string.calendar)
                     )
                 }
                 
@@ -116,11 +116,10 @@ fun PhotoScreen(
                     // Photo Image
                     photo.photoUrl?.let { url ->
                         GlideImage(
-                            imageModel = url,
+                            imageModel = { url },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(dimensionResource(R.dimen.photo_detail_height)),
-                            contentScale = ContentScale.Crop,
                             loading = {
                                 Box(
                                     modifier = Modifier.fillMaxSize(),

@@ -24,7 +24,6 @@
     <string name="action_more_details">More Details</string>
 
     <!-- Content Descriptions -->
-    <string name="cd_calendar">Calendar</string>
     <string name="cd_share">Share</string>
     <string name="cd_filter">Filter</string>
     <string name="cd_search">Search</string>

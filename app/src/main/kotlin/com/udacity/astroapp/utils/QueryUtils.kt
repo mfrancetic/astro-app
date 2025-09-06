@@ -264,12 +264,10 @@ class QueryUtils {
             val mediaType = jsonObject.optString("media_type", "image")
             
             Photo(
-                photoId = "${date}_apod",
                 photoTitle = title,
                 photoDescription = description,
                 photoDate = date,
-                photoUrl = if (mediaType == "image") url else null,
-                photoHdUrl = if (mediaType == "image") hdUrl else null,
+                photoUrl = if (mediaType == "image") (hdUrl ?: url) else null,
                 photoMediaType = mediaType,
                 cacheTimestamp = System.currentTimeMillis()
             )
@@ -317,15 +315,14 @@ class QueryUtils {
                         val isDangerous = asteroidObject.getBoolean("is_potentially_hazardous_asteroid")
                         
                         val asteroid = Asteroid(
-                            asteroidId = id,
+                            asteroidId = id.toIntOrNull() ?: 0,
                             asteroidName = name.replace("(", "").replace(")", ""),
-                            asteroidAbsoluteMagnitude = absoluteMagnitude,
-                            asteroidMinDiameter = minDiameter,
-                            asteroidMaxDiameter = maxDiameter,
-                            asteroidVelocity = velocityKmh,
-                            asteroidDistanceFromEarth = distanceKm,
+                            asteroidDiameterMin = minDiameter,
+                            asteroidDiameterMax = maxDiameter,
                             asteroidApproachDate = approachDate,
-                            asteroidIsPotentiallyDangerous = isDangerous,
+                            asteroidVelocity = "$velocityKmh km/h",
+                            asteroidIsHazardous = isDangerous,
+                            asteroidUrl = "https://ssd.jpl.nasa.gov/sbdb.cgi?sstr=${id}",
                             cacheTimestamp = System.currentTimeMillis()
                         )
                         
@@ -360,11 +357,10 @@ class QueryUtils {
                 val imageUrl = createEarthPhotoImageUrl(date, image).toString()
                 
                 val earthPhoto = EarthPhoto(
-                    earthPhotoId = identifier,
+                    earthPhotoIdentifier = identifier,
                     earthPhotoCaption = caption,
-                    earthPhotoImageName = image,
-                    earthPhotoDate = date,
                     earthPhotoUrl = imageUrl,
+                    earthPhotoDateTime = date,
                     cacheTimestamp = System.currentTimeMillis()
                 )
                 
@@ -411,7 +407,7 @@ class QueryUtils {
                     observatoryName = name,
                     observatoryAddress = address,
                     observatoryPhoneNumber = null, // Would need details API call
-                    observatoryOpenNow = isOpen,
+                    observatoryOpenNow = isOpen ?: false,
                     observatoryOpeningHours = openingHours,
                     observatoryLatitude = latitude,
                     observatoryLongitude = longitude,

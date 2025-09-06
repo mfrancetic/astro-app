@@ -6,11 +6,14 @@ import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Satellite
 import androidx.compose.material.icons.filled.Terrain
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.spec.DirectionDestinationSpec
+import com.udacity.astroapp.ui.screens.destinations.AsteroidScreenDestination
+import com.udacity.astroapp.ui.screens.destinations.EarthPhotoScreenDestination
+import com.udacity.astroapp.ui.screens.destinations.MarsPhotoScreenDestination
+import com.udacity.astroapp.ui.screens.destinations.PhotoScreenDestination
 
 enum class BottomBarDestination(
-    val direction: DirectionDestination,
+    val direction: DirectionDestinationSpec,
     val icon: ImageVector,
     val label: String
 ) {
@@ -18,26 +21,4 @@ enum class BottomBarDestination(
     Earth(EarthPhotoScreenDestination, Icons.Default.Public, "nav_earth"),
     Asteroids(AsteroidScreenDestination, Icons.Default.Satellite, "nav_asteroids"),
     Mars(MarsPhotoScreenDestination, Icons.Default.Terrain, "nav_mars")
-}
-
-// Helper interface for type safety
-interface DirectionDestination {
-    val route: String
-}
-
-// Make destinations implement the interface
-object PhotoScreenDestination : DirectionDestination {
-    override val route = "photo_screen"
-}
-
-object EarthPhotoScreenDestination : DirectionDestination {
-    override val route = "earth_photo_screen"
-}
-
-object AsteroidScreenDestination : DirectionDestination {
-    override val route = "asteroid_screen"
-}
-
-object MarsPhotoScreenDestination : DirectionDestination {
-    override val route = "mars_photo_screen"
 }

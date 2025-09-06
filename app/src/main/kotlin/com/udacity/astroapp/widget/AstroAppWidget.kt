@@ -75,8 +75,8 @@ class AstroAppWidget : AppWidgetProvider() {
                             val appWidgetTarget = object : AppWidgetTarget(
                                 context, 
                                 R.id.widget_image, 
-                                remoteViews, 
-                                appWidgetIds
+                                remoteViews,
+                                *appWidgetIds
                             ) {
                                 override fun onResourceReady(
                                     resource: Bitmap, 

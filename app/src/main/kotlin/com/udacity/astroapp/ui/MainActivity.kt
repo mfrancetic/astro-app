@@ -9,13 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
 import com.ramcosta.composedestinations.rememberNavHostEngine
-import com.udacity.astroapp.R
 import com.udacity.astroapp.ui.navigation.AstroBottomNavigation
 import com.udacity.astroapp.ui.navigation.BottomBarDestination
 import com.udacity.astroapp.ui.screens.NavGraphs

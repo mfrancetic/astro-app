@@ -30,7 +30,7 @@ fun AstroBottomNavigation(
                     if (isCurrentDestOnBackStack) {
                         // When we click again on a bottom bar item and it was already selected
                         // we want to pop the back stack until the initial destination of this bottom bar item
-                        navController.popBackStack(destination.direction, false)
+                        navController.popBackStack(destination.direction.route, false)
                         return@NavigationBarItem
                     }
 

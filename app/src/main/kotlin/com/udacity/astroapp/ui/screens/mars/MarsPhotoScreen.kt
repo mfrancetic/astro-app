@@ -16,12 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.ramcosta.composedestinations.annotation.Destination
 import com.skydoves.landscapist.glide.GlideImage
 import com.udacity.astroapp.models.MarsPhoto
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
+@Destination
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MarsPhotoScreen(
@@ -202,9 +204,8 @@ fun MarsPhotoItem(
             ) {
                 photo.imageUrl?.let { url ->
                     GlideImage(
-                        imageModel = url,
+                        imageModel = { url },
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
                         loading = {
                             Box(
                                 modifier = Modifier.fillMaxSize(),

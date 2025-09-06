@@ -12,7 +12,7 @@
         android:id="@+id/menu_calendar"
         android:icon="@drawable/ic_calendar"
         android:orderInCategory="1"
-        android:title="@string/menu_calendar"
+        android:title="@string/calendar"
         android:visible="false"
         app:showAsAction="ifRoom" />
 </menu>

@@ -24,7 +24,6 @@
     <string name="action_more_details">Više detalja</string>
 
     <!-- Content Descriptions -->
-    <string name="cd_calendar">Kalendar</string>
     <string name="cd_share">Podijeli</string>
     <string name="cd_filter">Filtriraj</string>
     <string name="cd_search">Pretraži</string>

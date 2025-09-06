@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navigation -->
+    <string name="nav_home">Dnevna fotografija</string>
+    <string name="nav_earth">Zemlja</string>
+    <string name="nav_asteroids">Asteroidi</string>
+    <string name="nav_mars">Mars</string>
+
+    <!-- Screen Titles -->
+    <string name="title_astronomy_picture_of_day">Astronomska fotografija dana</string>
+    <string name="title_earth_photos">Fotografije Zemlje</string>
+    <string name="title_near_earth_asteroids">Blizu-zemljini asteroidi</string>
+    <string name="title_mars_rover_photos">Fotografije Mars rovera</string>
+
+    <!-- Actions -->
+    <string name="action_share">Podijeli</string>
+    <string name="action_refresh">Osvježi</string>
+    <string name="action_filter">Filtriraj</string>
+    <string name="action_search">Pretraži</string>
+    <string name="action_select_date">Odaberi datum</string>
+    <string name="action_toggle_view">Promijeni prikaz</string>
+    <string name="action_grid_view">Mrežni prikaz</string>
+    <string name="action_list_view">Prikaz liste</string>
+    <string name="action_more_details">Više detalja</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_calendar">Kalendar</string>
+    <string name="cd_share">Podijeli</string>
+    <string name="cd_filter">Filtriraj</string>
+    <string name="cd_search">Pretraži</string>
+    <string name="cd_hazardous">Opasan</string>
+    <string name="cd_hazardous_filter">Filter opasnih</string>
+    <string name="cd_grid_toggle">Promijeni prikaz</string>
+
+    <!-- Loading States -->
+    <string name="loading">Učitava…</string>
+    <string name="loading_photos">Učitavaju se fotografije…</string>
+    <string name="loading_asteroids">Učitavaju se asteroidi…</string>
+
+    <!-- Error Messages -->
+    <string name="error_no_photo_found">Nema fotografije za odabrani datum</string>
+    <string name="error_no_earth_photos_found">Nema fotografija Zemlje za odabrani datum</string>
+    <string name="error_no_mars_photos_found">Nema fotografija za Sol %s</string>
+    <string name="error_no_mars_photos_found_date">Nema fotografija za datum %s</string>
+    <string name="error_failed_to_load_photo">Neuspješno učitavanje fotografije</string>
+    <string name="error_failed_to_load_mars_photos">Neuspješno učitavanje Mars fotografija</string>
+    <string name="error_failed_to_load_asteroids">Neuspješno učitavanje asteroida</string>
+    <string name="error_failed_to_load_image">Neuspješno učitavanje slike</string>
+    <string name="error_failed_to_load">Neuspješno učitavanje</string>
+
+    <!-- Search & Filter -->
+    <string name="search_asteroids">Pretraži asteroide</string>
+    <string name="filter_hazardous_only">Samo opasni</string>
+    <string name="sort_asteroids">Sortiraj asteroide</string>
+    <string name="sort_by_date">Datum</string>
+    <string name="sort_by_name">Naziv</string>
+    <string name="sort_by_size">Veličina</string>
+    <string name="sort_by_velocity">Brzina</string>
+    <string name="done">Gotovo</string>
+
+    <!-- Mars Rover -->
+    <string name="select_rover">Odaberi rover</string>
+    <string name="rover_curiosity">Curiosity</string>
+    <string name="rover_opportunity">Opportunity</string>
+    <string name="rover_spirit">Spirit</string>
+    <string name="sol_input_hint">Sol (Marsov dan)</string>
+    <string name="sol_input_description">Unesite broj Marsovog sola</string>
+    <string name="earth_date_label">Zemljin datum: %s</string>
+    <string name="sol_label">Sol %s</string>
+
+    <!-- Asteroid Details -->
+    <string name="asteroid_approach_date">Datum približavanja: %s</string>
+    <string name="asteroid_diameter">Promjer: %.2f - %.2f km</string>
+    <string name="asteroid_velocity">Brzina: %s</string>
+
+    <!-- Date Display -->
+    <string name="date_label">Datum: %s</string>
+
+    <!-- Share Content -->
+    <string name="share_photo_title">Podijeli astronomsku fotografiju</string>
+    <string name="share_image_title">Podijeli sliku</string>
+</resources>

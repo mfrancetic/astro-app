@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Navigation -->
+    <string name="nav_home">Daily Photo</string>
+    <string name="nav_earth">Earth</string>
+    <string name="nav_asteroids">Asteroids</string>
+    <string name="nav_mars">Mars</string>
+
+    <!-- Screen Titles -->
+    <string name="title_astronomy_picture_of_day">Astronomy Picture of the Day</string>
+    <string name="title_earth_photos">Earth Photos</string>
+    <string name="title_near_earth_asteroids">Near-Earth Asteroids</string>
+    <string name="title_mars_rover_photos">Mars Rover Photos</string>
+
+    <!-- Actions -->
+    <string name="action_share">Share</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_filter">Filter</string>
+    <string name="action_search">Search</string>
+    <string name="action_select_date">Select Date</string>
+    <string name="action_toggle_view">Toggle View Mode</string>
+    <string name="action_grid_view">Grid View</string>
+    <string name="action_list_view">List View</string>
+    <string name="action_more_details">More Details</string>
+
+    <!-- Content Descriptions -->
+    <string name="cd_calendar">Calendar</string>
+    <string name="cd_share">Share</string>
+    <string name="cd_filter">Filter</string>
+    <string name="cd_search">Search</string>
+    <string name="cd_hazardous">Hazardous</string>
+    <string name="cd_hazardous_filter">Hazardous filter</string>
+    <string name="cd_grid_toggle">Toggle View Mode</string>
+
+    <!-- Loading States -->
+    <string name="loading">Loading…</string>
+    <string name="loading_photos">Loading photos…</string>
+    <string name="loading_asteroids">Loading asteroids…</string>
+
+    <!-- Error Messages -->
+    <string name="error_no_photo_found">No photo found for selected date</string>
+    <string name="error_no_earth_photos_found">No Earth photos found for selected date</string>
+    <string name="error_no_mars_photos_found">No photos found for Sol %s</string>
+    <string name="error_no_mars_photos_found_date">No photos found for date %s</string>
+    <string name="error_failed_to_load_photo">Failed to load photo</string>
+    <string name="error_failed_to_load_mars_photos">Failed to load Mars photos</string>
+    <string name="error_failed_to_load_asteroids">Failed to load asteroids</string>
+    <string name="error_failed_to_load_image">Failed to load image</string>
+    <string name="error_failed_to_load">Failed to load</string>
+
+    <!-- Search & Filter -->
+    <string name="search_asteroids">Search asteroids</string>
+    <string name="filter_hazardous_only">Hazardous Only</string>
+    <string name="sort_asteroids">Sort Asteroids</string>
+    <string name="sort_by_date">Date</string>
+    <string name="sort_by_name">Name</string>
+    <string name="sort_by_size">Size</string>
+    <string name="sort_by_velocity">Velocity</string>
+    <string name="done">Done</string>
+
+    <!-- Mars Rover -->
+    <string name="select_rover">Select Rover</string>
+    <string name="rover_curiosity">Curiosity</string>
+    <string name="rover_opportunity">Opportunity</string>
+    <string name="rover_spirit">Spirit</string>
+    <string name="sol_input_hint">Sol (Martian day)</string>
+    <string name="sol_input_description">Enter a Martian sol number</string>
+    <string name="earth_date_label">Earth Date: %s</string>
+    <string name="sol_label">Sol %s</string>
+
+    <!-- Asteroid Details -->
+    <string name="asteroid_approach_date">Approach Date: %s</string>
+    <string name="asteroid_diameter">Diameter: %.2f - %.2f km</string>
+    <string name="asteroid_velocity">Velocity: %s</string>
+
+    <!-- Date Display -->
+    <string name="date_label">Date: %s</string>
+
+    <!-- Share Content -->
+    <string name="share_photo_title">Share Astronomy Photo</string>
+    <string name="share_image_title">Share Image</string>
+</resources>

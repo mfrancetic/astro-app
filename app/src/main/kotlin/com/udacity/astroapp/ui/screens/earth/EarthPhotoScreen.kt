@@ -17,9 +17,9 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.GridView
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -36,20 +36,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.ramcosta.composedestinations.annotation.Destination
 import com.skydoves.landscapist.glide.GlideImage
 import com.udacity.astroapp.models.EarthPhoto
+import com.udacity.astroapp.ui.components.AstroDatePickerDialog
+import com.udacity.astroapp.utils.ImageSharingUtils
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import androidx.core.net.toUri
-import androidx.compose.runtime.rememberCoroutineScope
-import com.udacity.astroapp.utils.ImageSharingUtils
-import kotlinx.coroutines.launch
 
 @Destination
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,6 +94,17 @@ fun EarthPhotoScreen(
         }
     }
 
+    // Date picker dialog
+    if (state.showDatePicker) {
+        AstroDatePickerDialog(
+            onDateSelected = { selectedDate ->
+                viewModel.onDateSelected(selectedDate)
+            },
+            onDismiss = { viewModel.onDatePickerDismissed() },
+            date = state.selectedDate
+        )
+    }
+
     // Handle error state from ViewModel
     state.error?.let { errorMessage ->
         LaunchedEffect(errorMessage) {
@@ -127,7 +139,7 @@ fun EarthPhotoScreen(
                 
                 IconButton(onClick = { viewModel.onGridModeToggled() }) {
                     Icon(
-                        if (state.gridMode) Icons.Default.List else Icons.Default.GridView,
+                        if (state.gridMode) Icons.AutoMirrored.Filled.List else Icons.Default.GridView,
                         contentDescription = "Toggle View Mode"
                     )
                 }

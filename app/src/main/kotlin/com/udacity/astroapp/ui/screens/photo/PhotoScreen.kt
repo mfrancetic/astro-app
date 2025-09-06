@@ -45,6 +45,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.zIndex
 import com.skydoves.landscapist.ImageOptions
 import com.udacity.astroapp.models.Photo
+import com.udacity.astroapp.ui.components.AstroDatePickerDialog
 
 @RootNavGraph(start = true)
 @Destination
@@ -86,6 +87,17 @@ fun PhotoScreen(
                 // Date picker will be shown by the state management
             }
         }
+    }
+
+    // Date picker dialog
+    if (state.showDatePicker) {
+        AstroDatePickerDialog(
+            onDateSelected = { selectedDate ->
+                viewModel.onDateSelected(selectedDate)
+            },
+            onDismiss = { viewModel.onDatePickerDismissed() },
+            date = state.selectedDate
+        )
     }
 
     fullScreenPhoto?.photoUrl?.let { url ->

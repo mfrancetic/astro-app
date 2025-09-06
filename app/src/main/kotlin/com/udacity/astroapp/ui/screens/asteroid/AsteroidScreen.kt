@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Dangerous
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Warning
@@ -54,6 +55,7 @@ import androidx.core.net.toUri
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Asteroid
+import com.udacity.astroapp.ui.components.AstroDatePickerDialog
 import com.udacity.astroapp.ui.components.SearchTextField
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -70,6 +72,7 @@ fun AsteroidScreen(
     val snackbarHostState = remember { SnackbarHostState() }
 
     var showFilterDialog by remember { mutableStateOf(false) }
+    var showDatePicker by remember { mutableStateOf(false) }
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
@@ -115,6 +118,12 @@ fun AsteroidScreen(
                     text = stringResource(R.string.title_near_earth_asteroids),
                     style = MaterialTheme.typography.headlineSmall
                 )
+
+                IconButton(onClick = {
+                    showDatePicker = true
+                }) {
+                    Icon(Icons.Default.CalendarToday, contentDescription = "Select Date")
+                }
 
                 IconButton(onClick = { showFilterDialog = true }) {
                     Icon(
@@ -235,6 +244,18 @@ fun AsteroidScreen(
                 showFilterDialog = false
             },
             onDismiss = { showFilterDialog = false }
+        )
+    }
+
+    if (showDatePicker){
+        AstroDatePickerDialog(
+            onDateSelected = { selectedDate ->
+                viewModel.onDateSelected(selectedDate)
+            },
+            onDismiss = {
+                showDatePicker = false
+            },
+            date = state.selectedDate
         )
     }
 }

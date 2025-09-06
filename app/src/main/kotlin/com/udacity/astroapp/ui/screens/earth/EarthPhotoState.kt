@@ -1,13 +1,14 @@
 package com.udacity.astroapp.ui.screens.earth
 
 import com.udacity.astroapp.models.EarthPhoto
+import java.time.LocalDate
 
 data class EarthPhotoState(
     val photos: List<EarthPhoto> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
     val isRefreshing: Boolean = false,
-    val selectedDate: String = "",
+    val selectedDate: LocalDate = LocalDate.now(),
     val showDatePicker: Boolean = false,
     val gridMode: Boolean = true,
     val selectedPhoto: EarthPhoto? = null

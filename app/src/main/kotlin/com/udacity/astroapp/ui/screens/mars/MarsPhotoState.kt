@@ -1,6 +1,7 @@
 package com.udacity.astroapp.ui.screens.mars
 
 import com.udacity.astroapp.models.MarsPhoto
+import java.time.LocalDate
 
 data class MarsPhotoState(
     val photos: List<MarsPhoto> = emptyList(),
@@ -9,7 +10,7 @@ data class MarsPhotoState(
     val isRefreshing: Boolean = false,
     val selectedRover: String = "curiosity",
     val selectedSol: String = "1000",
-    val selectedDate: String = "",
+    val selectedDate: LocalDate = LocalDate.now(),
     val showDatePicker: Boolean = false,
     val availableRovers: List<String> = listOf("curiosity", "opportunity", "spirit")
 )

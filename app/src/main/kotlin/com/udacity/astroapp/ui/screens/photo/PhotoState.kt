@@ -1,12 +1,13 @@
 package com.udacity.astroapp.ui.screens.photo
 
 import com.udacity.astroapp.models.Photo
+import java.time.LocalDate
 
 data class PhotoState(
     val photo: Photo? = null,
     val isLoading: Boolean = false,
     val error: String? = null,
-    val selectedDate: String = "",
+    val selectedDate: LocalDate = LocalDate.now(),
     val isRefreshing: Boolean = false,
     val showDatePicker: Boolean = false,
 )

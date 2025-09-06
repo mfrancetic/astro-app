@@ -10,12 +10,16 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class AsteroidViewModel(
     private val asteroidRepository: AsteroidRepository
 ) : ViewModel(), ContainerHost<AsteroidState, AsteroidSideEffect> {
 
     override val container = container<AsteroidState, AsteroidSideEffect>(AsteroidState())
+
+    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     init {
         observeAsteroids()
@@ -28,14 +32,14 @@ class AsteroidViewModel(
                 reduce {
                     state.copy(
                         asteroids = asteroids,
-                        filteredAsteroids = filterAndSortAsteroids(asteroids, state.searchQuery, state.showHazardousOnly, state.sortBy)
+                        filteredAsteroids = filterAndSortAsteroids(asteroids, state.searchQuery, state.showHazardousOnly, state.sortBy, state.selectedDate)
                     )
                 }
             }
         }
     }
 
-    fun loadAsteroids(forceRefresh: Boolean = false) = intent {
+    fun loadAsteroids(forceRefresh: Boolean = true) = intent {
         reduce { 
             state.copy(
                 isLoading = true, 
@@ -66,11 +70,16 @@ class AsteroidViewModel(
         }
     }
 
+    fun onDateSelected(date: LocalDate) = intent {
+        reduce { state.copy(selectedDate = date) }
+        loadAsteroids()
+    }
+
     fun onSearchQueryChanged(query: String) = intent {
         reduce { 
             state.copy(
                 searchQuery = query,
-                filteredAsteroids = filterAndSortAsteroids(state.asteroids, query, state.showHazardousOnly, state.sortBy)
+                filteredAsteroids = filterAndSortAsteroids(state.asteroids, query, state.showHazardousOnly, state.sortBy, state.selectedDate)
             )
         }
     }
@@ -80,7 +89,7 @@ class AsteroidViewModel(
         reduce { 
             state.copy(
                 showHazardousOnly = newShowHazardous,
-                filteredAsteroids = filterAndSortAsteroids(state.asteroids, state.searchQuery, newShowHazardous, state.sortBy)
+                filteredAsteroids = filterAndSortAsteroids(state.asteroids, state.searchQuery, newShowHazardous, state.sortBy, state.selectedDate)
             )
         }
     }
@@ -89,7 +98,7 @@ class AsteroidViewModel(
         reduce { 
             state.copy(
                 sortBy = sortOption,
-                filteredAsteroids = filterAndSortAsteroids(state.asteroids, state.searchQuery, state.showHazardousOnly, sortOption)
+                filteredAsteroids = filterAndSortAsteroids(state.asteroids, state.searchQuery, state.showHazardousOnly, sortOption, state.selectedDate)
             )
         }
     }
@@ -110,9 +119,10 @@ class AsteroidViewModel(
         asteroids: List<Asteroid>,
         searchQuery: String,
         showHazardousOnly: Boolean,
-        sortBy: AsteroidSortOption
+        sortBy: AsteroidSortOption,
+        date: LocalDate,
     ): List<Asteroid> {
-        var filtered = asteroids
+        var filtered = asteroids.filter { it.asteroidApproachDate == date.format(dateFormat) }
 
         // Apply search filter
         if (searchQuery.isNotBlank()) {

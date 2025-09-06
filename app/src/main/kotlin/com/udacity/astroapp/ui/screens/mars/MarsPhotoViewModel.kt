@@ -9,6 +9,8 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class MarsPhotoViewModel(
     private val marsPhotoRepository: MarsPhotoRepository
@@ -16,18 +18,20 @@ class MarsPhotoViewModel(
 
     override val container = container<MarsPhotoState, MarsPhotoSideEffect>(MarsPhotoState())
 
+    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
     init {
         loadMarsPhotosBySol(container.stateFlow.value.selectedSol)
     }
 
     fun loadMarsPhotosBySol(sol: String, forceRefresh: Boolean = false) = intent {
-        reduce { 
+        reduce {
             state.copy(
-                isLoading = true, 
+                isLoading = true,
                 error = null,
                 selectedSol = sol,
                 isRefreshing = forceRefresh
-            ) 
+            )
         }
 
         viewModelScope.launch {
@@ -49,24 +53,28 @@ class MarsPhotoViewModel(
                         error = e.message ?: "Failed to load Mars photos"
                     )
                 }
-                postSideEffect(MarsPhotoSideEffect.ShowError(e.message ?: "Failed to load Mars photos"))
+                postSideEffect(
+                    MarsPhotoSideEffect.ShowError(
+                        e.message ?: "Failed to load Mars photos"
+                    )
+                )
             }
         }
     }
 
-    fun loadMarsPhotosByDate(date: String, forceRefresh: Boolean = false) = intent {
-        reduce { 
+    fun loadMarsPhotosByDate(date: LocalDate, forceRefresh: Boolean = false) = intent {
+        reduce {
             state.copy(
-                isLoading = true, 
+                isLoading = true,
                 error = null,
                 selectedDate = date,
                 isRefreshing = forceRefresh
-            ) 
+            )
         }
 
         viewModelScope.launch {
             try {
-                val photos = marsPhotoRepository.getMarsPhotosByDate(date, forceRefresh)
+                val photos = marsPhotoRepository.getMarsPhotosByDate(date.format(dateFormat), forceRefresh)
                 reduce {
                     state.copy(
                         photos = photos,
@@ -83,7 +91,11 @@ class MarsPhotoViewModel(
                         error = e.message ?: "Failed to load Mars photos"
                     )
                 }
-                postSideEffect(MarsPhotoSideEffect.ShowError(e.message ?: "Failed to load Mars photos"))
+                postSideEffect(
+                    MarsPhotoSideEffect.ShowError(
+                        e.message ?: "Failed to load Mars photos"
+                    )
+                )
             }
         }
     }
@@ -100,7 +112,7 @@ class MarsPhotoViewModel(
         }
     }
 
-    fun onDateSelected(date: String) = intent {
+    fun onDateSelected(date: LocalDate) = intent {
         reduce { state.copy(showDatePicker = false) }
         loadMarsPhotosByDate(date)
     }
@@ -122,10 +134,10 @@ class MarsPhotoViewModel(
     }
 
     fun onRefresh() = intent {
-        if (state.selectedDate.isNotBlank()) {
-            loadMarsPhotosByDate(state.selectedDate, forceRefresh = true)
-        } else {
+        if (state.selectedSol.isNotBlank()) {
             loadMarsPhotosBySol(state.selectedSol, forceRefresh = true)
+        } else {
+            loadMarsPhotosByDate(state.selectedDate, forceRefresh = true)
         }
     }
 

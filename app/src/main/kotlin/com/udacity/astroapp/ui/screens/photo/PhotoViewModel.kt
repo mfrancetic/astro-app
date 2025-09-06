@@ -9,8 +9,8 @@ import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
-import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class PhotoViewModel(
     private val photoRepository: PhotoRepository
@@ -18,18 +18,17 @@ class PhotoViewModel(
 
     override val container = container<PhotoState, PhotoSideEffect>(PhotoState())
 
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     init {
         loadTodaysPhoto()
     }
 
     fun loadTodaysPhoto() = intent {
-        val todayDate = dateFormat.format(Date())
-        loadPhotoByDate(todayDate)
+        loadPhotoByDate(LocalDate.now())
     }
 
-    fun loadPhotoByDate(date: String, forceRefresh: Boolean = false) = intent {
+    fun loadPhotoByDate(date: LocalDate, forceRefresh: Boolean = false) = intent {
         reduce { 
             state.copy(
                 isLoading = true, 
@@ -41,7 +40,7 @@ class PhotoViewModel(
 
         viewModelScope.launch {
             try {
-                val photo = photoRepository.getPhotoByDate(date, forceRefresh)
+                val photo = photoRepository.getPhotoByDate(date.format(dateFormat), forceRefresh)
                 reduce {
                     state.copy(
                         photo = photo,
@@ -63,7 +62,7 @@ class PhotoViewModel(
         }
     }
 
-    fun onDateSelected(date: String) = intent {
+    fun onDateSelected(date: LocalDate) = intent {
         reduce { state.copy(showDatePicker = false) }
         loadPhotoByDate(date)
     }

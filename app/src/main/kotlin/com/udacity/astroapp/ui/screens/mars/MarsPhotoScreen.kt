@@ -31,8 +31,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -48,6 +51,7 @@ import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import androidx.core.net.toUri
+import com.udacity.astroapp.ui.components.AstroDatePickerDialog
 import java.util.Locale
 
 @Destination
@@ -61,11 +65,14 @@ fun MarsPhotoScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
+    var showDatePicker by rememberSaveable { mutableStateOf(false) }
+
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is MarsPhotoSideEffect.ShowError -> {
                 // Error handled via state
             }
+
             is MarsPhotoSideEffect.SharePhoto -> {
                 coroutineScope.launch {
                     sideEffect.photo.imageUrl?.let { url ->
@@ -78,6 +85,7 @@ fun MarsPhotoScreen(
                     }
                 }
             }
+
             is MarsPhotoSideEffect.OpenPhotoInFullscreen -> {
                 val intent = Intent(Intent.ACTION_VIEW).apply {
                     setDataAndType(sideEffect.photo.imageUrl?.toUri(), "image/*")
@@ -88,6 +96,7 @@ fun MarsPhotoScreen(
                     // Could trigger error state in ViewModel
                 }
             }
+
             MarsPhotoSideEffect.ShowDatePicker -> {
                 // Date picker handled by state
             }
@@ -99,6 +108,18 @@ fun MarsPhotoScreen(
         LaunchedEffect(errorMessage) {
             snackbarHostState.showSnackbar(errorMessage)
         }
+    }
+
+    if (showDatePicker) {
+        AstroDatePickerDialog(
+            onDateSelected = { selectedDate ->
+                viewModel.onDateSelected(selectedDate)
+            },
+            onDismiss = {
+                showDatePicker = false
+            },
+            date = state.selectedDate
+        )
     }
 
     Column(
@@ -116,12 +137,14 @@ fun MarsPhotoScreen(
                 text = "Mars Rover Photos",
                 style = MaterialTheme.typography.headlineSmall
             )
-            
+
             Row {
-                IconButton(onClick = { viewModel.onDatePickerClicked() }) {
+                IconButton(onClick = {
+                    showDatePicker = true
+                }) {
                     Icon(Icons.Default.CalendarToday, contentDescription = "Select Date")
                 }
-                
+
                 IconButton(onClick = { viewModel.onRefresh() }) {
                     Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                 }
@@ -141,9 +164,9 @@ fun MarsPhotoScreen(
                     text = "Select Rover",
                     style = MaterialTheme.typography.titleMedium
                 )
-                
+
                 Spacer(modifier = Modifier.height(8.dp))
-                
+
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -151,9 +174,13 @@ fun MarsPhotoScreen(
                         FilterChip(
                             selected = state.selectedRover == rover,
                             onClick = { viewModel.onRoverSelected(rover) },
-                            label = { Text(rover.replaceFirstChar { if (it.isLowerCase()) it.titlecase(
-                                Locale.ROOT
-                            ) else it.toString() }) }
+                            label = {
+                                Text(rover.replaceFirstChar {
+                                    if (it.isLowerCase()) it.titlecase(
+                                        Locale.ROOT
+                                    ) else it.toString()
+                                })
+                            }
                         )
                     }
                 }
@@ -176,19 +203,17 @@ fun MarsPhotoScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Info Card
-        if (state.selectedDate.isNotBlank()) {
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "Earth Date: ${state.selectedDate}",
-                    modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = "Earth Date: ${state.selectedDate}",
+                modifier = Modifier.padding(16.dp),
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Loading State
         if (state.isLoading) {
@@ -279,7 +304,7 @@ fun MarsPhotoItem(
                         }
                     )
                 }
-                
+
                 // Share button overlay
                 IconButton(
                     onClick = onShareClick,
@@ -292,7 +317,7 @@ fun MarsPhotoItem(
                     )
                 }
             }
-            
+
             // Photo Info
             Column(
                 modifier = Modifier.padding(8.dp)
@@ -304,7 +329,7 @@ fun MarsPhotoItem(
                         maxLines = 1
                     )
                 }
-                
+
                 photo.sol?.let { sol ->
                     Text(
                         text = "Sol $sol",
@@ -312,7 +337,7 @@ fun MarsPhotoItem(
                         maxLines = 1
                     )
                 }
-                
+
                 photo.earthDate?.let { earthDate ->
                     Text(
                         text = earthDate,

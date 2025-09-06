@@ -10,7 +10,9 @@ import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 import java.text.SimpleDateFormat
-import java.util.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class EarthPhotoViewModel(
     private val earthPhotoRepository: EarthPhotoRepository
@@ -18,30 +20,29 @@ class EarthPhotoViewModel(
 
     override val container = container<EarthPhotoState, EarthPhotoSideEffect>(EarthPhotoState())
 
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     init {
         loadTodaysEarthPhotos()
     }
 
     fun loadTodaysEarthPhotos() = intent {
-        val todayDate = dateFormat.format(Date())
-        loadEarthPhotosByDate(todayDate)
+        loadEarthPhotosByDate(LocalDate.now())
     }
 
-    fun loadEarthPhotosByDate(date: String, forceRefresh: Boolean = false) = intent {
-        reduce { 
+    fun loadEarthPhotosByDate(date: LocalDate, forceRefresh: Boolean = false) = intent {
+        reduce {
             state.copy(
-                isLoading = true, 
+                isLoading = true,
                 error = null,
                 selectedDate = date,
                 isRefreshing = forceRefresh
-            ) 
+            )
         }
 
         viewModelScope.launch {
             try {
-                val photos = earthPhotoRepository.getEarthPhotosByDate(date, forceRefresh)
+                val photos = earthPhotoRepository.getEarthPhotosByDate(dateFormat.format(date), forceRefresh)
                 reduce {
                     state.copy(
                         photos = photos,
@@ -58,12 +59,16 @@ class EarthPhotoViewModel(
                         error = e.message ?: "Failed to load Earth photos"
                     )
                 }
-                postSideEffect(EarthPhotoSideEffect.ShowError(e.message ?: "Failed to load Earth photos"))
+                postSideEffect(
+                    EarthPhotoSideEffect.ShowError(
+                        e.message ?: "Failed to load Earth photos"
+                    )
+                )
             }
         }
     }
 
-    fun onDateSelected(date: String) = intent {
+    fun onDateSelected(date: LocalDate) = intent {
         reduce { state.copy(showDatePicker = false) }
         loadEarthPhotosByDate(date)
     }

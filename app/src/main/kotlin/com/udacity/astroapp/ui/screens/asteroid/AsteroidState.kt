@@ -1,6 +1,7 @@
 package com.udacity.astroapp.ui.screens.asteroid
 
 import com.udacity.astroapp.models.Asteroid
+import java.time.LocalDate
 
 data class AsteroidState(
     val asteroids: List<Asteroid> = emptyList(),
@@ -10,7 +11,8 @@ data class AsteroidState(
     val isRefreshing: Boolean = false,
     val searchQuery: String = "",
     val showHazardousOnly: Boolean = false,
-    val sortBy: AsteroidSortOption = AsteroidSortOption.DATE
+    val sortBy: AsteroidSortOption = AsteroidSortOption.DATE,
+    val selectedDate: LocalDate = LocalDate.now(),
 )
 
 enum class AsteroidSortOption {

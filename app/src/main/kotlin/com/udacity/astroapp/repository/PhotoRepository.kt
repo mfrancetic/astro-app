@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import android.util.Log
 
 class PhotoRepository(
     private val dao: AstroDao,
@@ -47,7 +48,9 @@ class PhotoRepository(
                     }
                 }
             } catch (e: Exception) {
-                // Handle error - could emit to a flow or log
+                Log.e("PhotoRepository", "Error refreshing photos", e)
+                // Could emit error to a flow for UI to show error state
+                // For now, just log and continue - cached data will be shown
             }
         }
     }

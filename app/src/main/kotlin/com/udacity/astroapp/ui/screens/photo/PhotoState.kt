@@ -8,7 +8,7 @@ data class PhotoState(
     val error: String? = null,
     val selectedDate: String = "",
     val isRefreshing: Boolean = false,
-    val showDatePicker: Boolean = false
+    val showDatePicker: Boolean = false,
 )
 
 sealed class PhotoSideEffect {

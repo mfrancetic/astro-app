@@ -27,6 +27,7 @@
     <string name="cd_share">Share</string>
     <string name="cd_filter">Filter</string>
     <string name="cd_search">Search</string>
+    <string name="cd_clear">Clear</string>
     <string name="cd_hazardous">Hazardous</string>
     <string name="cd_hazardous_filter">Hazardous filter</string>
     <string name="cd_grid_toggle">Toggle View Mode</string>

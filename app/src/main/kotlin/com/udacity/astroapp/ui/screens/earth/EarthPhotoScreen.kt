@@ -1,32 +1,55 @@
 package com.udacity.astroapp.ui.screens.earth
 
-import androidx.compose.foundation.layout.*
+import android.content.Intent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.integerResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.skydoves.landscapist.glide.GlideImage
-import com.udacity.astroapp.R
 import com.udacity.astroapp.models.EarthPhoto
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import androidx.core.net.toUri
+import androidx.compose.runtime.rememberCoroutineScope
+import com.udacity.astroapp.utils.ImageSharingUtils
+import kotlinx.coroutines.launch
 
 @Destination
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,29 +58,57 @@ fun EarthPhotoScreen(
     viewModel: EarthPhotoViewModel = koinViewModel()
 ) {
     val state by viewModel.collectAsState()
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is EarthPhotoSideEffect.ShowError -> {
-                // Handle error
+                // Error handled via state
             }
             is EarthPhotoSideEffect.SharePhoto -> {
-                // Handle photo sharing
+                coroutineScope.launch {
+                    ImageSharingUtils.shareImage(
+                        context = context,
+                        imageUrl = sideEffect.photo.earthPhotoUrl,
+                        title = "Earth Photo",
+                        text = "Check out this Earth photo:"
+                    )
+                }
             }
             is EarthPhotoSideEffect.OpenPhotoInFullscreen -> {
-                // Handle fullscreen view
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(sideEffect.photo.earthPhotoUrl.toUri(), "image/*")
+                }
+                try {
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    // Could trigger error state in ViewModel
+                }
             }
             EarthPhotoSideEffect.ShowDatePicker -> {
-                // Handle date picker
+                // Date picker handled by state
             }
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+    // Handle error state from ViewModel
+    state.error?.let { errorMessage ->
+        LaunchedEffect(errorMessage) {
+            snackbarHostState.showSnackbar(errorMessage)
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(16.dp)
+        ) {
         // Top App Bar
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -158,6 +209,7 @@ fun EarthPhotoScreen(
                 )
             }
         }
+        }
     }
 }
 
@@ -195,7 +247,7 @@ fun EarthPhotoGridItem(
                     }
                 }
             )
-            
+
             // Share button overlay
             IconButton(
                 onClick = onShareClick,
@@ -245,7 +297,7 @@ fun EarthPhotoListItem(
                     }
                 }
             )
-            
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -258,13 +310,13 @@ fun EarthPhotoListItem(
                         text = photo.earthPhotoIdentifier,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    
+
                     Text(
                         text = photo.earthPhotoDateTime,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    
+
                     photo.earthPhotoCaption?.let { caption ->
                         Text(
                             text = caption,
@@ -273,7 +325,7 @@ fun EarthPhotoListItem(
                         )
                     }
                 }
-                
+
                 IconButton(onClick = onShareClick) {
                     Icon(Icons.Default.Share, contentDescription = "Share")
                 }

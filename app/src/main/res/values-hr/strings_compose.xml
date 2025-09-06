@@ -27,6 +27,7 @@
     <string name="cd_share">Podijeli</string>
     <string name="cd_filter">Filtriraj</string>
     <string name="cd_search">Pretraži</string>
+    <string name="cd_clear">Pobriši</string>
     <string name="cd_hazardous">Opasan</string>
     <string name="cd_hazardous_filter">Filter opasnih</string>
     <string name="cd_grid_toggle">Promijeni prikaz</string>

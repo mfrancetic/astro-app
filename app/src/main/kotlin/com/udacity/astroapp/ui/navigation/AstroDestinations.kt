@@ -2,6 +2,7 @@ package com.udacity.astroapp.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Satellite
 import androidx.compose.material.icons.filled.Terrain
@@ -11,6 +12,7 @@ import com.udacity.astroapp.ui.screens.destinations.AsteroidScreenDestination
 import com.udacity.astroapp.ui.screens.destinations.EarthPhotoScreenDestination
 import com.udacity.astroapp.ui.screens.destinations.MarsPhotoScreenDestination
 import com.udacity.astroapp.ui.screens.destinations.PhotoScreenDestination
+import com.udacity.astroapp.ui.screens.destinations.SettingsScreenDestination
 
 enum class BottomBarDestination(
     val direction: DirectionDestinationSpec,
@@ -20,5 +22,6 @@ enum class BottomBarDestination(
     Home(PhotoScreenDestination, Icons.Default.Camera, "nav_home"),
     Earth(EarthPhotoScreenDestination, Icons.Default.Public, "nav_earth"),
     Asteroids(AsteroidScreenDestination, Icons.Default.Satellite, "nav_asteroids"),
-    Mars(MarsPhotoScreenDestination, Icons.Default.Terrain, "nav_mars")
+    Mars(MarsPhotoScreenDestination, Icons.Default.Terrain, "nav_mars"),
+    Settings(SettingsScreenDestination, Icons.Default.MoreVert, "nav_settings")
 }

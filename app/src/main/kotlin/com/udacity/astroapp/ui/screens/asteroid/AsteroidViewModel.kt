@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.models.Asteroid
 import com.udacity.astroapp.repository.AsteroidRepository
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -93,10 +92,6 @@ class AsteroidViewModel(
                 filteredAsteroids = filterAndSortAsteroids(state.asteroids, state.searchQuery, state.showHazardousOnly, sortOption)
             )
         }
-    }
-
-    fun onAsteroidClicked(asteroid: Asteroid) = intent {
-        postSideEffect(AsteroidSideEffect.ShowAsteroidDetails(asteroid))
     }
 
     fun onAsteroidUrlClicked(url: String) = intent {

@@ -6,6 +6,7 @@ import com.udacity.astroapp.ui.screens.mars.MarsPhotoViewModel
 import com.udacity.astroapp.ui.screens.observatory.ObservatoryDetailViewModel
 import com.udacity.astroapp.ui.screens.observatory.ObservatoryListViewModel
 import com.udacity.astroapp.ui.screens.photo.PhotoViewModel
+import com.udacity.astroapp.ui.screens.settings.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
@@ -46,6 +47,12 @@ val viewModelModule = module {
         ObservatoryDetailViewModel(
             observatoryRepository = get(),
             observatoryId = observatoryId
+        )
+    }
+    
+    viewModel {
+        SettingsViewModel(
+            themePreferences = get()
         )
     }
 }

@@ -1,27 +1,54 @@
 package com.udacity.astroapp.ui.screens.mars
 
-import androidx.compose.foundation.layout.*
+import android.content.Intent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.skydoves.landscapist.glide.GlideImage
 import com.udacity.astroapp.models.MarsPhoto
+import com.udacity.astroapp.ui.components.SearchTextField
+import com.udacity.astroapp.utils.ImageSharingUtils
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import androidx.core.net.toUri
+import java.util.Locale
 
 @Destination
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,21 +57,47 @@ fun MarsPhotoScreen(
     viewModel: MarsPhotoViewModel = koinViewModel()
 ) {
     val state by viewModel.collectAsState()
+    val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is MarsPhotoSideEffect.ShowError -> {
-                // Handle error
+                // Error handled via state
             }
             is MarsPhotoSideEffect.SharePhoto -> {
-                // Handle photo sharing
+                coroutineScope.launch {
+                    sideEffect.photo.imageUrl?.let { url ->
+                        ImageSharingUtils.shareImage(
+                            context = context,
+                            imageUrl = url,
+                            title = "Mars Photo",
+                            text = "Check out this Mars photo:"
+                        )
+                    }
+                }
             }
             is MarsPhotoSideEffect.OpenPhotoInFullscreen -> {
-                // Handle fullscreen view
+                val intent = Intent(Intent.ACTION_VIEW).apply {
+                    setDataAndType(sideEffect.photo.imageUrl?.toUri(), "image/*")
+                }
+                try {
+                    context.startActivity(intent)
+                } catch (e: Exception) {
+                    // Could trigger error state in ViewModel
+                }
             }
             MarsPhotoSideEffect.ShowDatePicker -> {
-                // Handle date picker
+                // Date picker handled by state
             }
+        }
+    }
+
+    // Handle error state from ViewModel
+    state.error?.let { errorMessage ->
+        LaunchedEffect(errorMessage) {
+            snackbarHostState.showSnackbar(errorMessage)
         }
     }
 
@@ -98,7 +151,9 @@ fun MarsPhotoScreen(
                         FilterChip(
                             selected = state.selectedRover == rover,
                             onClick = { viewModel.onRoverSelected(rover) },
-                            label = { Text(rover.capitalize()) }
+                            label = { Text(rover.replaceFirstChar { if (it.isLowerCase()) it.titlecase(
+                                Locale.ROOT
+                            ) else it.toString() }) }
                         )
                     }
                 }
@@ -107,15 +162,15 @@ fun MarsPhotoScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Sol Input
-        OutlinedTextField(
-            value = state.selectedSol,
+        SearchTextField(
+            initialValue = state.selectedSol,
             onValueChange = { viewModel.onSolChanged(it) },
             modifier = Modifier.fillMaxWidth(),
-            label = { Text("Sol (Martian day)") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            singleLine = true,
-            supportingText = { Text("Enter a Martian sol number") }
+            label = "Sol (Martian day)",
+            placeholder = "Enter a Martian sol number",
+            searchContentDescription = "Sol input",
+            clearContentDescription = "Clear sol",
+            keyboardType = KeyboardType.Number
         )
 
         Spacer(modifier = Modifier.height(16.dp))

@@ -19,6 +19,5 @@ enum class AsteroidSortOption {
 
 sealed class AsteroidSideEffect {
     data class ShowError(val message: String) : AsteroidSideEffect()
-    data class ShowAsteroidDetails(val asteroid: Asteroid) : AsteroidSideEffect()
     data class OpenAsteroidUrl(val url: String) : AsteroidSideEffect()
 }

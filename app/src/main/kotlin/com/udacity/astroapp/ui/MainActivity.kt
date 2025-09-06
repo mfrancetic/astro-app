@@ -22,10 +22,12 @@ import com.udacity.astroapp.ui.screens.destinations.AsteroidScreenDestination
 import com.udacity.astroapp.ui.screens.destinations.EarthPhotoScreenDestination
 import com.udacity.astroapp.ui.screens.destinations.MarsPhotoScreenDestination
 import com.udacity.astroapp.ui.screens.destinations.PhotoScreenDestination
+import com.udacity.astroapp.ui.screens.destinations.SettingsScreenDestination
 import com.udacity.astroapp.ui.screens.earth.EarthPhotoScreen
 import com.udacity.astroapp.ui.screens.mars.MarsPhotoScreen
 import com.udacity.astroapp.ui.screens.photo.PhotoScreen
-import com.udacity.astroapp.ui.theme.AstroTheme
+import com.udacity.astroapp.ui.screens.settings.SettingsScreen
+import com.udacity.astroapp.ui.theme.AstroThemeWrapper
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -39,7 +41,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         
         setContent {
-            AstroTheme {
+            AstroThemeWrapper {
                 AstroApp()
             }
         }
@@ -81,6 +83,10 @@ fun AstroApp() {
             
             composable(MarsPhotoScreenDestination) {
                 MarsPhotoScreen()
+            }
+            
+            composable(SettingsScreenDestination) {
+                SettingsScreen()
             }
         }
     }

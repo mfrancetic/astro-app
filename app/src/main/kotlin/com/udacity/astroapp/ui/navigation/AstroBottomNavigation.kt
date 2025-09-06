@@ -69,6 +69,7 @@ private fun getDestinationLabel(labelKey: String): String {
         "nav_earth" -> stringResource(R.string.nav_earth)
         "nav_asteroids" -> stringResource(R.string.nav_asteroids)
         "nav_mars" -> stringResource(R.string.nav_mars)
+        "nav_settings" -> "Settings"
         else -> labelKey
     }
 }

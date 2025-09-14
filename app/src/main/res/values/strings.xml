@@ -273,6 +273,29 @@
     <string name="route_mars_photos" translatable="false">mars_photos</string>
     <string name="route_observatories" translatable="false">observatories</string>
 
+    <!-- Action button labels -->
+    <string name="directions_button">Directions</string>
+    <string name="call_button">Call</string>
+    <string name="select_date_button">Select Date</string>
+    <string name="observatory_open">Open now</string>
+    <string name="observatory_closed">Closed</string>
+
+    <!-- Video control labels -->
+    <string name="pause_video">Pause video</string>
+    <string name="mute_video">Mute video</string>
+    <string name="unmute_video">Unmute video</string>
+    <string name="enter_fullscreen">Enter fullscreen</string>
+    <string name="exit_fullscreen">Exit fullscreen</string>
+
+    <!-- Additional missing UI strings -->
+    <string name="show_only_open_observatories">Show only open observatories</string>
+    <string name="clear">Clear</string>
+    <string name="search">Search</string>
+    <string name="select_date_range">Select Date Range</string>
+    <string name="refresh">Refresh</string>
+    <string name="rover">Rover</string>
+    <string name="camera">Camera</string>
+
     <!-- Dependency injection qualifiers (non-translatable) -->
     <string name="qualifier_navigate_fullscreen" translatable="false">onNavigateToFullScreen</string>
     <string name="qualifier_share" translatable="false">onShare</string>

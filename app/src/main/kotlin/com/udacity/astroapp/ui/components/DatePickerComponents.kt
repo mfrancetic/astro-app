@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.udacity.astroapp.R
@@ -94,7 +93,7 @@ fun DateRangePicker(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
         ) {
             DatePickerButton(
                 selectedDate = startDate,
@@ -142,18 +141,18 @@ fun DateFilterCard(
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
         ) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 DatePickerButton(
@@ -165,7 +164,7 @@ fun DateFilterCard(
 
                 if (selectedDate != null && onClearDate != null) {
                     TextButton(onClick = onClearDate) {
-                        Text("Clear")
+                        Text(stringResource(R.string.clear))
                     }
                 }
             }
@@ -188,7 +187,7 @@ fun DateRangeFilterCard(
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -202,12 +201,12 @@ fun DateRangeFilterCard(
 
                 if ((startDate != null || endDate != null) && onClearRange != null) {
                     TextButton(onClick = onClearRange) {
-                        Text("Clear")
+                        Text(stringResource(R.string.clear))
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
 
             DateRangePicker(
                 startDate = startDate,
@@ -232,7 +231,7 @@ fun QuickDateSelector(
 
     Row(
         modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
     ) {
         // Today
         Button(
@@ -316,9 +315,9 @@ fun CompactDatePicker(
         Icon(
             Icons.Default.DateRange,
             contentDescription = null,
-            modifier = Modifier.size(16.dp)
+            modifier = Modifier.size(dimensionResource(R.dimen.card_padding))
         )
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
         Text(
             if (selectedDate != null) {
                 try {

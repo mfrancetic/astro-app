@@ -224,6 +224,28 @@
     <string name="unknown_camera">Nepoznata kamera</string>
     <string name="unknown_asteroid">Nepoznat asteroid</string>
 
+    <!-- Action button labels -->
+    <string name="directions_button">Upute</string>
+    <string name="call_button">Pozovi</string>
+    <string name="select_date_button">Odaberi datum</string>
+    <string name="observatory_closed">Zatvoreno</string>
+
+    <!-- Video control labels -->
+    <string name="pause_video">Pauziraj videozapis</string>
+    <string name="mute_video">Stišaj videozapis</string>
+    <string name="unmute_video">Uključi zvuk videozapisa</string>
+    <string name="enter_fullscreen">Otvori na punom ekranu</string>
+    <string name="exit_fullscreen">Izađi iz puna ekrana</string>
+
+    <!-- Additional missing UI strings -->
+    <string name="show_only_open_observatories">Prikaži samo otvorene zvjezdarnice</string>
+    <string name="clear">Obriši</string>
+    <string name="search">Pretraži</string>
+    <string name="select_date_range">Odaberi raspon datuma</string>
+    <string name="refresh">Osvježi</string>
+    <string name="rover">Rover</string>
+    <string name="camera">Kamera</string>
+
     <!-- Theme selection placeholder -->
     <string name="theme_selection_placeholder">Izbor teme - treba biti implementiran s radio gumbovima</string>
 </resources>

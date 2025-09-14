@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
@@ -46,7 +47,7 @@ fun EarthPhotoScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(dimensionResource(R.dimen.spacing_large))
     ) {
         // Date selection section
         Card(
@@ -55,7 +56,7 @@ fun EarthPhotoScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(dimensionResource(R.dimen.spacing_large)),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -63,21 +64,21 @@ fun EarthPhotoScreen(
                     onClick = { /* Open date picker */ },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Select Date")
+                    Text(stringResource(R.string.select_date_button))
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
 
                 Button(
                     onClick = { viewModel.loadEarthPhotos() },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Refresh")
+                    Text(stringResource(R.string.refresh))
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
 
         when {
             state.isLoading -> {
@@ -96,14 +97,14 @@ fun EarthPhotoScreen(
                     )
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
                     ) {
                         Text(
                             text = state.error!!,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                         Button(
                             onClick = { viewModel.loadEarthPhotos() }
@@ -116,8 +117,8 @@ fun EarthPhotoScreen(
             state.earthPhotos.isNotEmpty() -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
                 ) {
                     items(state.earthPhotos) { earthPhoto ->
                         EarthPhotoItem(
@@ -173,7 +174,7 @@ private fun EarthPhotoItem(
                 Text(
                     text = earthPhoto.date ?: "Unknown Date",
                     style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(dimensionResource(R.dimen.spacing_small))
                 )
             }
         }

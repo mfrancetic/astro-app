@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.dimensionResource
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.data.models.Asteroid
@@ -43,7 +43,7 @@ fun AsteroidScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(dimensionResource(R.dimen.card_padding))
     ) {
         // Search and filter section
         Card(
@@ -52,7 +52,7 @@ fun AsteroidScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(dimensionResource(R.dimen.card_padding)),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -60,21 +60,21 @@ fun AsteroidScreen(
                     onClick = { /* Open date picker */ },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Select Date Range")
+                    Text(stringResource(R.string.select_date_range))
                 }
 
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
 
                 Button(
                     onClick = { viewModel.loadAsteroids() },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Refresh")
+                    Text(stringResource(R.string.refresh))
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
 
         when {
             state.isLoading -> {
@@ -93,14 +93,14 @@ fun AsteroidScreen(
                     )
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
                     ) {
                         Text(
                             text = state.error!!,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                         Button(
                             onClick = { viewModel.loadAsteroids() }
@@ -117,7 +117,7 @@ fun AsteroidScreen(
                             asteroid = asteroid,
                             onClick = { onNavigateToAsteroidDetails(asteroid.id.toString()) }
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
                     }
                 }
             }
@@ -147,14 +147,14 @@ private fun AsteroidItem(
         onClick = { onClick(asteroid) }
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
         ) {
             Text(
                 text = asteroid.name ?: "Unknown Asteroid",
                 style = MaterialTheme.typography.headlineSmall
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -175,7 +175,7 @@ private fun AsteroidItem(
                 )
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_extra_small)))
 
             Text(
                 text = "Diameter: ${asteroid.estimatedDiameterMin} - ${asteroid.estimatedDiameterMax} km",

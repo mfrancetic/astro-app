@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.udacity.astroapp.R
 
 @Composable
@@ -74,12 +73,12 @@ fun FilterChipGroup(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.spacing_small))
             )
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
             modifier = Modifier.selectableGroup()
         ) {
             options.forEach { option ->
@@ -116,12 +115,12 @@ fun SingleSelectFilterGroup(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.spacing_small))
             )
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
             modifier = Modifier.selectableGroup()
         ) {
             options.forEach { option ->
@@ -155,7 +154,7 @@ fun SearchFilterCard(
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -164,16 +163,16 @@ fun SearchFilterCard(
                 Icon(
                     Icons.Default.FilterList,
                     contentDescription = null,
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(dimensionResource(R.dimen.icon_small))
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
 
             SearchBar(
                 query = searchQuery,
@@ -183,7 +182,7 @@ fun SearchFilterCard(
             )
 
             additionalFilters?.let {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
                 it()
             }
         }
@@ -221,14 +220,14 @@ fun RoverFilterCard(
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
         ) {
             Text(
                 text = stringResource(R.string.mars_rover_filters),
                 style = MaterialTheme.typography.titleMedium
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
 
             SingleSelectFilterGroup(
                 title = stringResource(R.string.filter_rover),
@@ -237,7 +236,7 @@ fun RoverFilterCard(
                 onSelectionChange = onRoverSelected
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
 
             SingleSelectFilterGroup(
                 title = stringResource(R.string.filter_camera),
@@ -259,14 +258,14 @@ fun AsteroidFilterCard(
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
         ) {
             Text(
                 text = stringResource(R.string.asteroid_filters),
                 style = MaterialTheme.typography.titleMedium
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -275,7 +274,7 @@ fun AsteroidFilterCard(
                     checked = hazardousOnly,
                     onCheckedChange = onHazardousOnlyChange
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
                 Text(stringResource(R.string.filter_hazardous_only))
             }
         }
@@ -296,14 +295,14 @@ fun ObservatoryFilterCard(
         modifier = modifier.fillMaxWidth()
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
         ) {
             Text(
                 text = "Observatory Filters",
                 style = MaterialTheme.typography.titleMedium
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
 
             SingleSelectFilterGroup(
                 title = "Search Radius (km)",
@@ -320,7 +319,7 @@ fun ObservatoryFilterCard(
                 allowDeselection = false
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -329,8 +328,8 @@ fun ObservatoryFilterCard(
                     checked = openNowOnly,
                     onCheckedChange = onOpenNowOnlyChange
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Show only open observatories")
+                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
+                Text(stringResource(R.string.show_only_open_observatories))
             }
         }
     }
@@ -352,7 +351,7 @@ fun FilterSummary(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp),
+                    .padding(dimensionResource(R.dimen.spacing_medium)),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

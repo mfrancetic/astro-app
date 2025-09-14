@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
@@ -46,14 +47,14 @@ fun MarsPhotoScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(dimensionResource(R.dimen.spacing_large))
     ) {
         // Filter section
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -63,20 +64,20 @@ fun MarsPhotoScreen(
                         onClick = { /* Open rover picker */ },
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("Rover")
+                        Text(stringResource(R.string.rover))
                     }
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
 
                     Button(
                         onClick = { /* Open camera picker */ },
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("Camera")
+                        Text(stringResource(R.string.camera))
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -86,22 +87,22 @@ fun MarsPhotoScreen(
                         onClick = { /* Open date picker */ },
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("Select Date")
+                        Text(stringResource(R.string.select_date_button))
                     }
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
 
                     Button(
                         onClick = { viewModel.loadMarsPhotos() },
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("Refresh")
+                        Text(stringResource(R.string.refresh))
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
 
         when {
             state.isLoading -> {
@@ -120,14 +121,14 @@ fun MarsPhotoScreen(
                     )
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
                     ) {
                         Text(
                             text = state.error!!,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                         Button(
                             onClick = { viewModel.loadMarsPhotos() }
@@ -140,8 +141,8 @@ fun MarsPhotoScreen(
             state.marsPhotos.isNotEmpty() -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
                 ) {
                     items(state.marsPhotos) { marsPhoto ->
                         MarsPhotoItem(
@@ -195,7 +196,7 @@ private fun MarsPhotoItem(
                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
             ) {
                 Column(
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(dimensionResource(R.dimen.spacing_small))
                 ) {
                     Text(
                         text = marsPhoto.rover?.name ?: "Unknown Rover",

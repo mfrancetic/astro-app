@@ -108,6 +108,12 @@ dependencies {
     // Compose Destinations
     implementation 'io.github.raamcosta.compose-destinations:core:1.9.63'
     ksp 'io.github.raamcosta.compose-destinations:ksp:1.9.63'
+
+    // Google Maps Compose
+    implementation 'com.google.maps.android:maps-compose:4.3.3'
+
+    // YouTube Player for Compose
+    implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.28'
 //    implementation ('androidx.appcompat:appcompat:1.0.0') {
 //        exclude module: 'androidx'
 //        exclude module: 'support-v4'

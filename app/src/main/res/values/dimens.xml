@@ -134,4 +134,7 @@
     <dimen name="loading_indicator_small_stroke">2dp</dimen>
     <dimen name="image_placeholder_icon_size">32dp</dimen>
     <dimen name="image_placeholder_spacing">8dp</dimen>
+    <dimen name="photo_content_height">300dp</dimen>
+    <dimen name="video_control_button_size">40dp</dimen>
+    <dimen name="video_error_icon_size">48dp</dimen>
 </resources>

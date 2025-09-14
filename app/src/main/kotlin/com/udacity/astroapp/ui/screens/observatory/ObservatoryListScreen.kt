@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
@@ -58,14 +59,14 @@ fun ObservatoryListScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(dimensionResource(R.dimen.spacing_large))
     ) {
         // Location permission and search section
         Card(
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
             ) {
                 if (!locationPermissionState.status.isGranted) {
                     Text(
@@ -74,17 +75,17 @@ fun ObservatoryListScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                     Button(
                         onClick = { locationPermissionState.launchPermissionRequest() }
                     ) {
                         Icon(Icons.Default.LocationOn, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("Grant Location Permission")
+                        Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
+                        Text(stringResource(R.string.grant_location_permission_button))
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
                 }
 
                 Row(
@@ -104,19 +105,19 @@ fun ObservatoryListScreen(
                         Text(if (locationPermissionState.status.isGranted) "Find Nearby" else "Show All")
                     }
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
 
                     Button(
                         onClick = { /* Open search dialog */ },
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text("Search")
+                        Text(stringResource(R.string.search))
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
 
         when {
             state.isLoading -> {
@@ -135,14 +136,14 @@ fun ObservatoryListScreen(
                     )
                 ) {
                     Column(
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
                     ) {
                         Text(
                             text = state.error!!,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                         Button(
                             onClick = {
@@ -165,7 +166,7 @@ fun ObservatoryListScreen(
                             observatory = observatory,
                             onClick = { onNavigateToObservatoryDetails(observatory.id) }
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
                     }
                 }
             }
@@ -195,14 +196,14 @@ private fun ObservatoryItem(
         onClick = { onClick(observatory) }
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
         ) {
             Text(
                 text = observatory.name ?: "Unknown Observatory",
                 style = MaterialTheme.typography.headlineSmall
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
             if (observatory.vicinity != null) {
                 Row(
@@ -211,10 +212,10 @@ private fun ObservatoryItem(
                     Icon(
                         Icons.Default.LocationOn,
                         contentDescription = null,
-                        modifier = Modifier.size(16.dp),
+                        modifier = Modifier.size(dimensionResource(R.dimen.icon_small)),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_extra_small)))
                     Text(
                         text = observatory.vicinity!!,
                         style = MaterialTheme.typography.bodyMedium,
@@ -222,7 +223,7 @@ private fun ObservatoryItem(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_extra_small)))
             }
 
             if (observatory.rating != null) {

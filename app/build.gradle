@@ -23,9 +23,9 @@ android {
     defaultConfig {
         resConfigs "hr", "en"
         applicationId "com.udacity.astroapp"
-        minSdkVersion 19
+        minSdkVersion 26
         targetSdkVersion 35
-        versionCode 32
+        versionCode 33
         versionName "1.0.1+$versionCode"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true

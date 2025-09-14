@@ -1,5 +1,6 @@
 *.iml
 Secret.java
+Secret.kt
 secret_strings.xml
 keystore.properties
 app-debug.apk

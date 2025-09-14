@@ -42,4 +42,96 @@
     <dimen name="app_widget_dimensions">150dp</dimen>
     <dimen name="widget_image_dimensions">110dp</dimen>
     <dimen name="logo_dimens">40dp</dimen>
+
+    <!-- Compose spacing -->
+    <dimen name="spacing_tiny">2dp</dimen>
+    <dimen name="spacing_extra_small">4dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="spacing_medium">12dp</dimen>
+    <dimen name="spacing_large">16dp</dimen>
+    <dimen name="spacing_extra_large">24dp</dimen>
+    <dimen name="spacing_huge">32dp</dimen>
+
+    <!-- Card dimensions -->
+    <dimen name="card_corner_radius">8dp</dimen>
+    <dimen name="card_corner_radius_large">12dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+    <dimen name="card_elevation_pressed">8dp</dimen>
+
+    <!-- Icon sizes -->
+    <dimen name="icon_tiny">12dp</dimen>
+    <dimen name="icon_small">16dp</dimen>
+    <dimen name="icon_medium">24dp</dimen>
+    <dimen name="icon_large">32dp</dimen>
+    <dimen name="icon_extra_large">48dp</dimen>
+    <dimen name="icon_huge">64dp</dimen>
+
+    <!-- Button dimensions -->
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="button_height_small">36dp</dimen>
+    <dimen name="button_corner_radius">8dp</dimen>
+    <dimen name="fab_size">56dp</dimen>
+    <dimen name="fab_size_small">40dp</dimen>
+
+    <!-- Image dimensions -->
+    <dimen name="image_thumbnail_size">80dp</dimen>
+    <dimen name="image_small_size">120dp</dimen>
+    <dimen name="image_medium_size">200dp</dimen>
+    <dimen name="image_large_size">300dp</dimen>
+    <dimen name="image_aspect_ratio">1.5</dimen>
+
+    <!-- List item dimensions -->
+    <dimen name="list_item_height">72dp</dimen>
+    <dimen name="list_item_height_small">56dp</dimen>
+    <dimen name="list_item_padding_horizontal">16dp</dimen>
+    <dimen name="list_item_padding_vertical">8dp</dimen>
+
+    <!-- Grid dimensions -->
+    <dimen name="grid_item_spacing">8dp</dimen>
+    <dimen name="grid_padding">16dp</dimen>
+
+    <!-- Dialog dimensions -->
+    <dimen name="dialog_corner_radius">16dp</dimen>
+    <dimen name="dialog_padding">24dp</dimen>
+
+    <!-- Screen padding -->
+    <dimen name="screen_padding_horizontal">16dp</dimen>
+    <dimen name="screen_padding_vertical">16dp</dimen>
+
+    <!-- Divider -->
+    <dimen name="divider_height">1dp</dimen>
+
+    <!-- Loading indicator -->
+    <dimen name="progress_indicator_size">48dp</dimen>
+    <dimen name="progress_indicator_stroke_width">4dp</dimen>
+
+    <!-- Specific component dimensions -->
+    <dimen name="photo_placeholder_height">200dp</dimen>
+    <dimen name="filter_icon_size">20dp</dimen>
+    <dimen name="card_inner_padding">12dp</dimen>
+    <dimen name="fullscreen_loading_padding">32dp</dimen>
+    <dimen name="fullscreen_loading_indicator_size">48dp</dimen>
+    <dimen name="fullscreen_loading_stroke_width">4dp</dimen>
+    <dimen name="fullscreen_loading_spacing">24dp</dimen>
+    <dimen name="map_height">200dp</dimen>
+    <dimen name="rating_icon_spacing">8dp</dimen>
+    <dimen name="status_icon_size">16dp</dimen>
+    <dimen name="status_icon_spacing">4dp</dimen>
+    <dimen name="observatory_info_spacing">8dp</dimen>
+    <dimen name="action_button_spacing">8dp</dimen>
+    <dimen name="date_picker_icon_size">18dp</dimen>
+    <dimen name="date_picker_icon_spacing">8dp</dimen>
+    <dimen name="compact_date_picker_icon_size">16dp</dimen>
+    <dimen name="asteroid_item_spacing">8dp</dimen>
+    <dimen name="asteroid_detail_spacing">4dp</dimen>
+    <dimen name="photo_grid_spacing">8dp</dimen>
+    <dimen name="mars_photo_grid_spacing">8dp</dimen>
+    <dimen name="earth_photo_overlay_padding">8dp</dimen>
+    <dimen name="mars_photo_overlay_padding">8dp</dimen>
+    <dimen name="permission_button_spacing">8dp</dimen>
+    <dimen name="permission_section_spacing">16dp</dimen>
+    <dimen name="loading_indicator_small_size">24dp</dimen>
+    <dimen name="loading_indicator_small_stroke">2dp</dimen>
+    <dimen name="image_placeholder_icon_size">32dp</dimen>
+    <dimen name="image_placeholder_spacing">8dp</dimen>
 </resources>

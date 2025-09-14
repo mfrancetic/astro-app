@@ -109,4 +109,174 @@
     <string name="sol">"Mars date (sol): "</string>
     <string name="earth_date">"Earth date: "</string>
     <string name="menu_about">About</string>
+
+    <!-- Navigation labels -->
+    <string name="nav_photo">Photo</string>
+    <string name="nav_asteroids">Asteroids</string>
+    <string name="nav_earth_photo">Earth Photo</string>
+    <string name="nav_mars_photo">Mars Photo</string>
+    <string name="nav_observatories">Observatories</string>
+
+    <!-- Screen titles -->
+    <string name="screen_title_photo">Astronomy Picture of the Day</string>
+    <string name="screen_title_asteroids">Near-Earth Asteroids</string>
+    <string name="screen_title_earth_photo">Earth Photos</string>
+    <string name="screen_title_mars_photo">Mars Rover Photos</string>
+    <string name="screen_title_observatory_list">Observatories</string>
+    <string name="screen_title_observatory_detail">Observatory Details</string>
+
+    <!-- Common button texts -->
+    <string name="retry">Retry</string>
+    <string name="share">Share</string>
+    <string name="select_date">Select Date</string>
+    <string name="search">Search</string>
+    <string name="filter">Filter</string>
+    <string name="clear_all">Clear All</string>
+    <string name="full_screen">Full Screen</string>
+    <string name="directions">Directions</string>
+    <string name="call">Call</string>
+    <string name="refresh">Refresh</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="last_week">Last Week</string>
+
+    <!-- Error messages -->
+    <string name="error_network">Network error occurred. Please check your connection.</string>
+    <string name="error_loading_data">Failed to load data. Please try again.</string>
+    <string name="error_generic">Something went wrong. Please try again.</string>
+
+    <!-- Loading messages -->
+    <string name="loading">Loading...</string>
+    <string name="loading_photos">Loading photos...</string>
+    <string name="loading_asteroids">Loading asteroids...</string>
+    <string name="loading_observatories">Loading observatories...</string>
+
+    <!-- Empty state messages -->
+    <string name="empty_photos">No photos found for the selected date</string>
+    <string name="empty_asteroids">No asteroids found for the selected date range</string>
+    <string name="empty_earth_photos">No Earth photos found for the selected date</string>
+    <string name="empty_mars_photos">No Mars photos found for the selected filters</string>
+    <string name="empty_observatories">No observatories found</string>
+
+    <!-- Dialog texts -->
+    <string name="dialog_theme_title">Choose Theme</string>
+    <string name="dialog_theme_light">Light</string>
+    <string name="dialog_theme_dark">Dark</string>
+    <string name="dialog_theme_system">Follow System</string>
+
+    <!-- General labels -->
+    <string name="no_title">No title available</string>
+    <string name="no_description">No description available</string>
+    <string name="image_video_content">Image/Video content to be implemented</string>
+    <string name="map_integration">Map integration to be implemented</string>
+    <string name="theme_selection_radio">Theme selection - To be implemented with RadioButtons</string>
+
+    <!-- Permission messages -->
+    <string name="location_permission_needed">Location permission needed for nearby observatories</string>
+    <string name="grant_location_permission_button">Grant Location Permission</string>
+    <string name="find_nearby">Find Nearby</string>
+    <string name="show_all">Show All</string>
+
+    <!-- Filter labels -->
+    <string name="filter_rover">Rover</string>
+    <string name="filter_camera">Camera</string>
+    <string name="filter_date_range">Date Range</string>
+    <string name="filter_search_radius">Search Radius</string>
+    <string name="filter_hazardous_only">Show only hazardous asteroids</string>
+    <string name="filter_open_now">Show only open observatories</string>
+
+    <!-- Status indicators -->
+    <string name="status_open">Open</string>
+    <string name="status_closed">Closed</string>
+    <string name="status_hazardous">⚠️ Hazardous</string>
+    <string name="status_safe">✅ Safe</string>
+
+    <!-- Measurement units -->
+    <string name="unit_km">km</string>
+    <string name="unit_rating_format">%1$.1f/5.0</string>
+    <string name="distance_format">Distance: %1$s km</string>
+    <string name="diameter_format">Diameter: %1$s - %2$s km</string>
+    <string name="date_format">Date: %1$s</string>
+    <string name="rating_format">Rating: %1$.1f/5.0</string>
+
+    <!-- UI Component strings -->
+    <string name="search_placeholder">Search...</string>
+    <string name="search_content_description">Search</string>
+    <string name="clear_content_description">Clear</string>
+    <string name="back_content_description">Back</string>
+    <string name="failed_to_load_image">Failed to load image</string>
+    <string name="image_not_available">Image not available</string>
+
+    <!-- Observatory strings -->
+    <string name="unknown_observatory">Unknown Observatory</string>
+    <string name="unknown_date">Unknown Date</string>
+    <string name="observatory_details_title">Observatory Details</string>
+    <string name="observatory_status_label">Status: </string>
+    <string name="observatory_rating_format">%1$.1f/5.0</string>
+
+    <!-- Mars Rover strings -->
+    <string name="mars_rover_filters">Mars Rover Filters</string>
+    <string name="asteroid_filters">Asteroid Filters</string>
+    <string name="observatory_filters">Observatory Filters</string>
+    <string name="search_and_filter">Search &amp; Filter</string>
+    <string name="search_radius_km">Search Radius (km)</string>
+    <string name="km_suffix">km</string>
+    <string name="filters_label">Filters: %1$s</string>
+
+    <!-- Rover names -->
+    <string name="rover_curiosity">Curiosity</string>
+    <string name="rover_opportunity">Opportunity</string>
+    <string name="rover_spirit">Spirit</string>
+    <string name="rover_perseverance">Perseverance</string>
+    <string name="rover_ingenuity">Ingenuity</string>
+
+    <!-- Camera names -->
+    <string name="camera_fhaz">FHAZ</string>
+    <string name="camera_rhaz">RHAZ</string>
+    <string name="camera_mast">MAST</string>
+    <string name="camera_chemcam">CHEMCAM</string>
+    <string name="camera_mahli">MAHLI</string>
+    <string name="camera_mardi">MARDI</string>
+    <string name="camera_navcam">NAVCAM</string>
+    <string name="camera_pancam">PANCAM</string>
+    <string name="camera_minites">MINITES</string>
+
+    <!-- Error messages -->
+    <string name="failed_to_load_photos">Failed to load photos</string>
+    <string name="failed_to_load_observatory">Failed to load observatory</string>
+    <string name="failed_to_load_asteroids">Failed to load asteroids</string>
+    <string name="failed_to_load_observatories">Failed to load observatories</string>
+    <string name="failed_to_load_earth_photos">Failed to load Earth photos</string>
+    <string name="failed_to_load_mars_photos">Failed to load Mars photos</string>
+
+    <!-- Date format strings -->
+    <string name="earth_photo_content_desc_format">Earth photo from %1$s</string>
+    <string name="mars_photo_content_desc_format">Mars photo from %1$s rover</string>
+
+    <!-- Rover and camera info -->
+    <string name="unknown_rover">Unknown Rover</string>
+    <string name="unknown_camera">Unknown Camera</string>
+    <string name="unknown_asteroid">Unknown Asteroid</string>
+
+    <!-- Theme selection placeholder -->
+    <string name="theme_selection_placeholder">Theme selection - To be implemented with RadioButtons</string>
+
+    <!-- Preference keys (non-translatable) -->
+    <string name="pref_name" translatable="false">prefs</string>
+    <string name="pref_theme_key" translatable="false">theme</string>
+    <string name="pref_checked_theme_key" translatable="false">checkedTheme</string>
+
+    <!-- Navigation route keys (non-translatable) -->
+    <string name="route_photo" translatable="false">photo</string>
+    <string name="route_asteroids" translatable="false">asteroids</string>
+    <string name="route_earth_photos" translatable="false">earth_photos</string>
+    <string name="route_mars_photos" translatable="false">mars_photos</string>
+    <string name="route_observatories" translatable="false">observatories</string>
+
+    <!-- Dependency injection qualifiers (non-translatable) -->
+    <string name="qualifier_navigate_fullscreen" translatable="false">onNavigateToFullScreen</string>
+    <string name="qualifier_share" translatable="false">onShare</string>
+    <string name="qualifier_navigate_asteroid_details" translatable="false">onNavigateToAsteroidDetails</string>
+    <string name="qualifier_navigate_observatory_details" translatable="false">onNavigateToObservatoryDetails</string>
+    <string name="qualifier_navigate_back" translatable="false">onNavigateBack</string>
 </resources>

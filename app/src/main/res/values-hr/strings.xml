@@ -75,4 +75,155 @@
     <string name="sol">"Datum na Marsu (sol): "</string>
     <string name="earth_date">"Datum na Zemlji: "</string>
     <string name="menu_about">O autoru</string>
+
+    <!-- Navigation labels -->
+    <string name="nav_photo">Slika</string>
+    <string name="nav_asteroids">Asteroidi</string>
+    <string name="nav_earth_photo">Slika Zemlje</string>
+    <string name="nav_mars_photo">Slika Marsa</string>
+    <string name="nav_observatories">Zvjezdarnice</string>
+
+    <!-- Screen titles -->
+    <string name="screen_title_photo">Astronomska slika dana</string>
+    <string name="screen_title_asteroids">Asteroidi blizu Zemlje</string>
+    <string name="screen_title_earth_photo">Slike Zemlje</string>
+    <string name="screen_title_mars_photo">Slike Mars rovera</string>
+    <string name="screen_title_observatory_list">Zvjezdarnice</string>
+    <string name="screen_title_observatory_detail">Detalji zvjezdarnice</string>
+
+    <!-- Common button texts -->
+    <string name="retry">Ponovi</string>
+    <string name="share">Podijeli</string>
+    <string name="select_date">Izaberi datum</string>
+    <string name="search">Traži</string>
+    <string name="filter">Filtar</string>
+    <string name="clear_all">Obriši sve</string>
+    <string name="full_screen">Puni zaslon</string>
+    <string name="directions">Upute</string>
+    <string name="call">Pozovi</string>
+    <string name="refresh">Osvježi</string>
+    <string name="today">Danas</string>
+    <string name="yesterday">Jučer</string>
+    <string name="last_week">Prošli tjedan</string>
+
+    <!-- Error messages -->
+    <string name="error_network">Dogodila se mrežna greška. Molimo provjerite internetsku vezu.</string>
+    <string name="error_loading_data">Neuspjeh učitavanja podataka. Molimo pokušajte ponovo.</string>
+    <string name="error_generic">Nešto je pošlo po zlu. Molimo pokušajte ponovo.</string>
+
+    <!-- Loading messages -->
+    <string name="loading">Učitava...</string>
+    <string name="loading_photos">Učitavaju se slike...</string>
+    <string name="loading_asteroids">Učitavaju se asteroidi...</string>
+    <string name="loading_observatories">Učitavaju se zvjezdarnice...</string>
+
+    <!-- Empty state messages -->
+    <string name="empty_photos">Nema slika za izabrani datum</string>
+    <string name="empty_asteroids">Nema asteroida za izabrani vremenski period</string>
+    <string name="empty_earth_photos">Nema slika Zemlje za izabrani datum</string>
+    <string name="empty_mars_photos">Nema slika Marsa za izabrane filtre</string>
+    <string name="empty_observatories">Nema pronađenih zvjezdarnica</string>
+
+    <!-- Dialog texts -->
+    <string name="dialog_theme_title">Izaberite temu</string>
+    <string name="dialog_theme_light">Svijetla</string>
+    <string name="dialog_theme_dark">Tamna</string>
+    <string name="dialog_theme_system">Prati sustav</string>
+
+    <!-- General labels -->
+    <string name="no_title">Naslov nije dostupan</string>
+    <string name="no_description">Opis nije dostupan</string>
+    <string name="image_video_content">Sadržaj slika/video treba biti implementiran</string>
+    <string name="map_integration">Integracija mapa treba biti implementirana</string>
+    <string name="theme_selection_radio">Izbor teme - treba biti implementiran s radio gumbovima</string>
+
+    <!-- Permission messages -->
+    <string name="location_permission_needed">Potrebna dozvola za lokaciju za obližnje zvjezdarnice</string>
+    <string name="grant_location_permission_button">Dozvoli pristup lokaciji</string>
+    <string name="find_nearby">Pronađi blizu</string>
+    <string name="show_all">Prikaži sve</string>
+
+    <!-- Filter labels -->
+    <string name="filter_rover">Rover</string>
+    <string name="filter_camera">Kamera</string>
+    <string name="filter_date_range">Vremenski period</string>
+    <string name="filter_search_radius">Radius pretrage</string>
+    <string name="filter_hazardous_only">Prikaži samo opasne asteroide</string>
+    <string name="filter_open_now">Prikaži samo otvorene zvjezdarnice</string>
+
+    <!-- Status indicators -->
+    <string name="status_open">Otvoreno</string>
+    <string name="status_closed">Zatvoreno</string>
+    <string name="status_hazardous">⚠️ Opasno</string>
+    <string name="status_safe">✅ Sigurno</string>
+
+    <!-- Measurement units -->
+    <string name="unit_km">km</string>
+    <string name="unit_rating_format">%1$.1f/5.0</string>
+    <string name="distance_format">Udaljenost: %1$s km</string>
+    <string name="diameter_format">Promjer: %1$s - %2$s km</string>
+    <string name="date_format">Datum: %1$s</string>
+    <string name="rating_format">Ocjena: %1$.1f/5.0</string>
+
+    <!-- UI Component strings -->
+    <string name="search_placeholder">Traži...</string>
+    <string name="search_content_description">Traži</string>
+    <string name="clear_content_description">Obriši</string>
+    <string name="back_content_description">Natrag</string>
+    <string name="failed_to_load_image">Neuspjeh učitavanja slike</string>
+    <string name="image_not_available">Slika nije dostupna</string>
+
+    <!-- Observatory strings -->
+    <string name="unknown_observatory">Nepoznata zvjezdarnica</string>
+    <string name="unknown_date">Nepoznat datum</string>
+    <string name="observatory_details_title">Detalji zvjezdarnice</string>
+    <string name="observatory_status_label">Status: </string>
+    <string name="observatory_rating_format">%1$.1f/5.0</string>
+
+    <!-- Mars Rover strings -->
+    <string name="mars_rover_filters">Mars rover filtri</string>
+    <string name="asteroid_filters">Filteri asteroida</string>
+    <string name="observatory_filters">Filteri zvjezdarnica</string>
+    <string name="search_and_filter">Traži i filtrij</string>
+    <string name="search_radius_km">Radius pretrage (km)</string>
+    <string name="km_suffix">km</string>
+    <string name="filters_label">Filtri: %1$s</string>
+
+    <!-- Rover names -->
+    <string name="rover_curiosity">Curiosity</string>
+    <string name="rover_opportunity">Opportunity</string>
+    <string name="rover_spirit">Spirit</string>
+    <string name="rover_perseverance">Perseverance</string>
+    <string name="rover_ingenuity">Ingenuity</string>
+
+    <!-- Camera names -->
+    <string name="camera_fhaz">FHAZ</string>
+    <string name="camera_rhaz">RHAZ</string>
+    <string name="camera_mast">MAST</string>
+    <string name="camera_chemcam">CHEMCAM</string>
+    <string name="camera_mahli">MAHLI</string>
+    <string name="camera_mardi">MARDI</string>
+    <string name="camera_navcam">NAVCAM</string>
+    <string name="camera_pancam">PANCAM</string>
+    <string name="camera_minites">MINITES</string>
+
+    <!-- Error messages -->
+    <string name="failed_to_load_photos">Neuspjeh učitavanja slika</string>
+    <string name="failed_to_load_observatory">Neuspjeh učitavanja zvjezdarnice</string>
+    <string name="failed_to_load_asteroids">Neuspjeh učitavanja asteroida</string>
+    <string name="failed_to_load_observatories">Neuspjeh učitavanja zvjezdarnica</string>
+    <string name="failed_to_load_earth_photos">Neuspjeh učitavanja slika Zemlje</string>
+    <string name="failed_to_load_mars_photos">Neuspjeh učitavanja slika Marsa</string>
+
+    <!-- Date format strings -->
+    <string name="earth_photo_content_desc_format">Slika Zemlje od %1$s</string>
+    <string name="mars_photo_content_desc_format">Slika Marsa od %1$s rovera</string>
+
+    <!-- Rover and camera info -->
+    <string name="unknown_rover">Nepoznat rover</string>
+    <string name="unknown_camera">Nepoznata kamera</string>
+    <string name="unknown_asteroid">Nepoznat asteroid</string>
+
+    <!-- Theme selection placeholder -->
+    <string name="theme_selection_placeholder">Izbor teme - treba biti implementiran s radio gumbovima</string>
 </resources>

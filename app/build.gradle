@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
+apply plugin: 'com.google.devtools.ksp'
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 
@@ -100,6 +101,13 @@ dependencies {
 
     // Coil for image loading with Compose
     implementation 'io.coil-kt:coil-compose:2.5.0'
+
+    // Accompanist for permissions
+    implementation 'com.google.accompanist:accompanist-permissions:0.32.0'
+
+    // Compose Destinations
+    implementation 'io.github.raamcosta.compose-destinations:core:1.9.63'
+    ksp 'io.github.raamcosta.compose-destinations:ksp:1.9.63'
 //    implementation ('androidx.appcompat:appcompat:1.0.0') {
 //        exclude module: 'androidx'
 //        exclude module: 'support-v4'

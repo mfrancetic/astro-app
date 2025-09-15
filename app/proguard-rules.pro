@@ -17,8 +17,52 @@
     static ** CREATOR;
 }
 
+# Kotlin Coroutines
+-keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
+-keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-dontwarn kotlinx.coroutines.flow.**
 
+# Jetpack Compose
+-keep class androidx.compose.runtime.** { *; }
+-keep class androidx.compose.ui.** { *; }
+-keep class androidx.compose.foundation.** { *; }
+-keep class androidx.compose.material3.** { *; }
+-dontwarn androidx.compose.**
 
+# Orbit MVI
+-keep class org.orbitmvi.orbit.** { *; }
+-dontwarn org.orbitmvi.orbit.**
+
+# Koin
+-keep class org.koin.** { *; }
+-keep class org.koin.core.** { *; }
+-dontwarn org.koin.**
+
+# Room Database
+-keep class * extends androidx.room.RoomDatabase
+-keep @androidx.room.Entity class *
+-dontwarn androidx.room.paging.**
+
+# Coil Image Loading
+-keep class coil.** { *; }
+-dontwarn coil.**
+
+# Retrofit & Gson
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class retrofit2.** { *; }
+-keep class com.google.gson.** { *; }
+-keepclassmembers,allowobfuscation class * {
+  @com.google.gson.annotations.SerializedName <fields>;
+}
+
+# Google Play Services
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
+
+# YouTube Player
+-keep class com.pierfrancescosoffritti.androidyoutubeplayer.** { *; }
+-dontwarn com.pierfrancescosoffritti.androidyoutubeplayer.**
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.

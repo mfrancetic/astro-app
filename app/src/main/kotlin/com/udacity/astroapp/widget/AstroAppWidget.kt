@@ -184,7 +184,7 @@ class AstroAppWidget : AppWidgetProvider() {
         } ?: run {
             // No URL available - show fallback
             showFallbackContent(remoteViews, appWidgetManager, appWidgetId)
-        } 
+        }
     }
 
     private fun showFallbackContent(

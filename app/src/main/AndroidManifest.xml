@@ -46,7 +46,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
         <receiver
-            android:name=".data.AstroAppWidget"
+            android:name=".widget.AstroAppWidget"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

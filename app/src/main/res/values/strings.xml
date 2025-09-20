@@ -146,10 +146,10 @@
     <string name="error_generic">Something went wrong. Please try again.</string>
 
     <!-- Loading messages -->
-    <string name="loading">Loading...</string>
-    <string name="loading_photos">Loading photos...</string>
-    <string name="loading_asteroids">Loading asteroids...</string>
-    <string name="loading_observatories">Loading observatories...</string>
+    <string name="loading">Loading…</string>
+    <string name="loading_photos">Loading photos…</string>
+    <string name="loading_asteroids">Loading asteroids…</string>
+    <string name="loading_observatories">Loading observatories…</string>
 
     <!-- Empty state messages -->
     <string name="empty_photos">No photos found for the selected date</string>
@@ -200,7 +200,7 @@
     <string name="rating_format">Rating: %1$.1f/5.0</string>
 
     <!-- UI Component strings -->
-    <string name="search_placeholder">Search...</string>
+    <string name="search_placeholder">Search…</string>
     <string name="search_content_description">Search</string>
     <string name="clear_content_description">Clear</string>
     <string name="back_content_description">Back</string>
@@ -277,7 +277,6 @@
     <string name="directions_button">Directions</string>
     <string name="call_button">Call</string>
     <string name="select_date_button">Select Date</string>
-    <string name="observatory_open">Open now</string>
     <string name="observatory_closed">Closed</string>
 
     <!-- Video control labels -->
@@ -290,11 +289,7 @@
     <!-- Additional missing UI strings -->
     <string name="show_only_open_observatories">Show only open observatories</string>
     <string name="clear">Clear</string>
-    <string name="search">Search</string>
     <string name="select_date_range">Select Date Range</string>
-    <string name="refresh">Refresh</string>
-    <string name="rover">Rover</string>
-    <string name="camera">Camera</string>
 
     <!-- Dependency injection qualifiers (non-translatable) -->
     <string name="qualifier_navigate_fullscreen" translatable="false">onNavigateToFullScreen</string>

@@ -240,11 +240,7 @@
     <!-- Additional missing UI strings -->
     <string name="show_only_open_observatories">Prikaži samo otvorene zvjezdarnice</string>
     <string name="clear">Obriši</string>
-    <string name="search">Pretraži</string>
     <string name="select_date_range">Odaberi raspon datuma</string>
-    <string name="refresh">Osvježi</string>
-    <string name="rover">Rover</string>
-    <string name="camera">Kamera</string>
 
     <!-- Theme selection placeholder -->
     <string name="theme_selection_placeholder">Izbor teme - treba biti implementiran s radio gumbovima</string>

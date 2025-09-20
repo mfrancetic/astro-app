@@ -1,7 +1,11 @@
 package com.udacity.astroapp.ui.screens.marsphoto
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.MarsPhotoRepository
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -13,70 +17,44 @@ class MarsPhotoViewModel(private val marsPhotoRepository: MarsPhotoRepository) :
 
     override val container = container<MarsPhotoState, MarsPhotoSideEffect>(MarsPhotoState())
 
+    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
     init {
-        loadPhotos()
+        intent { loadMarsPhotosByDate(state.selectedDate) }
     }
 
-    fun handleAction(action: MarsPhotoAction) {
-        when (action) {
-            is MarsPhotoAction.LoadPhotos -> loadPhotos()
-            is MarsPhotoAction.SelectDate -> selectDate(action.date)
-            is MarsPhotoAction.SelectPhoto -> selectPhoto(action.marsPhoto)
-            is MarsPhotoAction.ShowDatePicker -> showDatePicker()
-            is MarsPhotoAction.Retry -> retry()
-        }
-    }
-
-    fun loadPhotos() = intent {
-        reduce { state.copy(isLoading = true, error = null) }
-
-        try {
-            marsPhotoRepository.getAllMarsPhotos().collect { marsPhotos ->
-                val filteredPhotos = filterByDate(marsPhotos, state.selectedDate)
-                reduce {
-                    state.copy(
-                        isLoading = false,
-                        marsPhotos = filteredPhotos,
-                        allMarsPhotos = marsPhotos,
-                        selectedPhoto = filteredPhotos.firstOrNull(),
-                        error = null
-                    )
-                }
-            }
-        } catch (e: Exception) {
-            reduce {
-                state.copy(isLoading = false, error = e.message ?: "Failed to load Mars photos")
-            }
-            postSideEffect(MarsPhotoSideEffect.ShowError(e.message ?: "Failed to load Mars photos"))
-        }
-    }
-
-    private fun selectDate(date: String) = intent {
-        val filteredPhotos = filterByDate(state.allMarsPhotos, date)
+    fun loadMarsPhotosByDate(date: LocalDate, forceRefresh: Boolean = false) = intent {
         reduce {
             state.copy(
+                isLoading = true,
+                error = null,
                 selectedDate = date,
-                marsPhotos = filteredPhotos,
-                selectedPhoto = filteredPhotos.firstOrNull()
             )
+        }
+
+        viewModelScope.launch {
+            try {
+                val photos =
+                    marsPhotoRepository.getMarsPhotosByDate(date.format(dateFormat), forceRefresh)
+                reduce {
+                    state.copy(
+                        filteredPhotos = photos,
+                        isLoading = false,
+                        error = if (photos.isEmpty()) "No photos found for date $date" else null
+                    )
+                }
+            } catch (e: Exception) {
+                reduce {
+                    state.copy(isLoading = false, error = e.message ?: "Failed to load Mars photos")
+                }
+                postSideEffect(
+                    MarsPhotoSideEffect.ShowError(e.message ?: "Failed to load Mars photos")
+                )
+            }
         }
     }
 
-    private fun selectPhoto(marsPhoto: com.udacity.astroapp.models.MarsPhoto) = intent {
-        reduce { state.copy(selectedPhoto = marsPhoto) }
-        postSideEffect(MarsPhotoSideEffect.NavigateToDetail(marsPhoto))
-    }
+    fun onDateSelected(date: LocalDate) = intent { loadMarsPhotosByDate(date) }
 
-    private fun showDatePicker() = intent { postSideEffect(MarsPhotoSideEffect.ShowDatePicker) }
-
-    private fun retry() = intent { loadPhotos() }
-
-    private fun filterByDate(
-        photos: List<com.udacity.astroapp.models.MarsPhoto>,
-        date: String
-    ): List<com.udacity.astroapp.models.MarsPhoto> {
-        if (date.isBlank()) return photos
-
-        return photos.filter { marsPhoto -> marsPhoto.earthDate == date }
-    }
+    fun onRefresh() = intent { loadMarsPhotosByDate(state.selectedDate, forceRefresh = true) }
 }

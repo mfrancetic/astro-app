@@ -5,14 +5,17 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModel
+import com.udacity.astroapp.utils.ThemePreferenceManager
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 
-class SettingsViewModel(private val context: Context) :
-    ViewModel(), ContainerHost<SettingsState, SettingsSideEffect> {
+class SettingsViewModel(
+    private val context: Context,
+    private val themePreferenceManager: ThemePreferenceManager
+) : ViewModel(), ContainerHost<SettingsState, SettingsSideEffect> {
 
     override val container: Container<SettingsState, SettingsSideEffect> =
         container(SettingsState())
@@ -49,6 +52,9 @@ class SettingsViewModel(private val context: Context) :
         }
 
         AppCompatDelegate.setDefaultNightMode(themeId)
+
+        // Update the reactive theme preference manager
+        themePreferenceManager.updateThemePreference(themeOption.value)
 
         reduce { state.copy(selectedTheme = themeOption) }
     }

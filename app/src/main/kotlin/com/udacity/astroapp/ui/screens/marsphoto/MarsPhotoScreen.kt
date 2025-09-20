@@ -21,7 +21,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,9 +36,18 @@ import com.udacity.astroapp.models.MarsPhoto
 import com.udacity.astroapp.models.Rover
 import com.udacity.astroapp.ui.components.DatePickerButton
 import com.udacity.astroapp.ui.theme.AstroAppTheme
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+
+// Utility functions for LocalDate <-> String conversion
+private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+private fun LocalDate.toDateString(): String = this.format(dateFormatter)
+
+private fun String.toLocalDate(): LocalDate = LocalDate.parse(this, dateFormatter)
 
 @Destination
 @Composable
@@ -55,21 +63,14 @@ fun MarsPhotoScreen(
             is MarsPhotoSideEffect.ShowError -> {
                 // Handle error display
             }
-            is MarsPhotoSideEffect.NavigateToDetail -> {}
-            is MarsPhotoSideEffect.ShowDatePicker -> {}
         }
     }
 
-    // Load initial data
-    LaunchedEffect(Unit) { viewModel.loadPhotos() }
-
     MarsPhotoScreenContent(
         state = state,
-        onRetry = { viewModel.loadPhotos() },
+        onRetry = { viewModel.onRefresh() },
         onNavigateToFullScreen = onNavigateToFullScreen,
-        onDateSelected = { selectedDate ->
-            viewModel.handleAction(MarsPhotoAction.SelectDate(selectedDate))
-        }
+        onDateSelected = { selectedDate -> viewModel.onDateSelected(selectedDate) }
     )
 }
 
@@ -78,7 +79,7 @@ private fun MarsPhotoScreenContent(
     state: MarsPhotoState,
     onRetry: () -> Unit,
     onNavigateToFullScreen: (String) -> Unit,
-    onDateSelected: (String) -> Unit
+    onDateSelected: (LocalDate) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
         // Filter section
@@ -89,8 +90,8 @@ private fun MarsPhotoScreenContent(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     DatePickerButton(
-                        selectedDate = state.selectedDate.ifBlank { null },
-                        onDateSelected = onDateSelected,
+                        selectedDate = state.selectedDate.toDateString(),
+                        onDateSelected = { dateString -> onDateSelected(dateString.toLocalDate()) },
                         modifier = Modifier.weight(1f),
                         label = stringResource(R.string.select_date_button)
                     )
@@ -123,7 +124,7 @@ private fun MarsPhotoScreenContent(
                     }
                 }
             }
-            state.marsPhotos.isNotEmpty() -> {
+            state.filteredPhotos.isNotEmpty() -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     verticalArrangement =
@@ -131,7 +132,7 @@ private fun MarsPhotoScreenContent(
                     horizontalArrangement =
                         Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
                 ) {
-                    items(state.marsPhotos) { marsPhoto ->
+                    items(state.filteredPhotos) { marsPhoto ->
                         MarsPhotoItem(
                             marsPhoto = marsPhoto,
                             onClick = { marsPhoto.imageUrl?.let { onNavigateToFullScreen(it) } }
@@ -226,7 +227,7 @@ private fun MarsPhotoScreenErrorPreview() {
 private fun MarsPhotoScreenEmptyPreview() {
     AstroAppTheme {
         MarsPhotoScreenContent(
-            state = MarsPhotoState(isLoading = false, marsPhotos = emptyList(), error = null),
+            state = MarsPhotoState(isLoading = false, filteredPhotos = emptyList(), error = null),
             onRetry = {},
             onNavigateToFullScreen = {},
             onDateSelected = {}
@@ -305,9 +306,9 @@ private fun MarsPhotoScreenSuccessPreview() {
             state =
                 MarsPhotoState(
                     isLoading = false,
-                    marsPhotos = samplePhotos,
+                    filteredPhotos = samplePhotos,
                     allMarsPhotos = samplePhotos,
-                    selectedDate = "2024-01-15",
+                    selectedDate = "2024-01-15".toLocalDate(),
                     error = null
                 ),
             onRetry = {},

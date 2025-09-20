@@ -7,10 +7,14 @@ import com.udacity.astroapp.ui.screens.observatory.ObservatoryDetailViewModel
 import com.udacity.astroapp.ui.screens.observatory.ObservatoryViewModel
 import com.udacity.astroapp.ui.screens.photo.PhotoViewModel
 import com.udacity.astroapp.ui.screens.settings.SettingsViewModel
+import com.udacity.astroapp.utils.ThemePreferenceManager
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val viewModelModule = module {
+
+    // Theme Preference Manager
+    single { ThemePreferenceManager(get()) }
 
     // Photo ViewModels
     viewModel { PhotoViewModel(get()) }
@@ -29,5 +33,5 @@ val viewModelModule = module {
     viewModel { (observatoryId: String) -> ObservatoryDetailViewModel(get(), observatoryId) }
 
     // Settings ViewModels
-    viewModel { SettingsViewModel(get()) }
+    viewModel { SettingsViewModel(get(), get()) }
 }

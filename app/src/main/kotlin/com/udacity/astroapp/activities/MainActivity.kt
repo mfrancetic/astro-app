@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -43,7 +44,9 @@ import com.udacity.astroapp.ui.screens.destinations.MarsPhotoScreenDestination
 import com.udacity.astroapp.ui.screens.destinations.PhotoScreenDestination
 import com.udacity.astroapp.ui.screens.destinations.SettingsScreenDestination
 import com.udacity.astroapp.ui.theme.AstroAppTheme
+import com.udacity.astroapp.utils.ThemePreferenceManager
 import org.koin.androidx.compose.KoinAndroidContext
+import org.koin.androidx.compose.get
 
 class MainActivity : ComponentActivity() {
 
@@ -77,11 +80,11 @@ class MainActivity : ComponentActivity() {
             )
         AppCompatDelegate.setDefaultNightMode(themeId)
 
-        // Get user's theme preference for Compose
-        val themePreference = sharedPreferences.getInt("checkedTheme", 2) // Default to System (2)
-
         setContent {
             KoinAndroidContext {
+                val themePreferenceManager = get<ThemePreferenceManager>()
+                val themePreference by themePreferenceManager.themePreference.collectAsState()
+
                 AstroAppTheme(themePreference = themePreference) {
                     Surface(
                         modifier = Modifier.fillMaxSize(),

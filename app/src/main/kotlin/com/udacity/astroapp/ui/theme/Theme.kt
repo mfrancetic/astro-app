@@ -46,11 +46,18 @@ private val LightColorScheme =
 
 @Composable
 fun AstroAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themePreference: Int? = null,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val darkTheme =
+        when (themePreference) {
+            0 -> false // Light theme
+            1 -> true // Dark theme
+            else -> isSystemInDarkTheme() // System default (2) or null
+        }
+
     val colorScheme =
         when {
             dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {

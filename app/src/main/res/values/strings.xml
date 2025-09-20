@@ -120,12 +120,28 @@
 	<!-- Navigation labels -->
 	<string name="nav_about">About</string>
 
+	<!-- Tab navigation labels -->
+	<string name="tab_daily_photo" translatable="false">Daily Photo</string>
+	<string name="tab_asteroid" translatable="false">Asteroid</string>
+	<string name="tab_earth" translatable="false">Earth</string>
+	<string name="tab_mars" translatable="false">Mars</string>
+	<string name="tab_settings" translatable="false">Settings</string>
+
 	<!-- Navigation labels -->
 	<string name="nav_photo">Photo</string>
 	<string name="nav_asteroids">Asteroids</string>
 	<string name="nav_earth_photo">Earth Photo</string>
 	<string name="nav_mars_photo">Mars Photo</string>
 	<string name="nav_observatories">Observatories</string>
+
+	<!-- Settings screen strings -->
+	<string name="settings_theme_title" translatable="false">Theme</string>
+	<string name="settings_about_title" translatable="false">About</string>
+	<string name="settings_app_description" translatable="false">Discover
+		space with astronomy photos, near-Earth
+		asteroids, Earth and Mars
+		images from NASA APIs.</string>
+	<string name="settings_version_label" translatable="false">Version: %1$s</string>
 
 	<!-- Screen titles -->
 	<string name="screen_title_photo">Astronomy Picture of the Day</string>

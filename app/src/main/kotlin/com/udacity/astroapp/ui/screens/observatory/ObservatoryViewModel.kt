@@ -29,7 +29,7 @@ class ObservatoryViewModel(
         }
     }
 
-    private fun loadObservatories() = intent {
+    fun loadObservatories() = intent {
         reduce { state.copy(isLoading = true, error = null) }
 
         try {

@@ -31,7 +31,7 @@ class AsteroidViewModel(
         }
     }
 
-    private fun loadAsteroids() = intent {
+    fun loadAsteroids() = intent {
         reduce { state.copy(isLoading = true, error = null) }
 
         try {

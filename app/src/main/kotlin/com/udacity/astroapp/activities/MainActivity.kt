@@ -1,12 +1,8 @@
 package com.udacity.astroapp.activities
 
-import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
-import android.location.LocationManager
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -49,16 +45,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.navigation.dependency
+import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.rememberNavHostEngine
-import com.udacity.astroapp.NavGraphs
 import com.udacity.astroapp.R
-import com.udacity.astroapp.destinations.ObservatoryDetailScreenDestination
 import com.udacity.astroapp.navigation.NavigationCallbacks
+import com.udacity.astroapp.ui.screens.NavGraphs
+import com.udacity.astroapp.ui.screens.destinations.ObservatoryDetailScreenDestination
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import com.udacity.astroapp.utils.Constants
 import com.udacity.astroapp.utils.WebIntentUtils
@@ -226,33 +221,7 @@ class MainActivity : ComponentActivity() {
                 DestinationsNavHost(
                     engine = navEngine,
                     navGraph = NavGraphs.root,
-                    modifier = Modifier.padding(paddingValues),
-                    dependenciesContainerBuilder = {
-                        dependency(navigationCallbacks)
-
-                        // Add callbacks for UI actions
-                        dependency<(String) -> Unit>(qualifier = context.getString(R.string.qualifier_navigate_fullscreen)) { imageUrl ->
-                            // Handle fullscreen navigation
-                            // For now, this is a placeholder
-                        }
-
-                        dependency<() -> Unit>(qualifier = context.getString(R.string.qualifier_share)) {
-                            // Handle sharing
-                            // For now, this is a placeholder
-                        }
-
-                        dependency<(String) -> Unit>(qualifier = context.getString(R.string.qualifier_navigate_asteroid_details)) { asteroidId ->
-                            navigationCallbacks.onNavigateToAsteroidDetails(asteroidId)
-                        }
-
-                        dependency<(Int) -> Unit>(qualifier = context.getString(R.string.qualifier_navigate_observatory_details)) { observatoryId ->
-                            navigationCallbacks.onNavigateToObservatoryDetails(observatoryId)
-                        }
-
-                        dependency<() -> Unit>(qualifier = context.getString(R.string.qualifier_navigate_back)) {
-                            navigationCallbacks.onNavigateBack()
-                        }
-                    }
+                    modifier = Modifier.padding(paddingValues)
                 )
             }
         }

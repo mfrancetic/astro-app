@@ -50,12 +50,18 @@ fun PhotoScreen(
             is PhotoSideEffect.SharePhoto -> {
                 // Handle photo sharing
             }
+            is PhotoSideEffect.NavigateToFullScreen -> {
+                onNavigateToFullScreen(sideEffect.photo.photoId.toString())
+            }
+            is PhotoSideEffect.ShowDatePicker -> {
+
+            }
         }
     }
 
     // Load initial data
     LaunchedEffect(Unit) {
-        viewModel.loadTodayPhoto()
+        viewModel.loadPhotos()
     }
 
     Column(
@@ -90,17 +96,17 @@ fun PhotoScreen(
                 Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
 
                 Button(
-                    onClick = { viewModel.loadTodayPhoto() }
+                    onClick = { viewModel.loadPhotos() }
                 ) {
                     Text(stringResource(R.string.retry))
                 }
             }
-            state.photo != null -> {
+            state.selectedPhoto != null -> {
                 PhotoContent(
-                    photo = state.photo!!,
-                    onDateSelect = { date -> viewModel.loadPhotoForDate(date) },
+                    photo = state.selectedPhoto!!,
+                    onDateSelect = { date -> viewModel.loadPhotos() },
                     onShare = onShare,
-                    onFullScreen = { onNavigateToFullScreen(state.photo!!.url ?: "") }
+                    onFullScreen = { onNavigateToFullScreen(state.selectedPhoto!!.photoUrl) }
                 )
             }
         }

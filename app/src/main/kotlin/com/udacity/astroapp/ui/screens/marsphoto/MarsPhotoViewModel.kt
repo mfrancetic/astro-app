@@ -30,7 +30,7 @@ class MarsPhotoViewModel(
         }
     }
 
-    private fun loadPhotos() = intent {
+    fun loadPhotos() = intent {
         reduce { state.copy(isLoading = true, error = null) }
 
         try {

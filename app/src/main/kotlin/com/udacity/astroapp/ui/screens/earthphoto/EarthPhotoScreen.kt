@@ -1,22 +1,39 @@
 package com.udacity.astroapp.ui.screens.earthphoto
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import com.ramcosta.composedestinations.annotation.Destination
 import coil.compose.AsyncImage
+import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
-import com.udacity.astroapp.data.models.EarthPhoto
+import com.udacity.astroapp.models.EarthPhoto
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -36,12 +53,18 @@ fun EarthPhotoScreen(
             is EarthPhotoSideEffect.ShowError -> {
                 // Handle error display
             }
+            is EarthPhotoSideEffect.NavigateToDetail -> {
+
+            }
+            is EarthPhotoSideEffect.ShowDatePicker -> {
+
+            }
         }
     }
 
     // Load initial data
     LaunchedEffect(Unit) {
-        viewModel.loadEarthPhotos()
+        viewModel.loadPhotos()
     }
 
     Column(
@@ -70,7 +93,7 @@ fun EarthPhotoScreen(
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
 
                 Button(
-                    onClick = { viewModel.loadEarthPhotos() },
+                    onClick = { viewModel.loadPhotos() },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(stringResource(R.string.refresh))
@@ -107,7 +130,7 @@ fun EarthPhotoScreen(
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                         Button(
-                            onClick = { viewModel.loadEarthPhotos() }
+                            onClick = { viewModel.loadPhotos() }
                         ) {
                             Text(stringResource(R.string.retry))
                         }
@@ -123,7 +146,9 @@ fun EarthPhotoScreen(
                     items(state.earthPhotos) { earthPhoto ->
                         EarthPhotoItem(
                             earthPhoto = earthPhoto,
-                            onClick = { onNavigateToFullScreen(earthPhoto.image ?: "") }
+                            onClick = {
+                                onNavigateToFullScreen(earthPhoto.earthPhotoUrl ?: "")
+                            }
                         )
                     }
                 }
@@ -158,8 +183,8 @@ private fun EarthPhotoItem(
             modifier = Modifier.fillMaxSize()
         ) {
             AsyncImage(
-                model = earthPhoto.image,
-                contentDescription = "Earth photo from ${earthPhoto.date}",
+                model = earthPhoto.earthPhotoUrl,
+                contentDescription = "Earth photo from ${earthPhoto.earthPhotoDateTime}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
@@ -172,7 +197,7 @@ private fun EarthPhotoItem(
                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
             ) {
                 Text(
-                    text = earthPhoto.date ?: "Unknown Date",
+                    text = earthPhoto.earthPhotoDateTime,
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(dimensionResource(R.dimen.spacing_small))
                 )

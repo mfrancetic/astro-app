@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
@@ -38,15 +36,20 @@ fun ObservatoryDetailScreen(
     // Handle side effects
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is ObservatoryDetailSideEffect.ShowError -> {
+            is ObservatorySideEffect.ShowError -> {
                 // Handle error display
             }
+            is ObservatorySideEffect.NavigateToDetail -> {}
+            is ObservatorySideEffect.CallPhone -> {}
+            is ObservatorySideEffect.OpenWebsite -> {}
+            is ObservatorySideEffect.NavigateBack -> onNavigateBack()
+            is ObservatorySideEffect.NavigateToMaps -> {}
         }
     }
 
     // Load observatory details
     LaunchedEffect(observatoryId) {
-        viewModel.loadObservatoryDetails(observatoryId)
+        viewModel.loadObservatory(observatoryId.toString())
     }
 
     Column(
@@ -91,7 +94,7 @@ fun ObservatoryDetailScreen(
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                         Button(
-                            onClick = { viewModel.loadObservatoryDetails(observatoryId) }
+                            onClick = { viewModel.loadObservatory(observatoryId.toString()) }
                         ) {
                             Text(stringResource(R.string.retry))
                         }

@@ -109,6 +109,7 @@
     <dimen name="photo_placeholder_height">200dp</dimen>
     <dimen name="filter_icon_size">20dp</dimen>
     <dimen name="card_inner_padding">12dp</dimen>
+    <dimen name="card_padding">16dp</dimen>
     <dimen name="fullscreen_loading_padding">32dp</dimen>
     <dimen name="fullscreen_loading_indicator_size">48dp</dimen>
     <dimen name="fullscreen_loading_stroke_width">4dp</dimen>

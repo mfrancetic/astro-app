@@ -111,6 +111,9 @@
     <string name="menu_about">About</string>
 
     <!-- Navigation labels -->
+    <string name="nav_about">About</string>
+
+    <!-- Navigation labels -->
     <string name="nav_photo">Photo</string>
     <string name="nav_asteroids">Asteroids</string>
     <string name="nav_earth_photo">Earth Photo</string>

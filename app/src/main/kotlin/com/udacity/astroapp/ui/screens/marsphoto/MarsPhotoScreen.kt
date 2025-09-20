@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import coil.compose.AsyncImage
 import com.udacity.astroapp.R
-import com.udacity.astroapp.data.models.MarsPhoto
+import com.udacity.astroapp.models.MarsPhoto
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -36,12 +36,18 @@ fun MarsPhotoScreen(
             is MarsPhotoSideEffect.ShowError -> {
                 // Handle error display
             }
+            is MarsPhotoSideEffect.NavigateToDetail -> {
+
+            }
+            is MarsPhotoSideEffect.ShowDatePicker -> {
+
+            }
         }
     }
 
     // Load initial data
     LaunchedEffect(Unit) {
-        viewModel.loadMarsPhotos()
+        viewModel.loadPhotos()
     }
 
     Column(
@@ -93,7 +99,7 @@ fun MarsPhotoScreen(
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
 
                     Button(
-                        onClick = { viewModel.loadMarsPhotos() },
+                        onClick = { viewModel.loadPhotos() },
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(stringResource(R.string.refresh))
@@ -131,7 +137,7 @@ fun MarsPhotoScreen(
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                         Button(
-                            onClick = { viewModel.loadMarsPhotos() }
+                            onClick = { viewModel.loadPhotos() }
                         ) {
                             Text(stringResource(R.string.retry))
                         }
@@ -147,7 +153,9 @@ fun MarsPhotoScreen(
                     items(state.marsPhotos) { marsPhoto ->
                         MarsPhotoItem(
                             marsPhoto = marsPhoto,
-                            onClick = { onNavigateToFullScreen(marsPhoto.imgSrc ?: "") }
+                            onClick = {
+                                onNavigateToFullScreen(marsPhoto.imageUrl)
+                            }
                         )
                     }
                 }
@@ -182,8 +190,8 @@ private fun MarsPhotoItem(
             modifier = Modifier.fillMaxSize()
         ) {
             AsyncImage(
-                model = marsPhoto.imgSrc,
-                contentDescription = "Mars photo from ${marsPhoto.rover?.name} rover",
+                model = marsPhoto.imageUrl,
+                contentDescription = "Mars photo from ${marsPhoto.rover?.roverName} rover",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
@@ -199,11 +207,11 @@ private fun MarsPhotoItem(
                     modifier = Modifier.padding(dimensionResource(R.dimen.spacing_small))
                 ) {
                     Text(
-                        text = marsPhoto.rover?.name ?: "Unknown Rover",
+                        text = marsPhoto.rover?.roverName ?: "Unknown Rover",
                         style = MaterialTheme.typography.bodySmall
                     )
                     Text(
-                        text = marsPhoto.camera?.name ?: "Unknown Camera",
+                        text = marsPhoto.camera?.cameraName ?: "Unknown Camera",
                         style = MaterialTheme.typography.bodySmall
                     )
                 }

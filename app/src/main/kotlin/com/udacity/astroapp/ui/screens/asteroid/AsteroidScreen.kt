@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.dimensionResource
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
-import com.udacity.astroapp.data.models.Asteroid
+import com.udacity.astroapp.models.Asteroid
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -31,6 +31,10 @@ fun AsteroidScreen(
         when (sideEffect) {
             is AsteroidSideEffect.ShowError -> {
                 // Handle error display
+            }
+            is AsteroidSideEffect.NavigateToDetail -> onNavigateToAsteroidDetails(sideEffect.asteroid.asteroidId.toString())
+            is AsteroidSideEffect.ShowDatePicker -> {
+
             }
         }
     }
@@ -115,7 +119,7 @@ fun AsteroidScreen(
                     items(state.asteroids) { asteroid ->
                         AsteroidItem(
                             asteroid = asteroid,
-                            onClick = { onNavigateToAsteroidDetails(asteroid.id.toString()) }
+                            onClick = { onNavigateToAsteroidDetails(asteroid.asteroidId.toString()) }
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
                     }
@@ -150,7 +154,7 @@ private fun AsteroidItem(
             modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
         ) {
             Text(
-                text = asteroid.name ?: "Unknown Asteroid",
+                text = asteroid.asteroidName ?: "Unknown Asteroid",
                 style = MaterialTheme.typography.headlineSmall
             )
 
@@ -161,14 +165,14 @@ private fun AsteroidItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Date: ${asteroid.closeApproachDate}",
+                    text = "Date: ${asteroid.asteroidApproachDate}",
                     style = MaterialTheme.typography.bodyMedium
                 )
 
                 Text(
-                    text = if (asteroid.isPotentiallyHazardousAsteroid) "⚠️ Hazardous" else "✅ Safe",
+                    text = if (asteroid.asteroidIsHazardous) "⚠️ Hazardous" else "✅ Safe",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (asteroid.isPotentiallyHazardousAsteroid)
+                    color = if (asteroid.asteroidIsHazardous)
                         MaterialTheme.colorScheme.error
                     else
                         MaterialTheme.colorScheme.primary
@@ -178,13 +182,13 @@ private fun AsteroidItem(
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_extra_small)))
 
             Text(
-                text = "Diameter: ${asteroid.estimatedDiameterMin} - ${asteroid.estimatedDiameterMax} km",
+                text = "Diameter: ${asteroid.asteroidDiameterMin} - ${asteroid.asteroidDiameterMax} km",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Text(
-                text = "Distance: ${asteroid.missDistanceKilometers} km",
+                text = "Velocity: ${asteroid.asteroidVelocity} km",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

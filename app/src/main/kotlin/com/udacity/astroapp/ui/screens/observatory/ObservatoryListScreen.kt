@@ -1,24 +1,40 @@
 package com.udacity.astroapp.ui.screens.observatory
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import com.ramcosta.composedestinations.annotation.Destination
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
-import com.udacity.astroapp.data.models.Observatory
+import com.udacity.astroapp.models.Observatory
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -27,7 +43,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Destination
 @Composable
 fun ObservatoryListScreen(
-    onNavigateToObservatoryDetails: (Int) -> Unit = {},
+    onNavigateToObservatoryDetails: (String) -> Unit = {},
     viewModel: ObservatoryViewModel = koinViewModel()
 ) {
     val state by viewModel.collectAsState()
@@ -41,18 +57,26 @@ fun ObservatoryListScreen(
     // Handle side effects
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is ObservatoryListSideEffect.ShowError -> {
+            is ObservatorySideEffect.ShowError -> {
                 // Handle error display
             }
+            is ObservatorySideEffect.NavigateToDetail -> onNavigateToObservatoryDetails(sideEffect.observatoryId.toString())
+            is ObservatorySideEffect.CallPhone -> {}
+            is ObservatorySideEffect.OpenWebsite -> {}
+            is ObservatorySideEffect.NavigateBack -> {
+
+            }
+            is ObservatorySideEffect.NavigateToMaps -> {}
         }
     }
 
     // Load initial data
     LaunchedEffect(Unit) {
         if (locationPermissionState.status.isGranted) {
-            viewModel.loadNearbyObservatories()
+            //TODO nearby observatories
+            viewModel.loadObservatories()
         } else {
-            viewModel.loadAllObservatories()
+            viewModel.loadObservatories()
         }
     }
 
@@ -95,9 +119,10 @@ fun ObservatoryListScreen(
                     Button(
                         onClick = {
                             if (locationPermissionState.status.isGranted) {
-                                viewModel.loadNearbyObservatories()
+                                //TODO nearby observatories
+                                viewModel.loadObservatories()
                             } else {
-                                viewModel.loadAllObservatories()
+                                viewModel.loadObservatories()
                             }
                         },
                         modifier = Modifier.weight(1f)
@@ -148,9 +173,10 @@ fun ObservatoryListScreen(
                         Button(
                             onClick = {
                                 if (locationPermissionState.status.isGranted) {
-                                    viewModel.loadNearbyObservatories()
+                                    //TODO nearby observatories
+                                    viewModel.loadObservatories()
                                 } else {
-                                    viewModel.loadAllObservatories()
+                                    viewModel.loadObservatories()
                                 }
                             }
                         ) {
@@ -164,7 +190,7 @@ fun ObservatoryListScreen(
                     items(state.observatories) { observatory ->
                         ObservatoryItem(
                             observatory = observatory,
-                            onClick = { onNavigateToObservatoryDetails(observatory.id) }
+                            onClick = { onNavigateToObservatoryDetails(observatory.observatoryId) }
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
                     }
@@ -199,51 +225,20 @@ private fun ObservatoryItem(
             modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
         ) {
             Text(
-                text = observatory.name ?: "Unknown Observatory",
+                text = observatory.observatoryName,
                 style = MaterialTheme.typography.headlineSmall
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
-            if (observatory.vicinity != null) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        Icons.Default.LocationOn,
-                        contentDescription = null,
-                        modifier = Modifier.size(dimensionResource(R.dimen.icon_small)),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_extra_small)))
-                    Text(
-                        text = observatory.vicinity!!,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_extra_small)))
-            }
-
-            if (observatory.rating != null) {
-                Text(
-                    text = "Rating: ${observatory.rating}/5.0",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            if (observatory.openingHours != null) {
-                Text(
-                    text = if (observatory.openingHours!!) "Open" else "Closed",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (observatory.openingHours!!)
-                        MaterialTheme.colorScheme.primary
-                    else
-                        MaterialTheme.colorScheme.error
-                )
-            }
+            Text(
+                text = if (observatory.observatoryOpenNow) "Open" else "Closed",
+                style = MaterialTheme.typography.bodySmall,
+                color = if (observatory.observatoryOpenNow)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.error
+            )
         }
     }
 }

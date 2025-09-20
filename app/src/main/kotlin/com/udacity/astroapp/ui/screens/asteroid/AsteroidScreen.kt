@@ -1,13 +1,27 @@
 package com.udacity.astroapp.ui.screens.asteroid
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,7 +40,6 @@ fun AsteroidScreen(
     viewModel: AsteroidViewModel = koinViewModel()
 ) {
     val state by viewModel.collectAsState()
-    val context = LocalContext.current
 
     // Handle side effects
     viewModel.collectSideEffect { sideEffect ->
@@ -54,10 +67,7 @@ fun AsteroidScreen(
 private fun AsteroidItem(asteroid: Asteroid, onClick: (Asteroid) -> Unit) {
     Card(modifier = Modifier.fillMaxWidth(), onClick = { onClick(asteroid) }) {
         Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
-            Text(
-                text = asteroid.asteroidName ?: "Unknown Asteroid",
-                style = MaterialTheme.typography.headlineSmall
-            )
+            Text(text = asteroid.asteroidName, style = MaterialTheme.typography.headlineSmall)
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
@@ -112,13 +122,7 @@ private fun AsteroidScreenContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(onClick = { /* Open date picker */}, modifier = Modifier.weight(1f)) {
-                    Text(stringResource(R.string.select_date_range))
-                }
-
-                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
-
-                Button(onClick = onRetry, modifier = Modifier.weight(1f)) {
-                    Text(stringResource(R.string.refresh))
+                    Text(stringResource(R.string.select_date))
                 }
             }
         }
@@ -140,10 +144,7 @@ private fun AsteroidScreenContent(
                         )
                 ) {
                     Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
-                        Text(
-                            text = state.error!!,
-                            color = MaterialTheme.colorScheme.onErrorContainer
-                        )
+                        Text(text = state.error, color = MaterialTheme.colorScheme.onErrorContainer)
 
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 

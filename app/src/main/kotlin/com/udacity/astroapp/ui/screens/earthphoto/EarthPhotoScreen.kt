@@ -27,7 +27,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,7 +46,6 @@ fun EarthPhotoScreen(
     viewModel: EarthPhotoViewModel = koinViewModel()
 ) {
     val state by viewModel.collectAsState()
-    val context = LocalContext.current
 
     // Handle side effects
     viewModel.collectSideEffect { sideEffect ->
@@ -90,10 +88,6 @@ private fun EarthPhotoScreenContent(
                 }
 
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
-
-                Button(onClick = onRetry, modifier = Modifier.weight(1f)) {
-                    Text(stringResource(R.string.refresh))
-                }
             }
         }
 
@@ -114,14 +108,7 @@ private fun EarthPhotoScreenContent(
                         )
                 ) {
                     Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
-                        Text(
-                            text = state.error!!,
-                            color = MaterialTheme.colorScheme.onErrorContainer
-                        )
-
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
-
-                        Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
+                        Text(text = state.error, color = MaterialTheme.colorScheme.onErrorContainer)
                     }
                 }
             }
@@ -136,7 +123,7 @@ private fun EarthPhotoScreenContent(
                     items(state.earthPhotos) { earthPhoto ->
                         EarthPhotoItem(
                             earthPhoto = earthPhoto,
-                            onClick = { onNavigateToFullScreen(earthPhoto.earthPhotoUrl ?: "") }
+                            onClick = { onNavigateToFullScreen(earthPhoto.earthPhotoUrl) }
                         )
                     }
                 }

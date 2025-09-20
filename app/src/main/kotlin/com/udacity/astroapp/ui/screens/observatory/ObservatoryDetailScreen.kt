@@ -1,21 +1,46 @@
 package com.udacity.astroapp.ui.screens.observatory
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.net.toUri
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.*
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.rememberCameraPositionState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Observatory
@@ -33,7 +58,6 @@ fun ObservatoryDetailScreen(
     viewModel: ObservatoryDetailViewModel = koinViewModel()
 ) {
     val state by viewModel.collectAsState()
-    val context = LocalContext.current
 
     // Handle side effects
     viewModel.collectSideEffect { sideEffect ->
@@ -82,7 +106,7 @@ private fun ObservatoryDetailScreenContent(
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
                     Icon(
-                        Icons.Default.ArrowBack,
+                        Icons.AutoMirrored.Default.ArrowBack,
                         contentDescription = stringResource(R.string.back_content_description)
                     )
                 }
@@ -105,7 +129,7 @@ private fun ObservatoryDetailScreenContent(
                         )
                 ) {
                     Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
-                        Text(text = error!!, color = MaterialTheme.colorScheme.onErrorContainer)
+                        Text(text = error, color = MaterialTheme.colorScheme.onErrorContainer)
 
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
@@ -115,7 +139,7 @@ private fun ObservatoryDetailScreenContent(
             }
             observatory != null -> {
                 ObservatoryDetails(
-                    observatory = observatory!!,
+                    observatory = observatory,
                     modifier =
                         Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))
                 )
@@ -208,10 +232,7 @@ private fun ObservatoryDetails(observatory: Observatory, modifier: Modifier = Mo
                     val geoUri =
                         "geo:${observatory.observatoryLatitude},${observatory.observatoryLongitude}?q=${observatory.observatoryLatitude},${observatory.observatoryLongitude}(${observatory.observatoryName})"
                     val mapIntent =
-                        android.content.Intent(
-                            android.content.Intent.ACTION_VIEW,
-                            android.net.Uri.parse(geoUri)
-                        )
+                        android.content.Intent(android.content.Intent.ACTION_VIEW, geoUri.toUri())
                     mapIntent.setPackage("com.google.android.apps.maps")
                     context.startActivity(mapIntent)
                 }
@@ -225,8 +246,7 @@ private fun ObservatoryDetails(observatory: Observatory, modifier: Modifier = Mo
                 Button(
                     onClick = {
                         val callIntent = android.content.Intent(android.content.Intent.ACTION_DIAL)
-                        callIntent.data =
-                            android.net.Uri.parse("tel:${observatory.observatoryPhoneNumber}")
+                        callIntent.data = "tel:${observatory.observatoryPhoneNumber}".toUri()
                         context.startActivity(callIntent)
                     }
                 ) {

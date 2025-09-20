@@ -1,15 +1,31 @@
 package com.udacity.astroapp.ui.screens.marsphoto
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,7 +47,6 @@ fun MarsPhotoScreen(
     viewModel: MarsPhotoViewModel = koinViewModel()
 ) {
     val state by viewModel.collectAsState()
-    val context = LocalContext.current
 
     // Handle side effects
     viewModel.collectSideEffect { sideEffect ->
@@ -68,31 +83,8 @@ private fun MarsPhotoScreenContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Button(onClick = { /* Open rover picker */}, modifier = Modifier.weight(1f)) {
-                        Text(stringResource(R.string.rover))
-                    }
-
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
-
-                    Button(onClick = { /* Open camera picker */}, modifier = Modifier.weight(1f)) {
-                        Text(stringResource(R.string.camera))
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
                     Button(onClick = { /* Open date picker */}, modifier = Modifier.weight(1f)) {
                         Text(stringResource(R.string.select_date_button))
-                    }
-
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
-
-                    Button(onClick = onRetry, modifier = Modifier.weight(1f)) {
-                        Text(stringResource(R.string.refresh))
                     }
                 }
             }
@@ -115,10 +107,7 @@ private fun MarsPhotoScreenContent(
                         )
                 ) {
                     Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
-                        Text(
-                            text = state.error!!,
-                            color = MaterialTheme.colorScheme.onErrorContainer
-                        )
+                        Text(text = state.error, color = MaterialTheme.colorScheme.onErrorContainer)
 
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 

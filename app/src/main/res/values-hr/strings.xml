@@ -120,10 +120,10 @@
 	<string name="error_generic">Nešto je pošlo po zlu. Molimo pokušajte ponovo.</string>
 
 	<!-- Loading messages -->
-	<string name="loading">Učitava...</string>
-	<string name="loading_photos">Učitavaju se slike...</string>
-	<string name="loading_asteroids">Učitavaju se asteroidi...</string>
-	<string name="loading_observatories">Učitavaju se zvjezdarnice...</string>
+	<string name="loading">Učitava…</string>
+	<string name="loading_photos">Učitavaju se slike…</string>
+	<string name="loading_asteroids">Učitavaju se asteroidi…</string>
+	<string name="loading_observatories">Učitavaju se zvjezdarnice…</string>
 
 	<!-- Empty state messages -->
 	<string name="empty_photos">Nema slika za izabrani datum</string>
@@ -176,7 +176,7 @@
 	<string name="rating_format">Ocjena: %1$.1f/5.0</string>
 
 	<!-- UI Component strings -->
-	<string name="search_placeholder">Traži...</string>
+	<string name="search_placeholder">Traži…</string>
 	<string name="search_content_description">Traži</string>
 	<string name="clear_content_description">Obriši</string>
 	<string name="back_content_description">Natrag</string>
@@ -250,7 +250,6 @@
 	<!-- Additional missing UI strings -->
 	<string name="show_only_open_observatories">Prikaži samo otvorene zvjezdarnice</string>
 	<string name="clear">Obriši</string>
-	<string name="select_date_range">Odaberi raspon datuma</string>
 
 	<!-- Theme selection placeholder -->
 	<string name="theme_selection_placeholder">Izbor teme - treba biti implementiran s radio

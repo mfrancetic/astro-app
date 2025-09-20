@@ -26,7 +26,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,8 +48,6 @@ fun ObservatoryListScreen(
     viewModel: ObservatoryViewModel = koinViewModel()
 ) {
     val state by viewModel.collectAsState()
-    val context = LocalContext.current
-
     // Location permission
     val locationPermissionState =
         rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -62,7 +59,7 @@ fun ObservatoryListScreen(
                 // Handle error display
             }
             is ObservatorySideEffect.NavigateToDetail ->
-                onNavigateToObservatoryDetails(sideEffect.observatoryId.toString())
+                onNavigateToObservatoryDetails(sideEffect.observatoryId)
             is ObservatorySideEffect.CallPhone -> {}
             is ObservatorySideEffect.OpenWebsite -> {}
             is ObservatorySideEffect.NavigateBack -> {}
@@ -157,7 +154,7 @@ private fun ObservatoryListScreenContent(
                         )
                 ) {
                     Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
-                        Text(text = error!!, color = MaterialTheme.colorScheme.onErrorContainer)
+                        Text(text = error, color = MaterialTheme.colorScheme.onErrorContainer)
 
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 

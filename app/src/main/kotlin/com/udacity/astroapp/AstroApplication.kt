@@ -3,7 +3,9 @@ package com.udacity.astroapp
 import android.app.Application
 import com.udacity.astroapp.di.databaseModule
 import com.udacity.astroapp.di.imageModule
+import com.udacity.astroapp.di.networkModule
 import com.udacity.astroapp.di.repositoryModule
+import com.udacity.astroapp.di.utilModule
 import com.udacity.astroapp.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -18,7 +20,14 @@ class AstroApplication : Application() {
         startKoin {
             androidLogger(Level.ERROR)
             androidContext(this@AstroApplication)
-            modules(databaseModule, repositoryModule, viewModelModule, imageModule)
+            modules(
+                utilModule,
+                databaseModule,
+                networkModule,
+                repositoryModule,
+                viewModelModule,
+                imageModule
+            )
         }
     }
 }

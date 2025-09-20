@@ -12,10 +12,10 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "marsphoto")
 @Parcelize
 data class MarsPhoto(
-    @SerializedName("id") @PrimaryKey val id: Int = 0,
-    @SerializedName("sol") val sol: String = "",
-    @SerializedName("img_src") val imageUrl: String = "",
-    @SerializedName("earth_date") val earthDate: String = "",
+    @SerializedName("id") @PrimaryKey val id: Int,
+    @SerializedName("sol") val sol: String? = null,
+    @SerializedName("img_src") val imageUrl: String? = null,
+    @SerializedName("earth_date") val earthDate: String? = null,
     @TypeConverters(Converters::class)
     @ColumnInfo(name = "camera")
     @SerializedName("camera")
@@ -23,5 +23,6 @@ data class MarsPhoto(
     @TypeConverters(Converters::class)
     @ColumnInfo(name = "rover")
     @SerializedName("rover")
-    val rover: Rover? = null
+    val rover: Rover? = null,
+    val cacheTimestamp: Long = System.currentTimeMillis()
 ) : Parcelable

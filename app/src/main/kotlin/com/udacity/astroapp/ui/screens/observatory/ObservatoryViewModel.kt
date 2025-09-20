@@ -32,7 +32,7 @@ class ObservatoryViewModel(private val observatoryRepository: ObservatoryReposit
         reduce { state.copy(isLoading = true, error = null) }
 
         try {
-            observatoryRepository.loadAllObservatories().collect { observatories ->
+            observatoryRepository.getAllObservatories().collect { observatories ->
                 reduce {
                     state.copy(
                         isLoading = false,
@@ -60,8 +60,8 @@ class ObservatoryViewModel(private val observatoryRepository: ObservatoryReposit
                 state.observatories
             } else {
                 state.observatories.filter { observatory ->
-                    observatory.observatoryName.contains(query, ignoreCase = true) ||
-                        observatory.observatoryAddress.contains(query, ignoreCase = true)
+                    observatory.observatoryName?.contains(query, ignoreCase = true) == true ||
+                        observatory.observatoryAddress?.contains(query, ignoreCase = true) == true
                 }
             }
 

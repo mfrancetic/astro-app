@@ -32,7 +32,7 @@ class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository
         reduce { state.copy(isLoading = true, error = null) }
 
         try {
-            earthPhotoRepository.loadAllEarthPhotos().collect { earthPhotos ->
+            earthPhotoRepository.getAllEarthPhotos().collect { earthPhotos ->
                 val filteredPhotos = filterByDate(earthPhotos, state.selectedDate)
                 reduce {
                     state.copy(

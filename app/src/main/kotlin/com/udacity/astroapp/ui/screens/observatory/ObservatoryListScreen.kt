@@ -191,7 +191,10 @@ private fun ObservatoryListScreenContent(
 private fun ObservatoryItem(observatory: Observatory, onClick: (Observatory) -> Unit) {
     Card(modifier = Modifier.fillMaxWidth(), onClick = { onClick(observatory) }) {
         Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
-            Text(text = observatory.observatoryName, style = MaterialTheme.typography.headlineSmall)
+            Text(
+                text = observatory.observatoryName ?: "",
+                style = MaterialTheme.typography.headlineSmall
+            )
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 

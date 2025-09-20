@@ -6,6 +6,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Camera(
-    @SerializedName("name") val cameraName: String = "",
-    @SerializedName("full_name") val cameraFullName: String = ""
+    @SerializedName("name") val cameraName: String? = null,
+    @SerializedName("full_name") val cameraFullName: String? = null
 ) : Parcelable

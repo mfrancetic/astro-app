@@ -9,8 +9,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class EarthPhoto(
     @PrimaryKey(autoGenerate = true) val earthPhotoId: Int = 0,
-    val earthPhotoIdentifier: String = "",
-    val earthPhotoCaption: String = "",
-    val earthPhotoUrl: String = "",
-    val earthPhotoDateTime: String = ""
+    val earthPhotoCaption: String? = null,
+    val earthPhotoUrl: String,
+    val earthPhotoDateTime: String,
+    val cacheTimestamp: Long = System.currentTimeMillis()
 ) : Parcelable

@@ -158,7 +158,7 @@ private fun ObservatoryDetails(observatory: Observatory, modifier: Modifier = Mo
             Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
                 Text(
                     text =
-                        observatory.observatoryName.ifEmpty {
+                        (observatory.observatoryName ?: "").ifEmpty {
                             stringResource(R.string.unknown_observatory)
                         },
                     style = MaterialTheme.typography.headlineMedium
@@ -167,7 +167,7 @@ private fun ObservatoryDetails(observatory: Observatory, modifier: Modifier = Mo
                 Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                 // Address
-                if (observatory.observatoryAddress.isNotEmpty()) {
+                if ((observatory.observatoryAddress ?: "").isNotEmpty()) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             Icons.Default.LocationOn,
@@ -176,7 +176,7 @@ private fun ObservatoryDetails(observatory: Observatory, modifier: Modifier = Mo
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
                         Text(
-                            text = observatory.observatoryAddress,
+                            text = observatory.observatoryAddress ?: "",
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -185,7 +185,7 @@ private fun ObservatoryDetails(observatory: Observatory, modifier: Modifier = Mo
                 }
 
                 // Opening status
-                if (observatory.observatoryOpeningHours.isNotEmpty()) {
+                if ((observatory.observatoryOpeningHours ?: "").isNotEmpty()) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = stringResource(R.string.observatory_status_label),
@@ -216,7 +216,7 @@ private fun ObservatoryDetails(observatory: Observatory, modifier: Modifier = Mo
                 ObservatoryMap(
                     latitude = observatory.observatoryLatitude,
                     longitude = observatory.observatoryLongitude,
-                    observatoryName = observatory.observatoryName,
+                    observatoryName = observatory.observatoryName ?: "",
                     modifier = Modifier.fillMaxWidth().height(dimensionResource(R.dimen.map_height))
                 )
             }
@@ -242,7 +242,7 @@ private fun ObservatoryDetails(observatory: Observatory, modifier: Modifier = Mo
                 Text(stringResource(R.string.directions_button))
             }
 
-            if (observatory.observatoryPhoneNumber.isNotEmpty()) {
+            if ((observatory.observatoryPhoneNumber ?: "").isNotEmpty()) {
                 Button(
                     onClick = {
                         val callIntent = android.content.Intent(android.content.Intent.ACTION_DIAL)

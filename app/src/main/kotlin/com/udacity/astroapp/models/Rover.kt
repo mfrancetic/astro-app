@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Rover(
-    @SerializedName("name") val roverName: String = "",
-    @SerializedName("launch_date") val launchDate: String = "",
-    @SerializedName("landing_date") val landingDate: String = ""
+    @SerializedName("name") val roverName: String? = null,
+    @SerializedName("launch_date") val launchDate: String? = null,
+    @SerializedName("landing_date") val landingDate: String? = null
 ) : Parcelable

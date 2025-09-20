@@ -235,7 +235,7 @@ private fun EarthPhotoScreenSuccessPreview() {
                 EarthPhoto(
                     earthPhotoId = 1,
                     earthPhotoUrl = "https://example.com/earth1.jpg",
-                    earthPhotoDateTime = "2024-01-15 12:30:45"
+                    earthPhotoDateTime = "2024-01-15 12:30:45",
                 ),
                 EarthPhoto(
                     earthPhotoId = 2,

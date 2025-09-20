@@ -134,7 +134,7 @@ private fun MarsPhotoScreenContent(
                     items(state.marsPhotos) { marsPhoto ->
                         MarsPhotoItem(
                             marsPhoto = marsPhoto,
-                            onClick = { onNavigateToFullScreen(marsPhoto.imageUrl) }
+                            onClick = { marsPhoto.imageUrl?.let { onNavigateToFullScreen(it) } }
                         )
                     }
                 }

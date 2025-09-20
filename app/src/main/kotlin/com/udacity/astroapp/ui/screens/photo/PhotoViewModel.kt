@@ -33,7 +33,7 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
         reduce { state.copy(isLoading = true, error = null) }
 
         try {
-            photoRepository.loadAllPhotos().collect { photos ->
+            photoRepository.getAllPhotos().collect { photos ->
                 val filteredPhotos = filterByDate(photos, state.selectedDate)
                 reduce {
                     state.copy(

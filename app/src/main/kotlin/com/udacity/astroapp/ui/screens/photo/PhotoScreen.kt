@@ -75,28 +75,32 @@ private fun PhotoContent(
     onFullScreen: () -> Unit
 ) {
     var showFullscreenVideo by remember { mutableStateOf(false) }
-    val isVideo = VideoUtils.isVideoContent(photo.photoMediaType)
+    val isVideo = VideoUtils.isVideoContent(photo.photoMediaType ?: "")
 
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
-            Text(
-                text = photo.photoTitle.ifEmpty { stringResource(R.string.no_title) },
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.spacing_small))
-            )
+            photo.photoTitle?.let {
+                Text(
+                    text = it.ifEmpty { stringResource(R.string.no_title) },
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(bottom = dimensionResource(R.dimen.spacing_small))
+                )
+            }
 
-            Text(
-                text = photo.photoDate,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(bottom = dimensionResource(R.dimen.spacing_medium))
-            )
+            photo.photoDate?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = dimensionResource(R.dimen.spacing_medium))
+                )
+            }
 
             // Image or video content
             if (isVideo) {
                 VideoContent(
-                    videoUrl = photo.photoUrl,
-                    title = photo.photoTitle,
+                    videoUrl = photo.photoUrl ?: "",
+                    title = photo.photoTitle ?: "",
                     onFullscreenClick = { showFullscreenVideo = true },
                     modifier =
                         Modifier.fillMaxWidth()
@@ -104,8 +108,8 @@ private fun PhotoContent(
                 )
             } else {
                 ImageContent(
-                    imageUrl = photo.photoUrl,
-                    contentDescription = photo.photoTitle,
+                    imageUrl = photo.photoUrl ?: "",
+                    contentDescription = photo.photoTitle ?: "",
                     onFullScreen = onFullScreen,
                     modifier =
                         Modifier.fillMaxWidth()
@@ -115,10 +119,12 @@ private fun PhotoContent(
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
 
-            Text(
-                text = photo.photoDescription.ifEmpty { stringResource(R.string.no_description) },
-                style = MaterialTheme.typography.bodyMedium
-            )
+            photo.photoDescription?.let {
+                Text(
+                    text = it.ifEmpty { stringResource(R.string.no_description) },
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
 
@@ -147,7 +153,7 @@ private fun PhotoContent(
     // Fullscreen video dialog
     if (showFullscreenVideo && isVideo) {
         FullscreenVideoDialog(
-            videoUrl = photo.photoUrl,
+            videoUrl = photo.photoUrl ?: "",
             onDismiss = { showFullscreenVideo = false }
         )
     }

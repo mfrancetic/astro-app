@@ -2,7 +2,6 @@ package com.udacity.astroapp.ui.screens.marsphoto
 
 import androidx.lifecycle.ViewModel
 import com.udacity.astroapp.repository.MarsPhotoRepository
-import kotlinx.coroutines.flow.collect
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -32,7 +31,7 @@ class MarsPhotoViewModel(private val marsPhotoRepository: MarsPhotoRepository) :
         reduce { state.copy(isLoading = true, error = null) }
 
         try {
-            marsPhotoRepository.loadAllMarsPhotos().collect { marsPhotos ->
+            marsPhotoRepository.getAllMarsPhotos().collect { marsPhotos ->
                 val filteredPhotos = filterByDate(marsPhotos, state.selectedDate)
                 reduce {
                     state.copy(

@@ -2,7 +2,6 @@ package com.udacity.astroapp.ui.screens.observatory
 
 import androidx.lifecycle.ViewModel
 import com.udacity.astroapp.repository.ObservatoryRepository
-import kotlinx.coroutines.flow.collect
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -37,8 +36,13 @@ class ObservatoryDetailViewModel(
         reduce { state.copy(isLoading = true, error = null, observatoryId = observatoryId) }
 
         try {
-            observatoryRepository.loadObservatoryById(observatoryId).collect { observatory ->
-                reduce { state.copy(isLoading = false, observatory = observatory, error = null) }
+            val observatory = observatoryRepository.getObservatoryById(observatoryId)
+            reduce {
+                state.copy(
+                    observatory = observatory,
+                    isLoading = false,
+                    error = if (observatory == null) "Observatory not found" else null
+                )
             }
         } catch (e: Exception) {
             reduce {
@@ -58,7 +62,7 @@ class ObservatoryDetailViewModel(
 
     private fun openWebsite() = intent {
         state.observatory?.let { observatory ->
-            if (observatory.observatoryUrl.isNotEmpty()) {
+            if (observatory.observatoryUrl?.isNotEmpty() == true) {
                 postSideEffect(ObservatorySideEffect.OpenWebsite(observatory.observatoryUrl))
             }
         }
@@ -66,7 +70,7 @@ class ObservatoryDetailViewModel(
 
     private fun callPhone() = intent {
         state.observatory?.let { observatory ->
-            if (observatory.observatoryPhoneNumber.isNotEmpty()) {
+            if (observatory.observatoryPhoneNumber?.isNotEmpty() == true) {
                 postSideEffect(ObservatorySideEffect.CallPhone(observatory.observatoryPhoneNumber))
             }
         }

@@ -1,9 +1,12 @@
 package com.udacity.astroapp.ui.screens.asteroid
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.models.Asteroid
 import com.udacity.astroapp.repository.AsteroidRepository
-import kotlinx.coroutines.flow.collect
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -15,8 +18,29 @@ class AsteroidViewModel(private val asteroidRepository: AsteroidRepository) :
 
     override val container = container<AsteroidState, AsteroidSideEffect>(AsteroidState())
 
+    private val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
     init {
+        observeAsteroids()
         loadAsteroids()
+    }
+
+    private fun observeAsteroids() = intent {
+        viewModelScope.launch {
+            asteroidRepository.getAllAsteroids().collect { asteroids ->
+                reduce {
+                    state.copy(
+                        asteroids = asteroids,
+                        filteredAsteroids =
+                            filterAndSortAsteroids(
+                                asteroids,
+                                state.showHazardousOnly,
+                                LocalDate.parse(state.selectedDate)
+                            )
+                    )
+                }
+            }
+        }
     }
 
     fun handleAction(action: AsteroidAction) {
@@ -30,31 +54,30 @@ class AsteroidViewModel(private val asteroidRepository: AsteroidRepository) :
         }
     }
 
-    fun loadAsteroids() = intent {
-        reduce { state.copy(isLoading = true, error = null) }
+    fun loadAsteroids(forceRefresh: Boolean = true) = intent {
+        reduce {
+            state.copy(
+                isLoading = true,
+                error = null,
+            )
+        }
 
-        try {
-            asteroidRepository.loadAllAsteroids().collect { asteroids ->
-                val filteredAsteroids =
-                    applyFilters(
-                        asteroids = asteroids,
-                        selectedDate = state.selectedDate,
-                        showHazardousOnly = state.showHazardousOnly
-                    )
+        viewModelScope.launch {
+            try {
+                asteroidRepository.refreshAsteroids(forceRefresh)
                 reduce {
                     state.copy(
                         isLoading = false,
-                        asteroids = asteroids,
-                        filteredAsteroids = filteredAsteroids,
-                        error = null
                     )
                 }
+            } catch (e: Exception) {
+                reduce {
+                    state.copy(isLoading = false, error = e.message ?: "Failed to load asteroids")
+                }
+                postSideEffect(
+                    AsteroidSideEffect.ShowError(e.message ?: "Failed to load asteroids")
+                )
             }
-        } catch (e: Exception) {
-            reduce {
-                state.copy(isLoading = false, error = e.message ?: "Failed to load asteroids")
-            }
-            postSideEffect(AsteroidSideEffect.ShowError(e.message ?: "Failed to load asteroids"))
         }
     }
 
@@ -105,5 +128,21 @@ class AsteroidViewModel(private val asteroidRepository: AsteroidRepository) :
         } else {
             dateFiltered
         }
+    }
+
+    private fun filterAndSortAsteroids(
+        asteroids: List<Asteroid>,
+        showHazardousOnly: Boolean,
+        date: LocalDate,
+    ): List<Asteroid> {
+        var filtered = asteroids.filter { it.asteroidApproachDate == date.format(dateFormat) }
+
+        // Apply hazardous filter
+        if (showHazardousOnly) {
+            filtered = filtered.filter { it.asteroidIsHazardous }
+        }
+
+        // Apply sorting
+        return filtered
     }
 }

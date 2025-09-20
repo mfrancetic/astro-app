@@ -14,47 +14,92 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface AstroDao {
 
-    @Query("SELECT * FROM photo") fun loadAllPhotos(): Flow<List<Photo>>
+    // Photo queries with Flow for reactive programming
+    @Query("SELECT * FROM photo ORDER BY photoDate DESC") fun loadAllPhotos(): Flow<List<Photo>>
 
-    @Query("SELECT * FROM asteroid ORDER BY asteroidId")
+    @Query("SELECT * FROM photo WHERE photoDate = :date")
+    suspend fun getPhotoByDate(date: String): Photo?
+
+    @Query("SELECT * FROM photo WHERE cacheTimestamp > :timestamp")
+    suspend fun getPhotosNewerThan(timestamp: Long): List<Photo>
+
+    // Asteroid queries
+    @Query("SELECT * FROM asteroid ORDER BY asteroidApproachDate ASC")
     fun loadAllAsteroids(): Flow<List<Asteroid>>
 
-    @Query("SELECT * FROM observatory ORDER BY observatoryId")
+    @Query("SELECT * FROM asteroid WHERE cacheTimestamp > :timestamp")
+    suspend fun getAsteroidsNewerThan(timestamp: Long): List<Asteroid>
+
+    // Observatory queries
+    @Query("SELECT * FROM observatory ORDER BY observatoryName")
     fun loadAllObservatories(): Flow<List<Observatory>>
 
-    @Query("SELECT * FROM earthphoto") fun loadAllEarthPhotos(): Flow<List<EarthPhoto>>
-
-    @Query("SELECT * FROM marsphoto") fun loadAllMarsPhotos(): Flow<List<MarsPhoto>>
-
     @Query("SELECT * FROM observatory WHERE observatoryId = :observatoryId")
-    fun loadObservatoryById(observatoryId: String): Flow<Observatory>
+    suspend fun getObservatoryById(observatoryId: String): Observatory?
 
-    @Query("DELETE FROM photo") fun deleteAllPhotos()
+    @Query("SELECT * FROM observatory WHERE cacheTimestamp > :timestamp")
+    suspend fun getObservatoriesNewerThan(timestamp: Long): List<Observatory>
 
-    @Query("DELETE FROM asteroid") fun deleteAllAsteroids()
+    // Earth photo queries
+    @Query("SELECT * FROM earthphoto ORDER BY earthPhotoDateTime DESC")
+    fun loadAllEarthPhotos(): Flow<List<EarthPhoto>>
 
-    @Query("DELETE FROM observatory") fun deleteAllObservatories()
+    @Query("SELECT * FROM earthphoto WHERE earthPhotoDateTime LIKE :date || '%'")
+    suspend fun getEarthPhotosByDate(date: String): List<EarthPhoto>
 
-    @Query("DELETE FROM earthphoto") fun deleteAllEarthPhotos()
+    @Query("SELECT * FROM earthphoto WHERE cacheTimestamp > :timestamp")
+    suspend fun getEarthPhotosNewerThan(timestamp: Long): List<EarthPhoto>
 
-    @Query("DELETE FROM marsphoto") fun deleteAllMarsPhotos()
+    // Mars photo queries
+    @Query("SELECT * FROM marsphoto ORDER BY earthDate DESC")
+    fun loadAllMarsPhotos(): Flow<List<MarsPhoto>>
+
+    @Query("SELECT * FROM marsphoto WHERE sol = :sol")
+    suspend fun getMarsPhotosBySol(sol: String): List<MarsPhoto>
+
+    @Query("SELECT * FROM marsphoto WHERE cacheTimestamp > :timestamp")
+    suspend fun getMarsPhotosNewerThan(timestamp: Long): List<MarsPhoto>
+
+    // Delete queries
+    @Query("DELETE FROM photo") suspend fun deleteAllPhotos()
+
+    @Query("DELETE FROM asteroid") suspend fun deleteAllAsteroids()
+
+    @Query("DELETE FROM asteroid WHERE cacheTimestamp < :timestamp")
+    suspend fun deleteOldAsteroids(timestamp: Long)
+
+    @Query("DELETE FROM observatory") suspend fun deleteAllObservatories()
 
     @Query("DELETE FROM observatory WHERE observatoryId = :observatoryId")
-    fun deleteObservatory(observatoryId: String)
+    suspend fun deleteObservatory(observatoryId: String)
 
-    @Query("SELECT COUNT (*) FROM asteroid") fun getAsteroidCount(): Int
+    @Query("DELETE FROM earthphoto") suspend fun deleteAllEarthPhotos()
 
-    @Query("SELECT COUNT (*) FROM observatory") fun getObservatoryCount(): Int
+    @Query("DELETE FROM earthphoto WHERE cacheTimestamp < :timestamp")
+    suspend fun deleteOldEarthPhotos(timestamp: Long)
 
-    @Insert(onConflict = REPLACE) fun addPhoto(photo: Photo)
+    @Query("DELETE FROM marsphoto") suspend fun deleteAllMarsPhotos()
 
-    @Insert(onConflict = REPLACE) fun addAllEarthPhotos(earthPhoto: List<EarthPhoto>)
+    @Query("DELETE FROM marsphoto WHERE cacheTimestamp < :timestamp")
+    suspend fun deleteOldMarsPhotos(timestamp: Long)
 
-    @Insert(onConflict = REPLACE) fun addAllObservatories(observatories: List<Observatory>)
+    // Count queries
+    @Query("SELECT COUNT(*) FROM asteroid") suspend fun getAsteroidCount(): Int
 
-    @Insert(onConflict = REPLACE) fun addObservatory(observatory: Observatory)
+    @Query("SELECT COUNT(*) FROM observatory") suspend fun getObservatoryCount(): Int
 
-    @Insert(onConflict = REPLACE) fun addAllAsteroids(asteroids: List<Asteroid>)
+    // Insert queries
+    @Insert(onConflict = REPLACE) suspend fun insertPhoto(photo: Photo)
 
-    @Insert(onConflict = REPLACE) fun addAllMarsPhotos(marsPhotos: List<MarsPhoto>)
+    @Insert(onConflict = REPLACE) suspend fun insertPhotos(photos: List<Photo>)
+
+    @Insert(onConflict = REPLACE) suspend fun insertEarthPhotos(earthPhotos: List<EarthPhoto>)
+
+    @Insert(onConflict = REPLACE) suspend fun insertObservatories(observatories: List<Observatory>)
+
+    @Insert(onConflict = REPLACE) suspend fun insertObservatory(observatory: Observatory)
+
+    @Insert(onConflict = REPLACE) suspend fun insertAsteroids(asteroids: List<Asteroid>)
+
+    @Insert(onConflict = REPLACE) suspend fun insertMarsPhotos(marsPhotos: List<MarsPhoto>)
 }

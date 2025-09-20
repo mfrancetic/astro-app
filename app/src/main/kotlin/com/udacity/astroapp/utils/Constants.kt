@@ -1,7 +1,6 @@
 package com.udacity.astroapp.utils
 
 object Constants {
-
     const val MARS_PHOTO_BASE_URL = "https://api.nasa.gov/mars-photos/api/v1/rovers/curiosity/"
     const val NASA_API_KEY = Secret.nasa_api_key
     const val PAGE_NUMBER = "1"
@@ -19,4 +18,8 @@ object Constants {
     const val MARS_PHOTOS_KEY = "marsPhotos"
 
     const val DEVELOPER_WEBSITE_URL = "https://mfrancetic.gitlab.io/cv-website/"
+
+    // Cache durations
+    const val CACHE_DURATION_HOURS = 1L
+    const val CACHE_DURATION_MILLIS = CACHE_DURATION_HOURS * 60 * 60 * 1000L
 }

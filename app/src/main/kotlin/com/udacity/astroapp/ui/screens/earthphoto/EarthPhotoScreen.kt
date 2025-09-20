@@ -34,6 +34,7 @@ import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.EarthPhoto
+import com.udacity.astroapp.ui.components.DatePickerButton
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -64,7 +65,10 @@ fun EarthPhotoScreen(
     EarthPhotoScreenContent(
         state = state,
         onRetry = { viewModel.loadPhotos() },
-        onNavigateToFullScreen = onNavigateToFullScreen
+        onNavigateToFullScreen = onNavigateToFullScreen,
+        onDateSelected = { selectedDate ->
+            viewModel.handleAction(EarthPhotoAction.SelectDate(selectedDate))
+        }
     )
 }
 
@@ -72,7 +76,8 @@ fun EarthPhotoScreen(
 private fun EarthPhotoScreenContent(
     state: EarthPhotoState,
     onRetry: () -> Unit,
-    onNavigateToFullScreen: (String) -> Unit
+    onNavigateToFullScreen: (String) -> Unit,
+    onDateSelected: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
         // Date selection section
@@ -83,9 +88,12 @@ private fun EarthPhotoScreenContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(onClick = { /* Open date picker */}, modifier = Modifier.weight(1f)) {
-                    Text(stringResource(R.string.select_date_button))
-                }
+                DatePickerButton(
+                    selectedDate = state.selectedDate.ifBlank { null },
+                    onDateSelected = onDateSelected,
+                    modifier = Modifier.weight(1f),
+                    label = stringResource(R.string.select_date_button)
+                )
 
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
             }
@@ -182,7 +190,8 @@ private fun EarthPhotoScreenLoadingPreview() {
         EarthPhotoScreenContent(
             state = EarthPhotoState(isLoading = true),
             onRetry = {},
-            onNavigateToFullScreen = {}
+            onNavigateToFullScreen = {},
+            onDateSelected = {}
         )
     }
 }
@@ -198,7 +207,8 @@ private fun EarthPhotoScreenErrorPreview() {
                     error = "Failed to load Earth photos. Please check your internet connection."
                 ),
             onRetry = {},
-            onNavigateToFullScreen = {}
+            onNavigateToFullScreen = {},
+            onDateSelected = {}
         )
     }
 }
@@ -210,7 +220,8 @@ private fun EarthPhotoScreenEmptyPreview() {
         EarthPhotoScreenContent(
             state = EarthPhotoState(isLoading = false, earthPhotos = emptyList(), error = null),
             onRetry = {},
-            onNavigateToFullScreen = {}
+            onNavigateToFullScreen = {},
+            onDateSelected = {}
         )
     }
 }
@@ -219,37 +230,41 @@ private fun EarthPhotoScreenEmptyPreview() {
 @Composable
 private fun EarthPhotoScreenSuccessPreview() {
     AstroAppTheme {
+        val samplePhotos =
+            listOf(
+                EarthPhoto(
+                    earthPhotoId = 1,
+                    earthPhotoUrl = "https://example.com/earth1.jpg",
+                    earthPhotoDateTime = "2024-01-15 12:30:45"
+                ),
+                EarthPhoto(
+                    earthPhotoId = 2,
+                    earthPhotoUrl = "https://example.com/earth2.jpg",
+                    earthPhotoDateTime = "2024-01-15 13:45:20"
+                ),
+                EarthPhoto(
+                    earthPhotoId = 3,
+                    earthPhotoUrl = "https://example.com/earth3.jpg",
+                    earthPhotoDateTime = "2024-01-15 15:12:10"
+                ),
+                EarthPhoto(
+                    earthPhotoId = 4,
+                    earthPhotoUrl = "https://example.com/earth4.jpg",
+                    earthPhotoDateTime = "2024-01-15 16:28:33"
+                )
+            )
         EarthPhotoScreenContent(
             state =
                 EarthPhotoState(
                     isLoading = false,
-                    earthPhotos =
-                        listOf(
-                            EarthPhoto(
-                                earthPhotoId = 1,
-                                earthPhotoUrl = "https://example.com/earth1.jpg",
-                                earthPhotoDateTime = "2024-01-15 12:30:45"
-                            ),
-                            EarthPhoto(
-                                earthPhotoId = 2,
-                                earthPhotoUrl = "https://example.com/earth2.jpg",
-                                earthPhotoDateTime = "2024-01-15 13:45:20"
-                            ),
-                            EarthPhoto(
-                                earthPhotoId = 3,
-                                earthPhotoUrl = "https://example.com/earth3.jpg",
-                                earthPhotoDateTime = "2024-01-15 15:12:10"
-                            ),
-                            EarthPhoto(
-                                earthPhotoId = 4,
-                                earthPhotoUrl = "https://example.com/earth4.jpg",
-                                earthPhotoDateTime = "2024-01-15 16:28:33"
-                            )
-                        ),
+                    earthPhotos = samplePhotos,
+                    allEarthPhotos = samplePhotos,
+                    selectedDate = "2024-01-15",
                     error = null
                 ),
             onRetry = {},
-            onNavigateToFullScreen = {}
+            onNavigateToFullScreen = {},
+            onDateSelected = {}
         )
     }
 }

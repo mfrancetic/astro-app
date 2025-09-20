@@ -1,12 +1,14 @@
 package com.udacity.astroapp.ui.screens.earthphoto
 
 import com.udacity.astroapp.models.EarthPhoto
+import com.udacity.astroapp.utils.DateUtils
 
 data class EarthPhotoState(
     val isLoading: Boolean = false,
     val earthPhotos: List<EarthPhoto> = emptyList(),
+    val allEarthPhotos: List<EarthPhoto> = emptyList(),
     val selectedPhoto: EarthPhoto? = null,
-    val selectedDate: String = "",
+    val selectedDate: String = DateUtils.todayIsoDate(),
     val error: String? = null
 )
 

@@ -17,6 +17,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Photo
+import com.udacity.astroapp.ui.components.DatePickerButton
 import com.udacity.astroapp.ui.components.FullscreenVideoDialog
 import com.udacity.astroapp.ui.components.YouTubeVideoPlayer
 import com.udacity.astroapp.ui.theme.AstroAppTheme
@@ -58,13 +59,17 @@ fun PhotoScreen(
         state = state,
         onRetry = { viewModel.loadPhotos() },
         onShare = onShare,
-        onNavigateToFullScreen = onNavigateToFullScreen
+        onNavigateToFullScreen = onNavigateToFullScreen,
+        onDateSelected = { selectedDate ->
+            viewModel.handleAction(PhotoAction.SelectDate(selectedDate))
+        }
     )
 }
 
 @Composable
 private fun PhotoContent(
     photo: Photo,
+    selectedDate: String?,
     onDateSelect: (String) -> Unit,
     onShare: () -> Unit,
     onFullScreen: () -> Unit
@@ -119,17 +124,22 @@ private fun PhotoContent(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                horizontalArrangement =
+                    Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(onClick = onShare) {
+                Button(onClick = onShare, modifier = Modifier.weight(1f)) {
                     Icon(Icons.Default.Share, contentDescription = null)
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
                     Text(stringResource(R.string.share))
                 }
 
-                Button(onClick = { /* Open date picker */}) {
-                    Text(stringResource(R.string.select_date_button))
-                }
+                DatePickerButton(
+                    selectedDate = selectedDate,
+                    onDateSelected = onDateSelect,
+                    modifier = Modifier.weight(1f),
+                    label = stringResource(R.string.select_date_button)
+                )
             }
         }
     }
@@ -165,12 +175,32 @@ private fun PhotoScreenContent(
     state: PhotoState,
     onRetry: () -> Unit,
     onShare: () -> Unit,
-    onNavigateToFullScreen: (String) -> Unit
+    onNavigateToFullScreen: (String) -> Unit,
+    onDateSelected: (String) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Filter section
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    DatePickerButton(
+                        selectedDate = state.selectedDate.ifBlank { null },
+                        onDateSelected = onDateSelected,
+                        modifier = Modifier.weight(1f),
+                        label = stringResource(R.string.select_date_button)
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
+
         when {
             state.isLoading -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -199,9 +229,10 @@ private fun PhotoScreenContent(
                 val photoToShow = state.selectedPhoto ?: state.photos.first()
                 PhotoContent(
                     photo = photoToShow,
-                    onDateSelect = { onRetry() },
+                    selectedDate = state.selectedDate.takeIf { it.isNotBlank() },
+                    onDateSelect = onDateSelected,
                     onShare = onShare,
-                    onFullScreen = { onNavigateToFullScreen(photoToShow.photoUrl) }
+                    onFullScreen = { onNavigateToFullScreen(photoToShow.photoId.toString()) }
                 )
             }
             else -> {
@@ -250,7 +281,8 @@ private fun PhotoScreenLoadingPreview() {
             state = PhotoState(isLoading = true),
             onRetry = {},
             onShare = {},
-            onNavigateToFullScreen = {}
+            onNavigateToFullScreen = {},
+            onDateSelected = {}
         )
     }
 }
@@ -267,7 +299,8 @@ private fun PhotoScreenErrorPreview() {
                 ),
             onRetry = {},
             onShare = {},
-            onNavigateToFullScreen = {}
+            onNavigateToFullScreen = {},
+            onDateSelected = {}
         )
     }
 }
@@ -280,7 +313,8 @@ private fun PhotoScreenEmptyPreview() {
             state = PhotoState(isLoading = false, photos = emptyList(), error = null),
             onRetry = {},
             onShare = {},
-            onNavigateToFullScreen = {}
+            onNavigateToFullScreen = {},
+            onDateSelected = {}
         )
     }
 }
@@ -289,27 +323,31 @@ private fun PhotoScreenEmptyPreview() {
 @Composable
 private fun PhotoScreenSuccessPreview() {
     AstroAppTheme {
+        val samplePhotos =
+            listOf(
+                Photo(
+                    photoId = 1,
+                    photoTitle = "Nebula in Orion",
+                    photoDate = "2024-01-15",
+                    photoDescription =
+                        "A stunning view of the Orion Nebula captured by the Hubble Space Telescope. This stellar nursery is located about 1,344 light-years away from Earth.",
+                    photoUrl = "https://example.com/nebula.jpg",
+                    photoMediaType = "image"
+                )
+            )
         PhotoScreenContent(
             state =
                 PhotoState(
                     isLoading = false,
-                    photos =
-                        listOf(
-                            Photo(
-                                photoId = 1,
-                                photoTitle = "Nebula in Orion",
-                                photoDate = "2024-01-15",
-                                photoDescription =
-                                    "A stunning view of the Orion Nebula captured by the Hubble Space Telescope. This stellar nursery is located about 1,344 light-years away from Earth.",
-                                photoUrl = "https://example.com/nebula.jpg",
-                                photoMediaType = "image"
-                            )
-                        ),
+                    photos = samplePhotos,
+                    allPhotos = samplePhotos,
+                    selectedDate = "2024-01-15",
                     error = null
                 ),
             onRetry = {},
             onShare = {},
-            onNavigateToFullScreen = {}
+            onNavigateToFullScreen = {},
+            onDateSelected = {}
         )
     }
 }

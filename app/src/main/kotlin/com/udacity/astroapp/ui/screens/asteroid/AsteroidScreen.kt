@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Asteroid
+import com.udacity.astroapp.ui.components.DatePickerButton
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -59,7 +60,10 @@ fun AsteroidScreen(
     AsteroidScreenContent(
         state = state,
         onRetry = { viewModel.loadAsteroids() },
-        onNavigateToAsteroidDetails = onNavigateToAsteroidDetails
+        onNavigateToAsteroidDetails = onNavigateToAsteroidDetails,
+        onDateSelected = { selectedDate ->
+            viewModel.handleAction(AsteroidAction.SelectDate(selectedDate))
+        }
     )
 }
 
@@ -111,7 +115,8 @@ private fun AsteroidItem(asteroid: Asteroid, onClick: (Asteroid) -> Unit) {
 private fun AsteroidScreenContent(
     state: AsteroidState,
     onRetry: () -> Unit,
-    onNavigateToAsteroidDetails: (String) -> Unit
+    onNavigateToAsteroidDetails: (String) -> Unit,
+    onDateSelected: (String) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding))) {
         // Search and filter section
@@ -121,9 +126,12 @@ private fun AsteroidScreenContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(onClick = { /* Open date picker */}, modifier = Modifier.weight(1f)) {
-                    Text(stringResource(R.string.select_date))
-                }
+                DatePickerButton(
+                    selectedDate = state.selectedDate.ifBlank { null },
+                    onDateSelected = onDateSelected,
+                    modifier = Modifier.weight(1f),
+                    label = stringResource(R.string.select_date)
+                )
             }
         }
 
@@ -152,9 +160,9 @@ private fun AsteroidScreenContent(
                     }
                 }
             }
-            state.asteroids.isNotEmpty() -> {
+            state.filteredAsteroids.isNotEmpty() -> {
                 LazyColumn {
-                    items(state.asteroids) { asteroid ->
+                    items(state.filteredAsteroids) { asteroid ->
                         AsteroidItem(
                             asteroid = asteroid,
                             onClick = {
@@ -185,7 +193,8 @@ private fun AsteroidScreenLoadingPreview() {
         AsteroidScreenContent(
             state = AsteroidState(isLoading = true),
             onRetry = {},
-            onNavigateToAsteroidDetails = {}
+            onNavigateToAsteroidDetails = {},
+            onDateSelected = {}
         )
     }
 }
@@ -201,7 +210,8 @@ private fun AsteroidScreenErrorPreview() {
                     error = "Failed to load asteroids. Please check your internet connection."
                 ),
             onRetry = {},
-            onNavigateToAsteroidDetails = {}
+            onNavigateToAsteroidDetails = {},
+            onDateSelected = {}
         )
     }
 }
@@ -219,7 +229,8 @@ private fun AsteroidScreenEmptyPreview() {
                     error = null
                 ),
             onRetry = {},
-            onNavigateToAsteroidDetails = {}
+            onNavigateToAsteroidDetails = {},
+            onDateSelected = {}
         )
     }
 }
@@ -281,7 +292,8 @@ private fun AsteroidScreenSuccessPreview() {
                     error = null
                 ),
             onRetry = {},
-            onNavigateToAsteroidDetails = {}
+            onNavigateToAsteroidDetails = {},
+            onDateSelected = {}
         )
     }
 }

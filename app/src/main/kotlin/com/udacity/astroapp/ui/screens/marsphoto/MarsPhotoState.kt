@@ -1,12 +1,14 @@
 package com.udacity.astroapp.ui.screens.marsphoto
 
 import com.udacity.astroapp.models.MarsPhoto
+import com.udacity.astroapp.utils.DateUtils
 
 data class MarsPhotoState(
     val isLoading: Boolean = false,
     val marsPhotos: List<MarsPhoto> = emptyList(),
+    val allMarsPhotos: List<MarsPhoto> = emptyList(),
     val selectedPhoto: MarsPhoto? = null,
-    val selectedDate: String = "",
+    val selectedDate: String = DateUtils.todayIsoDate(),
     val error: String? = null
 )
 

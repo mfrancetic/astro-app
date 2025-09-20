@@ -1,12 +1,13 @@
 package com.udacity.astroapp.ui.screens.asteroid
 
 import com.udacity.astroapp.models.Asteroid
+import com.udacity.astroapp.utils.DateUtils
 
 data class AsteroidState(
     val isLoading: Boolean = false,
     val asteroids: List<Asteroid> = emptyList(),
     val filteredAsteroids: List<Asteroid> = emptyList(),
-    val selectedDate: String = "",
+    val selectedDate: String = DateUtils.todayIsoDate(),
     val showHazardousOnly: Boolean = false,
     val error: String? = null
 )

@@ -1,12 +1,14 @@
 package com.udacity.astroapp.ui.screens.photo
 
 import com.udacity.astroapp.models.Photo
+import com.udacity.astroapp.utils.DateUtils
 
 data class PhotoState(
     val isLoading: Boolean = false,
     val photos: List<Photo> = emptyList(),
+    val allPhotos: List<Photo> = emptyList(),
     val selectedPhoto: Photo? = null,
-    val selectedDate: String = "",
+    val selectedDate: String = DateUtils.todayIsoDate(),
     val error: String? = null
 )
 

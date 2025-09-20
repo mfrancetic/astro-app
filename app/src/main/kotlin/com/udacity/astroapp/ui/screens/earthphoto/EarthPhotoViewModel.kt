@@ -33,7 +33,16 @@ class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository
 
         try {
             earthPhotoRepository.loadAllEarthPhotos().collect { earthPhotos ->
-                reduce { state.copy(isLoading = false, earthPhotos = earthPhotos, error = null) }
+                val filteredPhotos = filterByDate(earthPhotos, state.selectedDate)
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                        allEarthPhotos = earthPhotos,
+                        earthPhotos = filteredPhotos,
+                        selectedPhoto = filteredPhotos.firstOrNull(),
+                        error = null
+                    )
+                }
             }
         } catch (e: Exception) {
             reduce {
@@ -46,9 +55,14 @@ class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository
     }
 
     private fun selectDate(date: String) = intent {
-        reduce { state.copy(selectedDate = date) }
-        // Trigger photo loading for the selected date
-        loadPhotos()
+        val filteredPhotos = filterByDate(state.allEarthPhotos, date)
+        reduce {
+            state.copy(
+                selectedDate = date,
+                earthPhotos = filteredPhotos,
+                selectedPhoto = filteredPhotos.firstOrNull()
+            )
+        }
     }
 
     private fun selectPhoto(earthPhoto: com.udacity.astroapp.models.EarthPhoto) = intent {
@@ -59,4 +73,13 @@ class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository
     private fun showDatePicker() = intent { postSideEffect(EarthPhotoSideEffect.ShowDatePicker) }
 
     private fun retry() = intent { loadPhotos() }
+
+    private fun filterByDate(
+        photos: List<com.udacity.astroapp.models.EarthPhoto>,
+        date: String
+    ): List<com.udacity.astroapp.models.EarthPhoto> {
+        if (date.isBlank()) return photos
+
+        return photos.filter { earthPhoto -> earthPhoto.earthPhotoDateTime.startsWith(date) }
+    }
 }

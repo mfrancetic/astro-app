@@ -1,6 +1,7 @@
 package com.udacity.astroapp.ui.screens.asteroid
 
 import androidx.lifecycle.ViewModel
+import com.udacity.astroapp.models.Asteroid
 import com.udacity.astroapp.repository.AsteroidRepository
 import kotlinx.coroutines.flow.collect
 import org.orbitmvi.orbit.ContainerHost
@@ -35,12 +36,11 @@ class AsteroidViewModel(private val asteroidRepository: AsteroidRepository) :
         try {
             asteroidRepository.loadAllAsteroids().collect { asteroids ->
                 val filteredAsteroids =
-                    if (state.showHazardousOnly) {
-                        asteroids.filter { it.asteroidIsHazardous }
-                    } else {
-                        asteroids
-                    }
-
+                    applyFilters(
+                        asteroids = asteroids,
+                        selectedDate = state.selectedDate,
+                        showHazardousOnly = state.showHazardousOnly
+                    )
                 reduce {
                     state.copy(
                         isLoading = false,
@@ -59,43 +59,51 @@ class AsteroidViewModel(private val asteroidRepository: AsteroidRepository) :
     }
 
     private fun selectDate(date: String) = intent {
-        reduce { state.copy(selectedDate = date) }
-        // Filter asteroids by selected date
-        filterAsteroidsByDate(date)
+        val filteredAsteroids =
+            applyFilters(
+                asteroids = state.asteroids,
+                selectedDate = date,
+                showHazardousOnly = state.showHazardousOnly
+            )
+        reduce { state.copy(selectedDate = date, filteredAsteroids = filteredAsteroids) }
     }
 
-    private fun filterAsteroidsByDate(date: String) = intent {
-        val filteredByDate =
-            state.asteroids.filter { asteroid -> asteroid.asteroidApproachDate == date }
-
-        val finalFiltered =
-            if (state.showHazardousOnly) {
-                filteredByDate.filter { it.asteroidIsHazardous }
-            } else {
-                filteredByDate
-            }
-
-        reduce { state.copy(filteredAsteroids = finalFiltered) }
-    }
-
-    private fun selectAsteroid(asteroid: com.udacity.astroapp.models.Asteroid) = intent {
+    private fun selectAsteroid(asteroid: Asteroid) = intent {
         postSideEffect(AsteroidSideEffect.NavigateToDetail(asteroid))
     }
 
     private fun filterHazardous(showHazardousOnly: Boolean) = intent {
-        reduce { state.copy(showHazardousOnly = showHazardousOnly) }
-
         val filteredAsteroids =
-            if (showHazardousOnly) {
-                state.asteroids.filter { it.asteroidIsHazardous }
-            } else {
-                state.asteroids
-            }
-
-        reduce { state.copy(filteredAsteroids = filteredAsteroids) }
+            applyFilters(
+                asteroids = state.asteroids,
+                selectedDate = state.selectedDate,
+                showHazardousOnly = showHazardousOnly
+            )
+        reduce {
+            state.copy(showHazardousOnly = showHazardousOnly, filteredAsteroids = filteredAsteroids)
+        }
     }
 
     private fun showDatePicker() = intent { postSideEffect(AsteroidSideEffect.ShowDatePicker) }
 
     private fun retry() = intent { loadAsteroids() }
+
+    private fun applyFilters(
+        asteroids: List<Asteroid>,
+        selectedDate: String,
+        showHazardousOnly: Boolean
+    ): List<Asteroid> {
+        val dateFiltered =
+            if (selectedDate.isNotBlank()) {
+                asteroids.filter { it.asteroidApproachDate == selectedDate }
+            } else {
+                asteroids
+            }
+
+        return if (showHazardousOnly) {
+            dateFiltered.filter { it.asteroidIsHazardous }
+        } else {
+            dateFiltered
+        }
+    }
 }

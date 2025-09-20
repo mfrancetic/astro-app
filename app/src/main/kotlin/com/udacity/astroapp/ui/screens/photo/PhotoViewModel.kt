@@ -34,7 +34,16 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
 
         try {
             photoRepository.loadAllPhotos().collect { photos ->
-                reduce { state.copy(isLoading = false, photos = photos, error = null) }
+                val filteredPhotos = filterByDate(photos, state.selectedDate)
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                        photos = filteredPhotos,
+                        allPhotos = photos,
+                        selectedPhoto = filteredPhotos.firstOrNull(),
+                        error = null
+                    )
+                }
             }
         } catch (e: Exception) {
             reduce { state.copy(isLoading = false, error = e.message ?: "Failed to load photos") }
@@ -43,9 +52,14 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
     }
 
     private fun selectDate(date: String) = intent {
-        reduce { state.copy(selectedDate = date) }
-        // Trigger photo loading for the selected date
-        loadPhotos()
+        val filteredPhotos = filterByDate(state.allPhotos, date)
+        reduce {
+            state.copy(
+                selectedDate = date,
+                photos = filteredPhotos,
+                selectedPhoto = filteredPhotos.firstOrNull()
+            )
+        }
     }
 
     private fun selectPhoto(photo: com.udacity.astroapp.models.Photo) = intent {
@@ -60,4 +74,13 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
     private fun showDatePicker() = intent { postSideEffect(PhotoSideEffect.ShowDatePicker) }
 
     private fun retry() = intent { loadPhotos() }
+
+    private fun filterByDate(
+        photos: List<com.udacity.astroapp.models.Photo>,
+        date: String
+    ): List<com.udacity.astroapp.models.Photo> {
+        if (date.isBlank()) return photos
+
+        return photos.filter { it.photoDate == date }
+    }
 }

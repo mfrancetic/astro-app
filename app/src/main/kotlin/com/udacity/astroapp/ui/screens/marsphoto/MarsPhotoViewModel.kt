@@ -33,7 +33,16 @@ class MarsPhotoViewModel(private val marsPhotoRepository: MarsPhotoRepository) :
 
         try {
             marsPhotoRepository.loadAllMarsPhotos().collect { marsPhotos ->
-                reduce { state.copy(isLoading = false, marsPhotos = marsPhotos, error = null) }
+                val filteredPhotos = filterByDate(marsPhotos, state.selectedDate)
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                        marsPhotos = filteredPhotos,
+                        allMarsPhotos = marsPhotos,
+                        selectedPhoto = filteredPhotos.firstOrNull(),
+                        error = null
+                    )
+                }
             }
         } catch (e: Exception) {
             reduce {
@@ -44,9 +53,14 @@ class MarsPhotoViewModel(private val marsPhotoRepository: MarsPhotoRepository) :
     }
 
     private fun selectDate(date: String) = intent {
-        reduce { state.copy(selectedDate = date) }
-        // Trigger photo loading for the selected date
-        loadPhotos()
+        val filteredPhotos = filterByDate(state.allMarsPhotos, date)
+        reduce {
+            state.copy(
+                selectedDate = date,
+                marsPhotos = filteredPhotos,
+                selectedPhoto = filteredPhotos.firstOrNull()
+            )
+        }
     }
 
     private fun selectPhoto(marsPhoto: com.udacity.astroapp.models.MarsPhoto) = intent {
@@ -57,4 +71,13 @@ class MarsPhotoViewModel(private val marsPhotoRepository: MarsPhotoRepository) :
     private fun showDatePicker() = intent { postSideEffect(MarsPhotoSideEffect.ShowDatePicker) }
 
     private fun retry() = intent { loadPhotos() }
+
+    private fun filterByDate(
+        photos: List<com.udacity.astroapp.models.MarsPhoto>,
+        date: String
+    ): List<com.udacity.astroapp.models.MarsPhoto> {
+        if (date.isBlank()) return photos
+
+        return photos.filter { marsPhoto -> marsPhoto.earthDate == date }
+    }
 }

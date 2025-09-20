@@ -7,9 +7,6 @@
         <item name="colorButtonNormal">@color/colorAccent</item>
     </style>
 
-    <!-- Theme for the full screen layout -->
-    <style name="AppBaseTheme" parent="Theme.MaterialComponents.NoActionBar" />
-
     <style name="preferenceTheme">@style/PreferenceThemeOverlay</style>
 
     <style name="AppTheme.NoActionBar">
@@ -41,13 +38,6 @@
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
     </style>
 
-    <!-- Style of the subtitle TextView -->
-    <style name="SubtitleTextView">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
-        </item>
-    </style>
 
     <!-- Style of the photo description TextView -->
     <style name="PhotoDescriptionTextView">
@@ -99,23 +89,6 @@
 
     <!-- Style of the asteroid values TextView -->
 
-    <!-- Style for the list item title of the observatory -->
-    <style name="ObservatoryListItemTitleStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle1
-        </item>
-    </style>
-
-    <!-- Style for the list item subtitle of the observatory -->
-    <style name="ObservatoryListItemSubtitleStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle2
-        </item>
-    </style>
 
     <!-- Style for the image of the observatory -->
     <style name="ObservatoryImageButtonStyle">
@@ -133,7 +106,7 @@
     <style name="WidgetTextViewStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle2
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1
         </item>
         <item name="android:textColor">@color/colorTextIcons</item>
         <item name="android:layout_centerHorizontal">true</item>

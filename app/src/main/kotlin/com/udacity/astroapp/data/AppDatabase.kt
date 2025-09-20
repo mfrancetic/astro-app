@@ -15,7 +15,7 @@ import com.udacity.astroapp.utils.Converters
 
 @Database(
     entities = [Photo::class, Asteroid::class, Observatory::class, EarthPhoto::class, MarsPhoto::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

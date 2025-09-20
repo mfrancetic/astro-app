@@ -1,12 +1,12 @@
 package com.udacity.astroapp.repository
 
-import androidx.lifecycle.LiveData
 import com.udacity.astroapp.data.AstroDao
 import com.udacity.astroapp.models.Photo
+import kotlinx.coroutines.flow.Flow
 
 class PhotoRepository(private val astroDao: AstroDao) {
 
-    fun loadAllPhotos(): LiveData<List<Photo>> {
+    fun loadAllPhotos(): Flow<List<Photo>> {
         return astroDao.loadAllPhotos()
     }
 

@@ -1,12 +1,12 @@
 package com.udacity.astroapp.repository
 
-import androidx.lifecycle.LiveData
 import com.udacity.astroapp.data.AstroDao
 import com.udacity.astroapp.models.Asteroid
+import kotlinx.coroutines.flow.Flow
 
 class AsteroidRepository(private val astroDao: AstroDao) {
 
-    fun loadAllAsteroids(): LiveData<List<Asteroid>> {
+    fun loadAllAsteroids(): Flow<List<Asteroid>> {
         return astroDao.loadAllAsteroids()
     }
 

@@ -3,6 +3,7 @@ package com.udacity.astroapp.ui.screens.asteroid
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.AsteroidRepository
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -35,24 +36,20 @@ class AsteroidViewModel(
         reduce { state.copy(isLoading = true, error = null) }
 
         try {
-            asteroidRepository.loadAllAsteroids().observeForever { asteroids ->
-                viewModelScope.launch {
-                    intent {
-                        val filteredAsteroids = if (state.showHazardousOnly) {
-                            asteroids?.filter { it.asteroidIsHazardous } ?: emptyList()
-                        } else {
-                            asteroids ?: emptyList()
-                        }
+            asteroidRepository.loadAllAsteroids().collect { asteroids ->
+                val filteredAsteroids = if (state.showHazardousOnly) {
+                    asteroids.filter { it.asteroidIsHazardous }
+                } else {
+                    asteroids
+                }
 
-                        reduce {
-                            state.copy(
-                                isLoading = false,
-                                asteroids = asteroids ?: emptyList(),
-                                filteredAsteroids = filteredAsteroids,
-                                error = null
-                            )
-                        }
-                    }
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                        asteroids = asteroids,
+                        filteredAsteroids = filteredAsteroids,
+                        error = null
+                    )
                 }
             }
         } catch (e: Exception) {

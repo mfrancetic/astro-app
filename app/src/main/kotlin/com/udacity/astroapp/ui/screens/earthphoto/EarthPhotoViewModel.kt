@@ -3,6 +3,7 @@ package com.udacity.astroapp.ui.screens.earthphoto
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.EarthPhotoRepository
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -34,17 +35,13 @@ class EarthPhotoViewModel(
         reduce { state.copy(isLoading = true, error = null) }
 
         try {
-            earthPhotoRepository.loadAllEarthPhotos().observeForever { earthPhotos ->
-                viewModelScope.launch {
-                    intent {
-                        reduce {
-                            state.copy(
-                                isLoading = false,
-                                earthPhotos = earthPhotos ?: emptyList(),
-                                error = null
-                            )
-                        }
-                    }
+            earthPhotoRepository.loadAllEarthPhotos().collect { earthPhotos ->
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                        earthPhotos = earthPhotos,
+                        error = null
+                    )
                 }
             }
         } catch (e: Exception) {

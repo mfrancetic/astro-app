@@ -3,6 +3,7 @@ package com.udacity.astroapp.ui.screens.photo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.PhotoRepository
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -35,17 +36,13 @@ class PhotoViewModel(
         reduce { state.copy(isLoading = true, error = null) }
 
         try {
-            photoRepository.loadAllPhotos().observeForever { photos ->
-                viewModelScope.launch {
-                    intent {
-                        reduce {
-                            state.copy(
-                                isLoading = false,
-                                photos = photos ?: emptyList(),
-                                error = null
-                            )
-                        }
-                    }
+            photoRepository.loadAllPhotos().collect { photos ->
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                        photos = photos,
+                        error = null
+                    )
                 }
             }
         } catch (e: Exception) {

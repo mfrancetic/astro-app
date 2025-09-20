@@ -10,27 +10,28 @@ import com.udacity.astroapp.models.EarthPhoto
 import com.udacity.astroapp.models.MarsPhoto
 import com.udacity.astroapp.models.Observatory
 import com.udacity.astroapp.models.Photo
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AstroDao {
 
     @Query("SELECT * FROM photo")
-    fun loadAllPhotos(): LiveData<List<Photo>>
+    fun loadAllPhotos(): Flow<List<Photo>>
 
     @Query("SELECT * FROM asteroid ORDER BY asteroidId")
-    fun loadAllAsteroids(): LiveData<List<Asteroid>>
+    fun loadAllAsteroids(): Flow<List<Asteroid>>
 
     @Query("SELECT * FROM observatory ORDER BY observatoryId")
-    fun loadAllObservatories(): LiveData<List<Observatory>>
+    fun loadAllObservatories(): Flow<List<Observatory>>
 
     @Query("SELECT * FROM earthphoto")
-    fun loadAllEarthPhotos(): LiveData<List<EarthPhoto>>
+    fun loadAllEarthPhotos(): Flow<List<EarthPhoto>>
 
     @Query("SELECT * FROM marsphoto")
-    fun loadAllMarsPhotos(): LiveData<List<MarsPhoto>>
+    fun loadAllMarsPhotos(): Flow<List<MarsPhoto>>
 
     @Query("SELECT * FROM observatory WHERE observatoryId = :observatoryId")
-    fun loadObservatoryById(observatoryId: String): LiveData<Observatory>
+    fun loadObservatoryById(observatoryId: String): Flow<Observatory>
 
     @Query("DELETE FROM photo")
     fun deleteAllPhotos()

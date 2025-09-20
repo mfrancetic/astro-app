@@ -1,16 +1,16 @@
 package com.udacity.astroapp.repository
 
-import androidx.lifecycle.LiveData
 import com.udacity.astroapp.data.AstroDao
 import com.udacity.astroapp.models.Observatory
+import kotlinx.coroutines.flow.Flow
 
 class ObservatoryRepository(private val astroDao: AstroDao) {
 
-    fun loadAllObservatories(): LiveData<List<Observatory>> {
+    fun loadAllObservatories(): Flow<List<Observatory>> {
         return astroDao.loadAllObservatories()
     }
 
-    fun loadObservatoryById(observatoryId: String): LiveData<Observatory> {
+    fun loadObservatoryById(observatoryId: String): Flow<Observatory> {
         return astroDao.loadObservatoryById(observatoryId)
     }
 

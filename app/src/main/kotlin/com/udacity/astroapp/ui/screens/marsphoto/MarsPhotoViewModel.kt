@@ -3,6 +3,7 @@ package com.udacity.astroapp.ui.screens.marsphoto
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.MarsPhotoRepository
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -34,17 +35,13 @@ class MarsPhotoViewModel(
         reduce { state.copy(isLoading = true, error = null) }
 
         try {
-            marsPhotoRepository.loadAllMarsPhotos().observeForever { marsPhotos ->
-                viewModelScope.launch {
-                    intent {
-                        reduce {
-                            state.copy(
-                                isLoading = false,
-                                marsPhotos = marsPhotos ?: emptyList(),
-                                error = null
-                            )
-                        }
-                    }
+            marsPhotoRepository.loadAllMarsPhotos().collect { marsPhotos ->
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                        marsPhotos = marsPhotos,
+                        error = null
+                    )
                 }
             }
         } catch (e: Exception) {

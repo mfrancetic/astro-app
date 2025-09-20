@@ -3,6 +3,7 @@ package com.udacity.astroapp.ui.screens.observatory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.ObservatoryRepository
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -37,17 +38,13 @@ class ObservatoryDetailViewModel(
         reduce { state.copy(isLoading = true, error = null, observatoryId = observatoryId) }
 
         try {
-            observatoryRepository.loadObservatoryById(observatoryId).observeForever { observatory ->
-                viewModelScope.launch {
-                    intent {
-                        reduce {
-                            state.copy(
-                                isLoading = false,
-                                observatory = observatory,
-                                error = null
-                            )
-                        }
-                    }
+            observatoryRepository.loadObservatoryById(observatoryId).collect { observatory ->
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                        observatory = observatory,
+                        error = null
+                    )
                 }
             }
         } catch (e: Exception) {

@@ -30,10 +30,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.EarthPhoto
+import com.udacity.astroapp.ui.theme.AstroAppTheme
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -67,6 +69,19 @@ fun EarthPhotoScreen(
         viewModel.loadPhotos()
     }
 
+    EarthPhotoScreenContent(
+        state = state,
+        onRetry = { viewModel.loadPhotos() },
+        onNavigateToFullScreen = onNavigateToFullScreen
+    )
+}
+
+@Composable
+private fun EarthPhotoScreenContent(
+    state: EarthPhotoState,
+    onRetry: () -> Unit,
+    onNavigateToFullScreen: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -93,7 +108,7 @@ fun EarthPhotoScreen(
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
 
                 Button(
-                    onClick = { viewModel.loadPhotos() },
+                    onClick = onRetry,
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(stringResource(R.string.refresh))
@@ -130,7 +145,7 @@ fun EarthPhotoScreen(
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                         Button(
-                            onClick = { viewModel.loadPhotos() }
+                            onClick = onRetry
                         ) {
                             Text(stringResource(R.string.retry))
                         }
@@ -158,10 +173,22 @@ fun EarthPhotoScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "No Earth photos found for the selected date",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "No Earth photos found for the selected date",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
+
+                        Button(
+                            onClick = onRetry
+                        ) {
+                            Text(stringResource(R.string.retry))
+                        }
+                    }
                 }
             }
         }
@@ -203,5 +230,86 @@ private fun EarthPhotoItem(
                 )
             }
         }
+    }
+}
+
+// Preview functions
+@Preview(showBackground = true)
+@Composable
+private fun EarthPhotoScreenLoadingPreview() {
+    AstroAppTheme {
+        EarthPhotoScreenContent(
+            state = EarthPhotoState(isLoading = true),
+            onRetry = {},
+            onNavigateToFullScreen = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EarthPhotoScreenErrorPreview() {
+    AstroAppTheme {
+        EarthPhotoScreenContent(
+            state = EarthPhotoState(
+                isLoading = false,
+                error = "Failed to load Earth photos. Please check your internet connection."
+            ),
+            onRetry = {},
+            onNavigateToFullScreen = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EarthPhotoScreenEmptyPreview() {
+    AstroAppTheme {
+        EarthPhotoScreenContent(
+            state = EarthPhotoState(
+                isLoading = false,
+                earthPhotos = emptyList(),
+                error = null
+            ),
+            onRetry = {},
+            onNavigateToFullScreen = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun EarthPhotoScreenSuccessPreview() {
+    AstroAppTheme {
+        EarthPhotoScreenContent(
+            state = EarthPhotoState(
+                isLoading = false,
+                earthPhotos = listOf(
+                    EarthPhoto(
+                        earthPhotoId = 1,
+                        earthPhotoUrl = "https://example.com/earth1.jpg",
+                        earthPhotoDateTime = "2024-01-15 12:30:45"
+                    ),
+                    EarthPhoto(
+                        earthPhotoId = 2,
+                        earthPhotoUrl = "https://example.com/earth2.jpg",
+                        earthPhotoDateTime = "2024-01-15 13:45:20"
+                    ),
+                    EarthPhoto(
+                        earthPhotoId = 3,
+                        earthPhotoUrl = "https://example.com/earth3.jpg",
+                        earthPhotoDateTime = "2024-01-15 15:12:10"
+                    ),
+                    EarthPhoto(
+                        earthPhotoId = 4,
+                        earthPhotoUrl = "https://example.com/earth4.jpg",
+                        earthPhotoDateTime = "2024-01-15 16:28:33"
+                    )
+                ),
+                error = null
+            ),
+            onRetry = {},
+            onNavigateToFullScreen = {}
+        )
     }
 }

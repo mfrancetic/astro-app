@@ -29,12 +29,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Observatory
+import com.udacity.astroapp.ui.theme.AstroAppTheme
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -80,6 +82,27 @@ fun ObservatoryListScreen(
         }
     }
 
+    ObservatoryListScreenContent(
+        isLoading = state.isLoading,
+        observatories = state.observatories,
+        error = state.error,
+        hasLocationPermission = locationPermissionState.status.isGranted,
+        onRequestLocationPermission = { locationPermissionState.launchPermissionRequest() },
+        onLoadObservatories = { viewModel.loadObservatories() },
+        onNavigateToObservatoryDetails = onNavigateToObservatoryDetails
+    )
+}
+
+@Composable
+private fun ObservatoryListScreenContent(
+    isLoading: Boolean,
+    observatories: List<Observatory>,
+    error: String?,
+    hasLocationPermission: Boolean,
+    onRequestLocationPermission: () -> Unit,
+    onLoadObservatories: () -> Unit,
+    onNavigateToObservatoryDetails: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -92,7 +115,7 @@ fun ObservatoryListScreen(
             Column(
                 modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
             ) {
-                if (!locationPermissionState.status.isGranted) {
+                if (!hasLocationPermission) {
                     Text(
                         text = "Location permission needed for nearby observatories",
                         style = MaterialTheme.typography.bodySmall,
@@ -102,7 +125,7 @@ fun ObservatoryListScreen(
                     Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                     Button(
-                        onClick = { locationPermissionState.launchPermissionRequest() }
+                        onClick = onRequestLocationPermission
                     ) {
                         Icon(Icons.Default.LocationOn, contentDescription = null)
                         Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
@@ -117,17 +140,10 @@ fun ObservatoryListScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Button(
-                        onClick = {
-                            if (locationPermissionState.status.isGranted) {
-                                //TODO nearby observatories
-                                viewModel.loadObservatories()
-                            } else {
-                                viewModel.loadObservatories()
-                            }
-                        },
+                        onClick = onLoadObservatories,
                         modifier = Modifier.weight(1f)
                     ) {
-                        Text(if (locationPermissionState.status.isGranted) "Find Nearby" else "Show All")
+                        Text(if (hasLocationPermission) "Find Nearby" else "Show All")
                     }
 
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
@@ -145,7 +161,7 @@ fun ObservatoryListScreen(
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
 
         when {
-            state.isLoading -> {
+            isLoading -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -153,7 +169,7 @@ fun ObservatoryListScreen(
                     CircularProgressIndicator()
                 }
             }
-            state.error != null -> {
+            error != null -> {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -164,30 +180,23 @@ fun ObservatoryListScreen(
                         modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
                     ) {
                         Text(
-                            text = state.error!!,
+                            text = error!!,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
 
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                         Button(
-                            onClick = {
-                                if (locationPermissionState.status.isGranted) {
-                                    //TODO nearby observatories
-                                    viewModel.loadObservatories()
-                                } else {
-                                    viewModel.loadObservatories()
-                                }
-                            }
+                            onClick = onLoadObservatories
                         ) {
                             Text(stringResource(R.string.retry))
                         }
                     }
                 }
             }
-            state.observatories.isNotEmpty() -> {
+            observatories.isNotEmpty() -> {
                 LazyColumn {
-                    items(state.observatories) { observatory ->
+                    items(observatories, key = { it.observatoryId }) { observatory ->
                         ObservatoryItem(
                             observatory = observatory,
                             onClick = { onNavigateToObservatoryDetails(observatory.observatoryId) }
@@ -240,5 +249,104 @@ private fun ObservatoryItem(
                     MaterialTheme.colorScheme.error
             )
         }
+    }
+}
+
+// Preview functions
+@Preview(showBackground = true)
+@Composable
+private fun ObservatoryListScreenLoadingPreview() {
+    AstroAppTheme {
+        ObservatoryListScreenContent(
+            isLoading = true,
+            observatories = emptyList(),
+            error = null,
+            hasLocationPermission = false,
+            onRequestLocationPermission = {},
+            onLoadObservatories = {},
+            onNavigateToObservatoryDetails = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ObservatoryListScreenErrorPreview() {
+    AstroAppTheme {
+        ObservatoryListScreenContent(
+            isLoading = false,
+            observatories = emptyList(),
+            error = "Failed to load observatories. Please check your internet connection.",
+            hasLocationPermission = true,
+            onRequestLocationPermission = {},
+            onLoadObservatories = {},
+            onNavigateToObservatoryDetails = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ObservatoryListScreenEmptyPreview() {
+    AstroAppTheme {
+        ObservatoryListScreenContent(
+            isLoading = false,
+            observatories = emptyList(),
+            error = null,
+            hasLocationPermission = false,
+            onRequestLocationPermission = {},
+            onLoadObservatories = {},
+            onNavigateToObservatoryDetails = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ObservatoryListScreenSuccessPreview() {
+    AstroAppTheme {
+        ObservatoryListScreenContent(
+            isLoading = false,
+            observatories = listOf(
+                    Observatory(
+                        observatoryId = "1",
+                        observatoryName = "Griffith Observatory",
+                        observatoryAddress = "2800 E Observatory Rd, Los Angeles, CA 90027",
+                        observatoryPhoneNumber = "+1 (213) 473-0800",
+                        observatoryOpenNow = true,
+                        observatoryOpeningHours = "Tue-Fri 12pm-10pm, Sat-Sun 10am-10pm",
+                        observatoryLatitude = 34.1184,
+                        observatoryLongitude = -118.3004,
+                        observatoryUrl = "https://griffithobservatory.org/"
+                    ),
+                    Observatory(
+                        observatoryId = "2",
+                        observatoryName = "Mount Wilson Observatory",
+                        observatoryAddress = "Mt Wilson Observatory Rd, Mt Wilson, CA 91023",
+                        observatoryPhoneNumber = "+1 (626) 440-9016",
+                        observatoryOpenNow = false,
+                        observatoryOpeningHours = "Weekends 10am-5pm (Apr-Nov)",
+                        observatoryLatitude = 34.2259,
+                        observatoryLongitude = -118.0572,
+                        observatoryUrl = "https://www.mtwilson.edu/"
+                    ),
+                    Observatory(
+                        observatoryId = "3",
+                        observatoryName = "Palomar Observatory",
+                        observatoryAddress = "35899 Canfield Rd, Palomar Mountain, CA 92060",
+                        observatoryPhoneNumber = "+1 (760) 742-2119",
+                        observatoryOpenNow = true,
+                        observatoryOpeningHours = "Daily 9am-4pm",
+                        observatoryLatitude = 33.3563,
+                        observatoryLongitude = -116.8650,
+                        observatoryUrl = "https://www.astro.caltech.edu/palomar/"
+                    )
+                ),
+            error = null,
+            hasLocationPermission = true,
+            onRequestLocationPermission = {},
+            onLoadObservatories = {},
+            onNavigateToObservatoryDetails = {}
+        )
     }
 }

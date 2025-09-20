@@ -10,9 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Asteroid
+import com.udacity.astroapp.ui.theme.AstroAppTheme
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -44,100 +46,11 @@ fun AsteroidScreen(
         viewModel.loadAsteroids()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(dimensionResource(R.dimen.card_padding))
-    ) {
-        // Search and filter section
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.card_padding)),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    onClick = { /* Open date picker */ },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(stringResource(R.string.select_date_range))
-                }
-
-                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
-
-                Button(
-                    onClick = { viewModel.loadAsteroids() },
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text(stringResource(R.string.refresh))
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
-
-        when {
-            state.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-            state.error != null -> {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
-                    ) {
-                        Text(
-                            text = state.error!!,
-                            color = MaterialTheme.colorScheme.onErrorContainer
-                        )
-
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
-
-                        Button(
-                            onClick = { viewModel.loadAsteroids() }
-                        ) {
-                            Text(stringResource(R.string.retry))
-                        }
-                    }
-                }
-            }
-            state.asteroids.isNotEmpty() -> {
-                LazyColumn {
-                    items(state.asteroids) { asteroid ->
-                        AsteroidItem(
-                            asteroid = asteroid,
-                            onClick = { onNavigateToAsteroidDetails(asteroid.asteroidId.toString()) }
-                        )
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
-                    }
-                }
-            }
-            else -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "No asteroids found for the selected date range",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
-        }
-    }
+    AsteroidScreenContent(
+        state = state,
+        onRetry = { viewModel.loadAsteroids() },
+        onNavigateToAsteroidDetails = onNavigateToAsteroidDetails
+    )
 }
 
 @Composable
@@ -193,5 +106,211 @@ private fun AsteroidItem(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+    }
+}
+
+@Composable
+private fun AsteroidScreenContent(
+    state: AsteroidState,
+    onRetry: () -> Unit,
+    onNavigateToAsteroidDetails: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(dimensionResource(R.dimen.card_padding))
+    ) {
+        // Search and filter section
+        Card(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.card_padding)),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = { /* Open date picker */ },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(stringResource(R.string.select_date_range))
+                }
+
+                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
+
+                Button(
+                    onClick = onRetry,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(stringResource(R.string.refresh))
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
+
+        when {
+            state.isLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            state.error != null -> {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
+                    ) {
+                        Text(
+                            text = state.error!!,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
+
+                        Button(
+                            onClick = onRetry
+                        ) {
+                            Text(stringResource(R.string.retry))
+                        }
+                    }
+                }
+            }
+            state.asteroids.isNotEmpty() -> {
+                LazyColumn {
+                    items(state.asteroids) { asteroid ->
+                        AsteroidItem(
+                            asteroid = asteroid,
+                            onClick = { onNavigateToAsteroidDetails(asteroid.asteroidId.toString()) }
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
+                    }
+                }
+            }
+            else -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No asteroids found for the selected date range",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+        }
+    }
+}
+
+// Preview functions
+@Preview(showBackground = true)
+@Composable
+private fun AsteroidScreenLoadingPreview() {
+    AstroAppTheme {
+        AsteroidScreenContent(
+            state = AsteroidState(isLoading = true),
+            onRetry = {},
+            onNavigateToAsteroidDetails = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AsteroidScreenErrorPreview() {
+    AstroAppTheme {
+        AsteroidScreenContent(
+            state = AsteroidState(
+                isLoading = false,
+                error = "Failed to load asteroids. Please check your internet connection."
+            ),
+            onRetry = {},
+            onNavigateToAsteroidDetails = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AsteroidScreenEmptyPreview() {
+    AstroAppTheme {
+        AsteroidScreenContent(
+            state = AsteroidState(
+                isLoading = false,
+                asteroids = emptyList(),
+                filteredAsteroids = emptyList(),
+                error = null
+            ),
+            onRetry = {},
+            onNavigateToAsteroidDetails = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AsteroidScreenSuccessPreview() {
+    AstroAppTheme {
+        AsteroidScreenContent(
+            state = AsteroidState(
+                isLoading = false,
+                asteroids = listOf(
+                    Asteroid(
+                        asteroidId = 1,
+                        asteroidName = "2024 AA1",
+                        asteroidDiameterMin = 0.5,
+                        asteroidDiameterMax = 1.2,
+                        asteroidApproachDate = "2024-01-15",
+                        asteroidVelocity = "25.8",
+                        asteroidIsHazardous = true,
+                        asteroidUrl = "https://example.com/asteroid1"
+                    ),
+                    Asteroid(
+                        asteroidId = 2,
+                        asteroidName = "2024 BB2",
+                        asteroidDiameterMin = 2.1,
+                        asteroidDiameterMax = 4.5,
+                        asteroidApproachDate = "2024-01-16",
+                        asteroidVelocity = "18.3",
+                        asteroidIsHazardous = false,
+                        asteroidUrl = "https://example.com/asteroid2"
+                    )
+                ),
+                filteredAsteroids = listOf(
+                    Asteroid(
+                        asteroidId = 1,
+                        asteroidName = "2024 AA1",
+                        asteroidDiameterMin = 0.5,
+                        asteroidDiameterMax = 1.2,
+                        asteroidApproachDate = "2024-01-15",
+                        asteroidVelocity = "25.8",
+                        asteroidIsHazardous = true,
+                        asteroidUrl = "https://example.com/asteroid1"
+                    ),
+                    Asteroid(
+                        asteroidId = 2,
+                        asteroidName = "2024 BB2",
+                        asteroidDiameterMin = 2.1,
+                        asteroidDiameterMax = 4.5,
+                        asteroidApproachDate = "2024-01-16",
+                        asteroidVelocity = "18.3",
+                        asteroidIsHazardous = false,
+                        asteroidUrl = "https://example.com/asteroid2"
+                    )
+                ),
+                error = null
+            ),
+            onRetry = {},
+            onNavigateToAsteroidDetails = {}
+        )
     }
 }

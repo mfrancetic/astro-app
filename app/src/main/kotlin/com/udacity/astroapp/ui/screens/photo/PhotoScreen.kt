@@ -13,6 +13,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
@@ -25,6 +26,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Photo
+import com.udacity.astroapp.ui.theme.AstroAppTheme
 import com.udacity.astroapp.utils.VideoUtils
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -39,7 +41,6 @@ fun PhotoScreen(
     viewModel: PhotoViewModel = koinViewModel()
 ) {
     val state by viewModel.collectAsState()
-    val context = LocalContext.current
 
     // Handle side effects
     viewModel.collectSideEffect { sideEffect ->
@@ -47,12 +48,15 @@ fun PhotoScreen(
             is PhotoSideEffect.ShowError -> {
                 // Handle error display
             }
+
             is PhotoSideEffect.SharePhoto -> {
                 // Handle photo sharing
             }
+
             is PhotoSideEffect.NavigateToFullScreen -> {
                 onNavigateToFullScreen(sideEffect.photo.photoId.toString())
             }
+
             is PhotoSideEffect.ShowDatePicker -> {
 
             }
@@ -64,53 +68,12 @@ fun PhotoScreen(
         viewModel.loadPhotos()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(dimensionResource(R.dimen.card_padding)),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        when {
-            state.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            }
-            state.error != null -> {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
-                ) {
-                    Text(
-                        text = state.error!!,
-                        modifier = Modifier.padding(dimensionResource(R.dimen.card_padding)),
-                        color = MaterialTheme.colorScheme.onErrorContainer
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
-
-                Button(
-                    onClick = { viewModel.loadPhotos() }
-                ) {
-                    Text(stringResource(R.string.retry))
-                }
-            }
-            state.selectedPhoto != null -> {
-                PhotoContent(
-                    photo = state.selectedPhoto!!,
-                    onDateSelect = { date -> viewModel.loadPhotos() },
-                    onShare = onShare,
-                    onFullScreen = { onNavigateToFullScreen(state.selectedPhoto!!.photoUrl) }
-                )
-            }
-        }
-    }
+    PhotoScreenContent(
+        state = state,
+        onRetry = { viewModel.loadPhotos() },
+        onShare = onShare,
+        onNavigateToFullScreen = onNavigateToFullScreen
+    )
 }
 
 @Composable
@@ -218,6 +181,90 @@ private fun ImageContent(
 }
 
 @Composable
+private fun PhotoScreenContent(
+    state: PhotoState,
+    onRetry: () -> Unit,
+    onShare: () -> Unit,
+    onNavigateToFullScreen: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(dimensionResource(R.dimen.card_padding)),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        when {
+            state.isLoading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            state.error != null -> {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.errorContainer
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
+                    ) {
+                        Text(
+                            text = state.error,
+                            color = MaterialTheme.colorScheme.onErrorContainer
+                        )
+
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
+
+                        Button(
+                            onClick = onRetry
+                        ) {
+                            Text(stringResource(R.string.retry))
+                        }
+                    }
+                }
+            }
+            state.photos.isNotEmpty() -> {
+                // Show the first photo if no photo is selected, or the selected photo
+                val photoToShow = state.selectedPhoto ?: state.photos.first()
+                PhotoContent(
+                    photo = photoToShow,
+                    onDateSelect = { onRetry() },
+                    onShare = onShare,
+                    onFullScreen = { onNavigateToFullScreen(photoToShow.photoUrl) }
+                )
+            }
+            else -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = stringResource(R.string.no_photo_found),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
+
+                        Button(
+                            onClick = onRetry
+                        ) {
+                            Text(stringResource(R.string.retry))
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
 private fun VideoContent(
     videoUrl: String,
     title: String,
@@ -234,3 +281,75 @@ private fun VideoContent(
     )
 }
 
+// Preview functions
+@Preview(showBackground = true)
+@Composable
+private fun PhotoScreenLoadingPreview() {
+    AstroAppTheme {
+        PhotoScreenContent(
+            state = PhotoState(isLoading = true),
+            onRetry = {},
+            onShare = {},
+            onNavigateToFullScreen = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PhotoScreenErrorPreview() {
+    AstroAppTheme {
+        PhotoScreenContent(
+            state = PhotoState(
+                isLoading = false,
+                error = "Failed to load photos. Please check your internet connection."
+            ),
+            onRetry = {},
+            onShare = {},
+            onNavigateToFullScreen = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PhotoScreenEmptyPreview() {
+    AstroAppTheme {
+        PhotoScreenContent(
+            state = PhotoState(
+                isLoading = false,
+                photos = emptyList(),
+                error = null
+            ),
+            onRetry = {},
+            onShare = {},
+            onNavigateToFullScreen = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PhotoScreenSuccessPreview() {
+    AstroAppTheme {
+        PhotoScreenContent(
+            state = PhotoState(
+                isLoading = false,
+                photos = listOf(
+                    Photo(
+                        photoId = 1,
+                        photoTitle = "Nebula in Orion",
+                        photoDate = "2024-01-15",
+                        photoDescription = "A stunning view of the Orion Nebula captured by the Hubble Space Telescope. This stellar nursery is located about 1,344 light-years away from Earth.",
+                        photoUrl = "https://example.com/nebula.jpg",
+                        photoMediaType = "image"
+                    )
+                ),
+                error = null
+            ),
+            onRetry = {},
+            onShare = {},
+            onNavigateToFullScreen = {}
+        )
+    }
+}

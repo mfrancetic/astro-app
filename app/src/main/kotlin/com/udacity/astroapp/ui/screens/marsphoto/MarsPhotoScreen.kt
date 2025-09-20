@@ -12,11 +12,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import coil.compose.AsyncImage
 import com.udacity.astroapp.R
+import com.udacity.astroapp.models.Camera
 import com.udacity.astroapp.models.MarsPhoto
+import com.udacity.astroapp.models.Rover
+import com.udacity.astroapp.ui.theme.AstroAppTheme
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -50,6 +54,19 @@ fun MarsPhotoScreen(
         viewModel.loadPhotos()
     }
 
+    MarsPhotoScreenContent(
+        state = state,
+        onRetry = { viewModel.loadPhotos() },
+        onNavigateToFullScreen = onNavigateToFullScreen
+    )
+}
+
+@Composable
+private fun MarsPhotoScreenContent(
+    state: MarsPhotoState,
+    onRetry: () -> Unit,
+    onNavigateToFullScreen: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,7 +116,7 @@ fun MarsPhotoScreen(
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
 
                     Button(
-                        onClick = { viewModel.loadPhotos() },
+                        onClick = onRetry,
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(stringResource(R.string.refresh))
@@ -137,7 +154,7 @@ fun MarsPhotoScreen(
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                         Button(
-                            onClick = { viewModel.loadPhotos() }
+                            onClick = onRetry
                         ) {
                             Text(stringResource(R.string.retry))
                         }
@@ -165,10 +182,22 @@ fun MarsPhotoScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "No Mars photos found for the selected filters",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "No Mars photos found for the selected filters",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
+
+                        Button(
+                            onClick = onRetry
+                        ) {
+                            Text(stringResource(R.string.retry))
+                        }
+                    }
                 }
             }
         }
@@ -217,5 +246,126 @@ private fun MarsPhotoItem(
                 }
             }
         }
+    }
+}
+
+// Preview functions
+@Preview(showBackground = true)
+@Composable
+private fun MarsPhotoScreenLoadingPreview() {
+    AstroAppTheme {
+        MarsPhotoScreenContent(
+            state = MarsPhotoState(isLoading = true),
+            onRetry = {},
+            onNavigateToFullScreen = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MarsPhotoScreenErrorPreview() {
+    AstroAppTheme {
+        MarsPhotoScreenContent(
+            state = MarsPhotoState(
+                isLoading = false,
+                error = "Failed to load Mars photos. Please check your internet connection."
+            ),
+            onRetry = {},
+            onNavigateToFullScreen = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MarsPhotoScreenEmptyPreview() {
+    AstroAppTheme {
+        MarsPhotoScreenContent(
+            state = MarsPhotoState(
+                isLoading = false,
+                marsPhotos = emptyList(),
+                error = null
+            ),
+            onRetry = {},
+            onNavigateToFullScreen = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun MarsPhotoScreenSuccessPreview() {
+    AstroAppTheme {
+        MarsPhotoScreenContent(
+            state = MarsPhotoState(
+                isLoading = false,
+                marsPhotos = listOf(
+                    MarsPhoto(
+                        id = 1,
+                        sol = "2156",
+                        imageUrl = "https://example.com/mars1.jpg",
+                        earthDate = "2024-01-15",
+                        camera = Camera(
+                            cameraName = "NAVCAM",
+                            cameraFullName = "Navigation Camera"
+                        ),
+                        rover = Rover(
+                            roverName = "Curiosity",
+                            launchDate = "2011-11-26",
+                            landingDate = "2012-08-05"
+                        )
+                    ),
+                    MarsPhoto(
+                        id = 2,
+                        sol = "2157",
+                        imageUrl = "https://example.com/mars2.jpg",
+                        earthDate = "2024-01-16",
+                        camera = Camera(
+                            cameraName = "MAST",
+                            cameraFullName = "Mast Camera"
+                        ),
+                        rover = Rover(
+                            roverName = "Perseverance",
+                            launchDate = "2020-07-30",
+                            landingDate = "2021-02-18"
+                        )
+                    ),
+                    MarsPhoto(
+                        id = 3,
+                        sol = "2158",
+                        imageUrl = "https://example.com/mars3.jpg",
+                        earthDate = "2024-01-17",
+                        camera = Camera(
+                            cameraName = "FHAZ",
+                            cameraFullName = "Front Hazard Avoidance Camera"
+                        ),
+                        rover = Rover(
+                            roverName = "Opportunity",
+                            launchDate = "2003-07-07",
+                            landingDate = "2004-01-25"
+                        )
+                    ),
+                    MarsPhoto(
+                        id = 4,
+                        sol = "2159",
+                        imageUrl = "https://example.com/mars4.jpg",
+                        earthDate = "2024-01-18",
+                        camera = Camera(
+                            cameraName = "RHAZ",
+                            cameraFullName = "Rear Hazard Avoidance Camera"
+                        ),
+                        rover = Rover(
+                            roverName = "Spirit",
+                            launchDate = "2003-06-10",
+                            landingDate = "2004-01-04"
+                        )
+                    )
+                ),
+                error = null
+            ),
+            onRetry = {},
+            onNavigateToFullScreen = {}
+        )
     }
 }

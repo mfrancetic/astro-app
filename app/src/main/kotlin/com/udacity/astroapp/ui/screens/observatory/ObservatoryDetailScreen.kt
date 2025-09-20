@@ -12,12 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Observatory
+import com.udacity.astroapp.ui.theme.AstroAppTheme
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -52,12 +54,30 @@ fun ObservatoryDetailScreen(
         viewModel.loadObservatory(observatoryId.toString())
     }
 
+    ObservatoryDetailScreenContent(
+        isLoading = state.isLoading,
+        observatory = state.observatory,
+        error = state.error,
+        onNavigateBack = onNavigateBack,
+        onRetry = { viewModel.loadObservatory(observatoryId.toString()) }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ObservatoryDetailScreenContent(
+    isLoading: Boolean,
+    observatory: Observatory?,
+    error: String?,
+    onNavigateBack: () -> Unit,
+    onRetry: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         // Top bar
         TopAppBar(
-            title = { Text(state.observatory?.observatoryName ?: stringResource(R.string.observatory_details_title)) },
+            title = { Text(observatory?.observatoryName ?: stringResource(R.string.observatory_details_title)) },
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
                     Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back_content_description))
@@ -66,7 +86,7 @@ fun ObservatoryDetailScreen(
         )
 
         when {
-            state.isLoading -> {
+            isLoading -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -74,7 +94,7 @@ fun ObservatoryDetailScreen(
                     CircularProgressIndicator()
                 }
             }
-            state.error != null -> {
+            error != null -> {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -87,23 +107,23 @@ fun ObservatoryDetailScreen(
                         modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
                     ) {
                         Text(
-                            text = state.error!!,
+                            text = error!!,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
 
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
                         Button(
-                            onClick = { viewModel.loadObservatory(observatoryId.toString()) }
+                            onClick = onRetry
                         ) {
                             Text(stringResource(R.string.retry))
                         }
                     }
                 }
             }
-            state.observatory != null -> {
+            observatory != null -> {
                 ObservatoryDetails(
-                    observatory = state.observatory!!,
+                    observatory = observatory!!,
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(dimensionResource(R.dimen.spacing_large))
@@ -262,6 +282,83 @@ private fun ObservatoryMap(
         Marker(
             state = MarkerState(position = observatoryLocation),
             title = stringResource(R.string.marker_of_the_observatory_content_description) + " " + observatoryName
+        )
+    }
+}
+
+// Preview functions
+@Preview(showBackground = true)
+@Composable
+private fun ObservatoryDetailScreenLoadingPreview() {
+    AstroAppTheme {
+        ObservatoryDetailScreenContent(
+            isLoading = true,
+            observatory = null,
+            error = null,
+            onNavigateBack = {},
+            onRetry = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ObservatoryDetailScreenErrorPreview() {
+    AstroAppTheme {
+        ObservatoryDetailScreenContent(
+            isLoading = false,
+            observatory = null,
+            error = "Failed to load observatory details. Please check your internet connection.",
+            onNavigateBack = {},
+            onRetry = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ObservatoryDetailScreenSuccessPreview() {
+    AstroAppTheme {
+        ObservatoryDetailScreenContent(
+            isLoading = false,
+            observatory = Observatory(
+                observatoryId = "1",
+                observatoryName = "Griffith Observatory",
+                observatoryAddress = "2800 E Observatory Rd, Los Angeles, CA 90027",
+                observatoryPhoneNumber = "+1 (213) 473-0800",
+                observatoryOpenNow = true,
+                observatoryOpeningHours = "Tue-Fri 12pm-10pm, Sat-Sun 10am-10pm",
+                observatoryLatitude = 34.1184,
+                observatoryLongitude = -118.3004,
+                observatoryUrl = "https://griffithobservatory.org/"
+            ),
+            error = null,
+            onNavigateBack = {},
+            onRetry = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ObservatoryDetailScreenClosedPreview() {
+    AstroAppTheme {
+        ObservatoryDetailScreenContent(
+            isLoading = false,
+            observatory = Observatory(
+                observatoryId = "2",
+                observatoryName = "Mount Wilson Observatory",
+                observatoryAddress = "Mt Wilson Observatory Rd, Mt Wilson, CA 91023",
+                observatoryPhoneNumber = "+1 (626) 440-9016",
+                observatoryOpenNow = false,
+                observatoryOpeningHours = "Weekends 10am-5pm (Apr-Nov)",
+                observatoryLatitude = 34.2259,
+                observatoryLongitude = -118.0572,
+                observatoryUrl = "https://www.mtwilson.edu/"
+            ),
+            error = null,
+            onNavigateBack = {},
+            onRetry = {}
         )
     }
 }

@@ -1,10 +1,8 @@
 package com.udacity.astroapp.ui.screens.observatory
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.ObservatoryRepository
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -16,9 +14,10 @@ class ObservatoryDetailViewModel(
     private val observatoryId: String
 ) : ViewModel(), ContainerHost<ObservatoryDetailState, ObservatorySideEffect> {
 
-    override val container = container<ObservatoryDetailState, ObservatorySideEffect>(
-        ObservatoryDetailState(observatoryId = observatoryId)
-    )
+    override val container =
+        container<ObservatoryDetailState, ObservatorySideEffect>(
+            ObservatoryDetailState(observatoryId = observatoryId)
+        )
 
     init {
         loadObservatory(observatoryId)
@@ -39,22 +38,15 @@ class ObservatoryDetailViewModel(
 
         try {
             observatoryRepository.loadObservatoryById(observatoryId).collect { observatory ->
-                reduce {
-                    state.copy(
-                        isLoading = false,
-                        observatory = observatory,
-                        error = null
-                    )
-                }
+                reduce { state.copy(isLoading = false, observatory = observatory, error = null) }
             }
         } catch (e: Exception) {
             reduce {
-                state.copy(
-                    isLoading = false,
-                    error = e.message ?: "Failed to load observatory"
-                )
+                state.copy(isLoading = false, error = e.message ?: "Failed to load observatory")
             }
-            postSideEffect(ObservatorySideEffect.ShowError(e.message ?: "Failed to load observatory"))
+            postSideEffect(
+                ObservatorySideEffect.ShowError(e.message ?: "Failed to load observatory")
+            )
         }
     }
 
@@ -80,7 +72,5 @@ class ObservatoryDetailViewModel(
         }
     }
 
-    private fun retry() = intent {
-        loadObservatory(state.observatoryId)
-    }
+    private fun retry() = intent { loadObservatory(state.observatoryId) }
 }

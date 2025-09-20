@@ -18,12 +18,7 @@ class AstroApplication : Application() {
         startKoin {
             androidLogger(Level.ERROR)
             androidContext(this@AstroApplication)
-            modules(
-                databaseModule,
-                repositoryModule,
-                viewModelModule,
-                imageModule
-            )
+            modules(databaseModule, repositoryModule, viewModelModule, imageModule)
         }
     }
 }

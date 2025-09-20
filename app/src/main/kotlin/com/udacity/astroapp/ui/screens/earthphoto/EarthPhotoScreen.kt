@@ -55,19 +55,13 @@ fun EarthPhotoScreen(
             is EarthPhotoSideEffect.ShowError -> {
                 // Handle error display
             }
-            is EarthPhotoSideEffect.NavigateToDetail -> {
-
-            }
-            is EarthPhotoSideEffect.ShowDatePicker -> {
-
-            }
+            is EarthPhotoSideEffect.NavigateToDetail -> {}
+            is EarthPhotoSideEffect.ShowDatePicker -> {}
         }
     }
 
     // Load initial data
-    LaunchedEffect(Unit) {
-        viewModel.loadPhotos()
-    }
+    LaunchedEffect(Unit) { viewModel.loadPhotos() }
 
     EarthPhotoScreenContent(
         state = state,
@@ -82,35 +76,22 @@ private fun EarthPhotoScreenContent(
     onRetry: () -> Unit,
     onNavigateToFullScreen: (String) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(dimensionResource(R.dimen.spacing_large))
-    ) {
+    Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
         // Date selection section
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Card(modifier = Modifier.fillMaxWidth()) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.spacing_large)),
+                modifier =
+                    Modifier.fillMaxWidth().padding(dimensionResource(R.dimen.spacing_large)),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(
-                    onClick = { /* Open date picker */ },
-                    modifier = Modifier.weight(1f)
-                ) {
+                Button(onClick = { /* Open date picker */}, modifier = Modifier.weight(1f)) {
                     Text(stringResource(R.string.select_date_button))
                 }
 
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
 
-                Button(
-                    onClick = onRetry,
-                    modifier = Modifier.weight(1f)
-                ) {
+                Button(onClick = onRetry, modifier = Modifier.weight(1f)) {
                     Text(stringResource(R.string.refresh))
                 }
             }
@@ -120,23 +101,19 @@ private fun EarthPhotoScreenContent(
 
         when {
             state.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
             state.error != null -> {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        )
                 ) {
-                    Column(
-                        modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
-                    ) {
+                    Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
                         Text(
                             text = state.error!!,
                             color = MaterialTheme.colorScheme.onErrorContainer
@@ -144,50 +121,39 @@ private fun EarthPhotoScreenContent(
 
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
-                        Button(
-                            onClick = onRetry
-                        ) {
-                            Text(stringResource(R.string.retry))
-                        }
+                        Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
                     }
                 }
             }
             state.earthPhotos.isNotEmpty() -> {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
+                    verticalArrangement =
+                        Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
+                    horizontalArrangement =
+                        Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
                 ) {
                     items(state.earthPhotos) { earthPhoto ->
                         EarthPhotoItem(
                             earthPhoto = earthPhoto,
-                            onClick = {
-                                onNavigateToFullScreen(earthPhoto.earthPhotoUrl ?: "")
-                            }
+                            onClick = { onNavigateToFullScreen(earthPhoto.earthPhotoUrl ?: "") }
                         )
                     }
                 }
             }
             else -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "No Earth photos found for the selected date",
                             style = MaterialTheme.typography.bodyLarge
                         )
 
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
+                        Spacer(
+                            modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium))
+                        )
 
-                        Button(
-                            onClick = onRetry
-                        ) {
-                            Text(stringResource(R.string.retry))
-                        }
+                        Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
                     }
                 }
             }
@@ -196,19 +162,9 @@ private fun EarthPhotoScreenContent(
 }
 
 @Composable
-private fun EarthPhotoItem(
-    earthPhoto: EarthPhoto,
-    onClick: (EarthPhoto) -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1f),
-        onClick = { onClick(earthPhoto) }
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
+private fun EarthPhotoItem(earthPhoto: EarthPhoto, onClick: (EarthPhoto) -> Unit) {
+    Card(modifier = Modifier.fillMaxWidth().aspectRatio(1f), onClick = { onClick(earthPhoto) }) {
+        Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
                 model = earthPhoto.earthPhotoUrl,
                 contentDescription = "Earth photo from ${earthPhoto.earthPhotoDateTime}",
@@ -218,9 +174,7 @@ private fun EarthPhotoItem(
 
             // Overlay with date
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomStart),
+                modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart),
                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
             ) {
                 Text(
@@ -251,10 +205,11 @@ private fun EarthPhotoScreenLoadingPreview() {
 private fun EarthPhotoScreenErrorPreview() {
     AstroAppTheme {
         EarthPhotoScreenContent(
-            state = EarthPhotoState(
-                isLoading = false,
-                error = "Failed to load Earth photos. Please check your internet connection."
-            ),
+            state =
+                EarthPhotoState(
+                    isLoading = false,
+                    error = "Failed to load Earth photos. Please check your internet connection."
+                ),
             onRetry = {},
             onNavigateToFullScreen = {}
         )
@@ -266,11 +221,7 @@ private fun EarthPhotoScreenErrorPreview() {
 private fun EarthPhotoScreenEmptyPreview() {
     AstroAppTheme {
         EarthPhotoScreenContent(
-            state = EarthPhotoState(
-                isLoading = false,
-                earthPhotos = emptyList(),
-                error = null
-            ),
+            state = EarthPhotoState(isLoading = false, earthPhotos = emptyList(), error = null),
             onRetry = {},
             onNavigateToFullScreen = {}
         )
@@ -282,32 +233,34 @@ private fun EarthPhotoScreenEmptyPreview() {
 private fun EarthPhotoScreenSuccessPreview() {
     AstroAppTheme {
         EarthPhotoScreenContent(
-            state = EarthPhotoState(
-                isLoading = false,
-                earthPhotos = listOf(
-                    EarthPhoto(
-                        earthPhotoId = 1,
-                        earthPhotoUrl = "https://example.com/earth1.jpg",
-                        earthPhotoDateTime = "2024-01-15 12:30:45"
-                    ),
-                    EarthPhoto(
-                        earthPhotoId = 2,
-                        earthPhotoUrl = "https://example.com/earth2.jpg",
-                        earthPhotoDateTime = "2024-01-15 13:45:20"
-                    ),
-                    EarthPhoto(
-                        earthPhotoId = 3,
-                        earthPhotoUrl = "https://example.com/earth3.jpg",
-                        earthPhotoDateTime = "2024-01-15 15:12:10"
-                    ),
-                    EarthPhoto(
-                        earthPhotoId = 4,
-                        earthPhotoUrl = "https://example.com/earth4.jpg",
-                        earthPhotoDateTime = "2024-01-15 16:28:33"
-                    )
+            state =
+                EarthPhotoState(
+                    isLoading = false,
+                    earthPhotos =
+                        listOf(
+                            EarthPhoto(
+                                earthPhotoId = 1,
+                                earthPhotoUrl = "https://example.com/earth1.jpg",
+                                earthPhotoDateTime = "2024-01-15 12:30:45"
+                            ),
+                            EarthPhoto(
+                                earthPhotoId = 2,
+                                earthPhotoUrl = "https://example.com/earth2.jpg",
+                                earthPhotoDateTime = "2024-01-15 13:45:20"
+                            ),
+                            EarthPhoto(
+                                earthPhotoId = 3,
+                                earthPhotoUrl = "https://example.com/earth3.jpg",
+                                earthPhotoDateTime = "2024-01-15 15:12:10"
+                            ),
+                            EarthPhoto(
+                                earthPhotoId = 4,
+                                earthPhotoUrl = "https://example.com/earth4.jpg",
+                                earthPhotoDateTime = "2024-01-15 16:28:33"
+                            )
+                        ),
+                    error = null
                 ),
-                error = null
-            ),
             onRetry = {},
             onNavigateToFullScreen = {}
         )

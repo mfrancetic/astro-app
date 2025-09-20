@@ -5,27 +5,24 @@ import android.os.Looper
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
-/**
- * Global executor pools for the whole application.
- */
-class AppExecutors private constructor(
-    val diskIO: Executor,
-    val mainThread: Executor,
-    val networkIO: Executor
-) {
+/** Global executor pools for the whole application. */
+class AppExecutors
+private constructor(val diskIO: Executor, val mainThread: Executor, val networkIO: Executor) {
 
     companion object {
-        @Volatile
-        private var executors: AppExecutors? = null
+        @Volatile private var executors: AppExecutors? = null
 
         fun getExecutors(): AppExecutors {
-            return executors ?: synchronized(this) {
-                executors ?: AppExecutors(
-                    diskIO = Executors.newSingleThreadExecutor(),
-                    networkIO = Executors.newFixedThreadPool(3),
-                    mainThread = MainThreadExecutor()
-                ).also { executors = it }
-            }
+            return executors
+                ?: synchronized(this) {
+                    executors
+                        ?: AppExecutors(
+                                diskIO = Executors.newSingleThreadExecutor(),
+                                networkIO = Executors.newFixedThreadPool(3),
+                                mainThread = MainThreadExecutor()
+                            )
+                            .also { executors = it }
+                }
         }
     }
 

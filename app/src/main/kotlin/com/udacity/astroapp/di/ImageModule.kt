@@ -5,9 +5,5 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val imageModule = module {
-    single {
-        ImageLoader.Builder(androidContext())
-            .crossfade(true)
-            .build()
-    }
+    single { ImageLoader.Builder(androidContext()).crossfade(true).build() }
 }

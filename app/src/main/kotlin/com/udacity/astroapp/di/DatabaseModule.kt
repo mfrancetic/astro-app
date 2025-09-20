@@ -5,11 +5,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val databaseModule = module {
-    single {
-        AppDatabase.getInstance(androidContext())
-    }
+    single { AppDatabase.getInstance(androidContext()) }
 
-    single {
-        get<AppDatabase>().astroDao()
-    }
+    single { get<AppDatabase>().astroDao() }
 }

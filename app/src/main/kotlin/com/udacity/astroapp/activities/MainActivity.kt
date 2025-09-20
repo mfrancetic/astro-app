@@ -47,7 +47,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.navigation.dependency
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.rememberNavHostEngine
 import com.udacity.astroapp.R
@@ -67,17 +66,17 @@ class MainActivity : ComponentActivity() {
         var isBeingRefreshed = false
 
         fun isNetworkAvailable(context: Context): Boolean {
-            val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val activeNetworkInfo = connectivityManager.activeNetworkInfo
             return activeNetworkInfo != null && activeNetworkInfo.isConnected
         }
     }
 
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        // Handle permission result if needed
-    }
+    private val requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            // Handle permission result if needed
+        }
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,7 +84,11 @@ class MainActivity : ComponentActivity() {
 
         // Initialize theme
         val sharedPreferences = getSharedPreferences(getString(R.string.pref_name), MODE_PRIVATE)
-        val themeId = sharedPreferences.getInt(getString(R.string.pref_theme_key), AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        val themeId =
+            sharedPreferences.getInt(
+                getString(R.string.pref_theme_key),
+                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            )
         AppCompatDelegate.setDefaultNightMode(themeId)
 
         setContent {
@@ -112,52 +115,81 @@ class MainActivity : ComponentActivity() {
         var showThemeDialog by remember { mutableStateOf(false) }
 
         val context = LocalContext.current
-        val sharedPreferences = remember { context.getSharedPreferences(context.getString(R.string.pref_name), Context.MODE_PRIVATE) }
-
-        // Navigation callbacks implementation
-        val navigationCallbacks = object : NavigationCallbacks {
-            override fun onNavigateToAsteroidDetails(asteroidId: String) {
-                // Handle asteroid details navigation
-                // For now, we don't have a details screen, so we'll skip this
-            }
-
-            override fun onNavigateToObservatoryDetails(observatoryId: Int) {
-                navController.navigate(ObservatoryDetailScreenDestination(observatoryId = observatoryId))
-            }
-
-            override fun onNavigateBack() {
-                navController.popBackStack()
-            }
-
-            override fun onNavigateToPhoto() {
-                navController.popBackStack()
-            }
-
-            override fun onNavigateToAsteroids() {
-                navController.popBackStack()
-            }
-
-            override fun onNavigateToEarthPhotos() {
-                navController.popBackStack()
-            }
-
-            override fun onNavigateToMarsPhotos() {
-                navController.popBackStack()
-            }
-
-            override fun onNavigateToObservatories() {
-                navController.popBackStack()
-            }
+        val sharedPreferences = remember {
+            context.getSharedPreferences(
+                context.getString(R.string.pref_name),
+                Context.MODE_PRIVATE
+            )
         }
 
+        // Navigation callbacks implementation
+        val navigationCallbacks =
+            object : NavigationCallbacks {
+                override fun onNavigateToAsteroidDetails(asteroidId: String) {
+                    // Handle asteroid details navigation
+                    // For now, we don't have a details screen, so we'll skip this
+                }
+
+                override fun onNavigateToObservatoryDetails(observatoryId: Int) {
+                    navController.navigate(
+                        ObservatoryDetailScreenDestination(observatoryId = observatoryId)
+                    )
+                }
+
+                override fun onNavigateBack() {
+                    navController.popBackStack()
+                }
+
+                override fun onNavigateToPhoto() {
+                    navController.popBackStack()
+                }
+
+                override fun onNavigateToAsteroids() {
+                    navController.popBackStack()
+                }
+
+                override fun onNavigateToEarthPhotos() {
+                    navController.popBackStack()
+                }
+
+                override fun onNavigateToMarsPhotos() {
+                    navController.popBackStack()
+                }
+
+                override fun onNavigateToObservatories() {
+                    navController.popBackStack()
+                }
+            }
+
         // Navigation items
-        val navigationItems = listOf(
-            NavigationItem(stringResource(R.string.route_photo), stringResource(R.string.nav_photo), Icons.Default.Home),
-            NavigationItem(stringResource(R.string.route_asteroids), stringResource(R.string.nav_asteroids), Icons.Default.Satellite),
-            NavigationItem(stringResource(R.string.route_earth_photos), stringResource(R.string.nav_earth_photo), Icons.Default.Public),
-            NavigationItem(stringResource(R.string.route_mars_photos), stringResource(R.string.nav_mars_photo), Icons.Default.AccountTree),
-            NavigationItem(stringResource(R.string.route_observatories), stringResource(R.string.nav_observatories), Icons.Default.LocationOn)
-        )
+        val navigationItems =
+            listOf(
+                NavigationItem(
+                    stringResource(R.string.route_photo),
+                    stringResource(R.string.nav_photo),
+                    Icons.Default.Home
+                ),
+                NavigationItem(
+                    stringResource(R.string.route_asteroids),
+                    stringResource(R.string.nav_asteroids),
+                    Icons.Default.Satellite
+                ),
+                NavigationItem(
+                    stringResource(R.string.route_earth_photos),
+                    stringResource(R.string.nav_earth_photo),
+                    Icons.Default.Public
+                ),
+                NavigationItem(
+                    stringResource(R.string.route_mars_photos),
+                    stringResource(R.string.nav_mars_photo),
+                    Icons.Default.AccountTree
+                ),
+                NavigationItem(
+                    stringResource(R.string.route_observatories),
+                    stringResource(R.string.nav_observatories),
+                    Icons.Default.LocationOn
+                )
+            )
 
         ModalNavigationDrawer(
             drawerState = drawerState,
@@ -175,7 +207,8 @@ class MainActivity : ComponentActivity() {
                         NavigationDrawerItem(
                             icon = { Icon(item.icon, contentDescription = null) },
                             label = { Text(item.label) },
-                            selected = false, // We'll handle selection differently with destinations
+                            selected =
+                                false, // We'll handle selection differently with destinations
                             onClick = {
                                 // Handle navigation with destinations
                                 // For now, we'll close the drawer
@@ -203,7 +236,10 @@ class MainActivity : ComponentActivity() {
                         label = { Text(stringResource(R.string.nav_about)) },
                         selected = false,
                         onClick = {
-                            WebIntentUtils.openWebsiteFromStringUrl(context, Constants.DEVELOPER_WEBSITE_URL)
+                            WebIntentUtils.openWebsiteFromStringUrl(
+                                context,
+                                Constants.DEVELOPER_WEBSITE_URL
+                            )
                             scope.launch { drawerState.close() }
                         },
                         modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
@@ -211,13 +247,8 @@ class MainActivity : ComponentActivity() {
                 }
             }
         ) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(
-                        title = { Text(stringResource(R.string.app_name)) }
-                    )
-                }
-            ) { paddingValues ->
+            Scaffold(topBar = { TopAppBar(title = { Text(stringResource(R.string.app_name)) }) }) {
+                paddingValues ->
                 DestinationsNavHost(
                     engine = navEngine,
                     navGraph = NavGraphs.root,
@@ -236,21 +267,21 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun ThemeSelectionDialog(
-        sharedPreferences: SharedPreferences,
-        onDismiss: () -> Unit
-    ) {
+    private fun ThemeSelectionDialog(sharedPreferences: SharedPreferences, onDismiss: () -> Unit) {
         val context = LocalContext.current
         val androidVersion = Build.VERSION.SDK_INT
 
-        val themes = if (androidVersion >= Build.VERSION_CODES.Q) {
-            context.resources.getStringArray(R.array.themes_array_v29)
-        } else {
-            context.resources.getStringArray(R.array.themes_array_default)
-        }
+        val themes =
+            if (androidVersion >= Build.VERSION_CODES.Q) {
+                context.resources.getStringArray(R.array.themes_array_v29)
+            } else {
+                context.resources.getStringArray(R.array.themes_array_default)
+            }
 
         var selectedTheme by remember {
-            mutableIntStateOf(sharedPreferences.getInt(context.getString(R.string.pref_checked_theme_key), 0))
+            mutableIntStateOf(
+                sharedPreferences.getInt(context.getString(R.string.pref_checked_theme_key), 0)
+            )
         }
 
         AlertDialog(
@@ -264,19 +295,24 @@ class MainActivity : ComponentActivity() {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        val themeId = when (selectedTheme) {
-                            0 -> AppCompatDelegate.MODE_NIGHT_NO
-                            1 -> AppCompatDelegate.MODE_NIGHT_YES
-                            else -> if (androidVersion >= Build.VERSION_CODES.Q) {
-                                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                            } else {
-                                AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                        val themeId =
+                            when (selectedTheme) {
+                                0 -> AppCompatDelegate.MODE_NIGHT_NO
+                                1 -> AppCompatDelegate.MODE_NIGHT_YES
+                                else ->
+                                    if (androidVersion >= Build.VERSION_CODES.Q) {
+                                        AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                                    } else {
+                                        AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+                                    }
                             }
-                        }
 
                         sharedPreferences.edit().apply {
                             putInt(context.getString(R.string.pref_theme_key), themeId)
-                            putInt(context.getString(R.string.pref_checked_theme_key), selectedTheme)
+                            putInt(
+                                context.getString(R.string.pref_checked_theme_key),
+                                selectedTheme
+                            )
                             apply()
                         }
 
@@ -288,9 +324,7 @@ class MainActivity : ComponentActivity() {
                 }
             },
             dismissButton = {
-                TextButton(onClick = onDismiss) {
-                    Text(stringResource(android.R.string.cancel))
-                }
+                TextButton(onClick = onDismiss) { Text(stringResource(android.R.string.cancel)) }
             }
         )
     }

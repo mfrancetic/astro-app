@@ -28,12 +28,18 @@ fun SearchBar(
         onValueChange = onQueryChange,
         placeholder = { Text(placeholder) },
         leadingIcon = {
-            Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_content_description))
+            Icon(
+                Icons.Default.Search,
+                contentDescription = stringResource(R.string.search_content_description)
+            )
         },
         trailingIcon = {
             if (query.isNotEmpty()) {
                 IconButton(onClick = { onQueryChange("") }) {
-                    Icon(Icons.Default.Clear, contentDescription = stringResource(R.string.clear_content_description))
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = stringResource(R.string.clear_content_description)
+                    )
                 }
             }
         },
@@ -66,9 +72,7 @@ fun FilterChipGroup(
     modifier: Modifier = Modifier,
     title: String? = null
 ) {
-    Column(
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
         if (title != null) {
             Text(
                 text = title,
@@ -86,11 +90,12 @@ fun FilterChipGroup(
                     label = option,
                     selected = option in selectedOptions,
                     onSelectedChange = { isSelected ->
-                        val newSelection = if (isSelected) {
-                            selectedOptions + option
-                        } else {
-                            selectedOptions - option
-                        }
+                        val newSelection =
+                            if (isSelected) {
+                                selectedOptions + option
+                            } else {
+                                selectedOptions - option
+                            }
                         onSelectionChange(newSelection)
                     }
                 )
@@ -108,9 +113,7 @@ fun SingleSelectFilterGroup(
     title: String? = null,
     allowDeselection: Boolean = true
 ) {
-    Column(
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
         if (title != null) {
             Text(
                 text = title,
@@ -150,12 +153,8 @@ fun SearchFilterCard(
     searchPlaceholder: String = "Search...",
     additionalFilters: @Composable (() -> Unit)? = null
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
-        ) {
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -166,10 +165,7 @@ fun SearchFilterCard(
                     modifier = Modifier.size(dimensionResource(R.dimen.icon_small))
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium
-                )
+                Text(text = title, style = MaterialTheme.typography.titleMedium)
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
@@ -197,31 +193,29 @@ fun RoverFilterCard(
     onCameraSelected: (String?) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val rovers = listOf(
-        stringResource(R.string.rover_curiosity),
-        stringResource(R.string.rover_opportunity),
-        stringResource(R.string.rover_spirit),
-        stringResource(R.string.rover_perseverance),
-        stringResource(R.string.rover_ingenuity)
-    )
-    val cameras = listOf(
-        stringResource(R.string.camera_fhaz),
-        stringResource(R.string.camera_rhaz),
-        stringResource(R.string.camera_mast),
-        stringResource(R.string.camera_chemcam),
-        stringResource(R.string.camera_mahli),
-        stringResource(R.string.camera_mardi),
-        stringResource(R.string.camera_navcam),
-        stringResource(R.string.camera_pancam),
-        stringResource(R.string.camera_minites)
-    )
+    val rovers =
+        listOf(
+            stringResource(R.string.rover_curiosity),
+            stringResource(R.string.rover_opportunity),
+            stringResource(R.string.rover_spirit),
+            stringResource(R.string.rover_perseverance),
+            stringResource(R.string.rover_ingenuity)
+        )
+    val cameras =
+        listOf(
+            stringResource(R.string.camera_fhaz),
+            stringResource(R.string.camera_rhaz),
+            stringResource(R.string.camera_mast),
+            stringResource(R.string.camera_chemcam),
+            stringResource(R.string.camera_mahli),
+            stringResource(R.string.camera_mardi),
+            stringResource(R.string.camera_navcam),
+            stringResource(R.string.camera_pancam),
+            stringResource(R.string.camera_minites)
+        )
 
-    Card(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
-        ) {
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
             Text(
                 text = stringResource(R.string.mars_rover_filters),
                 style = MaterialTheme.typography.titleMedium
@@ -254,12 +248,8 @@ fun AsteroidFilterCard(
     onHazardousOnlyChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
-        ) {
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
             Text(
                 text = stringResource(R.string.asteroid_filters),
                 style = MaterialTheme.typography.titleMedium
@@ -267,13 +257,8 @@ fun AsteroidFilterCard(
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = hazardousOnly,
-                    onCheckedChange = onHazardousOnlyChange
-                )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(checked = hazardousOnly, onCheckedChange = onHazardousOnlyChange)
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
                 Text(stringResource(R.string.filter_hazardous_only))
             }
@@ -291,16 +276,9 @@ fun ObservatoryFilterCard(
 ) {
     val radiusOptions = listOf(5, 10, 25, 50, 100)
 
-    Card(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
-        ) {
-            Text(
-                text = "Observatory Filters",
-                style = MaterialTheme.typography.titleMedium
-            )
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
+            Text(text = "Observatory Filters", style = MaterialTheme.typography.titleMedium)
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
 
@@ -321,13 +299,8 @@ fun ObservatoryFilterCard(
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = openNowOnly,
-                    onCheckedChange = onOpenNowOnlyChange
-                )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Checkbox(checked = openNowOnly, onCheckedChange = onOpenNowOnlyChange)
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
                 Text(stringResource(R.string.show_only_open_observatories))
             }
@@ -344,14 +317,12 @@ fun FilterSummary(
     if (activeFilters.isNotEmpty()) {
         Card(
             modifier = modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            )
+            colors =
+                CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.spacing_medium)),
+                modifier =
+                    Modifier.fillMaxWidth().padding(dimensionResource(R.dimen.spacing_medium)),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -363,9 +334,7 @@ fun FilterSummary(
                 )
 
                 if (onClearAll != null) {
-                    TextButton(
-                        onClick = onClearAll
-                    ) {
+                    TextButton(onClick = onClearAll) {
                         Text(
                             text = "Clear All",
                             color = MaterialTheme.colorScheme.onPrimaryContainer

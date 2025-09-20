@@ -5,23 +5,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import com.udacity.astroapp.R
 
 @Composable
-fun LoadingIndicator(
-    modifier: Modifier = Modifier,
-    text: String? = null
-) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+fun LoadingIndicator(modifier: Modifier = Modifier, text: String? = null) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             CircularProgressIndicator()
 
             if (text != null) {
@@ -37,20 +28,12 @@ fun LoadingIndicator(
 }
 
 @Composable
-fun ErrorCard(
-    errorMessage: String,
-    onRetry: (() -> Unit)? = null,
-    modifier: Modifier = Modifier
-) {
+fun ErrorCard(errorMessage: String, onRetry: (() -> Unit)? = null, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
     ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
-        ) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
             Text(
                 text = errorMessage,
                 color = MaterialTheme.colorScheme.onErrorContainer,
@@ -62,10 +45,11 @@ fun ErrorCard(
 
                 Button(
                     onClick = onRetry,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError
-                    )
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError
+                        )
                 ) {
                     Text(stringResource(R.string.retry))
                 }
@@ -83,14 +67,11 @@ fun EmptyStateCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(
-            modifier = Modifier
-                .padding(dimensionResource(R.dimen.spacing_extra_large))
-                .fillMaxWidth(),
+            modifier =
+                Modifier.padding(dimensionResource(R.dimen.spacing_extra_large)).fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -102,9 +83,7 @@ fun EmptyStateCard(
             if (actionText != null && onAction != null) {
                 Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
 
-                Button(onClick = onAction) {
-                    Text(actionText)
-                }
+                Button(onClick = onAction) { Text(actionText) }
             }
         }
     }
@@ -116,20 +95,20 @@ fun FullScreenLoading(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(dimensionResource(R.dimen.fullscreen_loading_padding)),
+        modifier =
+            modifier.fillMaxSize().padding(dimensionResource(R.dimen.fullscreen_loading_padding)),
         contentAlignment = Alignment.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             CircularProgressIndicator(
-                modifier = Modifier.size(dimensionResource(R.dimen.fullscreen_loading_indicator_size)),
+                modifier =
+                    Modifier.size(dimensionResource(R.dimen.fullscreen_loading_indicator_size)),
                 strokeWidth = dimensionResource(R.dimen.fullscreen_loading_stroke_width)
             )
 
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.fullscreen_loading_spacing)))
+            Spacer(
+                modifier = Modifier.height(dimensionResource(R.dimen.fullscreen_loading_spacing))
+            )
 
             Text(
                 text = text,
@@ -147,14 +126,11 @@ fun FullScreenError(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(dimensionResource(R.dimen.fullscreen_loading_padding)),
+        modifier =
+            modifier.fillMaxSize().padding(dimensionResource(R.dimen.fullscreen_loading_padding)),
         contentAlignment = Alignment.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 text = stringResource(R.string.error_generic),
                 style = MaterialTheme.typography.headlineSmall,
@@ -170,13 +146,17 @@ fun FullScreenError(
             )
 
             if (onRetry != null) {
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.fullscreen_loading_spacing)))
+                Spacer(
+                    modifier =
+                        Modifier.height(dimensionResource(R.dimen.fullscreen_loading_spacing))
+                )
 
                 Button(
                     onClick = onRetry,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error
-                    )
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error
+                        )
                 ) {
                     Text(stringResource(R.string.retry))
                 }

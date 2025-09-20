@@ -22,26 +22,38 @@ data class ObservatoryDetailState(
 
 sealed class ObservatorySideEffect {
     data class ShowError(val message: String) : ObservatorySideEffect()
+
     data class NavigateToDetail(val observatoryId: String) : ObservatorySideEffect()
+
     data class NavigateToMaps(val observatory: Observatory) : ObservatorySideEffect()
+
     data class OpenWebsite(val url: String) : ObservatorySideEffect()
+
     data class CallPhone(val phoneNumber: String) : ObservatorySideEffect()
+
     object NavigateBack : ObservatorySideEffect()
 }
 
 // Actions for observatory list
 sealed class ObservatoryListAction {
     object LoadObservatories : ObservatoryListAction()
+
     data class SearchObservatories(val query: String) : ObservatoryListAction()
+
     data class SelectObservatory(val observatoryId: String) : ObservatoryListAction()
+
     object Retry : ObservatoryListAction()
 }
 
 // Actions for observatory detail
 sealed class ObservatoryDetailAction {
     data class LoadObservatory(val observatoryId: String) : ObservatoryDetailAction()
+
     object NavigateToMaps : ObservatoryDetailAction()
+
     object OpenWebsite : ObservatoryDetailAction()
+
     object CallPhone : ObservatoryDetailAction()
+
     object Retry : ObservatoryDetailAction()
 }

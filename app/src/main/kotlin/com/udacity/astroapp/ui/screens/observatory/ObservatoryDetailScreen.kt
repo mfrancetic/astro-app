@@ -50,9 +50,7 @@ fun ObservatoryDetailScreen(
     }
 
     // Load observatory details
-    LaunchedEffect(observatoryId) {
-        viewModel.loadObservatory(observatoryId.toString())
-    }
+    LaunchedEffect(observatoryId) { viewModel.loadObservatory(observatoryId.toString()) }
 
     ObservatoryDetailScreenContent(
         isLoading = state.isLoading,
@@ -72,61 +70,54 @@ private fun ObservatoryDetailScreenContent(
     onNavigateBack: () -> Unit,
     onRetry: () -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         // Top bar
         TopAppBar(
-            title = { Text(observatory?.observatoryName ?: stringResource(R.string.observatory_details_title)) },
+            title = {
+                Text(
+                    observatory?.observatoryName
+                        ?: stringResource(R.string.observatory_details_title)
+                )
+            },
             navigationIcon = {
                 IconButton(onClick = onNavigateBack) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back_content_description))
+                    Icon(
+                        Icons.Default.ArrowBack,
+                        contentDescription = stringResource(R.string.back_content_description)
+                    )
                 }
             }
         )
 
         when {
             isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
             error != null -> {
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(dimensionResource(R.dimen.spacing_large)),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
-                    ) {
-                        Text(
-                            text = error!!,
-                            color = MaterialTheme.colorScheme.onErrorContainer
+                    modifier =
+                        Modifier.fillMaxWidth().padding(dimensionResource(R.dimen.spacing_large)),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
                         )
+                ) {
+                    Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
+                        Text(text = error!!, color = MaterialTheme.colorScheme.onErrorContainer)
 
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
-                        Button(
-                            onClick = onRetry
-                        ) {
-                            Text(stringResource(R.string.retry))
-                        }
+                        Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
                     }
                 }
             }
             observatory != null -> {
                 ObservatoryDetails(
                     observatory = observatory!!,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(dimensionResource(R.dimen.spacing_large))
+                    modifier =
+                        Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))
                 )
             }
         }
@@ -134,24 +125,18 @@ private fun ObservatoryDetailScreenContent(
 }
 
 @Composable
-private fun ObservatoryDetails(
-    observatory: Observatory,
-    modifier: Modifier = Modifier
-) {
+private fun ObservatoryDetails(observatory: Observatory, modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
-    Column(
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
         // Main info card
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(
-                modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
-            ) {
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
                 Text(
-                    text = observatory.observatoryName.ifEmpty { stringResource(R.string.unknown_observatory) },
+                    text =
+                        observatory.observatoryName.ifEmpty {
+                            stringResource(R.string.unknown_observatory)
+                        },
                     style = MaterialTheme.typography.headlineMedium
                 )
 
@@ -159,9 +144,7 @@ private fun ObservatoryDetails(
 
                 // Address
                 if (observatory.observatoryAddress.isNotEmpty()) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             Icons.Default.LocationOn,
                             contentDescription = null,
@@ -179,24 +162,22 @@ private fun ObservatoryDetails(
 
                 // Opening status
                 if (observatory.observatoryOpeningHours.isNotEmpty()) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = stringResource(R.string.observatory_status_label),
                             style = MaterialTheme.typography.bodyLarge
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
                         Text(
-                            text = if (observatory.observatoryOpenNow)
-                                stringResource(R.string.observatory_open)
-                            else
-                                stringResource(R.string.observatory_closed),
+                            text =
+                                if (observatory.observatoryOpenNow)
+                                    stringResource(R.string.observatory_open)
+                                else stringResource(R.string.observatory_closed),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = if (observatory.observatoryOpenNow)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                MaterialTheme.colorScheme.error
+                            color =
+                                if (observatory.observatoryOpenNow)
+                                    MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.error
                         )
                     }
                 }
@@ -207,16 +188,12 @@ private fun ObservatoryDetails(
 
         // Google Maps integration
         if (observatory.observatoryLatitude != 0.0 && observatory.observatoryLongitude != 0.0) {
-            Card(
-                modifier = Modifier.fillMaxWidth()
-            ) {
+            Card(modifier = Modifier.fillMaxWidth()) {
                 ObservatoryMap(
                     latitude = observatory.observatoryLatitude,
                     longitude = observatory.observatoryLongitude,
                     observatoryName = observatory.observatoryName,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(dimensionResource(R.dimen.map_height))
+                    modifier = Modifier.fillMaxWidth().height(dimensionResource(R.dimen.map_height))
                 )
             }
 
@@ -224,15 +201,17 @@ private fun ObservatoryDetails(
         }
 
         // Action buttons
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             Button(
                 onClick = {
                     // Open maps app for directions
-                    val geoUri = "geo:${observatory.observatoryLatitude},${observatory.observatoryLongitude}?q=${observatory.observatoryLatitude},${observatory.observatoryLongitude}(${observatory.observatoryName})"
-                    val mapIntent = android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(geoUri))
+                    val geoUri =
+                        "geo:${observatory.observatoryLatitude},${observatory.observatoryLongitude}?q=${observatory.observatoryLatitude},${observatory.observatoryLongitude}(${observatory.observatoryName})"
+                    val mapIntent =
+                        android.content.Intent(
+                            android.content.Intent.ACTION_VIEW,
+                            android.net.Uri.parse(geoUri)
+                        )
                     mapIntent.setPackage("com.google.android.apps.maps")
                     context.startActivity(mapIntent)
                 }
@@ -246,7 +225,8 @@ private fun ObservatoryDetails(
                 Button(
                     onClick = {
                         val callIntent = android.content.Intent(android.content.Intent.ACTION_DIAL)
-                        callIntent.data = android.net.Uri.parse("tel:${observatory.observatoryPhoneNumber}")
+                        callIntent.data =
+                            android.net.Uri.parse("tel:${observatory.observatoryPhoneNumber}")
                         context.startActivity(callIntent)
                     }
                 ) {
@@ -274,14 +254,14 @@ private fun ObservatoryMap(
     GoogleMap(
         modifier = modifier,
         cameraPositionState = cameraPositionState,
-        uiSettings = MapUiSettings(
-            zoomControlsEnabled = true,
-            mapToolbarEnabled = true
-        )
+        uiSettings = MapUiSettings(zoomControlsEnabled = true, mapToolbarEnabled = true)
     ) {
         Marker(
             state = MarkerState(position = observatoryLocation),
-            title = stringResource(R.string.marker_of_the_observatory_content_description) + " " + observatoryName
+            title =
+                stringResource(R.string.marker_of_the_observatory_content_description) +
+                    " " +
+                    observatoryName
         )
     }
 }
@@ -321,17 +301,18 @@ private fun ObservatoryDetailScreenSuccessPreview() {
     AstroAppTheme {
         ObservatoryDetailScreenContent(
             isLoading = false,
-            observatory = Observatory(
-                observatoryId = "1",
-                observatoryName = "Griffith Observatory",
-                observatoryAddress = "2800 E Observatory Rd, Los Angeles, CA 90027",
-                observatoryPhoneNumber = "+1 (213) 473-0800",
-                observatoryOpenNow = true,
-                observatoryOpeningHours = "Tue-Fri 12pm-10pm, Sat-Sun 10am-10pm",
-                observatoryLatitude = 34.1184,
-                observatoryLongitude = -118.3004,
-                observatoryUrl = "https://griffithobservatory.org/"
-            ),
+            observatory =
+                Observatory(
+                    observatoryId = "1",
+                    observatoryName = "Griffith Observatory",
+                    observatoryAddress = "2800 E Observatory Rd, Los Angeles, CA 90027",
+                    observatoryPhoneNumber = "+1 (213) 473-0800",
+                    observatoryOpenNow = true,
+                    observatoryOpeningHours = "Tue-Fri 12pm-10pm, Sat-Sun 10am-10pm",
+                    observatoryLatitude = 34.1184,
+                    observatoryLongitude = -118.3004,
+                    observatoryUrl = "https://griffithobservatory.org/"
+                ),
             error = null,
             onNavigateBack = {},
             onRetry = {}
@@ -345,17 +326,18 @@ private fun ObservatoryDetailScreenClosedPreview() {
     AstroAppTheme {
         ObservatoryDetailScreenContent(
             isLoading = false,
-            observatory = Observatory(
-                observatoryId = "2",
-                observatoryName = "Mount Wilson Observatory",
-                observatoryAddress = "Mt Wilson Observatory Rd, Mt Wilson, CA 91023",
-                observatoryPhoneNumber = "+1 (626) 440-9016",
-                observatoryOpenNow = false,
-                observatoryOpeningHours = "Weekends 10am-5pm (Apr-Nov)",
-                observatoryLatitude = 34.2259,
-                observatoryLongitude = -118.0572,
-                observatoryUrl = "https://www.mtwilson.edu/"
-            ),
+            observatory =
+                Observatory(
+                    observatoryId = "2",
+                    observatoryName = "Mount Wilson Observatory",
+                    observatoryAddress = "Mt Wilson Observatory Rd, Mt Wilson, CA 91023",
+                    observatoryPhoneNumber = "+1 (626) 440-9016",
+                    observatoryOpenNow = false,
+                    observatoryOpeningHours = "Weekends 10am-5pm (Apr-Nov)",
+                    observatoryLatitude = 34.2259,
+                    observatoryLongitude = -118.0572,
+                    observatoryUrl = "https://www.mtwilson.edu/"
+                ),
             error = null,
             onNavigateBack = {},
             onRetry = {}

@@ -1,63 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+	<uses-permission
+		android:name="android.permission.INTERNET" />
+	<uses-permission
+		android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission
+		android:name="android.permission.READ_EXTERNAL_STORAGE"
+		android:maxSdkVersion="32" />
 
-    <application
-        android:name="com.udacity.astroapp.AstroApplication"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="false"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        tools:node="replace">
-        <activity
-            android:name=".activities.MainActivity"
-            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+	<application
+		android:name="com.udacity.astroapp.AstroApplication"
+		android:dataExtractionRules="@xml/data_extraction_rules"
+		android:fullBackupContent="false" android:icon="@mipmap/ic_launcher"
+		android:label="@string/app_name" android:supportsRtl="true"
+		android:theme="@style/AppTheme" tools:node="replace">
+		<activity android:name=".activities.MainActivity"
+			android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
+			android:exported="true" android:launchMode="singleTask"
+			android:theme="@style/AppTheme.NoActionBar">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_api_key" />
+		<meta-data android:name="com.google.android.geo.API_KEY"
+			android:value="@string/google_api_key" />
 
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+		<meta-data android:name="com.google.android.gms.version"
+			android:value="@integer/google_play_services_version" />
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
-<!--        <receiver-->
-<!--            android:name=".widget.AstroAppWidget"-->
-<!--            android:exported="false">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
-<!--            </intent-filter>-->
-<!--            <meta-data-->
-<!--                android:name="android.appwidget.provider"-->
-<!--                android:resource="@xml/astro_app_widget_info" />-->
-<!--        </receiver>-->
+		<provider android:name="androidx.core.content.FileProvider"
+			android:authorities="${applicationId}.provider"
+			android:exported="false" android:grantUriPermissions="true">
+			<meta-data
+				android:name="android.support.FILE_PROVIDER_PATHS"
+				android:resource="@xml/provider_paths" />
+		</provider>
+		<!-- <receiver -->
+		<!-- android:name=".widget.AstroAppWidget" -->
+		<!-- android:exported="false"> -->
+		<!-- <intent-filter> -->
+		<!-- <action android:name="android.appwidget.action.APPWIDGET_UPDATE" /> -->
+		<!-- </intent-filter> -->
+		<!-- <meta-data -->
+		<!-- android:name="android.appwidget.provider" -->
+		<!-- android:resource="@xml/astro_app_widget_info" /> -->
+		<!-- </receiver> -->
 
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
-    </application>
+		<uses-library android:name="org.apache.http.legacy"
+			android:required="false" />
+	</application>
 </manifest>

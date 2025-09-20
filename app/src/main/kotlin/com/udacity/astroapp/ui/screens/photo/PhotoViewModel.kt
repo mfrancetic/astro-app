@@ -1,19 +1,16 @@
 package com.udacity.astroapp.ui.screens.photo
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.PhotoRepository
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 
-class PhotoViewModel(
-    private val photoRepository: PhotoRepository
-) : ViewModel(), ContainerHost<PhotoState, PhotoSideEffect> {
+class PhotoViewModel(private val photoRepository: PhotoRepository) :
+    ViewModel(), ContainerHost<PhotoState, PhotoSideEffect> {
 
     override val container = container<PhotoState, PhotoSideEffect>(PhotoState())
 
@@ -37,21 +34,10 @@ class PhotoViewModel(
 
         try {
             photoRepository.loadAllPhotos().collect { photos ->
-                reduce {
-                    state.copy(
-                        isLoading = false,
-                        photos = photos,
-                        error = null
-                    )
-                }
+                reduce { state.copy(isLoading = false, photos = photos, error = null) }
             }
         } catch (e: Exception) {
-            reduce {
-                state.copy(
-                    isLoading = false,
-                    error = e.message ?: "Failed to load photos"
-                )
-            }
+            reduce { state.copy(isLoading = false, error = e.message ?: "Failed to load photos") }
             postSideEffect(PhotoSideEffect.ShowError(e.message ?: "Failed to load photos"))
         }
     }
@@ -71,11 +57,7 @@ class PhotoViewModel(
         postSideEffect(PhotoSideEffect.SharePhoto(photo))
     }
 
-    private fun showDatePicker() = intent {
-        postSideEffect(PhotoSideEffect.ShowDatePicker)
-    }
+    private fun showDatePicker() = intent { postSideEffect(PhotoSideEffect.ShowDatePicker) }
 
-    private fun retry() = intent {
-        loadPhotos()
-    }
+    private fun retry() = intent { loadPhotos() }
 }

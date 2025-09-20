@@ -1,124 +1,130 @@
 <resources>
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorButtonNormal">@color/colorAccent</item>
-    </style>
+	<!-- Base application theme. -->
+	<style name="AppTheme"
+		parent="Theme.AppCompat.DayNight.NoActionBar">
+		<item name="colorPrimary">@color/colorPrimary</item>
+		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+		<item name="colorAccent">@color/colorAccent</item>
+		<item name="colorButtonNormal">@color/colorAccent</item>
+	</style>
 
-    <style name="preferenceTheme">@style/PreferenceThemeOverlay</style>
+	<style name="preferenceTheme">@style/PreferenceThemeOverlay</style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
+	<style name="AppTheme.NoActionBar">
+		<item name="windowActionBar">false</item>
+		<item name="windowNoTitle">true</item>
+	</style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+	<style name="AppTheme.AppBarOverlay"
+		parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+	<style name="AppTheme.PopupOverlay"
+		parent="ThemeOverlay.AppCompat.Light" />
 
-    <!-- Style of the photo ImageView -->
-    <style name="PhotoImageView">
-        <item name="android:layout_width">@dimen/photo_dimensions</item>
-        <item name="android:layout_height">@dimen/photo_dimensions</item>
-    </style>
+	<!-- Style of the photo ImageView -->
+	<style name="PhotoImageView">
+		<item name="android:layout_width">@dimen/photo_dimensions</item>
+		<item name="android:layout_height">@dimen/photo_dimensions</item>
+	</style>
 
-    <!-- Style of the Earth photo ImageView -->
-    <style name="EarthPhotoImageView">
-        <item name="android:layout_width">@dimen/earth_photo_dimensions</item>
-        <item name="android:layout_height">@dimen/earth_photo_dimensions</item>
-    </style>
+	<!-- Style of the Earth photo ImageView -->
+	<style name="EarthPhotoImageView">
+		<item name="android:layout_width">@dimen/earth_photo_dimensions</item>
+		<item name="android:layout_height">@dimen/earth_photo_dimensions</item>
+	</style>
 
-    <!-- Style of the photo title TextView -->
-    <style name="TitleTextView">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_margin">@dimen/margin</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
-    </style>
-
-
-    <!-- Style of the photo description TextView -->
-    <style name="PhotoDescriptionTextView">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:paddingLeft">@dimen/margin</item>
-        <item name="android:paddingTop">@dimen/margin</item>
-        <item name="android:paddingRight">@dimen/margin</item>
-        <item name="android:textSize">@dimen/photo_description_text_size</item>
-    </style>
-
-    <!-- Style of the empty TextView -->
-    <style name="EmptyTextViewStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
-    </style>
-
-    <!-- Style of the loading indicator -->
-    <style name="LoadingIndicatorStyle" parent="Widget.AppCompat.ProgressBar">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-    </style>
-
-    <!-- Style of the asteroid ImageView -->
-    <style name="AsteroidImageViewStyle">
-        <item name="android:layout_width">@dimen/image_dimensions</item>
-        <item name="android:layout_height">@dimen/image_dimensions</item>
-        <item name="android:layout_marginStart">@dimen/margin</item>
-    </style>
-
-    <!-- Style of the buttons -->
-    <style name="ButtonStyle" parent="TextAppearance.AppCompat.Widget.Button">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@color/colorAccent</item>
-        <item name="android:textColor">@color/colorTextIcons</item>
-        <item name="android:paddingStart">@dimen/margin_list_item</item>
-        <item name="android:paddingEnd">@dimen/margin_list_item</item>
-    </style>
-
-    <!-- Style of the asteroid labels TextView -->
-    <style name="AsteroidLabelTextViewStyle">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textSize">@dimen/asteroid_text_size</item>
-    </style>
-
-    <!-- Style of the asteroid values TextView -->
+	<!-- Style of the photo title TextView -->
+	<style name="TitleTextView">
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_margin">@dimen/margin</item>
+		<item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+	</style>
 
 
-    <!-- Style for the image of the observatory -->
-    <style name="ObservatoryImageButtonStyle">
-        <item name="android:layout_height">@dimen/image_dimensions</item>
-        <item name="android:layout_width">@dimen/image_dimensions</item>
-    </style>
+	<!-- Style of the photo description TextView -->
+	<style name="PhotoDescriptionTextView">
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:paddingLeft">@dimen/margin</item>
+		<item name="android:paddingTop">@dimen/margin</item>
+		<item name="android:paddingRight">@dimen/margin</item>
+		<item name="android:textSize">@dimen/photo_description_text_size</item>
+	</style>
 
-    <!-- Style for the MapFragment -->
-    <style name="MapFragmentStyle">
-        <item name="android:layout_height">@dimen/map_fragment_height</item>
-        <item name="android:layout_width">match_parent</item>
-    </style>
+	<!-- Style of the empty TextView -->
+	<style name="EmptyTextViewStyle">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+	</style>
 
-    <!-- TextView for the app widget -->
-    <style name="WidgetTextViewStyle">
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1
-        </item>
-        <item name="android:textColor">@color/colorTextIcons</item>
-        <item name="android:layout_centerHorizontal">true</item>
-    </style>
+	<!-- Style of the loading indicator -->
+	<style name="LoadingIndicatorStyle"
+		parent="Widget.AppCompat.ProgressBar">
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_width">wrap_content</item>
+	</style>
 
-    <style name="AstroDialogTheme" parent="Theme.AppCompat.DayNight.Dialog.Alert">
-<!--        <item name="colorControlNormal">@color/indigo</item>-->
-<!--        <item name="colorControlActivated">@color/pink</item>-->
-<!--        <item name="textColorAlertDialogListItem">@color/indigo</item>-->
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textColorPrimary">?android:attr/textColorPrimary</item>
-        <item name="android:colorBackground">?android:attr/colorBackground</item>
-    </style>
+	<!-- Style of the asteroid ImageView -->
+	<style name="AsteroidImageViewStyle">
+		<item name="android:layout_width">@dimen/image_dimensions</item>
+		<item name="android:layout_height">@dimen/image_dimensions</item>
+		<item name="android:layout_marginStart">@dimen/margin</item>
+	</style>
+
+	<!-- Style of the buttons -->
+	<style name="ButtonStyle"
+		parent="TextAppearance.AppCompat.Widget.Button">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:background">@color/colorAccent</item>
+		<item name="android:textColor">@color/colorTextIcons</item>
+		<item name="android:paddingStart">@dimen/margin_list_item</item>
+		<item name="android:paddingEnd">@dimen/margin_list_item</item>
+	</style>
+
+	<!-- Style of the asteroid labels TextView -->
+	<style name="AsteroidLabelTextViewStyle">
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:textColor">?android:attr/textColorPrimary</item>
+		<item name="android:textSize">@dimen/asteroid_text_size</item>
+	</style>
+
+	<!-- Style of the asteroid values TextView -->
+
+
+	<!-- Style for the image of the observatory -->
+	<style name="ObservatoryImageButtonStyle">
+		<item name="android:layout_height">@dimen/image_dimensions</item>
+		<item name="android:layout_width">@dimen/image_dimensions</item>
+	</style>
+
+	<!-- Style for the MapFragment -->
+	<style name="MapFragmentStyle">
+		<item name="android:layout_height">@dimen/map_fragment_height</item>
+		<item name="android:layout_width">match_parent</item>
+	</style>
+
+	<!-- TextView for the app widget -->
+	<style name="WidgetTextViewStyle">
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1
+		</item>
+		<item name="android:textColor">@color/colorTextIcons</item>
+		<item name="android:layout_centerHorizontal">true</item>
+	</style>
+
+	<style name="AstroDialogTheme"
+		parent="Theme.AppCompat.DayNight.Dialog.Alert">
+		<!-- <item name="colorControlNormal">@color/indigo</item> -->
+		<!-- <item name="colorControlActivated">@color/pink</item> -->
+		<!-- <item name="textColorAlertDialogListItem">@color/indigo</item> -->
+		<item name="colorAccent">@color/colorAccent</item>
+		<item name="android:textColorPrimary">?android:attr/textColorPrimary</item>
+		<item name="android:colorBackground">?android:attr/colorBackground</item>
+	</style>
 
 </resources>

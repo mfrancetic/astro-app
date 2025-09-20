@@ -52,9 +52,8 @@ fun ObservatoryListScreen(
     val context = LocalContext.current
 
     // Location permission
-    val locationPermissionState = rememberPermissionState(
-        android.Manifest.permission.ACCESS_FINE_LOCATION
-    )
+    val locationPermissionState =
+        rememberPermissionState(android.Manifest.permission.ACCESS_FINE_LOCATION)
 
     // Handle side effects
     viewModel.collectSideEffect { sideEffect ->
@@ -62,12 +61,11 @@ fun ObservatoryListScreen(
             is ObservatorySideEffect.ShowError -> {
                 // Handle error display
             }
-            is ObservatorySideEffect.NavigateToDetail -> onNavigateToObservatoryDetails(sideEffect.observatoryId.toString())
+            is ObservatorySideEffect.NavigateToDetail ->
+                onNavigateToObservatoryDetails(sideEffect.observatoryId.toString())
             is ObservatorySideEffect.CallPhone -> {}
             is ObservatorySideEffect.OpenWebsite -> {}
-            is ObservatorySideEffect.NavigateBack -> {
-
-            }
+            is ObservatorySideEffect.NavigateBack -> {}
             is ObservatorySideEffect.NavigateToMaps -> {}
         }
     }
@@ -75,7 +73,7 @@ fun ObservatoryListScreen(
     // Load initial data
     LaunchedEffect(Unit) {
         if (locationPermissionState.status.isGranted) {
-            //TODO nearby observatories
+            // TODO nearby observatories
             viewModel.loadObservatories()
         } else {
             viewModel.loadObservatories()
@@ -103,18 +101,10 @@ private fun ObservatoryListScreenContent(
     onLoadObservatories: () -> Unit,
     onNavigateToObservatoryDetails: (String) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(dimensionResource(R.dimen.spacing_large))
-    ) {
+    Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
         // Location permission and search section
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Column(
-                modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
-            ) {
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
                 if (!hasLocationPermission) {
                     Text(
                         text = "Location permission needed for nearby observatories",
@@ -124,9 +114,7 @@ private fun ObservatoryListScreenContent(
 
                     Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
-                    Button(
-                        onClick = onRequestLocationPermission
-                    ) {
+                    Button(onClick = onRequestLocationPermission) {
                         Icon(Icons.Default.LocationOn, contentDescription = null)
                         Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
                         Text(stringResource(R.string.grant_location_permission_button))
@@ -139,19 +127,13 @@ private fun ObservatoryListScreenContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Button(
-                        onClick = onLoadObservatories,
-                        modifier = Modifier.weight(1f)
-                    ) {
+                    Button(onClick = onLoadObservatories, modifier = Modifier.weight(1f)) {
                         Text(if (hasLocationPermission) "Find Nearby" else "Show All")
                     }
 
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
 
-                    Button(
-                        onClick = { /* Open search dialog */ },
-                        modifier = Modifier.weight(1f)
-                    ) {
+                    Button(onClick = { /* Open search dialog */}, modifier = Modifier.weight(1f)) {
                         Text(stringResource(R.string.search))
                     }
                 }
@@ -162,33 +144,24 @@ private fun ObservatoryListScreenContent(
 
         when {
             isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
             error != null -> {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
-                    ) {
-                        Text(
-                            text = error!!,
-                            color = MaterialTheme.colorScheme.onErrorContainer
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
                         )
+                ) {
+                    Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
+                        Text(text = error!!, color = MaterialTheme.colorScheme.onErrorContainer)
 
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
-                        Button(
-                            onClick = onLoadObservatories
-                        ) {
+                        Button(onClick = onLoadObservatories) {
                             Text(stringResource(R.string.retry))
                         }
                     }
@@ -206,10 +179,7 @@ private fun ObservatoryListScreenContent(
                 }
             }
             else -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         text = "No observatories found",
                         style = MaterialTheme.typography.bodyLarge
@@ -221,32 +191,19 @@ private fun ObservatoryListScreenContent(
 }
 
 @Composable
-private fun ObservatoryItem(
-    observatory: Observatory,
-    onClick: (Observatory) -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        onClick = { onClick(observatory) }
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
-        ) {
-            Text(
-                text = observatory.observatoryName,
-                style = MaterialTheme.typography.headlineSmall
-            )
+private fun ObservatoryItem(observatory: Observatory, onClick: (Observatory) -> Unit) {
+    Card(modifier = Modifier.fillMaxWidth(), onClick = { onClick(observatory) }) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
+            Text(text = observatory.observatoryName, style = MaterialTheme.typography.headlineSmall)
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
             Text(
                 text = if (observatory.observatoryOpenNow) "Open" else "Closed",
                 style = MaterialTheme.typography.bodySmall,
-                color = if (observatory.observatoryOpenNow)
-                    MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.error
+                color =
+                    if (observatory.observatoryOpenNow) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.error
             )
         }
     }
@@ -307,7 +264,8 @@ private fun ObservatoryListScreenSuccessPreview() {
     AstroAppTheme {
         ObservatoryListScreenContent(
             isLoading = false,
-            observatories = listOf(
+            observatories =
+                listOf(
                     Observatory(
                         observatoryId = "1",
                         observatoryName = "Griffith Observatory",

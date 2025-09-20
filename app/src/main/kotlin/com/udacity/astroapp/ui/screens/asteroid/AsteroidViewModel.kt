@@ -1,19 +1,16 @@
 package com.udacity.astroapp.ui.screens.asteroid
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.AsteroidRepository
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 
-class AsteroidViewModel(
-    private val asteroidRepository: AsteroidRepository
-) : ViewModel(), ContainerHost<AsteroidState, AsteroidSideEffect> {
+class AsteroidViewModel(private val asteroidRepository: AsteroidRepository) :
+    ViewModel(), ContainerHost<AsteroidState, AsteroidSideEffect> {
 
     override val container = container<AsteroidState, AsteroidSideEffect>(AsteroidState())
 
@@ -37,11 +34,12 @@ class AsteroidViewModel(
 
         try {
             asteroidRepository.loadAllAsteroids().collect { asteroids ->
-                val filteredAsteroids = if (state.showHazardousOnly) {
-                    asteroids.filter { it.asteroidIsHazardous }
-                } else {
-                    asteroids
-                }
+                val filteredAsteroids =
+                    if (state.showHazardousOnly) {
+                        asteroids.filter { it.asteroidIsHazardous }
+                    } else {
+                        asteroids
+                    }
 
                 reduce {
                     state.copy(
@@ -54,10 +52,7 @@ class AsteroidViewModel(
             }
         } catch (e: Exception) {
             reduce {
-                state.copy(
-                    isLoading = false,
-                    error = e.message ?: "Failed to load asteroids"
-                )
+                state.copy(isLoading = false, error = e.message ?: "Failed to load asteroids")
             }
             postSideEffect(AsteroidSideEffect.ShowError(e.message ?: "Failed to load asteroids"))
         }
@@ -70,15 +65,15 @@ class AsteroidViewModel(
     }
 
     private fun filterAsteroidsByDate(date: String) = intent {
-        val filteredByDate = state.asteroids.filter { asteroid ->
-            asteroid.asteroidApproachDate == date
-        }
+        val filteredByDate =
+            state.asteroids.filter { asteroid -> asteroid.asteroidApproachDate == date }
 
-        val finalFiltered = if (state.showHazardousOnly) {
-            filteredByDate.filter { it.asteroidIsHazardous }
-        } else {
-            filteredByDate
-        }
+        val finalFiltered =
+            if (state.showHazardousOnly) {
+                filteredByDate.filter { it.asteroidIsHazardous }
+            } else {
+                filteredByDate
+            }
 
         reduce { state.copy(filteredAsteroids = finalFiltered) }
     }
@@ -90,20 +85,17 @@ class AsteroidViewModel(
     private fun filterHazardous(showHazardousOnly: Boolean) = intent {
         reduce { state.copy(showHazardousOnly = showHazardousOnly) }
 
-        val filteredAsteroids = if (showHazardousOnly) {
-            state.asteroids.filter { it.asteroidIsHazardous }
-        } else {
-            state.asteroids
-        }
+        val filteredAsteroids =
+            if (showHazardousOnly) {
+                state.asteroids.filter { it.asteroidIsHazardous }
+            } else {
+                state.asteroids
+            }
 
         reduce { state.copy(filteredAsteroids = filteredAsteroids) }
     }
 
-    private fun showDatePicker() = intent {
-        postSideEffect(AsteroidSideEffect.ShowDatePicker)
-    }
+    private fun showDatePicker() = intent { postSideEffect(AsteroidSideEffect.ShowDatePicker) }
 
-    private fun retry() = intent {
-        loadAsteroids()
-    }
+    private fun retry() = intent { loadAsteroids() }
 }

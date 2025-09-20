@@ -12,14 +12,20 @@ data class EarthPhotoState(
 
 sealed class EarthPhotoSideEffect {
     data class ShowError(val message: String) : EarthPhotoSideEffect()
+
     data class NavigateToDetail(val earthPhoto: EarthPhoto) : EarthPhotoSideEffect()
+
     object ShowDatePicker : EarthPhotoSideEffect()
 }
 
 sealed class EarthPhotoAction {
     object LoadPhotos : EarthPhotoAction()
+
     data class SelectDate(val date: String) : EarthPhotoAction()
+
     data class SelectPhoto(val earthPhoto: EarthPhoto) : EarthPhotoAction()
+
     object ShowDatePicker : EarthPhotoAction()
+
     object Retry : EarthPhotoAction()
 }

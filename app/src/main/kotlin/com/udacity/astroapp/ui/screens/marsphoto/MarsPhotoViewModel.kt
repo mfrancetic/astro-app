@@ -1,19 +1,16 @@
 package com.udacity.astroapp.ui.screens.marsphoto
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.MarsPhotoRepository
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 
-class MarsPhotoViewModel(
-    private val marsPhotoRepository: MarsPhotoRepository
-) : ViewModel(), ContainerHost<MarsPhotoState, MarsPhotoSideEffect> {
+class MarsPhotoViewModel(private val marsPhotoRepository: MarsPhotoRepository) :
+    ViewModel(), ContainerHost<MarsPhotoState, MarsPhotoSideEffect> {
 
     override val container = container<MarsPhotoState, MarsPhotoSideEffect>(MarsPhotoState())
 
@@ -36,20 +33,11 @@ class MarsPhotoViewModel(
 
         try {
             marsPhotoRepository.loadAllMarsPhotos().collect { marsPhotos ->
-                reduce {
-                    state.copy(
-                        isLoading = false,
-                        marsPhotos = marsPhotos,
-                        error = null
-                    )
-                }
+                reduce { state.copy(isLoading = false, marsPhotos = marsPhotos, error = null) }
             }
         } catch (e: Exception) {
             reduce {
-                state.copy(
-                    isLoading = false,
-                    error = e.message ?: "Failed to load Mars photos"
-                )
+                state.copy(isLoading = false, error = e.message ?: "Failed to load Mars photos")
             }
             postSideEffect(MarsPhotoSideEffect.ShowError(e.message ?: "Failed to load Mars photos"))
         }
@@ -66,11 +54,7 @@ class MarsPhotoViewModel(
         postSideEffect(MarsPhotoSideEffect.NavigateToDetail(marsPhoto))
     }
 
-    private fun showDatePicker() = intent {
-        postSideEffect(MarsPhotoSideEffect.ShowDatePicker)
-    }
+    private fun showDatePicker() = intent { postSideEffect(MarsPhotoSideEffect.ShowDatePicker) }
 
-    private fun retry() = intent {
-        loadPhotos()
-    }
+    private fun retry() = intent { loadPhotos() }
 }

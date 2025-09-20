@@ -15,15 +15,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import com.udacity.astroapp.R
+import androidx.compose.ui.unit.Dp
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.udacity.astroapp.R
 
 @Composable
 fun AstroImage(
@@ -41,24 +39,22 @@ fun AstroImage(
     var isError by remember { mutableStateOf(false) }
 
     Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(cornerRadius))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .then(
-                if (onImageClick != null) {
-                    Modifier.clickable { onImageClick() }
-                } else {
-                    Modifier
-                }
-            ),
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(cornerRadius))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .then(
+                    if (onImageClick != null) {
+                        Modifier.clickable { onImageClick() }
+                    } else {
+                        Modifier
+                    }
+                ),
         contentAlignment = Alignment.Center
     ) {
         if (!imageUrl.isNullOrBlank()) {
             AsyncImage(
-                model = ImageRequest.Builder(context)
-                    .data(imageUrl)
-                    .crossfade(true)
-                    .build(),
+                model = ImageRequest.Builder(context).data(imageUrl).crossfade(true).build(),
                 contentDescription = contentDescription,
                 contentScale = contentScale,
                 modifier = Modifier.fillMaxSize(),
@@ -107,28 +103,25 @@ fun PhotoCard(
     onCardClick: (() -> Unit)? = null
 ) {
     Card(
-        modifier = modifier.then(
-            if (onCardClick != null) {
-                Modifier.clickable { onCardClick() }
-            } else {
-                Modifier
-            }
-        )
+        modifier =
+            modifier.then(
+                if (onCardClick != null) {
+                    Modifier.clickable { onCardClick() }
+                } else {
+                    Modifier
+                }
+            )
     ) {
         Column {
             AstroImage(
                 imageUrl = imageUrl,
                 contentDescription = title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1.5f),
+                modifier = Modifier.fillMaxWidth().aspectRatio(1.5f),
                 onImageClick = onImageClick
             )
 
             if (title != null || subtitle != null) {
-                Column(
-                    modifier = Modifier.padding(dimensionResource(R.dimen.card_inner_padding))
-                ) {
+                Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_inner_padding))) {
                     if (title != null) {
                         Text(
                             text = title,
@@ -138,7 +131,10 @@ fun PhotoCard(
                     }
 
                     if (subtitle != null) {
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_extra_small)))
+                        Spacer(
+                            modifier =
+                                Modifier.height(dimensionResource(R.dimen.spacing_extra_small))
+                        )
                         Text(
                             text = subtitle,
                             style = MaterialTheme.typography.bodySmall,
@@ -160,9 +156,7 @@ fun GridImageItem(
     overlayText: String? = null,
     onClick: (() -> Unit)? = null
 ) {
-    Box(
-        modifier = modifier.aspectRatio(1f)
-    ) {
+    Box(modifier = modifier.aspectRatio(1f)) {
         AstroImage(
             imageUrl = imageUrl,
             contentDescription = contentDescription,
@@ -173,16 +167,15 @@ fun GridImageItem(
         // Overlay text
         if (overlayText != null) {
             Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomStart),
+                modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart),
                 color = Color.Black.copy(alpha = 0.7f)
             ) {
                 Text(
                     text = overlayText,
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White,
-                    modifier = Modifier.padding(dimensionResource(R.dimen.earth_photo_overlay_padding)),
+                    modifier =
+                        Modifier.padding(dimensionResource(R.dimen.earth_photo_overlay_padding)),
                     maxLines = 1
                 )
             }
@@ -193,14 +186,10 @@ fun GridImageItem(
 @Composable
 private fun DefaultImagePlaceholder() {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceVariant),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             CircularProgressIndicator(
                 modifier = Modifier.size(dimensionResource(R.dimen.loading_indicator_small_size)),
                 strokeWidth = dimensionResource(R.dimen.loading_indicator_small_stroke)
@@ -219,9 +208,7 @@ private fun DefaultImagePlaceholder() {
 @Composable
 private fun DefaultImageError() {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.errorContainer),
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.errorContainer),
         contentAlignment = Alignment.Center
     ) {
         Icon(
@@ -241,18 +228,16 @@ fun FullScreenImageViewer(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .clickable { onClose() },
+        modifier = modifier.fillMaxSize().background(Color.Black).clickable { onClose() },
         contentAlignment = Alignment.Center
     ) {
         if (!imageUrl.isNullOrBlank()) {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(imageUrl)
-                    .crossfade(true)
-                    .build(),
+                model =
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(imageUrl)
+                        .crossfade(true)
+                        .build(),
                 contentDescription = contentDescription,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.fillMaxSize()

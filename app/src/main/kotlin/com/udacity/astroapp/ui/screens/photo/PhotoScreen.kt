@@ -1,31 +1,24 @@
 package com.udacity.astroapp.ui.screens.photo
 
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
-import com.udacity.astroapp.ui.components.FullscreenVideoDialog
-import com.udacity.astroapp.ui.components.YouTubeVideoPlayer
-import com.udacity.astroapp.ui.components.VideoErrorContent
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Photo
+import com.udacity.astroapp.ui.components.FullscreenVideoDialog
+import com.udacity.astroapp.ui.components.YouTubeVideoPlayer
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import com.udacity.astroapp.utils.VideoUtils
 import org.koin.androidx.compose.koinViewModel
@@ -48,25 +41,18 @@ fun PhotoScreen(
             is PhotoSideEffect.ShowError -> {
                 // Handle error display
             }
-
             is PhotoSideEffect.SharePhoto -> {
                 // Handle photo sharing
             }
-
             is PhotoSideEffect.NavigateToFullScreen -> {
                 onNavigateToFullScreen(sideEffect.photo.photoId.toString())
             }
-
-            is PhotoSideEffect.ShowDatePicker -> {
-
-            }
+            is PhotoSideEffect.ShowDatePicker -> {}
         }
     }
 
     // Load initial data
-    LaunchedEffect(Unit) {
-        viewModel.loadPhotos()
-    }
+    LaunchedEffect(Unit) { viewModel.loadPhotos() }
 
     PhotoScreenContent(
         state = state,
@@ -86,12 +72,8 @@ private fun PhotoContent(
     var showFullscreenVideo by remember { mutableStateOf(false) }
     val isVideo = VideoUtils.isVideoContent(photo.photoMediaType)
 
-    Card(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
-        ) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
             Text(
                 text = photo.photoTitle.ifEmpty { stringResource(R.string.no_title) },
                 style = MaterialTheme.typography.headlineSmall,
@@ -111,18 +93,18 @@ private fun PhotoContent(
                     videoUrl = photo.photoUrl,
                     title = photo.photoTitle,
                     onFullscreenClick = { showFullscreenVideo = true },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(dimensionResource(R.dimen.photo_content_height))
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .height(dimensionResource(R.dimen.photo_content_height))
                 )
             } else {
                 ImageContent(
                     imageUrl = photo.photoUrl,
                     contentDescription = photo.photoTitle,
                     onFullScreen = onFullScreen,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(dimensionResource(R.dimen.photo_content_height))
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .height(dimensionResource(R.dimen.photo_content_height))
                 )
             }
 
@@ -145,7 +127,7 @@ private fun PhotoContent(
                     Text(stringResource(R.string.share))
                 }
 
-                Button(onClick = { /* Open date picker */ }) {
+                Button(onClick = { /* Open date picker */}) {
                     Text(stringResource(R.string.select_date_button))
                 }
             }
@@ -168,9 +150,7 @@ private fun ImageContent(
     onFullScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier.clickable { onFullScreen() }
-    ) {
+    Card(modifier = modifier.clickable { onFullScreen() }) {
         AsyncImage(
             model = imageUrl,
             contentDescription = contentDescription,
@@ -188,42 +168,29 @@ private fun PhotoScreenContent(
     onNavigateToFullScreen: (String) -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(dimensionResource(R.dimen.card_padding)),
+        modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         when {
             state.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
             state.error != null -> {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
-                ) {
-                    Column(
-                        modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
-                    ) {
-                        Text(
-                            text = state.error,
-                            color = MaterialTheme.colorScheme.onErrorContainer
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
                         )
+                ) {
+                    Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
+                        Text(text = state.error, color = MaterialTheme.colorScheme.onErrorContainer)
 
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
-                        Button(
-                            onClick = onRetry
-                        ) {
-                            Text(stringResource(R.string.retry))
-                        }
+                        Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
                     }
                 }
             }
@@ -238,25 +205,18 @@ private fun PhotoScreenContent(
                 )
             }
             else -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = stringResource(R.string.no_photo_found),
                             style = MaterialTheme.typography.bodyLarge
                         )
 
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
+                        Spacer(
+                            modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium))
+                        )
 
-                        Button(
-                            onClick = onRetry
-                        ) {
-                            Text(stringResource(R.string.retry))
-                        }
+                        Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
                     }
                 }
             }
@@ -277,7 +237,7 @@ private fun VideoContent(
         modifier = modifier,
         showControls = true,
         onFullscreenClick = onFullscreenClick,
-        onError = { /* Handle error if needed */ }
+        onError = { /* Handle error if needed */}
     )
 }
 
@@ -300,10 +260,11 @@ private fun PhotoScreenLoadingPreview() {
 private fun PhotoScreenErrorPreview() {
     AstroAppTheme {
         PhotoScreenContent(
-            state = PhotoState(
-                isLoading = false,
-                error = "Failed to load photos. Please check your internet connection."
-            ),
+            state =
+                PhotoState(
+                    isLoading = false,
+                    error = "Failed to load photos. Please check your internet connection."
+                ),
             onRetry = {},
             onShare = {},
             onNavigateToFullScreen = {}
@@ -316,11 +277,7 @@ private fun PhotoScreenErrorPreview() {
 private fun PhotoScreenEmptyPreview() {
     AstroAppTheme {
         PhotoScreenContent(
-            state = PhotoState(
-                isLoading = false,
-                photos = emptyList(),
-                error = null
-            ),
+            state = PhotoState(isLoading = false, photos = emptyList(), error = null),
             onRetry = {},
             onShare = {},
             onNavigateToFullScreen = {}
@@ -333,20 +290,23 @@ private fun PhotoScreenEmptyPreview() {
 private fun PhotoScreenSuccessPreview() {
     AstroAppTheme {
         PhotoScreenContent(
-            state = PhotoState(
-                isLoading = false,
-                photos = listOf(
-                    Photo(
-                        photoId = 1,
-                        photoTitle = "Nebula in Orion",
-                        photoDate = "2024-01-15",
-                        photoDescription = "A stunning view of the Orion Nebula captured by the Hubble Space Telescope. This stellar nursery is located about 1,344 light-years away from Earth.",
-                        photoUrl = "https://example.com/nebula.jpg",
-                        photoMediaType = "image"
-                    )
+            state =
+                PhotoState(
+                    isLoading = false,
+                    photos =
+                        listOf(
+                            Photo(
+                                photoId = 1,
+                                photoTitle = "Nebula in Orion",
+                                photoDate = "2024-01-15",
+                                photoDescription =
+                                    "A stunning view of the Orion Nebula captured by the Hubble Space Telescope. This stellar nursery is located about 1,344 light-years away from Earth.",
+                                photoUrl = "https://example.com/nebula.jpg",
+                                photoMediaType = "image"
+                            )
+                        ),
+                    error = null
                 ),
-                error = null
-            ),
             onRetry = {},
             onShare = {},
             onNavigateToFullScreen = {}

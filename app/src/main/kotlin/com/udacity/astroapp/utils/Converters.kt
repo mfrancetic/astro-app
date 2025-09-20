@@ -6,9 +6,7 @@ import com.google.gson.reflect.TypeToken
 import com.udacity.astroapp.models.Camera
 import com.udacity.astroapp.models.Rover
 
-/**
- * Converters for saving the custom objects to the Room database
- */
+/** Converters for saving the custom objects to the Room database */
 object Converters {
 
     @TypeConverter

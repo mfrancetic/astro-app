@@ -8,8 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
@@ -34,17 +34,14 @@ fun AsteroidScreen(
             is AsteroidSideEffect.ShowError -> {
                 // Handle error display
             }
-            is AsteroidSideEffect.NavigateToDetail -> onNavigateToAsteroidDetails(sideEffect.asteroid.asteroidId.toString())
-            is AsteroidSideEffect.ShowDatePicker -> {
-
-            }
+            is AsteroidSideEffect.NavigateToDetail ->
+                onNavigateToAsteroidDetails(sideEffect.asteroid.asteroidId.toString())
+            is AsteroidSideEffect.ShowDatePicker -> {}
         }
     }
 
     // Load initial data
-    LaunchedEffect(Unit) {
-        viewModel.loadAsteroids()
-    }
+    LaunchedEffect(Unit) { viewModel.loadAsteroids() }
 
     AsteroidScreenContent(
         state = state,
@@ -54,18 +51,9 @@ fun AsteroidScreen(
 }
 
 @Composable
-private fun AsteroidItem(
-    asteroid: Asteroid,
-    onClick: (Asteroid) -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        onClick = { onClick(asteroid) }
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
-        ) {
+private fun AsteroidItem(asteroid: Asteroid, onClick: (Asteroid) -> Unit) {
+    Card(modifier = Modifier.fillMaxWidth(), onClick = { onClick(asteroid) }) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
             Text(
                 text = asteroid.asteroidName ?: "Unknown Asteroid",
                 style = MaterialTheme.typography.headlineSmall
@@ -85,17 +73,17 @@ private fun AsteroidItem(
                 Text(
                     text = if (asteroid.asteroidIsHazardous) "⚠️ Hazardous" else "✅ Safe",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = if (asteroid.asteroidIsHazardous)
-                        MaterialTheme.colorScheme.error
-                    else
-                        MaterialTheme.colorScheme.primary
+                    color =
+                        if (asteroid.asteroidIsHazardous) MaterialTheme.colorScheme.error
+                        else MaterialTheme.colorScheme.primary
                 )
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_extra_small)))
 
             Text(
-                text = "Diameter: ${asteroid.asteroidDiameterMin} - ${asteroid.asteroidDiameterMax} km",
+                text =
+                    "Diameter: ${asteroid.asteroidDiameterMin} - ${asteroid.asteroidDiameterMax} km",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -115,35 +103,21 @@ private fun AsteroidScreenContent(
     onRetry: () -> Unit,
     onNavigateToAsteroidDetails: (String) -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(dimensionResource(R.dimen.card_padding))
-    ) {
+    Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding))) {
         // Search and filter section
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Card(modifier = Modifier.fillMaxWidth()) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(R.dimen.card_padding)),
+                modifier = Modifier.fillMaxWidth().padding(dimensionResource(R.dimen.card_padding)),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Button(
-                    onClick = { /* Open date picker */ },
-                    modifier = Modifier.weight(1f)
-                ) {
+                Button(onClick = { /* Open date picker */}, modifier = Modifier.weight(1f)) {
                     Text(stringResource(R.string.select_date_range))
                 }
 
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
 
-                Button(
-                    onClick = onRetry,
-                    modifier = Modifier.weight(1f)
-                ) {
+                Button(onClick = onRetry, modifier = Modifier.weight(1f)) {
                     Text(stringResource(R.string.refresh))
                 }
             }
@@ -153,23 +127,19 @@ private fun AsteroidScreenContent(
 
         when {
             state.isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
             state.error != null -> {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        )
                 ) {
-                    Column(
-                        modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
-                    ) {
+                    Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
                         Text(
                             text = state.error!!,
                             color = MaterialTheme.colorScheme.onErrorContainer
@@ -177,11 +147,7 @@ private fun AsteroidScreenContent(
 
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
-                        Button(
-                            onClick = onRetry
-                        ) {
-                            Text(stringResource(R.string.retry))
-                        }
+                        Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
                     }
                 }
             }
@@ -190,17 +156,16 @@ private fun AsteroidScreenContent(
                     items(state.asteroids) { asteroid ->
                         AsteroidItem(
                             asteroid = asteroid,
-                            onClick = { onNavigateToAsteroidDetails(asteroid.asteroidId.toString()) }
+                            onClick = {
+                                onNavigateToAsteroidDetails(asteroid.asteroidId.toString())
+                            }
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
                     }
                 }
             }
             else -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
                         text = "No asteroids found for the selected date range",
                         style = MaterialTheme.typography.bodyLarge
@@ -229,10 +194,11 @@ private fun AsteroidScreenLoadingPreview() {
 private fun AsteroidScreenErrorPreview() {
     AstroAppTheme {
         AsteroidScreenContent(
-            state = AsteroidState(
-                isLoading = false,
-                error = "Failed to load asteroids. Please check your internet connection."
-            ),
+            state =
+                AsteroidState(
+                    isLoading = false,
+                    error = "Failed to load asteroids. Please check your internet connection."
+                ),
             onRetry = {},
             onNavigateToAsteroidDetails = {}
         )
@@ -244,12 +210,13 @@ private fun AsteroidScreenErrorPreview() {
 private fun AsteroidScreenEmptyPreview() {
     AstroAppTheme {
         AsteroidScreenContent(
-            state = AsteroidState(
-                isLoading = false,
-                asteroids = emptyList(),
-                filteredAsteroids = emptyList(),
-                error = null
-            ),
+            state =
+                AsteroidState(
+                    isLoading = false,
+                    asteroids = emptyList(),
+                    filteredAsteroids = emptyList(),
+                    error = null
+                ),
             onRetry = {},
             onNavigateToAsteroidDetails = {}
         )
@@ -261,54 +228,57 @@ private fun AsteroidScreenEmptyPreview() {
 private fun AsteroidScreenSuccessPreview() {
     AstroAppTheme {
         AsteroidScreenContent(
-            state = AsteroidState(
-                isLoading = false,
-                asteroids = listOf(
-                    Asteroid(
-                        asteroidId = 1,
-                        asteroidName = "2024 AA1",
-                        asteroidDiameterMin = 0.5,
-                        asteroidDiameterMax = 1.2,
-                        asteroidApproachDate = "2024-01-15",
-                        asteroidVelocity = "25.8",
-                        asteroidIsHazardous = true,
-                        asteroidUrl = "https://example.com/asteroid1"
-                    ),
-                    Asteroid(
-                        asteroidId = 2,
-                        asteroidName = "2024 BB2",
-                        asteroidDiameterMin = 2.1,
-                        asteroidDiameterMax = 4.5,
-                        asteroidApproachDate = "2024-01-16",
-                        asteroidVelocity = "18.3",
-                        asteroidIsHazardous = false,
-                        asteroidUrl = "https://example.com/asteroid2"
-                    )
+            state =
+                AsteroidState(
+                    isLoading = false,
+                    asteroids =
+                        listOf(
+                            Asteroid(
+                                asteroidId = 1,
+                                asteroidName = "2024 AA1",
+                                asteroidDiameterMin = 0.5,
+                                asteroidDiameterMax = 1.2,
+                                asteroidApproachDate = "2024-01-15",
+                                asteroidVelocity = "25.8",
+                                asteroidIsHazardous = true,
+                                asteroidUrl = "https://example.com/asteroid1"
+                            ),
+                            Asteroid(
+                                asteroidId = 2,
+                                asteroidName = "2024 BB2",
+                                asteroidDiameterMin = 2.1,
+                                asteroidDiameterMax = 4.5,
+                                asteroidApproachDate = "2024-01-16",
+                                asteroidVelocity = "18.3",
+                                asteroidIsHazardous = false,
+                                asteroidUrl = "https://example.com/asteroid2"
+                            )
+                        ),
+                    filteredAsteroids =
+                        listOf(
+                            Asteroid(
+                                asteroidId = 1,
+                                asteroidName = "2024 AA1",
+                                asteroidDiameterMin = 0.5,
+                                asteroidDiameterMax = 1.2,
+                                asteroidApproachDate = "2024-01-15",
+                                asteroidVelocity = "25.8",
+                                asteroidIsHazardous = true,
+                                asteroidUrl = "https://example.com/asteroid1"
+                            ),
+                            Asteroid(
+                                asteroidId = 2,
+                                asteroidName = "2024 BB2",
+                                asteroidDiameterMin = 2.1,
+                                asteroidDiameterMax = 4.5,
+                                asteroidApproachDate = "2024-01-16",
+                                asteroidVelocity = "18.3",
+                                asteroidIsHazardous = false,
+                                asteroidUrl = "https://example.com/asteroid2"
+                            )
+                        ),
+                    error = null
                 ),
-                filteredAsteroids = listOf(
-                    Asteroid(
-                        asteroidId = 1,
-                        asteroidName = "2024 AA1",
-                        asteroidDiameterMin = 0.5,
-                        asteroidDiameterMax = 1.2,
-                        asteroidApproachDate = "2024-01-15",
-                        asteroidVelocity = "25.8",
-                        asteroidIsHazardous = true,
-                        asteroidUrl = "https://example.com/asteroid1"
-                    ),
-                    Asteroid(
-                        asteroidId = 2,
-                        asteroidName = "2024 BB2",
-                        asteroidDiameterMin = 2.1,
-                        asteroidDiameterMax = 4.5,
-                        asteroidApproachDate = "2024-01-16",
-                        asteroidVelocity = "18.3",
-                        asteroidIsHazardous = false,
-                        asteroidUrl = "https://example.com/asteroid2"
-                    )
-                ),
-                error = null
-            ),
             onRetry = {},
             onNavigateToAsteroidDetails = {}
         )

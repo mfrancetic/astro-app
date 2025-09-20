@@ -31,33 +31,35 @@ fun DatePickerButton(
     val dateFormatter = remember { SimpleDateFormat(dateFormat, Locale.getDefault()) }
 
     // Parse selected date or use current date
-    val currentDateInMillis = remember(selectedDate) {
-        if (selectedDate != null) {
-            try {
-                dateFormatter.parse(selectedDate)?.time ?: System.currentTimeMillis()
-            } catch (e: Exception) {
+    val currentDateInMillis =
+        remember(selectedDate) {
+            if (selectedDate != null) {
+                try {
+                    dateFormatter.parse(selectedDate)?.time ?: System.currentTimeMillis()
+                } catch (e: Exception) {
+                    System.currentTimeMillis()
+                }
+            } else {
                 System.currentTimeMillis()
             }
-        } else {
-            System.currentTimeMillis()
         }
-    }
 
     Button(
         onClick = {
             calendar.timeInMillis = currentDateInMillis
 
-            val datePickerDialog = DatePickerDialog(
-                context,
-                { _, year, month, dayOfMonth ->
-                    calendar.set(year, month, dayOfMonth)
-                    val formattedDate = dateFormatter.format(calendar.time)
-                    onDateSelected(formattedDate)
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            )
+            val datePickerDialog =
+                DatePickerDialog(
+                    context,
+                    { _, year, month, dayOfMonth ->
+                        calendar.set(year, month, dayOfMonth)
+                        val formattedDate = dateFormatter.format(calendar.time)
+                        onDateSelected(formattedDate)
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+                )
 
             // Set min/max dates if provided
             minDate?.let { datePickerDialog.datePicker.minDate = it }
@@ -88,9 +90,7 @@ fun DateRangePicker(
     startLabel: String = "Start Date",
     endLabel: String = "End Date"
 ) {
-    Column(
-        modifier = modifier
-    ) {
+    Column(modifier = modifier) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
@@ -101,13 +101,14 @@ fun DateRangePicker(
                 modifier = Modifier.weight(1f),
                 label = startLabel,
                 dateFormat = dateFormat,
-                maxDate = if (endDate != null) {
-                    try {
-                        SimpleDateFormat(dateFormat, Locale.getDefault()).parse(endDate)?.time
-                    } catch (e: Exception) {
-                        null
-                    }
-                } else null
+                maxDate =
+                    if (endDate != null) {
+                        try {
+                            SimpleDateFormat(dateFormat, Locale.getDefault()).parse(endDate)?.time
+                        } catch (e: Exception) {
+                            null
+                        }
+                    } else null
             )
 
             DatePickerButton(
@@ -116,13 +117,14 @@ fun DateRangePicker(
                 modifier = Modifier.weight(1f),
                 label = endLabel,
                 dateFormat = dateFormat,
-                minDate = if (startDate != null) {
-                    try {
-                        SimpleDateFormat(dateFormat, Locale.getDefault()).parse(startDate)?.time
-                    } catch (e: Exception) {
-                        null
-                    }
-                } else null
+                minDate =
+                    if (startDate != null) {
+                        try {
+                            SimpleDateFormat(dateFormat, Locale.getDefault()).parse(startDate)?.time
+                        } catch (e: Exception) {
+                            null
+                        }
+                    } else null
             )
         }
     }
@@ -137,22 +139,16 @@ fun DateFilterCard(
     title: String = "Filter by Date",
     dateFormat: String = "yyyy-MM-dd"
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium
-            )
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
+            Text(text = title, style = MaterialTheme.typography.titleMedium)
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
+                horizontalArrangement =
+                    Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 DatePickerButton(
@@ -163,9 +159,7 @@ fun DateFilterCard(
                 )
 
                 if (selectedDate != null && onClearDate != null) {
-                    TextButton(onClick = onClearDate) {
-                        Text(stringResource(R.string.clear))
-                    }
+                    TextButton(onClick = onClearDate) { Text(stringResource(R.string.clear)) }
                 }
             }
         }
@@ -183,26 +177,17 @@ fun DateRangeFilterCard(
     title: String = "Filter by Date Range",
     dateFormat: String = "yyyy-MM-dd"
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Column(
-            modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))
-        ) {
+    Card(modifier = modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium
-                )
+                Text(text = title, style = MaterialTheme.typography.titleMedium)
 
                 if ((startDate != null || endDate != null) && onClearRange != null) {
-                    TextButton(onClick = onClearRange) {
-                        Text(stringResource(R.string.clear))
-                    }
+                    TextButton(onClick = onClearRange) { Text(stringResource(R.string.clear)) }
                 }
             }
 
@@ -285,29 +270,35 @@ fun CompactDatePicker(
 
     OutlinedButton(
         onClick = {
-            val currentDateInMillis = if (selectedDate != null) {
-                try {
-                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(selectedDate)?.time ?: System.currentTimeMillis()
-                } catch (e: Exception) {
+            val currentDateInMillis =
+                if (selectedDate != null) {
+                    try {
+                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                            .parse(selectedDate)
+                            ?.time ?: System.currentTimeMillis()
+                    } catch (e: Exception) {
+                        System.currentTimeMillis()
+                    }
+                } else {
                     System.currentTimeMillis()
                 }
-            } else {
-                System.currentTimeMillis()
-            }
 
             calendar.timeInMillis = currentDateInMillis
 
             DatePickerDialog(
-                context,
-                { _, year, month, dayOfMonth ->
-                    calendar.set(year, month, dayOfMonth)
-                    val formattedDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(calendar.time)
-                    onDateSelected(formattedDate)
-                },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
-            ).show()
+                    context,
+                    { _, year, month, dayOfMonth ->
+                        calendar.set(year, month, dayOfMonth)
+                        val formattedDate =
+                            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                .format(calendar.time)
+                        onDateSelected(formattedDate)
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+                )
+                .show()
         },
         modifier = modifier,
         enabled = enabled
@@ -321,7 +312,8 @@ fun CompactDatePicker(
         Text(
             if (selectedDate != null) {
                 try {
-                    val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(selectedDate)
+                    val date =
+                        SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(selectedDate)
                     displayFormatter.format(date!!)
                 } catch (e: Exception) {
                     selectedDate

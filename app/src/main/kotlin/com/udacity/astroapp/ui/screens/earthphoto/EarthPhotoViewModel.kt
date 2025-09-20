@@ -1,19 +1,16 @@
 package com.udacity.astroapp.ui.screens.earthphoto
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.EarthPhotoRepository
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
 import org.orbitmvi.orbit.syntax.simple.reduce
 import org.orbitmvi.orbit.viewmodel.container
 
-class EarthPhotoViewModel(
-    private val earthPhotoRepository: EarthPhotoRepository
-) : ViewModel(), ContainerHost<EarthPhotoState, EarthPhotoSideEffect> {
+class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository) :
+    ViewModel(), ContainerHost<EarthPhotoState, EarthPhotoSideEffect> {
 
     override val container = container<EarthPhotoState, EarthPhotoSideEffect>(EarthPhotoState())
 
@@ -36,22 +33,15 @@ class EarthPhotoViewModel(
 
         try {
             earthPhotoRepository.loadAllEarthPhotos().collect { earthPhotos ->
-                reduce {
-                    state.copy(
-                        isLoading = false,
-                        earthPhotos = earthPhotos,
-                        error = null
-                    )
-                }
+                reduce { state.copy(isLoading = false, earthPhotos = earthPhotos, error = null) }
             }
         } catch (e: Exception) {
             reduce {
-                state.copy(
-                    isLoading = false,
-                    error = e.message ?: "Failed to load Earth photos"
-                )
+                state.copy(isLoading = false, error = e.message ?: "Failed to load Earth photos")
             }
-            postSideEffect(EarthPhotoSideEffect.ShowError(e.message ?: "Failed to load Earth photos"))
+            postSideEffect(
+                EarthPhotoSideEffect.ShowError(e.message ?: "Failed to load Earth photos")
+            )
         }
     }
 
@@ -66,11 +56,7 @@ class EarthPhotoViewModel(
         postSideEffect(EarthPhotoSideEffect.NavigateToDetail(earthPhoto))
     }
 
-    private fun showDatePicker() = intent {
-        postSideEffect(EarthPhotoSideEffect.ShowDatePicker)
-    }
+    private fun showDatePicker() = intent { postSideEffect(EarthPhotoSideEffect.ShowDatePicker) }
 
-    private fun retry() = intent {
-        loadPhotos()
-    }
+    private fun retry() = intent { loadPhotos() }
 }

@@ -1,40 +1,17 @@
 package com.udacity.astroapp.widget
 
-import android.app.PendingIntent
-import android.appwidget.AppWidgetManager
-import android.appwidget.AppWidgetProvider
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.net.Uri
-import android.view.View
-import android.widget.RemoteViews
-import androidx.lifecycle.Observer
-import coil.ImageLoader
-import coil.request.ImageRequest
-import coil.target.Target
-import com.udacity.astroapp.R
-import com.udacity.astroapp.activities.MainActivity
-import com.udacity.astroapp.models.Photo
-import com.udacity.astroapp.repository.PhotoRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import org.koin.core.context.GlobalContext
-
 /**
- * Implementation of App Widget functionality.
- * Displays the daily astronomy photo with proper video handling.
+ * Implementation of App Widget functionality. Displays the daily astronomy photo with proper video
+ * handling.
  */
-//class AstroAppWidget : AppWidgetProvider() {
+// class AstroAppWidget : AppWidgetProvider() {
 //
 //    companion object {
 //        private val widgetScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 //    }
 //
-//    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+//    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds:
+// IntArray) {
 //        // Update all widget instances
 //        for (appWidgetId in appWidgetIds) {
 //            updateAppWidget(context, appWidgetManager, appWidgetId, appWidgetIds)
@@ -48,13 +25,16 @@ import org.koin.core.context.GlobalContext
 //        intent.action?.let { action ->
 //            if (action == AppWidgetManager.ACTION_APPWIDGET_UPDATE) {
 //                val appWidgetManager = AppWidgetManager.getInstance(context)
-//                val appWidget = ComponentName(context.packageName, AstroAppWidget::class.java.name)
+//                val appWidget = ComponentName(context.packageName,
+// AstroAppWidget::class.java.name)
 //                val appWidgetIds = appWidgetManager.getAppWidgetIds(appWidget)
 //
 //                // Notify that widget data has changed
 //                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_image)
-//                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_image_label)
-//                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_image_title)
+//                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
+// R.id.widget_image_label)
+//                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,
+// R.id.widget_image_title)
 //                appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_layout)
 //            }
 //        }
@@ -115,7 +95,8 @@ import org.koin.core.context.GlobalContext
 //                            showFallbackContent(remoteViews, appWidgetManager, appWidgetId)
 //                        } else {
 //                            // Load and display the photo
-//                            loadPhotoImage(context, latestPhoto, remoteViews, appWidgetManager, appWidgetId, appWidgetIds)
+//                            loadPhotoImage(context, latestPhoto, remoteViews, appWidgetManager,
+// appWidgetId, appWidgetIds)
 //                        }
 //                    }
 //                }
@@ -158,7 +139,8 @@ import org.koin.core.context.GlobalContext
 //                        override fun onSuccess(result: Bitmap) {
 //                            // Successfully loaded image
 //                            remoteViews.setImageViewBitmap(R.id.widget_image, result)
-//                            remoteViews.setTextViewText(R.id.widget_image_title, photo.title ?: "")
+//                            remoteViews.setTextViewText(R.id.widget_image_title, photo.title ?:
+// "")
 //
 //                            // Show all views
 //                            remoteViews.setViewVisibility(R.id.widget_image, View.VISIBLE)
@@ -201,4 +183,4 @@ import org.koin.core.context.GlobalContext
 //        // Update the widget
 //        appWidgetManager.updateAppWidget(appWidgetId, remoteViews)
 //    }
-//}
+// }

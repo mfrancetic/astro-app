@@ -1,34 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/widget_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/widget_background"
-    android:clickable="true"
-    android:focusable="true">
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/widget_layout" android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@drawable/widget_background"
+	android:clickable="true" android:focusable="true">
 
-    <ImageView
-        android:id="@+id/widget_image"
-        android:layout_width="@dimen/widget_image_dimensions"
-        android:layout_height="@dimen/widget_image_dimensions"
-        android:layout_centerInParent="true"
-        android:contentDescription="@string/widget_image_content_description"
-        android:src="@mipmap/ic_launcher" />
+	<ImageView android:id="@+id/widget_image"
+		android:layout_width="@dimen/widget_image_dimensions"
+		android:layout_height="@dimen/widget_image_dimensions"
+		android:layout_centerInParent="true"
+		android:contentDescription="@string/widget_image_content_description"
+		android:src="@mipmap/ic_launcher" />
 
-    <TextView
-        android:id="@+id/widget_image_label"
-        style="@style/WidgetTextViewStyle"
-        android:layout_above="@id/widget_image"
-        android:layout_marginBottom="@dimen/margin_list_item"
-        android:text="@string/widget_photo_of_the_day"
-        android:textColor="@color/colorTextIcons" />
+	<TextView android:id="@+id/widget_image_label"
+		style="@style/WidgetTextViewStyle"
+		android:layout_above="@id/widget_image"
+		android:layout_marginBottom="@dimen/margin_list_item"
+		android:text="@string/widget_photo_of_the_day"
+		android:textColor="@color/colorTextIcons" />
 
-    <TextView
-        android:id="@+id/widget_image_title"
-        style="@style/WidgetTextViewStyle"
-        android:layout_below="@id/widget_image"
-        android:layout_margin="@dimen/margin_list_item"
-        android:gravity="center_horizontal"
-        tools:text="Moons near Jupiter" />
+	<TextView android:id="@+id/widget_image_title"
+		style="@style/WidgetTextViewStyle"
+		android:layout_below="@id/widget_image"
+		android:layout_margin="@dimen/margin_list_item"
+		android:gravity="center_horizontal" tools:text="Moons near Jupiter" />
 </RelativeLayout>

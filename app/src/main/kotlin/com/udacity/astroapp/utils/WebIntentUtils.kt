@@ -8,9 +8,7 @@ object WebIntentUtils {
 
     fun openWebsiteFromStringUrl(context: Context, url: String) {
         val uri = Uri.parse(url)
-        val openWebsiteIntent = Intent(Intent.ACTION_VIEW).apply {
-            data = uri
-        }
+        val openWebsiteIntent = Intent(Intent.ACTION_VIEW).apply { data = uri }
         context.startActivity(openWebsiteIntent)
     }
 }

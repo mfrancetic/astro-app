@@ -25,7 +25,5 @@ val viewModelModule = module {
 
     // Observatory ViewModels
     viewModel { ObservatoryViewModel(get()) }
-    viewModel { (observatoryId: String) ->
-        ObservatoryDetailViewModel(get(), observatoryId)
-    }
+    viewModel { (observatoryId: String) -> ObservatoryDetailViewModel(get(), observatoryId) }
 }

@@ -59,4 +59,20 @@ class AsteroidRepository(private val dao: AstroDao, private val queryUtils: Quer
     }
 
     suspend fun getAsteroidCount(): Int = dao.getAsteroidCount()
+
+    suspend fun fetchAsteroidsForDate(date: String): List<Asteroid> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val networkAsteroids =
+                    queryUtils.fetchAsteroidsFromNetwork(startDate = date, endDate = date)
+                val asteroidsWithTimestamp =
+                    networkAsteroids.map { it.copy(cacheTimestamp = System.currentTimeMillis()) }
+
+                dao.insertAsteroids(asteroidsWithTimestamp)
+                asteroidsWithTimestamp
+            } catch (e: Exception) {
+                emptyList()
+            }
+        }
+    }
 }

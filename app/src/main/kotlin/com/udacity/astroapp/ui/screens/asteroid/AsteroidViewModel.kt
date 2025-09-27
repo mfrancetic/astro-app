@@ -88,7 +88,27 @@ class AsteroidViewModel(private val asteroidRepository: AsteroidRepository) :
                 selectedDate = date,
                 showHazardousOnly = state.showHazardousOnly
             )
+
         reduce { state.copy(selectedDate = date, filteredAsteroids = filteredAsteroids) }
+
+        // If no asteroids found for the selected date, try to fetch them
+        if (filteredAsteroids.isEmpty() && date.isNotBlank()) {
+            reduce { state.copy(isLoading = true) }
+
+            viewModelScope.launch {
+                try {
+                    asteroidRepository.fetchAsteroidsForDate(date)
+                    reduce { state.copy(isLoading = false) }
+                } catch (e: Exception) {
+                    reduce {
+                        state.copy(
+                            isLoading = false,
+                            error = e.message ?: "Failed to load asteroids for selected date"
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun selectAsteroid(asteroid: Asteroid) = intent {

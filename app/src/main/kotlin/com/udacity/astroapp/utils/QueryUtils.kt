@@ -289,7 +289,7 @@ class QueryUtils {
                 photoTitle = title,
                 photoDescription = description,
                 photoDate = date,
-                photoUrl = if (mediaType == "image") (hdUrl ?: url) else null,
+                photoUrl = if (mediaType == "image") (url ?: hdUrl) else null,
                 photoMediaType = mediaType,
                 cacheTimestamp = System.currentTimeMillis()
             )

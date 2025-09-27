@@ -1,8 +1,10 @@
 package com.udacity.astroapp.ui.screens.photo
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.PhotoRepository
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -15,7 +17,23 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
     override val container = container<PhotoState, PhotoSideEffect>(PhotoState())
 
     init {
+        observePhotos()
         loadPhotos()
+    }
+
+    private fun observePhotos() = intent {
+        viewModelScope.launch {
+            photoRepository.getAllPhotos().collect { photos ->
+                val filteredPhotos = filterByDate(photos, state.selectedDate)
+                reduce {
+                    state.copy(
+                        allPhotos = photos,
+                        photos = filteredPhotos,
+                        selectedPhoto = filteredPhotos.firstOrNull()
+                    )
+                }
+            }
+        }
     }
 
     fun handleAction(action: PhotoAction) {
@@ -32,22 +50,16 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
     fun loadPhotos() = intent {
         reduce { state.copy(isLoading = true, error = null) }
 
-        try {
-            photoRepository.getAllPhotos().collect { photos ->
-                val filteredPhotos = filterByDate(photos, state.selectedDate)
+        viewModelScope.launch {
+            try {
+                photoRepository.getPhotoByDate(state.selectedDate, forceRefresh = true)
+                reduce { state.copy(isLoading = false) }
+            } catch (e: Exception) {
                 reduce {
-                    state.copy(
-                        isLoading = false,
-                        photos = filteredPhotos,
-                        allPhotos = photos,
-                        selectedPhoto = filteredPhotos.firstOrNull(),
-                        error = null
-                    )
+                    state.copy(isLoading = false, error = e.message ?: "Failed to load photos")
                 }
+                postSideEffect(PhotoSideEffect.ShowError(e.message ?: "Failed to load photos"))
             }
-        } catch (e: Exception) {
-            reduce { state.copy(isLoading = false, error = e.message ?: "Failed to load photos") }
-            postSideEffect(PhotoSideEffect.ShowError(e.message ?: "Failed to load photos"))
         }
     }
 
@@ -59,6 +71,25 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
                 photos = filteredPhotos,
                 selectedPhoto = filteredPhotos.firstOrNull()
             )
+        }
+
+        // If no photos found for the selected date, try to fetch them
+        if (filteredPhotos.isEmpty() && date.isNotBlank()) {
+            reduce { state.copy(isLoading = true) }
+
+            viewModelScope.launch {
+                try {
+                    photoRepository.getPhotoByDate(date, forceRefresh = true)
+                    reduce { state.copy(isLoading = false) }
+                } catch (e: Exception) {
+                    reduce {
+                        state.copy(
+                            isLoading = false,
+                            error = e.message ?: "Failed to load photo for selected date"
+                        )
+                    }
+                }
+            }
         }
     }
 

@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Asteroid
+import com.udacity.astroapp.ui.components.AsteroidFilterCard
 import com.udacity.astroapp.ui.components.DatePickerButton
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import org.koin.androidx.compose.koinViewModel
@@ -63,6 +64,9 @@ fun AsteroidScreen(
         onNavigateToAsteroidDetails = onNavigateToAsteroidDetails,
         onDateSelected = { selectedDate ->
             viewModel.handleAction(AsteroidAction.SelectDate(selectedDate))
+        },
+        onHazardousFilterChange = { showHazardousOnly ->
+            viewModel.handleAction(AsteroidAction.FilterHazardous(showHazardousOnly))
         }
     )
 }
@@ -116,7 +120,8 @@ private fun AsteroidScreenContent(
     state: AsteroidState,
     onRetry: () -> Unit,
     onNavigateToAsteroidDetails: (String) -> Unit,
-    onDateSelected: (String) -> Unit
+    onDateSelected: (String) -> Unit,
+    onHazardousFilterChange: (Boolean) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding))) {
         // Search and filter section
@@ -134,6 +139,14 @@ private fun AsteroidScreenContent(
                 )
             }
         }
+
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
+
+        // Filter section
+        AsteroidFilterCard(
+            hazardousOnly = state.showHazardousOnly,
+            onHazardousOnlyChange = onHazardousFilterChange
+        )
 
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
 
@@ -194,7 +207,8 @@ private fun AsteroidScreenLoadingPreview() {
             state = AsteroidState(isLoading = true),
             onRetry = {},
             onNavigateToAsteroidDetails = {},
-            onDateSelected = {}
+            onDateSelected = {},
+            onHazardousFilterChange = {}
         )
     }
 }
@@ -211,7 +225,8 @@ private fun AsteroidScreenErrorPreview() {
                 ),
             onRetry = {},
             onNavigateToAsteroidDetails = {},
-            onDateSelected = {}
+            onDateSelected = {},
+            onHazardousFilterChange = {}
         )
     }
 }
@@ -230,7 +245,63 @@ private fun AsteroidScreenEmptyPreview() {
                 ),
             onRetry = {},
             onNavigateToAsteroidDetails = {},
-            onDateSelected = {}
+            onDateSelected = {},
+            onHazardousFilterChange = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AsteroidScreenHazardousFilterPreview() {
+    AstroAppTheme {
+        AsteroidScreenContent(
+            state =
+                AsteroidState(
+                    isLoading = false,
+                    showHazardousOnly = true,
+                    asteroids =
+                        listOf(
+                            Asteroid(
+                                asteroidId = 1,
+                                asteroidName = "2024 AA1",
+                                asteroidDiameterMin = 0.5,
+                                asteroidDiameterMax = 1.2,
+                                asteroidApproachDate = "2024-01-15",
+                                asteroidVelocity = "25.8",
+                                asteroidIsHazardous = true,
+                                asteroidUrl = "https://example.com/asteroid1"
+                            ),
+                            Asteroid(
+                                asteroidId = 2,
+                                asteroidName = "2024 BB2",
+                                asteroidDiameterMin = 2.1,
+                                asteroidDiameterMax = 4.5,
+                                asteroidApproachDate = "2024-01-16",
+                                asteroidVelocity = "18.3",
+                                asteroidIsHazardous = false,
+                                asteroidUrl = "https://example.com/asteroid2"
+                            )
+                        ),
+                    filteredAsteroids =
+                        listOf(
+                            Asteroid(
+                                asteroidId = 1,
+                                asteroidName = "2024 AA1",
+                                asteroidDiameterMin = 0.5,
+                                asteroidDiameterMax = 1.2,
+                                asteroidApproachDate = "2024-01-15",
+                                asteroidVelocity = "25.8",
+                                asteroidIsHazardous = true,
+                                asteroidUrl = "https://example.com/asteroid1"
+                            )
+                        ),
+                    error = null
+                ),
+            onRetry = {},
+            onNavigateToAsteroidDetails = {},
+            onDateSelected = {},
+            onHazardousFilterChange = {}
         )
     }
 }
@@ -293,7 +364,8 @@ private fun AsteroidScreenSuccessPreview() {
                 ),
             onRetry = {},
             onNavigateToAsteroidDetails = {},
-            onDateSelected = {}
+            onDateSelected = {},
+            onHazardousFilterChange = {}
         )
     }
 }

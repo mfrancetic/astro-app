@@ -68,7 +68,7 @@ fun YouTubeVideoPlayer(
     val videoId = VideoUtils.extractYouTubeVideoId(videoUrl)
     var youTubePlayerView by remember { mutableStateOf<YouTubePlayerView?>(null) }
     var playbackPosition by rememberSaveable { mutableFloatStateOf(0f) }
-    var player by rememberSaveable { mutableStateOf<YouTubePlayer?>(null) }
+    var player by remember { mutableStateOf<YouTubePlayer?>(null) }
     val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val orientation = remember { mutableIntStateOf(context.resources.configuration.orientation) }

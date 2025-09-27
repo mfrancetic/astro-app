@@ -31,8 +31,8 @@ class QueryUtils {
             "https://maps.googleapis.com/maps/api/place/textsearch/json?query=planetarium&observatory"
         private const val OBSERVATORY_DETAILS_BASE_URL =
             "https://maps.googleapis.com/maps/api/place/details/json?"
-        private const val EARTH_PHOTO_IMAGE_BASE_URL = "https://api.nasa.gov/EPIC/archive/natural/"
-        private const val EARTH_PHOTO_BASE_URL = "https://api.nasa.gov/EPIC/api/natural/date/"
+        private const val EARTH_PHOTO_IMAGE_BASE_URL = "https://epic.gsfc.nasa.gov/archive/natural/"
+        private const val EARTH_PHOTO_BASE_URL = "https://epic.gsfc.nasa.gov/api/natural/date/"
 
         // API Parameters
         private const val API_PARAM = "api_key"
@@ -157,12 +157,7 @@ class QueryUtils {
 
     private fun createEarthPhotoUrl(date: String): URL {
         val baseUri = EARTH_PHOTO_BASE_URL.toUri()
-        val uriBuilder =
-            baseUri
-                .buildUpon()
-                .appendPath(date)
-                .appendQueryParameter(API_PARAM, Secret.nasa_api_key)
-                .build()
+        val uriBuilder = baseUri.buildUpon().appendPath(date).build()
 
         return URL(uriBuilder.toString())
     }
@@ -177,7 +172,6 @@ class QueryUtils {
                 .appendEncodedPath("$formattedDate/")
                 .appendEncodedPath("png/")
                 .appendEncodedPath("$image.png")
-                .appendQueryParameter(API_PARAM, Secret.nasa_api_key)
                 .build()
 
         return URL(uriBuilder.toString())
@@ -380,8 +374,11 @@ class QueryUtils {
                 val image = photoObject.getString("image")
                 val date = photoObject.getString("date")
 
+                // Extract only the date portion (YYYY-MM-DD) for URL construction
+                val dateOnly = date.substring(0, 10)
+
                 // Create the full image URL
-                val imageUrl = createEarthPhotoImageUrl(date, image).toString()
+                val imageUrl = createEarthPhotoImageUrl(dateOnly, image).toString()
 
                 val earthPhoto =
                     EarthPhoto(

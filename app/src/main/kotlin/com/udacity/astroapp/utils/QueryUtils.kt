@@ -282,14 +282,14 @@ class QueryUtils {
             val description = jsonObject.optString("explanation")
             val date = jsonObject.optString("date", requestedDate)
             val url = jsonObject.optString("url")
-            val hdUrl = jsonObject.optString("hdurl", url)
+            val hdUrl = jsonObject.optString("hdurl")
             val mediaType = jsonObject.optString("media_type", "image")
 
             Photo(
                 photoTitle = title,
                 photoDescription = description,
                 photoDate = date,
-                photoUrl = if (mediaType == "image") (url ?: hdUrl) else null,
+                photoUrl = if (mediaType == "image") (url ?: hdUrl) else url,
                 photoMediaType = mediaType,
                 cacheTimestamp = System.currentTimeMillis()
             )

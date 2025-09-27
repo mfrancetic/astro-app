@@ -8,7 +8,7 @@ object VideoUtils {
     fun extractYouTubeVideoId(videoUrl: String): String? {
         val pattern =
             Pattern.compile(
-                "^https?://.*(?:youtu.be/|v/|u/\\w/|embed/|watch\\?v=)([^#&?]*).*$",
+                "^https?://.*(?:youtu\\.be/|v/|u/\\w/|embed/|watch\\?v=)([^#&?]+).*$",
                 Pattern.CASE_INSENSITIVE
             )
         val matcher = pattern.matcher(videoUrl)
@@ -17,12 +17,6 @@ object VideoUtils {
         } else {
             null
         }
-    }
-
-    /** Checks if a URL is likely a YouTube video that might not be playable */
-    fun isUnplayableVideo(photoUrl: String): Boolean {
-        return photoUrl.contains("youtube.com") &&
-            (photoUrl.contains("playlist") || photoUrl.contains("channel"))
     }
 
     /** Checks if the media type indicates video content */

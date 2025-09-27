@@ -1,17 +1,35 @@
 package com.udacity.astroapp.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.VolumeOff
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Fullscreen
 import androidx.compose.material.icons.filled.FullscreenExit
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.VolumeOff
-import androidx.compose.material.icons.filled.VolumeUp
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,7 +50,6 @@ import com.udacity.astroapp.utils.VideoUtils
 @Composable
 fun YouTubeVideoPlayer(
     videoUrl: String,
-    title: String,
     modifier: Modifier = Modifier,
     showControls: Boolean = true,
     onFullscreenClick: () -> Unit = {},
@@ -40,32 +57,38 @@ fun YouTubeVideoPlayer(
 ) {
     val videoId = VideoUtils.extractYouTubeVideoId(videoUrl)
     var playerState by remember { mutableStateOf(PlayerConstants.PlayerState.UNSTARTED) }
-    var youTubePlayer by remember { mutableStateOf<YouTubePlayer?>(null) }
+    var player by remember { mutableStateOf<YouTubePlayer?>(null) }
+    var youTubePlayerView by remember { mutableStateOf<YouTubePlayerView?>(null) }
 
-    if (videoId != null && !VideoUtils.isUnplayableVideo(videoUrl)) {
+    if (videoId != null) {
         Box(modifier = modifier) {
             AndroidView(
                 factory = { context ->
                     YouTubePlayerView(context).apply {
+                        youTubePlayerView = this
                         addYouTubePlayerListener(
                             object : AbstractYouTubePlayerListener() {
-                                override fun onReady(player: YouTubePlayer) {
-                                    youTubePlayer = player
-                                    player.cueVideo(videoId, 0f)
+                                override fun onReady(youTubePlayer: YouTubePlayer) {
+                                    player = youTubePlayer
+                                    try {
+                                        youTubePlayer.loadVideo(videoId, 0f)
+                                    } catch (e: Exception) {
+                                        onError("Failed to load video: ${e.message}")
+                                    }
                                 }
 
                                 override fun onStateChange(
-                                    player: YouTubePlayer,
+                                    youTubePlayer: YouTubePlayer,
                                     state: PlayerConstants.PlayerState
                                 ) {
                                     playerState = state
                                 }
 
                                 override fun onError(
-                                    player: YouTubePlayer,
+                                    youTubePlayer: YouTubePlayer,
                                     error: PlayerConstants.PlayerError
                                 ) {
-                                    onError(error.name)
+                                    onError("YouTube Player Error: ${error.name}")
                                 }
                             }
                         )
@@ -74,15 +97,28 @@ fun YouTubeVideoPlayer(
                 modifier = Modifier.fillMaxSize()
             )
 
+            // Lifecycle management for the YouTube player
+            DisposableEffect(videoId) {
+                onDispose {
+                    youTubePlayerView?.release()
+                    player = null
+                }
+            }
+
             if (showControls) {
                 VideoControls(
                     playerState = playerState,
                     onPlayPause = {
-                        youTubePlayer?.let { player ->
-                            when (playerState) {
-                                PlayerConstants.PlayerState.PLAYING -> player.pause()
-                                PlayerConstants.PlayerState.PAUSED -> player.play()
-                                else -> player.play()
+                        player?.let { youTubePlayer ->
+                            try {
+                                when (playerState) {
+                                    PlayerConstants.PlayerState.PLAYING -> youTubePlayer.pause()
+                                    PlayerConstants.PlayerState.PAUSED -> youTubePlayer.play()
+                                    PlayerConstants.PlayerState.ENDED -> youTubePlayer.seekTo(0f)
+                                    else -> youTubePlayer.play()
+                                }
+                            } catch (e: Exception) {
+                                onError("Player control error: ${e.message}")
                             }
                         }
                     },
@@ -151,7 +187,9 @@ fun VideoControls(
                     .background(Color.White.copy(alpha = 0.9f))
         ) {
             Icon(
-                imageVector = if (isMuted) Icons.Default.VolumeOff else Icons.Default.VolumeUp,
+                imageVector =
+                    if (isMuted) Icons.AutoMirrored.Filled.VolumeOff
+                    else Icons.AutoMirrored.Filled.VolumeUp,
                 contentDescription =
                     if (isMuted) stringResource(R.string.unmute_video)
                     else stringResource(R.string.mute_video),
@@ -212,7 +250,7 @@ fun VideoErrorContent(errorMessage: String, modifier: Modifier = Modifier) {
 fun FullscreenVideoDialog(videoUrl: String, onDismiss: () -> Unit) {
     val videoId = VideoUtils.extractYouTubeVideoId(videoUrl)
     var playerState by remember { mutableStateOf(PlayerConstants.PlayerState.UNSTARTED) }
-    var youTubePlayer by remember { mutableStateOf<YouTubePlayer?>(null) }
+    var player by remember { mutableStateOf<YouTubePlayer?>(null) }
     var isMuted by remember { mutableStateOf(false) }
 
     Dialog(
@@ -232,20 +270,20 @@ fun FullscreenVideoDialog(videoUrl: String, onDismiss: () -> Unit) {
                             YouTubePlayerView(context).apply {
                                 addYouTubePlayerListener(
                                     object : AbstractYouTubePlayerListener() {
-                                        override fun onReady(player: YouTubePlayer) {
-                                            youTubePlayer = player
-                                            player.loadVideo(videoId, 0f)
+                                        override fun onReady(youTubePlayer: YouTubePlayer) {
+                                            player = youTubePlayer
+                                            youTubePlayer.loadVideo(videoId, 0f)
                                         }
 
                                         override fun onStateChange(
-                                            player: YouTubePlayer,
+                                            youTubePlayer: YouTubePlayer,
                                             state: PlayerConstants.PlayerState
                                         ) {
                                             playerState = state
                                         }
 
                                         override fun onError(
-                                            player: YouTubePlayer,
+                                            youTubePlayer: YouTubePlayer,
                                             error: PlayerConstants.PlayerError
                                         ) {
                                             onDismiss()
@@ -260,20 +298,32 @@ fun FullscreenVideoDialog(videoUrl: String, onDismiss: () -> Unit) {
                     VideoControls(
                         playerState = playerState,
                         onPlayPause = {
-                            youTubePlayer?.let { player ->
-                                when (playerState) {
-                                    PlayerConstants.PlayerState.PLAYING -> player.pause()
-                                    PlayerConstants.PlayerState.PAUSED -> player.play()
-                                    else -> player.play()
+                            player?.let { youTubePlayer ->
+                                try {
+                                    when (playerState) {
+                                        PlayerConstants.PlayerState.PLAYING -> youTubePlayer.pause()
+                                        PlayerConstants.PlayerState.PAUSED -> youTubePlayer.play()
+                                        PlayerConstants.PlayerState.ENDED ->
+                                            youTubePlayer.seekTo(0f)
+                                        else -> youTubePlayer.play()
+                                    }
+                                } catch (e: Exception) {
+                                    // If there's an error, just dismiss the dialog
+                                    onDismiss()
                                 }
                             }
                         },
                         onFullscreen = onDismiss,
                         isFullscreen = true,
                         onVolumeToggle = {
-                            youTubePlayer?.let { player ->
-                                isMuted = !isMuted
-                                if (isMuted) player.mute() else player.unMute()
+                            player?.let { youTubePlayer ->
+                                try {
+                                    isMuted = !isMuted
+                                    if (isMuted) youTubePlayer.mute() else youTubePlayer.unMute()
+                                } catch (e: Exception) {
+                                    // If mute/unmute fails, just reset the state
+                                    isMuted = !isMuted
+                                }
                             }
                         },
                         isMuted = isMuted,

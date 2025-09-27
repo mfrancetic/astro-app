@@ -87,7 +87,7 @@ private fun PhotoContent(
                 )
             }
 
-            photo.photoDate?.let {
+            photo.photoDate.let {
                 Text(
                     text = it,
                     style = MaterialTheme.typography.bodyMedium,
@@ -270,7 +270,6 @@ private fun VideoContent(
 ) {
     YouTubeVideoPlayer(
         videoUrl = videoUrl,
-        title = title,
         modifier = modifier,
         showControls = true,
         onFullscreenClick = onFullscreenClick,

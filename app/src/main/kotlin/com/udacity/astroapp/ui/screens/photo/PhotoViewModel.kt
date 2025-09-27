@@ -3,7 +3,6 @@ package com.udacity.astroapp.ui.screens.photo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.PhotoRepository
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -79,8 +78,14 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
 
             viewModelScope.launch {
                 try {
-                    photoRepository.getPhotoByDate(date, forceRefresh = true)
-                    reduce { state.copy(isLoading = false) }
+                    val photo = photoRepository.getPhotoByDate(date, forceRefresh = true)
+                    reduce {
+                        state.copy(
+                            isLoading = false,
+                            photos = photo?.let { listOf(photo) } ?: emptyList(),
+                            selectedPhoto = photo
+                        )
+                    }
                 } catch (e: Exception) {
                     reduce {
                         state.copy(

@@ -1,8 +1,10 @@
 package com.udacity.astroapp.ui.screens.earthphoto
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.EarthPhotoRepository
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
 import org.orbitmvi.orbit.syntax.simple.postSideEffect
@@ -15,7 +17,23 @@ class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository
     override val container = container<EarthPhotoState, EarthPhotoSideEffect>(EarthPhotoState())
 
     init {
+        observeEarthPhotos()
         loadPhotos()
+    }
+
+    private fun observeEarthPhotos() = intent {
+        viewModelScope.launch {
+            earthPhotoRepository.getAllEarthPhotos().collect { earthPhotos ->
+                val filteredPhotos = filterByDate(earthPhotos, state.selectedDate)
+                reduce {
+                    state.copy(
+                        allEarthPhotos = earthPhotos,
+                        earthPhotos = filteredPhotos,
+                        selectedPhoto = filteredPhotos.firstOrNull()
+                    )
+                }
+            }
+        }
     }
 
     fun handleAction(action: EarthPhotoAction) {
@@ -31,26 +49,21 @@ class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository
     fun loadPhotos() = intent {
         reduce { state.copy(isLoading = true, error = null) }
 
-        try {
-            earthPhotoRepository.getAllEarthPhotos().collect { earthPhotos ->
-                val filteredPhotos = filterByDate(earthPhotos, state.selectedDate)
+        viewModelScope.launch {
+            try {
+                earthPhotoRepository.getEarthPhotosByDate(state.selectedDate, forceRefresh = true)
+                reduce { state.copy(isLoading = false) }
+            } catch (e: Exception) {
                 reduce {
                     state.copy(
                         isLoading = false,
-                        allEarthPhotos = earthPhotos,
-                        earthPhotos = filteredPhotos,
-                        selectedPhoto = filteredPhotos.firstOrNull(),
-                        error = null
+                        error = e.message ?: "Failed to load Earth photos"
                     )
                 }
+                postSideEffect(
+                    EarthPhotoSideEffect.ShowError(e.message ?: "Failed to load Earth photos")
+                )
             }
-        } catch (e: Exception) {
-            reduce {
-                state.copy(isLoading = false, error = e.message ?: "Failed to load Earth photos")
-            }
-            postSideEffect(
-                EarthPhotoSideEffect.ShowError(e.message ?: "Failed to load Earth photos")
-            )
         }
     }
 
@@ -62,6 +75,25 @@ class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository
                 earthPhotos = filteredPhotos,
                 selectedPhoto = filteredPhotos.firstOrNull()
             )
+        }
+
+        // If no photos found for the selected date, try to fetch them
+        if (filteredPhotos.isEmpty() && date.isNotBlank()) {
+            reduce { state.copy(isLoading = true) }
+
+            viewModelScope.launch {
+                try {
+                    earthPhotoRepository.getEarthPhotosByDate(date, forceRefresh = true)
+                    reduce { state.copy(isLoading = false) }
+                } catch (e: Exception) {
+                    reduce {
+                        state.copy(
+                            isLoading = false,
+                            error = e.message ?: "Failed to load Earth photos for selected date"
+                        )
+                    }
+                }
+            }
         }
     }
 

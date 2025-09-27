@@ -14,11 +14,7 @@ object PhotoSharingUtils {
             photo.photoTitle?.let { title -> append(": $title") }
             appendLine()
 
-            photo.photoDescription?.let { description -> appendLine(description) }
-
             photo.photoUrl?.let { url -> appendLine(url) }
-
-            append("#NASA #APOD #Astronomy")
         }
 
         shareContent(context, shareText, "Share Astronomy Photo")
@@ -27,9 +23,7 @@ object PhotoSharingUtils {
     fun shareEarthPhoto(context: Context, earthPhoto: EarthPhoto) {
         val shareText = buildString {
             append("Earth from space captured on ${earthPhoto.earthPhotoDateTime}")
-            appendLine()
             appendLine(earthPhoto.earthPhotoUrl)
-            append("#NASA #EPIC #Earth")
         }
 
         shareContent(context, shareText, "Share Earth Photo")
@@ -37,21 +31,8 @@ object PhotoSharingUtils {
 
     fun shareMarsPhoto(context: Context, marsPhoto: MarsPhoto) {
         val shareText = buildString {
-            append("Mars photo")
-            marsPhoto.rover?.roverName?.let { roverName -> append(" from $roverName rover") }
-            marsPhoto.camera?.cameraName?.let { cameraName -> append(" ($cameraName camera)") }
-            appendLine()
-
-            marsPhoto.sol?.let { sol ->
-                append("Captured on Sol $sol")
-                marsPhoto.earthDate?.let { earthDate -> append(" ($earthDate)") }
-                appendLine()
-            }
-
+            append("Mars photo captured on ${marsPhoto.earthDate}")
             marsPhoto.imageUrl?.let { url -> appendLine(url) }
-
-            append("#NASA #Mars")
-            marsPhoto.rover?.roverName?.let { roverName -> append(" #$roverName") }
         }
 
         shareContent(context, shareText, "Share Mars Photo")

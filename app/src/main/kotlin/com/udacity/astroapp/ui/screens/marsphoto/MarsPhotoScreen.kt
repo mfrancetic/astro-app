@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +41,7 @@ import com.udacity.astroapp.models.Rover
 import com.udacity.astroapp.ui.components.DatePickerButton
 import com.udacity.astroapp.ui.components.FullScreenPhotoDialog
 import com.udacity.astroapp.ui.theme.AstroAppTheme
+import com.udacity.astroapp.utils.PhotoSharingUtils
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import org.koin.androidx.compose.koinViewModel
@@ -57,6 +59,7 @@ private fun String.toLocalDate(): LocalDate = LocalDate.parse(this, dateFormatte
 @Composable
 fun MarsPhotoScreen(viewModel: MarsPhotoViewModel = koinViewModel()) {
     val state by viewModel.collectAsState()
+    val context = LocalContext.current
     var showFullScreenPhoto by remember { mutableStateOf(false) }
     var selectedMarsPhoto by remember { mutableStateOf<MarsPhoto?>(null) }
 
@@ -89,7 +92,9 @@ fun MarsPhotoScreen(viewModel: MarsPhotoViewModel = koinViewModel()) {
                 selectedMarsPhoto = null
             },
             onShare = {
-                // TODO: Implement Mars photo sharing
+                selectedMarsPhoto?.let { marsPhoto ->
+                    PhotoSharingUtils.shareMarsPhoto(context, marsPhoto)
+                }
             }
         )
     }

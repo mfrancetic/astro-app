@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +41,7 @@ import com.udacity.astroapp.models.EarthPhoto
 import com.udacity.astroapp.ui.components.DatePickerButton
 import com.udacity.astroapp.ui.components.FullScreenPhotoDialog
 import com.udacity.astroapp.ui.theme.AstroAppTheme
+import com.udacity.astroapp.utils.PhotoSharingUtils
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -48,6 +50,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun EarthPhotoScreen(viewModel: EarthPhotoViewModel = koinViewModel()) {
     val state by viewModel.collectAsState()
+    val context = LocalContext.current
     var showFullScreenPhoto by remember { mutableStateOf(false) }
     var selectedEarthPhoto by remember { mutableStateOf<EarthPhoto?>(null) }
 
@@ -87,7 +90,9 @@ fun EarthPhotoScreen(viewModel: EarthPhotoViewModel = koinViewModel()) {
                 selectedEarthPhoto = null
             },
             onShare = {
-                // TODO: Implement Earth photo sharing
+                selectedEarthPhoto?.let { earthPhoto ->
+                    PhotoSharingUtils.shareEarthPhoto(context, earthPhoto)
+                }
             }
         )
     }

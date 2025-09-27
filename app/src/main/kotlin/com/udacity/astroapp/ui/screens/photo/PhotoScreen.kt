@@ -268,13 +268,52 @@ private fun VideoContent(
     onFullscreenClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    YouTubeVideoPlayer(
-        videoUrl = videoUrl,
-        modifier = modifier,
-        showControls = true,
-        onFullscreenClick = onFullscreenClick,
-        onError = { /* Handle error if needed */}
-    )
+    var hasError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+
+    if (hasError) {
+        Card(
+            modifier = modifier,
+            colors =
+                CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
+        ) {
+            Column(
+                modifier = Modifier.padding(dimensionResource(R.dimen.card_padding)),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Video Error",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onErrorContainer
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
+                Text(
+                    text = errorMessage,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onErrorContainer
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
+                Button(
+                    onClick = {
+                        hasError = false
+                        errorMessage = ""
+                    }
+                ) {
+                    Text("Retry")
+                }
+            }
+        }
+    } else {
+        YouTubeVideoPlayer(
+            videoUrl = videoUrl,
+            modifier = modifier,
+            onFullscreenClick = onFullscreenClick,
+            onError = { error ->
+                hasError = true
+                errorMessage = error
+            }
+        )
+    }
 }
 
 // Preview functions

@@ -1,5 +1,6 @@
 package com.udacity.astroapp.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,19 +27,28 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -51,83 +61,78 @@ import com.udacity.astroapp.utils.VideoUtils
 fun YouTubeVideoPlayer(
     videoUrl: String,
     modifier: Modifier = Modifier,
-    showControls: Boolean = true,
     onFullscreenClick: () -> Unit = {},
     onError: (String) -> Unit = {}
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
     val videoId = VideoUtils.extractYouTubeVideoId(videoUrl)
-    var playerState by remember { mutableStateOf(PlayerConstants.PlayerState.UNSTARTED) }
-    var player by remember { mutableStateOf<YouTubePlayer?>(null) }
     var youTubePlayerView by remember { mutableStateOf<YouTubePlayerView?>(null) }
+    var playbackPosition by rememberSaveable { mutableFloatStateOf(0f) }
+    var player by rememberSaveable { mutableStateOf<YouTubePlayer?>(null) }
+    val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val orientation = remember { mutableIntStateOf(context.resources.configuration.orientation) }
+
+    LaunchedEffect(configuration) { orientation.intValue = configuration.orientation }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_PAUSE -> {
+                    player?.pause()
+                }
+                else -> {}
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            youTubePlayerView?.release()
+        }
+    }
 
     if (videoId != null) {
-        Box(modifier = modifier) {
+        Box(contentAlignment = Alignment.Center, modifier = modifier.background(Color.Black)) {
             AndroidView(
+                modifier = Modifier.align(Alignment.Center),
                 factory = { context ->
                     YouTubePlayerView(context).apply {
                         youTubePlayerView = this
+                        lifecycleOwner.lifecycle.addObserver(this)
+
                         addYouTubePlayerListener(
                             object : AbstractYouTubePlayerListener() {
                                 override fun onReady(youTubePlayer: YouTubePlayer) {
                                     player = youTubePlayer
+
                                     try {
-                                        youTubePlayer.loadVideo(videoId, 0f)
+                                        youTubePlayer.loadVideo(videoId, playbackPosition)
                                     } catch (e: Exception) {
+                                        Log.e("YouTubePlayer", "Failed to load video", e)
                                         onError("Failed to load video: ${e.message}")
                                     }
                                 }
 
-                                override fun onStateChange(
+                                override fun onCurrentSecond(
                                     youTubePlayer: YouTubePlayer,
-                                    state: PlayerConstants.PlayerState
+                                    second: Float
                                 ) {
-                                    playerState = state
+                                    playbackPosition = second
                                 }
 
                                 override fun onError(
                                     youTubePlayer: YouTubePlayer,
                                     error: PlayerConstants.PlayerError
                                 ) {
+                                    Log.e("YouTubePlayer", "Player error: ${error.name}")
                                     onError("YouTube Player Error: ${error.name}")
                                 }
                             }
                         )
                     }
-                },
-                modifier = Modifier.fillMaxSize()
-            )
-
-            // Lifecycle management for the YouTube player
-            DisposableEffect(videoId) {
-                onDispose {
-                    youTubePlayerView?.release()
-                    player = null
                 }
-            }
-
-            if (showControls) {
-                VideoControls(
-                    playerState = playerState,
-                    onPlayPause = {
-                        player?.let { youTubePlayer ->
-                            try {
-                                when (playerState) {
-                                    PlayerConstants.PlayerState.PLAYING -> youTubePlayer.pause()
-                                    PlayerConstants.PlayerState.PAUSED -> youTubePlayer.play()
-                                    PlayerConstants.PlayerState.ENDED -> youTubePlayer.seekTo(0f)
-                                    else -> youTubePlayer.play()
-                                }
-                            } catch (e: Exception) {
-                                onError("Player control error: ${e.message}")
-                            }
-                        }
-                    },
-                    onFullscreen = onFullscreenClick,
-                    modifier =
-                        Modifier.align(Alignment.BottomCenter)
-                            .padding(dimensionResource(R.dimen.spacing_small))
-                )
-            }
+            )
         }
     } else {
         VideoErrorContent(
@@ -308,7 +313,11 @@ fun FullscreenVideoDialog(videoUrl: String, onDismiss: () -> Unit) {
                                         else -> youTubePlayer.play()
                                     }
                                 } catch (e: Exception) {
-                                    // If there's an error, just dismiss the dialog
+                                    Log.e(
+                                        "YouTubeVideoPlayer",
+                                        "Error while playing the video with ID $videoId",
+                                        e
+                                    )
                                     onDismiss()
                                 }
                             }
@@ -321,7 +330,11 @@ fun FullscreenVideoDialog(videoUrl: String, onDismiss: () -> Unit) {
                                     isMuted = !isMuted
                                     if (isMuted) youTubePlayer.mute() else youTubePlayer.unMute()
                                 } catch (e: Exception) {
-                                    // If mute/unmute fails, just reset the state
+                                    Log.e(
+                                        "YouTubeVideoPlayer",
+                                        "Error while changing the mute status of the video with ID $videoId",
+                                        e
+                                    )
                                     isMuted = !isMuted
                                 }
                             }

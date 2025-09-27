@@ -63,12 +63,13 @@ class EarthPhotoRepository(private val dao: AstroDao, private val queryUtils: Qu
 
     suspend fun clearOldCache() {
         withContext(Dispatchers.IO) {
-            val expiredTimestamp = System.currentTimeMillis() - Constants.CACHE_DURATION_MILLIS
+            val expiredTimestamp =
+                System.currentTimeMillis() - Constants.EARTH_PHOTO_CACHE_DURATION_MILLIS
             dao.deleteOldEarthPhotos(expiredTimestamp)
         }
     }
 
     private fun isCacheValid(timestamp: Long): Boolean {
-        return System.currentTimeMillis() - timestamp < Constants.CACHE_DURATION_MILLIS
+        return System.currentTimeMillis() - timestamp < Constants.EARTH_PHOTO_CACHE_DURATION_MILLIS
     }
 }

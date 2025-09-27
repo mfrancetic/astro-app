@@ -6,6 +6,7 @@ import com.udacity.astroapp.utils.Constants
 import com.udacity.astroapp.utils.QueryUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
 class AsteroidRepository(private val dao: AstroDao, private val queryUtils: QueryUtils) {
@@ -16,7 +17,7 @@ class AsteroidRepository(private val dao: AstroDao, private val queryUtils: Quer
         return withContext(Dispatchers.IO) {
             val cachedAsteroids =
                 dao.getAsteroidsNewerThan(
-                    System.currentTimeMillis() - Constants.CACHE_DURATION_MILLIS
+                    System.currentTimeMillis() - Constants.ASTEROID_CACHE_DURATION_MILLIS
                 )
 
             if (!forceRefresh && cachedAsteroids.isNotEmpty()) {
@@ -42,18 +43,43 @@ class AsteroidRepository(private val dao: AstroDao, private val queryUtils: Quer
 
     suspend fun getFilteredAsteroids(isHazardous: Boolean? = null): List<Asteroid> {
         return withContext(Dispatchers.IO) {
-            // Since Room doesn't have a direct filtering query, filter in memory for now
-            // In a more complex app, you'd add specific queries to the DAO
-            val allAsteroids = dao.loadAllAsteroids()
-            // This would need to be implemented with proper Flow transformation
-            // For now, returning empty list as placeholder
-            emptyList()
+            try {
+                // Get fresh cached asteroids first
+                val cachedAsteroids =
+                    dao.getAsteroidsNewerThan(
+                        System.currentTimeMillis() - Constants.ASTEROID_CACHE_DURATION_MILLIS
+                    )
+
+                // If no cache, refresh first
+                val asteroids =
+                    if (cachedAsteroids.isEmpty()) {
+                        refreshAsteroids()
+                    } else {
+                        cachedAsteroids
+                    }
+
+                // Apply filtering
+                when (isHazardous) {
+                    true -> asteroids.filter { it.asteroidIsHazardous }
+                    false -> asteroids.filter { !it.asteroidIsHazardous }
+                    null -> asteroids
+                }
+            } catch (e: Exception) {
+                // Fallback to any cached data
+                val allCached = dao.loadAllAsteroids().first()
+                when (isHazardous) {
+                    true -> allCached.filter { it.asteroidIsHazardous }
+                    false -> allCached.filter { !it.asteroidIsHazardous }
+                    null -> allCached
+                }
+            }
         }
     }
 
     suspend fun clearOldCache() {
         withContext(Dispatchers.IO) {
-            val expiredTimestamp = System.currentTimeMillis() - Constants.CACHE_DURATION_MILLIS
+            val expiredTimestamp =
+                System.currentTimeMillis() - Constants.ASTEROID_CACHE_DURATION_MILLIS
             dao.deleteOldAsteroids(expiredTimestamp)
         }
     }

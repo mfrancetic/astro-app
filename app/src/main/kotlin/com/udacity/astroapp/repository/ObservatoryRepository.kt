@@ -22,7 +22,7 @@ class ObservatoryRepository(private val dao: AstroDao, private val queryUtils: Q
         return withContext(Dispatchers.IO) {
             val cachedObservatories =
                 dao.getObservatoriesNewerThan(
-                    System.currentTimeMillis() - Constants.CACHE_DURATION_MILLIS
+                    System.currentTimeMillis() - Constants.OBSERVATORY_CACHE_DURATION_MILLIS
                 )
 
             if (!forceRefresh && cachedObservatories.isNotEmpty()) {
@@ -72,12 +72,53 @@ class ObservatoryRepository(private val dao: AstroDao, private val queryUtils: Q
         radiusKm: Double = 50.0
     ): List<Observatory> {
         return withContext(Dispatchers.IO) {
-            // This would ideally be done with a spatial query in the database
-            // For now, filter in memory (not efficient for large datasets)
-            val allObservatories = getAllObservatories()
-            // Would need proper implementation with Flow transformation
-            emptyList()
+            try {
+                // First ensure we have fresh observatories for this location
+                val freshObservatories = refreshObservatories(latitude, longitude)
+
+                // Filter by distance
+                freshObservatories.filter { observatory ->
+                    val distance =
+                        calculateDistance(
+                            latitude,
+                            longitude,
+                            observatory.observatoryLatitude,
+                            observatory.observatoryLongitude
+                        )
+                    distance <= radiusKm
+                }
+            } catch (e: Exception) {
+                // Fallback to cached observatories
+                val allCached =
+                    dao.getObservatoriesNewerThan(
+                        System.currentTimeMillis() - Constants.OBSERVATORY_CACHE_DURATION_MILLIS
+                    )
+                allCached.filter { observatory ->
+                    val distance =
+                        calculateDistance(
+                            latitude,
+                            longitude,
+                            observatory.observatoryLatitude,
+                            observatory.observatoryLongitude
+                        )
+                    distance <= radiusKm
+                }
+            }
         }
+    }
+
+    private fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val earthRadius = 6371.0 // Earth's radius in kilometers
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+        val a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(Math.toRadians(lat1)) *
+                    Math.cos(Math.toRadians(lat2)) *
+                    Math.sin(dLon / 2) *
+                    Math.sin(dLon / 2)
+        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+        return earthRadius * c
     }
 
     suspend fun getObservatoryCount(): Int = dao.getObservatoryCount()

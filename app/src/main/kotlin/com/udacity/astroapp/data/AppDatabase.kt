@@ -27,23 +27,59 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
         private const val LOG_TAG = "AppDatabase"
         private const val DATABASE_NAME = "astroAppDatabase"
-        @Volatile private var databaseInstance: AppDatabase? = null
+        @Volatile var databaseInstance: AppDatabase? = null
 
         fun getInstance(context: Context): AppDatabase {
             return databaseInstance
                 ?: synchronized(this) {
-                    Log.d(LOG_TAG, "Creating a new database instance")
-                    val instance =
-                        Room.databaseBuilder(
-                                context.applicationContext,
-                                AppDatabase::class.java,
-                                DATABASE_NAME
-                            )
-                            .fallbackToDestructiveMigration()
-                            .build()
-                    databaseInstance = instance
-                    Log.d(LOG_TAG, "Getting the database instance")
-                    instance
+                    databaseInstance
+                        ?: try {
+                            Log.d(LOG_TAG, "Creating a new database instance")
+                            val instance =
+                                Room.databaseBuilder(
+                                        context.applicationContext,
+                                        AppDatabase::class.java,
+                                        DATABASE_NAME
+                                    )
+                                    .fallbackToDestructiveMigration()
+                                    .setJournalMode(
+                                        RoomDatabase.JournalMode.TRUNCATE
+                                    ) // Better for corruption recovery
+                                    .build()
+                            databaseInstance = instance
+                            Log.d(LOG_TAG, "Database instance created successfully")
+                            instance
+                        } catch (e: Exception) {
+                            Log.e(LOG_TAG, "Failed to create database instance", e)
+
+                            // Attempt corruption recovery
+                            try {
+                                val databasePath = context.getDatabasePath(DATABASE_NAME)
+                                if (databasePath.exists()) {
+                                    Log.w(LOG_TAG, "Attempting to delete corrupted database")
+                                    databasePath.delete()
+
+                                    // Try again after cleanup
+                                    val instance =
+                                        Room.databaseBuilder(
+                                                context.applicationContext,
+                                                AppDatabase::class.java,
+                                                DATABASE_NAME
+                                            )
+                                            .fallbackToDestructiveMigration()
+                                            .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
+                                            .build()
+                                    databaseInstance = instance
+                                    Log.i(LOG_TAG, "Database recovered after corruption")
+                                    instance
+                                } else {
+                                    throw e
+                                }
+                            } catch (recoveryException: Exception) {
+                                Log.e(LOG_TAG, "Database recovery failed", recoveryException)
+                                throw recoveryException
+                            }
+                        }
                 }
         }
     }

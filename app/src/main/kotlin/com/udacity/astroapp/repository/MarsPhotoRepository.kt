@@ -66,12 +66,13 @@ class MarsPhotoRepository(
 
     suspend fun clearOldCache() {
         withContext(Dispatchers.IO) {
-            val expiredTimestamp = System.currentTimeMillis() - Constants.CACHE_DURATION_MILLIS
+            val expiredTimestamp =
+                System.currentTimeMillis() - Constants.MARS_PHOTO_CACHE_DURATION_MILLIS
             dao.deleteOldMarsPhotos(expiredTimestamp)
         }
     }
 
     private fun isCacheValid(timestamp: Long): Boolean {
-        return System.currentTimeMillis() - timestamp < Constants.CACHE_DURATION_MILLIS
+        return System.currentTimeMillis() - timestamp < Constants.MARS_PHOTO_CACHE_DURATION_MILLIS
     }
 }

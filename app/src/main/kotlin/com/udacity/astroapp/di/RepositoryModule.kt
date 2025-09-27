@@ -8,7 +8,7 @@ import com.udacity.astroapp.repository.PhotoRepository
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single { PhotoRepository(get(), get()) }
+    single { PhotoRepository(get(), get(), get()) }
     single { AsteroidRepository(get(), get()) }
     single { EarthPhotoRepository(get(), get()) }
     single { MarsPhotoRepository(get(), get()) }

@@ -19,7 +19,37 @@ object Constants {
 
     const val DEVELOPER_WEBSITE_URL = "https://mfrancetic.gitlab.io/cv-website/"
 
-    // Cache durations
-    const val CACHE_DURATION_HOURS = 1L
-    const val CACHE_DURATION_MILLIS = CACHE_DURATION_HOURS * 60 * 60 * 1000L
+    // Database cache durations (content-specific)
+    private const val HOUR_IN_MILLIS = 60 * 60 * 1000L
+
+    const val PHOTO_CACHE_DURATION_HOURS = 6L // Daily photos change once per day
+    const val ASTEROID_CACHE_DURATION_HOURS = 2L // More dynamic data
+    const val EARTH_PHOTO_CACHE_DURATION_HOURS = 4L // Updated several times per day
+    const val MARS_PHOTO_CACHE_DURATION_HOURS = 12L // Archive data, changes rarely
+    const val OBSERVATORY_CACHE_DURATION_HOURS = 24L // Static location data
+
+    // Computed cache durations in milliseconds
+    val PHOTO_CACHE_DURATION_MILLIS
+        get() = PHOTO_CACHE_DURATION_HOURS * HOUR_IN_MILLIS
+
+    val ASTEROID_CACHE_DURATION_MILLIS
+        get() = ASTEROID_CACHE_DURATION_HOURS * HOUR_IN_MILLIS
+
+    val EARTH_PHOTO_CACHE_DURATION_MILLIS
+        get() = EARTH_PHOTO_CACHE_DURATION_HOURS * HOUR_IN_MILLIS
+
+    val MARS_PHOTO_CACHE_DURATION_MILLIS
+        get() = MARS_PHOTO_CACHE_DURATION_HOURS * HOUR_IN_MILLIS
+
+    val OBSERVATORY_CACHE_DURATION_MILLIS
+        get() = OBSERVATORY_CACHE_DURATION_HOURS * HOUR_IN_MILLIS
+
+    // HTTP cache settings
+    const val HTTP_CACHE_SIZE = 50L * 1024 * 1024 // 50MB HTTP cache
+    const val HTTP_CACHE_MAX_AGE_HOURS = 1
+    const val HTTP_CACHE_MAX_STALE_DAYS = 7
+
+    // Image cache settings
+    const val IMAGE_MEMORY_CACHE_SIZE_PERCENT = 0.25 // 25% of available memory
+    const val IMAGE_DISK_CACHE_SIZE = 100L * 1024 * 1024 // 100MB disk cache
 }

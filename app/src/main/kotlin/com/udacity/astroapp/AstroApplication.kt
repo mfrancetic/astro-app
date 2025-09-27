@@ -1,6 +1,7 @@
 package com.udacity.astroapp
 
 import android.app.Application
+import com.udacity.astroapp.di.cacheModule
 import com.udacity.astroapp.di.databaseModule
 import com.udacity.astroapp.di.imageModule
 import com.udacity.astroapp.di.networkModule
@@ -24,6 +25,7 @@ class AstroApplication : Application() {
                 utilModule,
                 databaseModule,
                 networkModule,
+                cacheModule,
                 repositoryModule,
                 viewModelModule,
                 imageModule

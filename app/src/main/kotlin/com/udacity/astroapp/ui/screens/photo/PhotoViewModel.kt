@@ -39,7 +39,6 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
         when (action) {
             is PhotoAction.LoadPhotos -> loadPhotos()
             is PhotoAction.SelectDate -> selectDate(action.date)
-            is PhotoAction.SelectPhoto -> selectPhoto(action.photo)
             is PhotoAction.SharePhoto -> sharePhoto(action.photo)
             is PhotoAction.ShowDatePicker -> showDatePicker()
             is PhotoAction.Retry -> retry()
@@ -96,11 +95,6 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
                 }
             }
         }
-    }
-
-    private fun selectPhoto(photo: com.udacity.astroapp.models.Photo) = intent {
-        reduce { state.copy(selectedPhoto = photo) }
-        postSideEffect(PhotoSideEffect.NavigateToFullScreen(photo))
     }
 
     private fun sharePhoto(photo: com.udacity.astroapp.models.Photo) = intent {

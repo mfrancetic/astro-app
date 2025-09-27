@@ -22,6 +22,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -35,6 +38,7 @@ import com.udacity.astroapp.models.Camera
 import com.udacity.astroapp.models.MarsPhoto
 import com.udacity.astroapp.models.Rover
 import com.udacity.astroapp.ui.components.DatePickerButton
+import com.udacity.astroapp.ui.components.FullScreenPhotoDialog
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -51,11 +55,10 @@ private fun String.toLocalDate(): LocalDate = LocalDate.parse(this, dateFormatte
 
 @Destination
 @Composable
-fun MarsPhotoScreen(
-    onNavigateToFullScreen: (String) -> Unit = {},
-    viewModel: MarsPhotoViewModel = koinViewModel()
-) {
+fun MarsPhotoScreen(viewModel: MarsPhotoViewModel = koinViewModel()) {
     val state by viewModel.collectAsState()
+    var showFullScreenPhoto by remember { mutableStateOf(false) }
+    var selectedMarsPhoto by remember { mutableStateOf<MarsPhoto?>(null) }
 
     // Handle side effects
     viewModel.collectSideEffect { sideEffect ->
@@ -69,16 +72,34 @@ fun MarsPhotoScreen(
     MarsPhotoScreenContent(
         state = state,
         onRetry = { viewModel.onRefresh() },
-        onNavigateToFullScreen = onNavigateToFullScreen,
+        onFullScreenPhoto = { marsPhoto ->
+            selectedMarsPhoto = marsPhoto
+            showFullScreenPhoto = true
+        },
         onDateSelected = { selectedDate -> viewModel.onDateSelected(selectedDate) }
     )
+
+    // Full screen photo dialog
+    if (showFullScreenPhoto && selectedMarsPhoto != null) {
+        FullScreenPhotoDialog(
+            imageUrl = selectedMarsPhoto?.imageUrl,
+            contentDescription = "Mars photo from ${selectedMarsPhoto?.rover?.roverName} rover",
+            onDismiss = {
+                showFullScreenPhoto = false
+                selectedMarsPhoto = null
+            },
+            onShare = {
+                // TODO: Implement Mars photo sharing
+            }
+        )
+    }
 }
 
 @Composable
 private fun MarsPhotoScreenContent(
     state: MarsPhotoState,
     onRetry: () -> Unit,
-    onNavigateToFullScreen: (String) -> Unit,
+    onFullScreenPhoto: (MarsPhoto) -> Unit,
     onDateSelected: (LocalDate) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
@@ -135,7 +156,7 @@ private fun MarsPhotoScreenContent(
                     items(state.filteredPhotos) { marsPhoto ->
                         MarsPhotoItem(
                             marsPhoto = marsPhoto,
-                            onClick = { marsPhoto.imageUrl?.let { onNavigateToFullScreen(it) } }
+                            onClick = { onFullScreenPhoto(marsPhoto) }
                         )
                     }
                 }
@@ -199,7 +220,7 @@ private fun MarsPhotoScreenLoadingPreview() {
         MarsPhotoScreenContent(
             state = MarsPhotoState(isLoading = true),
             onRetry = {},
-            onNavigateToFullScreen = {},
+            onFullScreenPhoto = {},
             onDateSelected = {}
         )
     }
@@ -216,7 +237,7 @@ private fun MarsPhotoScreenErrorPreview() {
                     error = "Failed to load Mars photos. Please check your internet connection."
                 ),
             onRetry = {},
-            onNavigateToFullScreen = {},
+            onFullScreenPhoto = {},
             onDateSelected = {}
         )
     }
@@ -229,7 +250,7 @@ private fun MarsPhotoScreenEmptyPreview() {
         MarsPhotoScreenContent(
             state = MarsPhotoState(isLoading = false, filteredPhotos = emptyList(), error = null),
             onRetry = {},
-            onNavigateToFullScreen = {},
+            onFullScreenPhoto = {},
             onDateSelected = {}
         )
     }
@@ -312,7 +333,7 @@ private fun MarsPhotoScreenSuccessPreview() {
                     error = null
                 ),
             onRetry = {},
-            onNavigateToFullScreen = {},
+            onFullScreenPhoto = {},
             onDateSelected = {}
         )
     }

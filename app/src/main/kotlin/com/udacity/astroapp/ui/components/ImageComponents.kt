@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrokenImage
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +20,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.request.ImageRequest
@@ -248,6 +252,92 @@ fun FullScreenImageViewer(
                 color = Color.White,
                 style = MaterialTheme.typography.bodyLarge
             )
+        }
+    }
+}
+
+@Composable
+fun FullScreenPhotoDialog(
+    imageUrl: String?,
+    contentDescription: String?,
+    onDismiss: () -> Unit,
+    onShare: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties =
+            DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)
+    ) {
+        Box(modifier = modifier.fillMaxSize().background(Color.Black)) {
+            // Main image content
+            if (!imageUrl.isNullOrBlank()) {
+                AsyncImage(
+                    model =
+                        ImageRequest.Builder(LocalContext.current)
+                            .data(imageUrl)
+                            .crossfade(true)
+                            .build(),
+                    contentDescription = contentDescription,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxSize().clickable { onDismiss() }
+                )
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize().clickable { onDismiss() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            Icons.Default.BrokenImage,
+                            contentDescription = stringResource(R.string.failed_to_load_image),
+                            tint = Color.White,
+                            modifier =
+                                Modifier.size(
+                                    dimensionResource(R.dimen.image_placeholder_icon_size)
+                                )
+                        )
+                        Spacer(
+                            modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium))
+                        )
+                        Text(
+                            text = stringResource(R.string.image_not_available),
+                            color = Color.White,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+            }
+
+            // Share button
+            IconButton(
+                onClick = onShare,
+                modifier =
+                    Modifier.align(Alignment.TopStart)
+                        .padding(dimensionResource(R.dimen.spacing_medium))
+                        .background(Color.Black.copy(alpha = 0.5f), shape = RoundedCornerShape(50))
+            ) {
+                Icon(
+                    Icons.Default.Share,
+                    contentDescription = stringResource(R.string.share),
+                    tint = Color.White
+                )
+            }
+
+            // Close button
+            IconButton(
+                onClick = onDismiss,
+                modifier =
+                    Modifier.align(Alignment.TopEnd)
+                        .padding(dimensionResource(R.dimen.spacing_medium))
+                        .background(Color.Black.copy(alpha = 0.5f), shape = RoundedCornerShape(50))
+            ) {
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = stringResource(R.string.navigation_drawer_close),
+                    tint = Color.White
+                )
+            }
         }
     }
 }

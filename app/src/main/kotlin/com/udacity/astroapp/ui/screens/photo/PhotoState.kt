@@ -17,8 +17,6 @@ sealed class PhotoSideEffect {
 
     data class SharePhoto(val photo: Photo) : PhotoSideEffect()
 
-    data class NavigateToFullScreen(val photo: Photo) : PhotoSideEffect()
-
     object ShowDatePicker : PhotoSideEffect()
 }
 
@@ -26,8 +24,6 @@ sealed class PhotoAction {
     object LoadPhotos : PhotoAction()
 
     data class SelectDate(val date: String) : PhotoAction()
-
-    data class SelectPhoto(val photo: Photo) : PhotoAction()
 
     data class SharePhoto(val photo: Photo) : PhotoAction()
 

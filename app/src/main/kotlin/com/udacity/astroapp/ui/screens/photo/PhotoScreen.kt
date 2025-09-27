@@ -18,6 +18,7 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Photo
 import com.udacity.astroapp.ui.components.DatePickerButton
+import com.udacity.astroapp.ui.components.FullScreenPhotoDialog
 import com.udacity.astroapp.ui.components.FullscreenVideoDialog
 import com.udacity.astroapp.ui.components.YouTubeVideoPlayer
 import com.udacity.astroapp.ui.theme.AstroAppTheme
@@ -29,12 +30,10 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @RootNavGraph(start = true)
 @Destination
 @Composable
-fun PhotoScreen(
-    onShare: () -> Unit = {},
-    onNavigateToFullScreen: (String) -> Unit = {},
-    viewModel: PhotoViewModel = koinViewModel()
-) {
+fun PhotoScreen(onShare: () -> Unit = {}, viewModel: PhotoViewModel = koinViewModel()) {
     val state by viewModel.collectAsState()
+    var showFullScreenPhoto by remember { mutableStateOf(false) }
+    var selectedPhoto by remember { mutableStateOf<Photo?>(null) }
 
     // Handle side effects
     viewModel.collectSideEffect { sideEffect ->
@@ -44,9 +43,6 @@ fun PhotoScreen(
             }
             is PhotoSideEffect.SharePhoto -> {
                 // Handle photo sharing
-            }
-            is PhotoSideEffect.NavigateToFullScreen -> {
-                onNavigateToFullScreen(sideEffect.photo.photoId.toString())
             }
             is PhotoSideEffect.ShowDatePicker -> {}
         }
@@ -59,11 +55,27 @@ fun PhotoScreen(
         state = state,
         onRetry = { viewModel.loadPhotos() },
         onShare = onShare,
-        onNavigateToFullScreen = onNavigateToFullScreen,
+        onFullScreenPhoto = { photo ->
+            selectedPhoto = photo
+            showFullScreenPhoto = true
+        },
         onDateSelected = { selectedDate ->
             viewModel.handleAction(PhotoAction.SelectDate(selectedDate))
         }
     )
+
+    // Full screen photo dialog
+    if (showFullScreenPhoto && selectedPhoto != null) {
+        FullScreenPhotoDialog(
+            imageUrl = selectedPhoto?.photoUrl,
+            contentDescription = selectedPhoto?.photoTitle,
+            onDismiss = {
+                showFullScreenPhoto = false
+                selectedPhoto = null
+            },
+            onShare = onShare
+        )
+    }
 }
 
 @Composable
@@ -181,7 +193,7 @@ private fun PhotoScreenContent(
     state: PhotoState,
     onRetry: () -> Unit,
     onShare: () -> Unit,
-    onNavigateToFullScreen: (String) -> Unit,
+    onFullScreenPhoto: (Photo) -> Unit,
     onDateSelected: (String) -> Unit
 ) {
     Column(
@@ -238,7 +250,7 @@ private fun PhotoScreenContent(
                     selectedDate = state.selectedDate.takeIf { it.isNotBlank() },
                     onDateSelect = onDateSelected,
                     onShare = onShare,
-                    onFullScreen = { onNavigateToFullScreen(photoToShow.photoId.toString()) }
+                    onFullScreen = { onFullScreenPhoto(photoToShow) }
                 )
             }
             else -> {
@@ -325,7 +337,7 @@ private fun PhotoScreenLoadingPreview() {
             state = PhotoState(isLoading = true),
             onRetry = {},
             onShare = {},
-            onNavigateToFullScreen = {},
+            onFullScreenPhoto = {},
             onDateSelected = {}
         )
     }
@@ -343,7 +355,7 @@ private fun PhotoScreenErrorPreview() {
                 ),
             onRetry = {},
             onShare = {},
-            onNavigateToFullScreen = {},
+            onFullScreenPhoto = {},
             onDateSelected = {}
         )
     }
@@ -357,7 +369,7 @@ private fun PhotoScreenEmptyPreview() {
             state = PhotoState(isLoading = false, photos = emptyList(), error = null),
             onRetry = {},
             onShare = {},
-            onNavigateToFullScreen = {},
+            onFullScreenPhoto = {},
             onDateSelected = {}
         )
     }
@@ -390,7 +402,7 @@ private fun PhotoScreenSuccessPreview() {
                 ),
             onRetry = {},
             onShare = {},
-            onNavigateToFullScreen = {},
+            onFullScreenPhoto = {},
             onDateSelected = {}
         )
     }

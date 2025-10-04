@@ -3,14 +3,12 @@ package com.udacity.astroapp.ui.screens.earthphoto
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -19,6 +17,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,15 +32,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.EarthPhoto
-import com.udacity.astroapp.ui.components.DatePickerButton
 import com.udacity.astroapp.ui.components.FullScreenPhotoDialog
+import com.udacity.astroapp.ui.components.MainTopAppBar
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import com.udacity.astroapp.utils.PhotoSharingUtils
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -68,17 +70,34 @@ fun EarthPhotoScreen(viewModel: EarthPhotoViewModel = koinViewModel()) {
     // Load initial data
     LaunchedEffect(Unit) { viewModel.loadPhotos() }
 
-    EarthPhotoScreenContent(
-        state = state,
-        onRetry = { viewModel.loadPhotos() },
-        onFullScreenPhoto = { earthPhoto ->
-            selectedEarthPhoto = earthPhoto
-            showFullScreenPhoto = true
-        },
-        onDateSelected = { selectedDate ->
-            viewModel.handleAction(EarthPhotoAction.SelectDate(selectedDate))
+    Scaffold(
+        topBar = {
+            MainTopAppBar(
+                title = stringResource(R.string.screen_title_earth_photo),
+                selectedDate =
+                    if (state.selectedDate.isNotBlank()) {
+                        LocalDate.parse(state.selectedDate, DateTimeFormatter.ISO_LOCAL_DATE)
+                    } else {
+                        null
+                    },
+                maxDate = LocalDate.now(),
+                onDateSelected = { selectedDate ->
+                    val dateString = selectedDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    viewModel.handleAction(EarthPhotoAction.SelectDate(dateString))
+                }
+            )
         }
-    )
+    ) { paddingValues ->
+        EarthPhotoScreenContent(
+            state = state,
+            onRetry = { viewModel.loadPhotos() },
+            onFullScreenPhoto = { earthPhoto ->
+                selectedEarthPhoto = earthPhoto
+                showFullScreenPhoto = true
+            },
+            modifier = Modifier.padding(paddingValues)
+        )
+    }
 
     // Full screen photo dialog
     if (showFullScreenPhoto && selectedEarthPhoto != null) {
@@ -103,29 +122,20 @@ private fun EarthPhotoScreenContent(
     state: EarthPhotoState,
     onRetry: () -> Unit,
     onFullScreenPhoto: (EarthPhoto) -> Unit,
-    onDateSelected: (String) -> Unit
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
-        // Date selection section
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Row(
+    Column(modifier = modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
+        // Display selected date
+        if (state.selectedDate.isNotBlank()) {
+            Text(
+                text = state.selectedDate,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
                 modifier =
-                    Modifier.fillMaxWidth().padding(dimensionResource(R.dimen.spacing_large)),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                DatePickerButton(
-                    selectedDate = state.selectedDate.ifBlank { null },
-                    onDateSelected = onDateSelected,
-                    modifier = Modifier.weight(1f),
-                    label = stringResource(R.string.select_date_button)
-                )
-
-                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
-            }
+                    Modifier.fillMaxWidth()
+                        .padding(bottom = dimensionResource(R.dimen.spacing_medium))
+            )
         }
-
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
 
         when {
             state.isLoading -> {
@@ -216,8 +226,7 @@ private fun EarthPhotoScreenLoadingPreview() {
         EarthPhotoScreenContent(
             state = EarthPhotoState(isLoading = true),
             onRetry = {},
-            onFullScreenPhoto = {},
-            onDateSelected = {}
+            onFullScreenPhoto = {}
         )
     }
 }
@@ -233,8 +242,7 @@ private fun EarthPhotoScreenErrorPreview() {
                     error = "Failed to load Earth photos. Please check your internet connection."
                 ),
             onRetry = {},
-            onFullScreenPhoto = {},
-            onDateSelected = {}
+            onFullScreenPhoto = {}
         )
     }
 }
@@ -246,8 +254,7 @@ private fun EarthPhotoScreenEmptyPreview() {
         EarthPhotoScreenContent(
             state = EarthPhotoState(isLoading = false, earthPhotos = emptyList(), error = null),
             onRetry = {},
-            onFullScreenPhoto = {},
-            onDateSelected = {}
+            onFullScreenPhoto = {}
         )
     }
 }
@@ -289,8 +296,7 @@ private fun EarthPhotoScreenSuccessPreview() {
                     error = null
                 ),
             onRetry = {},
-            onFullScreenPhoto = {},
-            onDateSelected = {}
+            onFullScreenPhoto = {}
         )
     }
 }

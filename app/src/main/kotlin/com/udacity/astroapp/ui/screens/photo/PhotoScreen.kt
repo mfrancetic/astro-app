@@ -12,19 +12,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Photo
-import com.udacity.astroapp.ui.components.DatePickerButton
 import com.udacity.astroapp.ui.components.FullScreenPhotoDialog
 import com.udacity.astroapp.ui.components.FullscreenVideoDialog
+import com.udacity.astroapp.ui.components.MainTopAppBar
 import com.udacity.astroapp.ui.components.YouTubeVideoPlayer
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import com.udacity.astroapp.utils.PhotoSharingUtils
 import com.udacity.astroapp.utils.VideoUtils
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -54,19 +57,36 @@ fun PhotoScreen(onShare: () -> Unit = {}, viewModel: PhotoViewModel = koinViewMo
     // Load initial data
     LaunchedEffect(Unit) { viewModel.loadPhotos() }
 
-    PhotoScreenContent(
-        state = state,
-        onRetry = { viewModel.loadPhotos() },
-        onShare = onShare,
-        onFullScreenPhoto = { photo ->
-            selectedPhoto = photo
-            showFullScreenPhoto = true
-        },
-        onDateSelected = { selectedDate ->
-            viewModel.handleAction(PhotoAction.SelectDate(selectedDate))
-        },
-        onSharePhoto = { photo -> viewModel.handleAction(PhotoAction.SharePhoto(photo)) }
-    )
+    Scaffold(
+        topBar = {
+            MainTopAppBar(
+                title = stringResource(R.string.screen_title_photo),
+                selectedDate =
+                    if (state.selectedDate.isNotBlank()) {
+                        LocalDate.parse(state.selectedDate, DateTimeFormatter.ISO_LOCAL_DATE)
+                    } else {
+                        null
+                    },
+                maxDate = LocalDate.now(),
+                onDateSelected = { selectedDate ->
+                    val dateString = selectedDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    viewModel.handleAction(PhotoAction.SelectDate(dateString))
+                }
+            )
+        }
+    ) { paddingValues ->
+        PhotoScreenContent(
+            state = state,
+            onRetry = { viewModel.loadPhotos() },
+            onShare = onShare,
+            onFullScreenPhoto = { photo ->
+                selectedPhoto = photo
+                showFullScreenPhoto = true
+            },
+            onSharePhoto = { photo -> viewModel.handleAction(PhotoAction.SharePhoto(photo)) },
+            modifier = Modifier.padding(paddingValues)
+        )
+    }
 
     // Full screen photo dialog
     if (showFullScreenPhoto && selectedPhoto != null) {
@@ -87,13 +107,7 @@ fun PhotoScreen(onShare: () -> Unit = {}, viewModel: PhotoViewModel = koinViewMo
 }
 
 @Composable
-private fun PhotoContent(
-    photo: Photo,
-    selectedDate: String?,
-    onDateSelect: (String) -> Unit,
-    onShare: () -> Unit,
-    onFullScreen: () -> Unit
-) {
+private fun PhotoContent(photo: Photo, onShare: () -> Unit, onFullScreen: () -> Unit) {
     var showFullscreenVideo by remember { mutableStateOf(false) }
     val isVideo = VideoUtils.isVideoContent(photo.photoMediaType ?: "")
 
@@ -145,28 +159,6 @@ private fun PhotoContent(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium)))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement =
-                    Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(onClick = onShare, modifier = Modifier.weight(1f)) {
-                    Icon(Icons.Default.Share, contentDescription = null)
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
-                    Text(stringResource(R.string.share))
-                }
-
-                DatePickerButton(
-                    selectedDate = selectedDate,
-                    onDateSelected = onDateSelect,
-                    modifier = Modifier.weight(1f),
-                    label = stringResource(R.string.select_date_button)
-                )
-            }
         }
     }
 
@@ -202,32 +194,25 @@ private fun PhotoScreenContent(
     onRetry: () -> Unit,
     onShare: () -> Unit,
     onFullScreenPhoto: (Photo) -> Unit,
-    onDateSelected: (String) -> Unit,
-    onSharePhoto: (Photo) -> Unit
+    onSharePhoto: (Photo) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Filter section
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        DatePickerButton(
-                            selectedDate = state.selectedDate.ifBlank { null },
-                            onDateSelected = onDateSelected,
-                            modifier = Modifier.weight(1f),
-                            label = stringResource(R.string.select_date_button)
-                        )
-                    }
-                }
+            // Display selected date
+            if (state.selectedDate.isNotBlank()) {
+                Text(
+                    text = state.selectedDate,
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center,
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(bottom = dimensionResource(R.dimen.spacing_medium))
+                )
             }
-
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
 
             when {
                 state.isLoading -> {
@@ -264,8 +249,6 @@ private fun PhotoScreenContent(
                     val photoToShow = state.selectedPhoto ?: state.photos.first()
                     PhotoContent(
                         photo = photoToShow,
-                        selectedDate = state.selectedDate.takeIf { it.isNotBlank() },
-                        onDateSelect = onDateSelected,
                         onShare = onShare,
                         onFullScreen = { onFullScreenPhoto(photoToShow) }
                     )
@@ -371,7 +354,6 @@ private fun PhotoScreenLoadingPreview() {
             onRetry = {},
             onShare = {},
             onFullScreenPhoto = {},
-            onDateSelected = {},
             onSharePhoto = {}
         )
     }
@@ -390,7 +372,6 @@ private fun PhotoScreenErrorPreview() {
             onRetry = {},
             onShare = {},
             onFullScreenPhoto = {},
-            onDateSelected = {},
             onSharePhoto = {}
         )
     }
@@ -405,7 +386,6 @@ private fun PhotoScreenEmptyPreview() {
             onRetry = {},
             onShare = {},
             onFullScreenPhoto = {},
-            onDateSelected = {},
             onSharePhoto = {}
         )
     }
@@ -439,7 +419,6 @@ private fun PhotoScreenSuccessPreview() {
             onRetry = {},
             onShare = {},
             onFullScreenPhoto = {},
-            onDateSelected = {},
             onSharePhoto = {}
         )
     }

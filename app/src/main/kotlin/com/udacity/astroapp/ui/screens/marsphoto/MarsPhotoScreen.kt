@@ -3,7 +3,6 @@ package com.udacity.astroapp.ui.screens.marsphoto
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +17,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
@@ -38,8 +39,8 @@ import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Camera
 import com.udacity.astroapp.models.MarsPhoto
 import com.udacity.astroapp.models.Rover
-import com.udacity.astroapp.ui.components.DatePickerButton
 import com.udacity.astroapp.ui.components.FullScreenPhotoDialog
+import com.udacity.astroapp.ui.components.MainTopAppBar
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import com.udacity.astroapp.utils.PhotoSharingUtils
 import java.time.LocalDate
@@ -72,15 +73,26 @@ fun MarsPhotoScreen(viewModel: MarsPhotoViewModel = koinViewModel()) {
         }
     }
 
-    MarsPhotoScreenContent(
-        state = state,
-        onRetry = { viewModel.onRefresh() },
-        onFullScreenPhoto = { marsPhoto ->
-            selectedMarsPhoto = marsPhoto
-            showFullScreenPhoto = true
-        },
-        onDateSelected = { selectedDate -> viewModel.onDateSelected(selectedDate) }
-    )
+    Scaffold(
+        topBar = {
+            MainTopAppBar(
+                title = stringResource(R.string.screen_title_mars_photo),
+                selectedDate = state.selectedDate,
+                maxDate = LocalDate.now(),
+                onDateSelected = { selectedDate -> viewModel.onDateSelected(selectedDate) }
+            )
+        }
+    ) { paddingValues ->
+        MarsPhotoScreenContent(
+            state = state,
+            onRetry = { viewModel.onRefresh() },
+            onFullScreenPhoto = { marsPhoto ->
+                selectedMarsPhoto = marsPhoto
+                showFullScreenPhoto = true
+            },
+            modifier = Modifier.padding(paddingValues)
+        )
+    }
 
     // Full screen photo dialog
     if (showFullScreenPhoto && selectedMarsPhoto != null) {
@@ -105,27 +117,17 @@ private fun MarsPhotoScreenContent(
     state: MarsPhotoState,
     onRetry: () -> Unit,
     onFullScreenPhoto: (MarsPhoto) -> Unit,
-    onDateSelected: (LocalDate) -> Unit
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
-        // Filter section
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    DatePickerButton(
-                        selectedDate = state.selectedDate.toDateString(),
-                        onDateSelected = { dateString -> onDateSelected(dateString.toLocalDate()) },
-                        modifier = Modifier.weight(1f),
-                        label = stringResource(R.string.select_date_button)
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
+    Column(modifier = modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
+        // Display selected date
+        Text(
+            text = state.selectedDate.toDateString(),
+            style = MaterialTheme.typography.titleMedium,
+            textAlign = TextAlign.Center,
+            modifier =
+                Modifier.fillMaxWidth().padding(bottom = dimensionResource(R.dimen.spacing_medium))
+        )
 
         when {
             state.isLoading -> {
@@ -225,8 +227,7 @@ private fun MarsPhotoScreenLoadingPreview() {
         MarsPhotoScreenContent(
             state = MarsPhotoState(isLoading = true),
             onRetry = {},
-            onFullScreenPhoto = {},
-            onDateSelected = {}
+            onFullScreenPhoto = {}
         )
     }
 }
@@ -242,8 +243,7 @@ private fun MarsPhotoScreenErrorPreview() {
                     error = "Failed to load Mars photos. Please check your internet connection."
                 ),
             onRetry = {},
-            onFullScreenPhoto = {},
-            onDateSelected = {}
+            onFullScreenPhoto = {}
         )
     }
 }
@@ -255,8 +255,7 @@ private fun MarsPhotoScreenEmptyPreview() {
         MarsPhotoScreenContent(
             state = MarsPhotoState(isLoading = false, filteredPhotos = emptyList(), error = null),
             onRetry = {},
-            onFullScreenPhoto = {},
-            onDateSelected = {}
+            onFullScreenPhoto = {}
         )
     }
 }
@@ -338,8 +337,7 @@ private fun MarsPhotoScreenSuccessPreview() {
                     error = null
                 ),
             onRetry = {},
-            onFullScreenPhoto = {},
-            onDateSelected = {}
+            onFullScreenPhoto = {}
         )
     }
 }

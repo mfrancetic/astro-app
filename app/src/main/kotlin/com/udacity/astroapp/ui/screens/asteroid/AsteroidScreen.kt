@@ -16,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,13 +25,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Asteroid
 import com.udacity.astroapp.ui.components.AsteroidFilterCard
-import com.udacity.astroapp.ui.components.DatePickerButton
+import com.udacity.astroapp.ui.components.MainTopAppBar
 import com.udacity.astroapp.ui.theme.AstroAppTheme
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -58,17 +62,33 @@ fun AsteroidScreen(
     // Load initial data
     LaunchedEffect(Unit) { viewModel.loadAsteroids() }
 
-    AsteroidScreenContent(
-        state = state,
-        onRetry = { viewModel.loadAsteroids() },
-        onNavigateToAsteroidDetails = onNavigateToAsteroidDetails,
-        onDateSelected = { selectedDate ->
-            viewModel.handleAction(AsteroidAction.SelectDate(selectedDate))
-        },
-        onHazardousFilterChange = { showHazardousOnly ->
-            viewModel.handleAction(AsteroidAction.FilterHazardous(showHazardousOnly))
+    Scaffold(
+        topBar = {
+            MainTopAppBar(
+                title = stringResource(R.string.screen_title_asteroids),
+                selectedDate =
+                    if (state.selectedDate.isNotBlank()) {
+                        LocalDate.parse(state.selectedDate, DateTimeFormatter.ISO_LOCAL_DATE)
+                    } else {
+                        null
+                    },
+                onDateSelected = { selectedDate ->
+                    val dateString = selectedDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    viewModel.handleAction(AsteroidAction.SelectDate(dateString))
+                }
+            )
         }
-    )
+    ) { paddingValues ->
+        AsteroidScreenContent(
+            state = state,
+            onRetry = { viewModel.loadAsteroids() },
+            onNavigateToAsteroidDetails = onNavigateToAsteroidDetails,
+            onHazardousFilterChange = { showHazardousOnly ->
+                viewModel.handleAction(AsteroidAction.FilterHazardous(showHazardousOnly))
+            },
+            modifier = Modifier.padding(paddingValues)
+        )
+    }
 }
 
 @Composable
@@ -120,27 +140,21 @@ private fun AsteroidScreenContent(
     state: AsteroidState,
     onRetry: () -> Unit,
     onNavigateToAsteroidDetails: (String) -> Unit,
-    onDateSelected: (String) -> Unit,
-    onHazardousFilterChange: (Boolean) -> Unit
+    onHazardousFilterChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding))) {
-        // Search and filter section
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(dimensionResource(R.dimen.card_padding)),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                DatePickerButton(
-                    selectedDate = state.selectedDate.ifBlank { null },
-                    onDateSelected = onDateSelected,
-                    modifier = Modifier.weight(1f),
-                    label = stringResource(R.string.select_date)
-                )
-            }
+    Column(modifier = modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding))) {
+        // Display selected date
+        if (state.selectedDate.isNotBlank()) {
+            Text(
+                text = state.selectedDate,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .padding(bottom = dimensionResource(R.dimen.spacing_medium))
+            )
         }
-
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
         // Filter section
         AsteroidFilterCard(
@@ -207,7 +221,6 @@ private fun AsteroidScreenLoadingPreview() {
             state = AsteroidState(isLoading = true),
             onRetry = {},
             onNavigateToAsteroidDetails = {},
-            onDateSelected = {},
             onHazardousFilterChange = {}
         )
     }
@@ -225,7 +238,6 @@ private fun AsteroidScreenErrorPreview() {
                 ),
             onRetry = {},
             onNavigateToAsteroidDetails = {},
-            onDateSelected = {},
             onHazardousFilterChange = {}
         )
     }
@@ -245,7 +257,6 @@ private fun AsteroidScreenEmptyPreview() {
                 ),
             onRetry = {},
             onNavigateToAsteroidDetails = {},
-            onDateSelected = {},
             onHazardousFilterChange = {}
         )
     }
@@ -300,7 +311,6 @@ private fun AsteroidScreenHazardousFilterPreview() {
                 ),
             onRetry = {},
             onNavigateToAsteroidDetails = {},
-            onDateSelected = {},
             onHazardousFilterChange = {}
         )
     }
@@ -364,7 +374,6 @@ private fun AsteroidScreenSuccessPreview() {
                 ),
             onRetry = {},
             onNavigateToAsteroidDetails = {},
-            onDateSelected = {},
             onHazardousFilterChange = {}
         )
     }

@@ -14,6 +14,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
+import com.udacity.astroapp.ui.components.MainTopAppBar
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -35,13 +37,30 @@ import org.koin.androidx.compose.koinViewModel
 fun SettingsScreen(viewModel: SettingsViewModel = koinViewModel()) {
     val state by viewModel.container.stateFlow.collectAsState()
 
-    SettingsContent(state = state, onThemeSelected = viewModel::selectTheme)
+    Scaffold(
+        topBar = {
+            MainTopAppBar(
+                title = stringResource(R.string.settings_about_title),
+                onDateSelected = null
+            )
+        }
+    ) { paddingValues ->
+        SettingsContent(
+            state = state,
+            onThemeSelected = viewModel::selectTheme,
+            modifier = Modifier.padding(paddingValues)
+        )
+    }
 }
 
 @Composable
-private fun SettingsContent(state: SettingsState, onThemeSelected: (ThemeOption) -> Unit) {
+private fun SettingsContent(
+    state: SettingsState,
+    onThemeSelected: (ThemeOption) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large)),
+        modifier = modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large)),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         // Theme Section

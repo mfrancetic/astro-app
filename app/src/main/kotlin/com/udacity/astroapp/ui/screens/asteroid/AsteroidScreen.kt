@@ -32,6 +32,7 @@ import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Asteroid
 import com.udacity.astroapp.ui.components.AsteroidFilterCard
 import com.udacity.astroapp.ui.components.MainTopAppBar
+import com.udacity.astroapp.ui.components.SwipeableContent
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -79,15 +80,29 @@ fun AsteroidScreen(
             )
         }
     ) { paddingValues ->
-        AsteroidScreenContent(
-            state = state,
-            onRetry = { viewModel.loadAsteroids() },
-            onNavigateToAsteroidDetails = onNavigateToAsteroidDetails,
-            onHazardousFilterChange = { showHazardousOnly ->
-                viewModel.handleAction(AsteroidAction.FilterHazardous(showHazardousOnly))
+        SwipeableContent(
+            currentDate =
+                if (state.selectedDate.isNotBlank()) {
+                    LocalDate.parse(state.selectedDate, DateTimeFormatter.ISO_LOCAL_DATE)
+                } else {
+                    LocalDate.now()
+                },
+            maxDate = null, // No max date restriction for asteroid screen
+            onDateChanged = { newDate ->
+                val dateString = newDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                viewModel.handleAction(AsteroidAction.SelectDate(dateString))
             },
             modifier = Modifier.padding(paddingValues)
-        )
+        ) {
+            AsteroidScreenContent(
+                state = state,
+                onRetry = { viewModel.loadAsteroids() },
+                onNavigateToAsteroidDetails = onNavigateToAsteroidDetails,
+                onHazardousFilterChange = { showHazardousOnly ->
+                    viewModel.handleAction(AsteroidAction.FilterHazardous(showHazardousOnly))
+                }
+            )
+        }
     }
 }
 
@@ -140,10 +155,9 @@ private fun AsteroidScreenContent(
     state: AsteroidState,
     onRetry: () -> Unit,
     onNavigateToAsteroidDetails: (String) -> Unit,
-    onHazardousFilterChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    onHazardousFilterChange: (Boolean) -> Unit
 ) {
-    Column(modifier = modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding))) {
+    Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding))) {
         // Display selected date
         if (state.selectedDate.isNotBlank()) {
             Text(

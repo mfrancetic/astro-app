@@ -40,6 +40,7 @@ import com.udacity.astroapp.R
 import com.udacity.astroapp.models.EarthPhoto
 import com.udacity.astroapp.ui.components.FullScreenPhotoDialog
 import com.udacity.astroapp.ui.components.MainTopAppBar
+import com.udacity.astroapp.ui.components.SwipeableContent
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import com.udacity.astroapp.utils.PhotoSharingUtils
 import java.time.LocalDate
@@ -88,15 +89,29 @@ fun EarthPhotoScreen(viewModel: EarthPhotoViewModel = koinViewModel()) {
             )
         }
     ) { paddingValues ->
-        EarthPhotoScreenContent(
-            state = state,
-            onRetry = { viewModel.loadPhotos() },
-            onFullScreenPhoto = { earthPhoto ->
-                selectedEarthPhoto = earthPhoto
-                showFullScreenPhoto = true
+        SwipeableContent(
+            currentDate =
+                if (state.selectedDate.isNotBlank()) {
+                    LocalDate.parse(state.selectedDate, DateTimeFormatter.ISO_LOCAL_DATE)
+                } else {
+                    LocalDate.now()
+                },
+            maxDate = LocalDate.now(),
+            onDateChanged = { newDate ->
+                val dateString = newDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                viewModel.handleAction(EarthPhotoAction.SelectDate(dateString))
             },
             modifier = Modifier.padding(paddingValues)
-        )
+        ) {
+            EarthPhotoScreenContent(
+                state = state,
+                onRetry = { viewModel.loadPhotos() },
+                onFullScreenPhoto = { earthPhoto ->
+                    selectedEarthPhoto = earthPhoto
+                    showFullScreenPhoto = true
+                }
+            )
+        }
     }
 
     // Full screen photo dialog
@@ -121,10 +136,9 @@ fun EarthPhotoScreen(viewModel: EarthPhotoViewModel = koinViewModel()) {
 private fun EarthPhotoScreenContent(
     state: EarthPhotoState,
     onRetry: () -> Unit,
-    onFullScreenPhoto: (EarthPhoto) -> Unit,
-    modifier: Modifier = Modifier
+    onFullScreenPhoto: (EarthPhoto) -> Unit
 ) {
-    Column(modifier = modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
+    Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
         // Display selected date
         if (state.selectedDate.isNotBlank()) {
             Text(

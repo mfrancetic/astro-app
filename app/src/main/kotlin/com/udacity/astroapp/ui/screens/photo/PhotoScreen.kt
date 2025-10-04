@@ -22,6 +22,7 @@ import com.udacity.astroapp.models.Photo
 import com.udacity.astroapp.ui.components.FullScreenPhotoDialog
 import com.udacity.astroapp.ui.components.FullscreenVideoDialog
 import com.udacity.astroapp.ui.components.MainTopAppBar
+import com.udacity.astroapp.ui.components.SwipeableContent
 import com.udacity.astroapp.ui.components.YouTubeVideoPlayer
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import com.udacity.astroapp.utils.PhotoSharingUtils
@@ -75,17 +76,31 @@ fun PhotoScreen(onShare: () -> Unit = {}, viewModel: PhotoViewModel = koinViewMo
             )
         }
     ) { paddingValues ->
-        PhotoScreenContent(
-            state = state,
-            onRetry = { viewModel.loadPhotos() },
-            onShare = onShare,
-            onFullScreenPhoto = { photo ->
-                selectedPhoto = photo
-                showFullScreenPhoto = true
+        SwipeableContent(
+            currentDate =
+                if (state.selectedDate.isNotBlank()) {
+                    LocalDate.parse(state.selectedDate, DateTimeFormatter.ISO_LOCAL_DATE)
+                } else {
+                    LocalDate.now()
+                },
+            maxDate = LocalDate.now(),
+            onDateChanged = { newDate ->
+                val dateString = newDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                viewModel.handleAction(PhotoAction.SelectDate(dateString))
             },
-            onSharePhoto = { photo -> viewModel.handleAction(PhotoAction.SharePhoto(photo)) },
             modifier = Modifier.padding(paddingValues)
-        )
+        ) {
+            PhotoScreenContent(
+                state = state,
+                onRetry = { viewModel.loadPhotos() },
+                onShare = onShare,
+                onFullScreenPhoto = { photo ->
+                    selectedPhoto = photo
+                    showFullScreenPhoto = true
+                },
+                onSharePhoto = { photo -> viewModel.handleAction(PhotoAction.SharePhoto(photo)) }
+            )
+        }
     }
 
     // Full screen photo dialog
@@ -194,10 +209,9 @@ private fun PhotoScreenContent(
     onRetry: () -> Unit,
     onShare: () -> Unit,
     onFullScreenPhoto: (Photo) -> Unit,
-    onSharePhoto: (Photo) -> Unit,
-    modifier: Modifier = Modifier
+    onSharePhoto: (Photo) -> Unit
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding)),
             horizontalAlignment = Alignment.CenterHorizontally

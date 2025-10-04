@@ -41,6 +41,7 @@ import com.udacity.astroapp.models.MarsPhoto
 import com.udacity.astroapp.models.Rover
 import com.udacity.astroapp.ui.components.FullScreenPhotoDialog
 import com.udacity.astroapp.ui.components.MainTopAppBar
+import com.udacity.astroapp.ui.components.SwipeableContent
 import com.udacity.astroapp.ui.theme.AstroAppTheme
 import com.udacity.astroapp.utils.PhotoSharingUtils
 import java.time.LocalDate
@@ -83,15 +84,21 @@ fun MarsPhotoScreen(viewModel: MarsPhotoViewModel = koinViewModel()) {
             )
         }
     ) { paddingValues ->
-        MarsPhotoScreenContent(
-            state = state,
-            onRetry = { viewModel.onRefresh() },
-            onFullScreenPhoto = { marsPhoto ->
-                selectedMarsPhoto = marsPhoto
-                showFullScreenPhoto = true
-            },
+        SwipeableContent(
+            currentDate = state.selectedDate,
+            maxDate = LocalDate.now(),
+            onDateChanged = { newDate -> viewModel.onDateSelected(newDate) },
             modifier = Modifier.padding(paddingValues)
-        )
+        ) {
+            MarsPhotoScreenContent(
+                state = state,
+                onRetry = { viewModel.onRefresh() },
+                onFullScreenPhoto = { marsPhoto ->
+                    selectedMarsPhoto = marsPhoto
+                    showFullScreenPhoto = true
+                }
+            )
+        }
     }
 
     // Full screen photo dialog
@@ -116,10 +123,9 @@ fun MarsPhotoScreen(viewModel: MarsPhotoViewModel = koinViewModel()) {
 private fun MarsPhotoScreenContent(
     state: MarsPhotoState,
     onRetry: () -> Unit,
-    onFullScreenPhoto: (MarsPhoto) -> Unit,
-    modifier: Modifier = Modifier
+    onFullScreenPhoto: (MarsPhoto) -> Unit
 ) {
-    Column(modifier = modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
+    Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
         // Display selected date
         Text(
             text = state.selectedDate.toDateString(),

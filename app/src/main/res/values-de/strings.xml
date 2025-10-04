@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">AstroApp</string>
+
+	<!-- Content descriptions -->
+	<string name="photo_of_content_description">Foto</string>
+	<string name="photo_content_description">Foto des Tages</string>
+	<string name="read_more_about_content_description">Mehr lesen über</string>
+	<string name="widget_image_content_description">Foto des Tages</string>
+	<string name="asteroid_image_content_description">Asteroidenbild</string>
+	<string name="observatory_list_item_button_content_description">Sternwarten-Details von</string>
+	<string name="marker_of_the_observatory_content_description">Standort der Sternwarte</string>
+	<string name="asteroid_is_hazardous_content_descriptions">Asteroid ist gefährlich</string>
+	<string name="asteroid_not_hazardous_content_description">Asteroid ist nicht gefährlich</string>
+	<string name="share_content_description">Inhalt teilen</string>
+	<string name="share_photo_content_description">Foto teilen</string>
+	<string name="share_video_content_description">Video teilen</string>
+	<string name="menu_photo_content_description">Zum Foto des Tages navigieren</string>
+	<string name="menu_asteroids_content_description">Zu Asteroiden navigieren</string>
+	<string name="menu_observatories_content_description">Zu Sternwarten navigieren</string>
+	<string name="menu_theme_content_description">Zum Design navigieren</string>
+	<string name="photo_previous_content_description">Vorheriges Foto ansehen</string>
+	<string name="photo_next_content_description">Nächstes Foto ansehen</string>
+	<string name="photo_calendar_content_description">Foto-Datum auswählen</string>
+
+	<!-- Snackbar text, that indicates the data is populated from the database -->
+	<string name="snackbar_offline_mode">Sie sind derzeit offline. Lokale Daten werden
+		angezeigt</string>
+
+	<string name="no_internet_connection">Keine Internetverbindung. \nSie sind offline.</string>
+
+	<string name="snackbar_location_disabled">Standort ist deaktiviert. Bitte aktivieren Sie den
+		Standort,
+		um Sternwarten in Ihrer Nähe zu finden.</string>
+
+	<!-- Navigation drawer labels -->
+	<string name="nav_header_subtitle">Entdecken Sie den Weltraum</string>
+	<string name="nav_header_nasa">Daten bereitgestellt von NASA</string>
+	<string name="menu_photo">Foto des Tages</string>
+	<string name="menu_asteroids">Asteroiden</string>
+	<string name="menu_observatories">Sternwarten</string>
+
+	<string name="menu_refresh">Aktualisieren</string>
+	<string name="menu_calendar">Kalender</string>
+	<string name="menu_theme">Design</string>
+	<string name="theme_light">Hell</string>
+	<string name="theme_dark">Dunkel</string>
+	<string name="theme_battery_saver">Nach Energiesparmodus</string>
+	<string name="theme_system_default">Systemstandard</string>
+
+	<!-- AstroAppWidget strings -->
+	<string name="widget_photo_of_the_day">Foto des Tages</string>
+
+	<!-- PhotoFragment strings -->
+	<string name="no_photo_found">Kein Foto gefunden</string>
+	<string name="play_video_button">Video abspielen</string>
+	<string name="photo_video_source">Quelle: NASA</string>
+
+	<!-- AsteroidFragment strings -->
+	<string name="asteroid_hazardous_image">Anzeige der Asteroidengefahr</string>
+
+	<string name="no_asteroids_found">Keine Asteroiden gefunden</string>
+	<string name="diameter_label">Durchmesser: </string>
+	<string name="approach_date_label">Annäherungsdatum:</string>
+	<string name="velocity_label">Geschwindigkeit:</string>
+	<string name="read_more_button">Mehr lesen</string>
+	<string name="name_label">Asteroidenname:</string>
+	<string name="asteroid_hazardous_text">Gefährlich</string>
+	<string name="asteroid_not_hazardous_text">Sicher</string>
+
+	<!-- ObservatoryListFragment strings -->
+	<string name="no_observatories_found">Keine Sternwarten gefunden</string>
+	<string name="observatory_open">Jetzt geöffnet</string>
+	<string name="location_permission_granted">Standortberechtigung erteilt</string>
+	<string name="location_permission_declined">Standortberechtigung nicht erteilt</string>
+	<string name="grant_location_permission">Standortberechtigung erteilen</string>
+	<string name="video_not_playable">Video konnte nicht angezeigt werden</string>
+
+	<!-- ObservatoryFragment strings -->
+	<string name="location_access_not_granted_toast">Wir benötigen die Berechtigung, Ihren Standort zu
+		verwenden,
+		um Sternwarten in Ihrer Nähe zu finden. Bitte erlauben Sie
+		die Standortberechtigung
+		in Ihren Telefoneinstellungen und
+		aktualisieren Sie.</string>
+	<string name="observatory_details_not_found">Sternwarten-Details nicht gefunden</string>
+	<string name="observatory_visit_homepage_button">Homepage besuchen</string>
+	<string name="activate_location">Standort aktivieren</string>
+	<string name="no_observatories_found_location_disabled">Standort ist deaktiviert.</string>
+	<string name="cancel">Abbrechen</string>
+	<string name="open_location_settings">Standorteinstellungen öffnen</string>
+
+	<string name="dismiss_dialog">Schließen</string>
+
+	<!-- EarthPhotoFragment strings -->
+	<string name="menu_earth_photo_content_description">Zu Erdfotos gehen</string>
+	<string name="menu_earth_photo">Erdfotos</string>
+	<string name="earth_photo_content_description">Fotos der Erde</string>
+	<string name="earth_photo_caption">Diese Bilder wurden von der EPIC-Kamera der NASA
+		an
+		Bord des NOAA DSCOVR-Raumschiffs aufgenommen</string>
+	<string name="menu_mars_photo_content_description">Zu Marsfotos gehen</string>
+	<string name="menu_mars_photo">Marsfoto</string>
+	<string name="launch_date">"Startdatum: "</string>
+	<string name="landing_date">"Landedatum: "</string>
+	<string name="camera">"Kamera: "</string>
+	<string name="rover">"Rover "</string>
+	<string name="sol">"Marsdatum (sol): "</string>
+	<string name="earth_date">"Erddatum: "</string>
+	<string name="menu_about">Über</string>
+
+	<!-- Navigation labels -->
+	<string name="nav_about">Über</string>
+
+	<!-- Navigation labels -->
+	<string name="nav_photo">Foto</string>
+	<string name="nav_asteroids">Asteroiden</string>
+	<string name="nav_earth_photo">Erdfoto</string>
+	<string name="nav_mars_photo">Marsfoto</string>
+	<string name="nav_observatories">Sternwarten</string>
+
+	<!-- Screen titles -->
+	<string name="screen_title_photo">Astronomisches Bild des Tages</string>
+	<string name="screen_title_asteroids">Erdnahe Asteroiden</string>
+	<string name="screen_title_earth_photo">Erdfotos</string>
+	<string name="screen_title_mars_photo">Mars-Rover-Fotos</string>
+	<string name="screen_title_observatory_list">Sternwarten</string>
+	<string name="screen_title_observatory_detail">Sternwarten-Details</string>
+
+	<!-- Common button texts -->
+	<string name="retry">Wiederholen</string>
+	<string name="share">Teilen</string>
+	<string name="select_date">Datum auswählen</string>
+	<string name="search">Suchen</string>
+	<string name="filter">Filter</string>
+	<string name="clear_all">Alle löschen</string>
+	<string name="full_screen">Vollbild</string>
+	<string name="directions">Wegbeschreibung</string>
+	<string name="call">Anrufen</string>
+	<string name="refresh">Aktualisieren</string>
+	<string name="today">Heute</string>
+	<string name="yesterday">Gestern</string>
+	<string name="last_week">Letzte Woche</string>
+
+	<!-- Error messages -->
+	<string name="error_network">Netzwerkfehler aufgetreten. Bitte überprüfen Sie
+		Ihre
+		Verbindung.</string>
+	<string name="error_loading_data">Laden der Daten fehlgeschlagen. Bitte versuchen Sie
+		es erneut.</string>
+	<string name="error_generic">Etwas ist schiefgelaufen. Bitte versuchen Sie es
+		erneut.</string>
+
+	<!-- Loading messages -->
+	<string name="loading">Lädt…</string>
+	<string name="loading_photos">Fotos werden geladen…</string>
+	<string name="loading_asteroids">Asteroiden werden geladen…</string>
+	<string name="loading_observatories">Sternwarten werden geladen…</string>
+
+	<!-- Empty state messages -->
+	<string name="empty_photos">Keine Fotos für das ausgewählte Datum gefunden</string>
+	<string name="empty_asteroids">Keine Asteroiden für den ausgewählten Zeitraum
+		gefunden</string>
+	<string name="empty_earth_photos">Keine Erdfotos für das ausgewählte Datum gefunden</string>
+	<string name="empty_mars_photos">Keine Marsfotos für die ausgewählten Filter
+		gefunden</string>
+	<string name="empty_observatories">Keine Sternwarten gefunden</string>
+
+	<!-- Dialog texts -->
+	<string name="dialog_theme_title">Design auswählen</string>
+	<string name="dialog_theme_light">Hell</string>
+	<string name="dialog_theme_dark">Dunkel</string>
+	<string name="dialog_theme_system">Systemeinstellung folgen</string>
+
+	<!-- General labels -->
+	<string name="no_title">Kein Titel verfügbar</string>
+	<string name="no_description">Keine Beschreibung verfügbar</string>
+	<string name="image_video_content">Bild-/Videoinhalt wird implementiert</string>
+	<string name="map_integration">Kartenintegration wird implementiert</string>
+	<string name="theme_selection_radio">Designauswahl - Wird mit RadioButtons implementiert</string>
+
+	<!-- Permission messages -->
+	<string name="location_permission_needed">Standortberechtigung für nahe gelegene Sternwarten
+		erforderlich</string>
+	<string name="grant_location_permission_button">Standortberechtigung erteilen</string>
+	<string name="find_nearby">In der Nähe finden</string>
+	<string name="show_all">Alle anzeigen</string>
+
+	<!-- Filter labels -->
+	<string name="filter_rover">Rover</string>
+	<string name="filter_camera">Kamera</string>
+	<string name="filter_date_range">Datumsbereich</string>
+	<string name="filter_search_radius">Suchradius</string>
+	<string name="filter_hazardous_only">Nur gefährliche Asteroiden anzeigen</string>
+	<string name="filter_open_now">Nur geöffnete Sternwarten anzeigen</string>
+
+	<!-- Status indicators -->
+	<string name="status_open">Geöffnet</string>
+	<string name="status_closed">Geschlossen</string>
+	<string name="status_hazardous">⚠️ Gefährlich</string>
+	<string name="status_safe">✅ Sicher</string>
+
+	<!-- Measurement units -->
+	<string name="unit_km">km</string>
+	<string name="unit_rating_format">%1$.1f/5.0</string>
+	<string name="distance_format">Entfernung: %1$s km</string>
+	<string name="diameter_format">Durchmesser: %1$s - %2$s km</string>
+	<string name="date_format">Datum: %1$s</string>
+	<string name="rating_format">Bewertung: %1$.1f/5.0</string>
+
+	<!-- UI Component strings -->
+	<string name="search_placeholder">Suchen…</string>
+	<string name="search_content_description">Suchen</string>
+	<string name="clear_content_description">Löschen</string>
+	<string name="back_content_description">Zurück</string>
+	<string name="failed_to_load_image">Bild konnte nicht geladen werden</string>
+	<string name="image_not_available">Bild nicht verfügbar</string>
+
+	<!-- Observatory strings -->
+	<string name="unknown_observatory">Unbekannte Sternwarte</string>
+	<string name="unknown_date">Unbekanntes Datum</string>
+	<string name="observatory_details_title">Sternwarten-Details</string>
+	<string name="observatory_status_label">Status: </string>
+	<string name="observatory_rating_format">%1$.1f/5.0</string>
+
+	<!-- Mars Rover strings -->
+	<string name="mars_rover_filters">Mars-Rover-Filter</string>
+	<string name="asteroid_filters">Asteroiden-Filter</string>
+	<string name="observatory_filters">Sternwarten-Filter</string>
+	<string name="search_and_filter">Suchen &amp; Filtern</string>
+	<string name="search_radius_km">Suchradius (km)</string>
+	<string name="km_suffix">km</string>
+	<string name="filters_label">Filter: %1$s</string>
+
+	<!-- Rover names -->
+	<string name="rover_curiosity">Curiosity</string>
+	<string name="rover_opportunity">Opportunity</string>
+	<string name="rover_spirit">Spirit</string>
+	<string name="rover_perseverance">Perseverance</string>
+	<string name="rover_ingenuity">Ingenuity</string>
+
+	<!-- Camera names -->
+	<string name="camera_fhaz">FHAZ</string>
+	<string name="camera_rhaz">RHAZ</string>
+	<string name="camera_mast">MAST</string>
+	<string name="camera_chemcam">CHEMCAM</string>
+	<string name="camera_mahli">MAHLI</string>
+	<string name="camera_mardi">MARDI</string>
+	<string name="camera_navcam">NAVCAM</string>
+	<string name="camera_pancam">PANCAM</string>
+	<string name="camera_minites">MINITES</string>
+
+	<!-- Error messages -->
+	<string name="failed_to_load_photos">Fotos konnten nicht geladen werden</string>
+	<string name="failed_to_load_observatory">Sternwarte konnte nicht geladen werden</string>
+	<string name="failed_to_load_asteroids">Asteroiden konnten nicht geladen werden</string>
+	<string name="failed_to_load_observatories">Sternwarten konnten nicht geladen werden</string>
+	<string name="failed_to_load_earth_photos">Erdfotos konnten nicht geladen werden</string>
+	<string name="failed_to_load_mars_photos">Marsfotos konnten nicht geladen werden</string>
+
+	<!-- Date format strings -->
+	<string name="earth_photo_content_desc_format">Erdfoto vom %1$s</string>
+	<string name="mars_photo_content_desc_format">Marsfoto vom %1$s Rover</string>
+
+	<!-- Rover and camera info -->
+	<string name="unknown_rover">Unbekannter Rover</string>
+	<string name="unknown_camera">Unbekannte Kamera</string>
+	<string name="unknown_asteroid">Unbekannter Asteroid</string>
+
+	<!-- Theme selection placeholder -->
+	<string name="theme_selection_placeholder">Designauswahl - Wird mit RadioButtons implementiert</string>
+
+	<!-- Action button labels -->
+	<string name="directions_button">Wegbeschreibung</string>
+	<string name="call_button">Anrufen</string>
+	<string name="select_date_button">Datum auswählen</string>
+	<string name="observatory_closed">Geschlossen</string>
+
+	<!-- Video control labels -->
+	<string name="pause_video">Video pausieren</string>
+	<string name="mute_video">Video stummschalten</string>
+	<string name="unmute_video">Stummschaltung aufheben</string>
+	<string name="enter_fullscreen">Vollbild aktivieren</string>
+	<string name="exit_fullscreen">Vollbild verlassen</string>
+
+	<!-- Additional missing UI strings -->
+	<string name="show_only_open_observatories">Nur geöffnete Sternwarten anzeigen</string>
+	<string name="clear">Löschen</string>
+</resources>

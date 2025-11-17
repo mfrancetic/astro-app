@@ -20,6 +20,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -106,6 +109,7 @@ fun EarthPhotoScreen(viewModel: EarthPhotoViewModel = koinViewModel()) {
             EarthPhotoScreenContent(
                 state = state,
                 onRetry = { viewModel.loadPhotos() },
+                onRefresh = { viewModel.loadPhotos() },
                 onFullScreenPhoto = { earthPhoto ->
                     selectedEarthPhoto = earthPhoto
                     showFullScreenPhoto = true
@@ -136,73 +140,101 @@ fun EarthPhotoScreen(viewModel: EarthPhotoViewModel = koinViewModel()) {
 private fun EarthPhotoScreenContent(
     state: EarthPhotoState,
     onRetry: () -> Unit,
+    onRefresh: () -> Unit,
     onFullScreenPhoto: (EarthPhoto) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
-        // Display selected date
-        if (state.selectedDate.isNotBlank()) {
-            Text(
-                text = state.selectedDate,
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center,
-                modifier =
-                    Modifier.fillMaxWidth()
-                        .padding(bottom = dimensionResource(R.dimen.spacing_medium))
-            )
+    val pullToRefreshState = rememberPullToRefreshState()
+
+    LaunchedEffect(state.isLoading) {
+        if (!state.isLoading) {
+            pullToRefreshState.endRefresh()
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize().nestedScroll(pullToRefreshState.nestedScrollConnection)) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))
+        ) {
+            // Display selected date
+            if (state.selectedDate.isNotBlank()) {
+                Text(
+                    text = state.selectedDate,
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center,
+                    modifier =
+                        Modifier.fillMaxWidth()
+                            .padding(bottom = dimensionResource(R.dimen.spacing_medium))
+                )
+            }
+
+            when {
+                state.isLoading && state.earthPhotos.isEmpty() -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+                state.error != null -> {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.errorContainer
+                            )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
+                        ) {
+                            Text(
+                                text = state.error,
+                                color = MaterialTheme.colorScheme.onErrorContainer
+                            )
+                        }
+                    }
+                }
+                state.earthPhotos.isNotEmpty() -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        verticalArrangement =
+                            Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
+                        horizontalArrangement =
+                            Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
+                    ) {
+                        items(state.earthPhotos) { earthPhoto ->
+                            EarthPhotoItem(
+                                earthPhoto = earthPhoto,
+                                onClick = { onFullScreenPhoto(earthPhoto) }
+                            )
+                        }
+                    }
+                }
+                else -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "No Earth photos found for the selected date",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+
+                            Spacer(
+                                modifier =
+                                    Modifier.height(dimensionResource(R.dimen.spacing_medium))
+                            )
+
+                            Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
+                        }
+                    }
+                }
+            }
         }
 
-        when {
-            state.isLoading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            }
-            state.error != null -> {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.errorContainer
-                        )
-                ) {
-                    Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
-                        Text(text = state.error, color = MaterialTheme.colorScheme.onErrorContainer)
-                    }
-                }
-            }
-            state.earthPhotos.isNotEmpty() -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    verticalArrangement =
-                        Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
-                    horizontalArrangement =
-                        Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
-                ) {
-                    items(state.earthPhotos) { earthPhoto ->
-                        EarthPhotoItem(
-                            earthPhoto = earthPhoto,
-                            onClick = { onFullScreenPhoto(earthPhoto) }
-                        )
-                    }
-                }
-            }
-            else -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "No Earth photos found for the selected date",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+        PullToRefreshContainer(
+            state = pullToRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+    }
 
-                        Spacer(
-                            modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium))
-                        )
-
-                        Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
-                    }
-                }
-            }
-        }
+    if (pullToRefreshState.isRefreshing) {
+        LaunchedEffect(true) { onRefresh() }
     }
 }
 
@@ -240,6 +272,7 @@ private fun EarthPhotoScreenLoadingPreview() {
         EarthPhotoScreenContent(
             state = EarthPhotoState(isLoading = true),
             onRetry = {},
+            onRefresh = {},
             onFullScreenPhoto = {}
         )
     }
@@ -256,6 +289,7 @@ private fun EarthPhotoScreenErrorPreview() {
                     error = "Failed to load Earth photos. Please check your internet connection."
                 ),
             onRetry = {},
+            onRefresh = {},
             onFullScreenPhoto = {}
         )
     }
@@ -268,6 +302,7 @@ private fun EarthPhotoScreenEmptyPreview() {
         EarthPhotoScreenContent(
             state = EarthPhotoState(isLoading = false, earthPhotos = emptyList(), error = null),
             onRetry = {},
+            onRefresh = {},
             onFullScreenPhoto = {}
         )
     }
@@ -310,6 +345,7 @@ private fun EarthPhotoScreenSuccessPreview() {
                     error = null
                 ),
             onRetry = {},
+            onRefresh = {},
             onFullScreenPhoto = {}
         )
     }

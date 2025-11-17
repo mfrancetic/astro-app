@@ -2,12 +2,17 @@ package com.udacity.astroapp.ui.screens.photo
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -93,6 +98,7 @@ fun PhotoScreen(onShare: () -> Unit = {}, viewModel: PhotoViewModel = koinViewMo
             PhotoScreenContent(
                 state = state,
                 onRetry = { viewModel.loadPhotos() },
+                onRefresh = { viewModel.loadPhotos() },
                 onShare = onShare,
                 onFullScreenPhoto = { photo ->
                     selectedPhoto = photo
@@ -207,13 +213,25 @@ private fun ImageContent(
 private fun PhotoScreenContent(
     state: PhotoState,
     onRetry: () -> Unit,
+    onRefresh: () -> Unit,
     onShare: () -> Unit,
     onFullScreenPhoto: (Photo) -> Unit,
     onSharePhoto: (Photo) -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    val pullToRefreshState = rememberPullToRefreshState()
+
+    LaunchedEffect(state.isLoading) {
+        if (!state.isLoading) {
+            pullToRefreshState.endRefresh()
+        }
+    }
+
+    Box(modifier = Modifier.fillMaxSize().nestedScroll(pullToRefreshState.nestedScrollConnection)) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding)),
+            modifier =
+                Modifier.fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(dimensionResource(R.dimen.card_padding)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Display selected date
@@ -229,7 +247,7 @@ private fun PhotoScreenContent(
             }
 
             when {
-                state.isLoading -> {
+                state.isLoading && state.photos.isEmpty() -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
@@ -300,6 +318,15 @@ private fun PhotoScreenContent(
                 Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.share))
             }
         }
+
+        PullToRefreshContainer(
+            state = pullToRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+    }
+
+    if (pullToRefreshState.isRefreshing) {
+        LaunchedEffect(true) { onRefresh() }
     }
 }
 
@@ -366,6 +393,7 @@ private fun PhotoScreenLoadingPreview() {
         PhotoScreenContent(
             state = PhotoState(isLoading = true),
             onRetry = {},
+            onRefresh = {},
             onShare = {},
             onFullScreenPhoto = {},
             onSharePhoto = {}
@@ -384,6 +412,7 @@ private fun PhotoScreenErrorPreview() {
                     error = "Failed to load photos. Please check your internet connection."
                 ),
             onRetry = {},
+            onRefresh = {},
             onShare = {},
             onFullScreenPhoto = {},
             onSharePhoto = {}
@@ -398,6 +427,7 @@ private fun PhotoScreenEmptyPreview() {
         PhotoScreenContent(
             state = PhotoState(isLoading = false, photos = emptyList(), error = null),
             onRetry = {},
+            onRefresh = {},
             onShare = {},
             onFullScreenPhoto = {},
             onSharePhoto = {}
@@ -431,6 +461,7 @@ private fun PhotoScreenSuccessPreview() {
                     error = null
                 ),
             onRetry = {},
+            onRefresh = {},
             onShare = {},
             onFullScreenPhoto = {},
             onSharePhoto = {}

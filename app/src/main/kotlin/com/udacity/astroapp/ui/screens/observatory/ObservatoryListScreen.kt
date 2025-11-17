@@ -21,11 +21,14 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -84,6 +87,7 @@ fun ObservatoryListScreen(
         hasLocationPermission = locationPermissionState.status.isGranted,
         onRequestLocationPermission = { locationPermissionState.launchPermissionRequest() },
         onLoadObservatories = { viewModel.loadObservatories() },
+        onRefresh = { viewModel.loadObservatories() },
         onNavigateToObservatoryDetails = onNavigateToObservatoryDetails
     )
 }
@@ -96,94 +100,129 @@ private fun ObservatoryListScreenContent(
     hasLocationPermission: Boolean,
     onRequestLocationPermission: () -> Unit,
     onLoadObservatories: () -> Unit,
+    onRefresh: () -> Unit,
     onNavigateToObservatoryDetails: (String) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
-        // Location permission and search section
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
-                if (!hasLocationPermission) {
-                    Text(
-                        text = "Location permission needed for nearby observatories",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+    val pullToRefreshState = rememberPullToRefreshState()
 
-                    Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
-
-                    Button(onClick = onRequestLocationPermission) {
-                        Icon(Icons.Default.LocationOn, contentDescription = null)
-                        Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
-                        Text(stringResource(R.string.grant_location_permission_button))
-                    }
-
-                    Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Button(onClick = onLoadObservatories, modifier = Modifier.weight(1f)) {
-                        Text(if (hasLocationPermission) "Find Nearby" else "Show All")
-                    }
-
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
-
-                    Button(onClick = { /* Open search dialog */}, modifier = Modifier.weight(1f)) {
-                        Text(stringResource(R.string.search))
-                    }
-                }
-            }
+    LaunchedEffect(isLoading) {
+        if (!isLoading) {
+            pullToRefreshState.endRefresh()
         }
+    }
 
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
-
-        when {
-            isLoading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            }
-            error != null -> {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.errorContainer
+    Box(modifier = Modifier.fillMaxSize().nestedScroll(pullToRefreshState.nestedScrollConnection)) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))
+        ) {
+            // Location permission and search section
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
+                    if (!hasLocationPermission) {
+                        Text(
+                            text = "Location permission needed for nearby observatories",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                ) {
-                    Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
-                        Text(text = error, color = MaterialTheme.colorScheme.onErrorContainer)
 
                         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
-                        Button(onClick = onLoadObservatories) {
-                            Text(stringResource(R.string.retry))
+                        Button(onClick = onRequestLocationPermission) {
+                            Icon(Icons.Default.LocationOn, contentDescription = null)
+                            Spacer(
+                                modifier = Modifier.width(dimensionResource(R.dimen.spacing_small))
+                            )
+                            Text(stringResource(R.string.grant_location_permission_button))
+                        }
+
+                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
+                    }
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Button(onClick = onLoadObservatories, modifier = Modifier.weight(1f)) {
+                            Text(if (hasLocationPermission) "Find Nearby" else "Show All")
+                        }
+
+                        Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
+
+                        Button(
+                            onClick = { /* Open search dialog */},
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text(stringResource(R.string.search))
                         }
                     }
                 }
             }
-            observatories.isNotEmpty() -> {
-                LazyColumn {
-                    items(observatories, key = { it.observatoryId }) { observatory ->
-                        ObservatoryItem(
-                            observatory = observatory,
-                            onClick = { onNavigateToObservatoryDetails(observatory.observatoryId) }
+
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_large)))
+
+            when {
+                isLoading && observatories.isEmpty() -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                }
+                error != null -> {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.errorContainer
+                            )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
+                        ) {
+                            Text(text = error, color = MaterialTheme.colorScheme.onErrorContainer)
+
+                            Spacer(
+                                modifier = Modifier.height(dimensionResource(R.dimen.spacing_small))
+                            )
+
+                            Button(onClick = onLoadObservatories) {
+                                Text(stringResource(R.string.retry))
+                            }
+                        }
+                    }
+                }
+                observatories.isNotEmpty() -> {
+                    LazyColumn {
+                        items(observatories, key = { it.observatoryId }) { observatory ->
+                            ObservatoryItem(
+                                observatory = observatory,
+                                onClick = {
+                                    onNavigateToObservatoryDetails(observatory.observatoryId)
+                                }
+                            )
+                            Spacer(
+                                modifier = Modifier.height(dimensionResource(R.dimen.spacing_small))
+                            )
+                        }
+                    }
+                }
+                else -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            text = "No observatories found",
+                            style = MaterialTheme.typography.bodyLarge
                         )
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
                     }
                 }
             }
-            else -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        text = "No observatories found",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
         }
+
+        PullToRefreshContainer(
+            state = pullToRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+    }
+
+    if (pullToRefreshState.isRefreshing) {
+        LaunchedEffect(true) { onRefresh() }
     }
 }
 
@@ -221,6 +260,7 @@ private fun ObservatoryListScreenLoadingPreview() {
             hasLocationPermission = false,
             onRequestLocationPermission = {},
             onLoadObservatories = {},
+            onRefresh = {},
             onNavigateToObservatoryDetails = {}
         )
     }
@@ -237,6 +277,7 @@ private fun ObservatoryListScreenErrorPreview() {
             hasLocationPermission = true,
             onRequestLocationPermission = {},
             onLoadObservatories = {},
+            onRefresh = {},
             onNavigateToObservatoryDetails = {}
         )
     }
@@ -253,6 +294,7 @@ private fun ObservatoryListScreenEmptyPreview() {
             hasLocationPermission = false,
             onRequestLocationPermission = {},
             onLoadObservatories = {},
+            onRefresh = {},
             onNavigateToObservatoryDetails = {}
         )
     }
@@ -304,6 +346,7 @@ private fun ObservatoryListScreenSuccessPreview() {
             hasLocationPermission = true,
             onRequestLocationPermission = {},
             onLoadObservatories = {},
+            onRefresh = {},
             onNavigateToObservatoryDetails = {}
         )
     }

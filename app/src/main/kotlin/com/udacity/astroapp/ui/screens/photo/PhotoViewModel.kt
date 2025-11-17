@@ -50,8 +50,14 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
 
         viewModelScope.launch {
             try {
-                photoRepository.getPhotoByDate(state.selectedDate, forceRefresh = true)
-                reduce { state.copy(isLoading = false) }
+                val photo = photoRepository.getPhotoByDate(state.selectedDate, forceRefresh = true)
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                        photos = photo?.let { listOf(it) } ?: state.photos,
+                        selectedPhoto = photo ?: state.selectedPhoto
+                    )
+                }
             } catch (e: Exception) {
                 reduce {
                     state.copy(isLoading = false, error = e.message ?: "Failed to load photos")

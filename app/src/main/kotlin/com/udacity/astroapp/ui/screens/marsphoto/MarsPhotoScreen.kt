@@ -20,13 +20,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -93,6 +97,7 @@ fun MarsPhotoScreen(viewModel: MarsPhotoViewModel = koinViewModel()) {
             MarsPhotoScreenContent(
                 state = state,
                 onRetry = { viewModel.onRefresh() },
+                onRefresh = { viewModel.onRefresh() },
                 onFullScreenPhoto = { marsPhoto ->
                     selectedMarsPhoto = marsPhoto
                     showFullScreenPhoto = true
@@ -123,74 +128,105 @@ fun MarsPhotoScreen(viewModel: MarsPhotoViewModel = koinViewModel()) {
 private fun MarsPhotoScreenContent(
     state: MarsPhotoState,
     onRetry: () -> Unit,
+    onRefresh: () -> Unit,
     onFullScreenPhoto: (MarsPhoto) -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))) {
-        // Display selected date
-        Text(
-            text = state.selectedDate.toDateString(),
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
-            modifier =
-                Modifier.fillMaxWidth().padding(bottom = dimensionResource(R.dimen.spacing_medium))
-        )
+    val pullToRefreshState = rememberPullToRefreshState()
 
-        when {
-            state.isLoading -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            }
-            state.error != null -> {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.errorContainer
-                        )
-                ) {
-                    Column(modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))) {
-                        Text(text = state.error, color = MaterialTheme.colorScheme.onErrorContainer)
+    LaunchedEffect(state.isLoading) {
+        if (!state.isLoading) {
+            pullToRefreshState.endRefresh()
+        }
+    }
 
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
+    Box(modifier = Modifier.fillMaxSize().nestedScroll(pullToRefreshState.nestedScrollConnection)) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.spacing_large))
+        ) {
+            // Display selected date
+            Text(
+                text = state.selectedDate.toDateString(),
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                modifier =
+                    Modifier.fillMaxWidth()
+                        .padding(bottom = dimensionResource(R.dimen.spacing_medium))
+            )
 
-                        Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
+            when {
+                state.isLoading && state.filteredPhotos.isEmpty() -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
                     }
                 }
-            }
-            state.filteredPhotos.isNotEmpty() -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    verticalArrangement =
-                        Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
-                    horizontalArrangement =
-                        Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
-                ) {
-                    items(state.filteredPhotos) { marsPhoto ->
-                        MarsPhotoItem(
-                            marsPhoto = marsPhoto,
-                            onClick = { onFullScreenPhoto(marsPhoto) }
-                        )
+                state.error != null -> {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors =
+                            CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.errorContainer
+                            )
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(dimensionResource(R.dimen.spacing_large))
+                        ) {
+                            Text(
+                                text = state.error,
+                                color = MaterialTheme.colorScheme.onErrorContainer
+                            )
+
+                            Spacer(
+                                modifier = Modifier.height(dimensionResource(R.dimen.spacing_small))
+                            )
+
+                            Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
+                        }
                     }
                 }
-            }
-            else -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "No Mars photos found for the selected filters",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                state.filteredPhotos.isNotEmpty() -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        verticalArrangement =
+                            Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
+                        horizontalArrangement =
+                            Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
+                    ) {
+                        items(state.filteredPhotos) { marsPhoto ->
+                            MarsPhotoItem(
+                                marsPhoto = marsPhoto,
+                                onClick = { onFullScreenPhoto(marsPhoto) }
+                            )
+                        }
+                    }
+                }
+                else -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = "No Mars photos found for the selected filters",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
 
-                        Spacer(
-                            modifier = Modifier.height(dimensionResource(R.dimen.spacing_medium))
-                        )
+                            Spacer(
+                                modifier =
+                                    Modifier.height(dimensionResource(R.dimen.spacing_medium))
+                            )
 
-                        Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
+                            Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
+                        }
                     }
                 }
             }
         }
+
+        PullToRefreshContainer(
+            state = pullToRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+    }
+
+    if (pullToRefreshState.isRefreshing) {
+        LaunchedEffect(true) { onRefresh() }
     }
 }
 
@@ -233,6 +269,7 @@ private fun MarsPhotoScreenLoadingPreview() {
         MarsPhotoScreenContent(
             state = MarsPhotoState(isLoading = true),
             onRetry = {},
+            onRefresh = {},
             onFullScreenPhoto = {}
         )
     }
@@ -249,6 +286,7 @@ private fun MarsPhotoScreenErrorPreview() {
                     error = "Failed to load Mars photos. Please check your internet connection."
                 ),
             onRetry = {},
+            onRefresh = {},
             onFullScreenPhoto = {}
         )
     }
@@ -261,6 +299,7 @@ private fun MarsPhotoScreenEmptyPreview() {
         MarsPhotoScreenContent(
             state = MarsPhotoState(isLoading = false, filteredPhotos = emptyList(), error = null),
             onRetry = {},
+            onRefresh = {},
             onFullScreenPhoto = {}
         )
     }
@@ -343,6 +382,7 @@ private fun MarsPhotoScreenSuccessPreview() {
                     error = null
                 ),
             onRetry = {},
+            onRefresh = {},
             onFullScreenPhoto = {}
         )
     }

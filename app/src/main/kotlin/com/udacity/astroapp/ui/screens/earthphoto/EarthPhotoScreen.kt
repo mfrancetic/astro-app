@@ -1,5 +1,6 @@
 package com.udacity.astroapp.ui.screens.earthphoto
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -347,6 +348,43 @@ private fun EarthPhotoScreenSuccessPreview() {
             onRetry = {},
             onRefresh = {},
             onFullScreenPhoto = {}
+        )
+    }
+}
+
+// EarthPhotoItem Previews
+@Preview(name = "Earth Photo Item - Light", showBackground = true)
+@Composable
+private fun EarthPhotoItemLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        EarthPhotoItem(
+            earthPhoto =
+                EarthPhoto(
+                    earthPhotoId = 1,
+                    earthPhotoUrl = "https://example.com/earth-pacific.jpg",
+                    earthPhotoDateTime = "2024-01-15 14:23:15"
+                ),
+            onClick = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Earth Photo Item - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun EarthPhotoItemDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        EarthPhotoItem(
+            earthPhoto =
+                EarthPhoto(
+                    earthPhotoId = 1,
+                    earthPhotoUrl = "https://example.com/earth-pacific.jpg",
+                    earthPhotoDateTime = "2024-01-15 14:23:15"
+                ),
+            onClick = {}
         )
     }
 }

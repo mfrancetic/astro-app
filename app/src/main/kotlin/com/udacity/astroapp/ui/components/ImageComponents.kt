@@ -1,5 +1,6 @@
 package com.udacity.astroapp.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -26,6 +28,7 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.request.ImageRequest
 import com.udacity.astroapp.R
+import com.udacity.astroapp.ui.theme.AstroAppTheme
 
 @Composable
 fun AstroImage(
@@ -339,5 +342,146 @@ fun FullScreenPhotoDialog(
                 )
             }
         }
+    }
+}
+
+// Image Components Previews
+@Preview(name = "AstroImage - Light", showBackground = true)
+@Composable
+private fun AstroImageLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        AstroImage(
+            imageUrl = "https://example.com/nebula.jpg",
+            contentDescription = "Beautiful nebula",
+            modifier =
+                Modifier.fillMaxWidth().height(dimensionResource(R.dimen.photo_content_height))
+        )
+    }
+}
+
+@Preview(
+    name = "AstroImage - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun AstroImageDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        AstroImage(
+            imageUrl = "https://example.com/nebula.jpg",
+            contentDescription = "Beautiful nebula",
+            modifier =
+                Modifier.fillMaxWidth().height(dimensionResource(R.dimen.photo_content_height))
+        )
+    }
+}
+
+@Preview(name = "PhotoCard - Light", showBackground = true)
+@Composable
+private fun PhotoCardLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        PhotoCard(
+            imageUrl = "https://example.com/galaxy.jpg",
+            title = "Andromeda Galaxy",
+            subtitle = "Our closest galactic neighbor",
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview(name = "PhotoCard - Dark", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun PhotoCardDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        PhotoCard(
+            imageUrl = "https://example.com/galaxy.jpg",
+            title = "Andromeda Galaxy",
+            subtitle = "Our closest galactic neighbor",
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Preview(name = "GridImageItem with overlay - Light", showBackground = true)
+@Composable
+private fun GridImageItemLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        GridImageItem(
+            imageUrl = "https://example.com/mars-surface.jpg",
+            contentDescription = "Mars surface photo",
+            overlayText = "Sol 3654 - NAVCAM",
+        )
+    }
+}
+
+@Preview(
+    name = "GridImageItem with overlay - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun GridImageItemDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        GridImageItem(
+            imageUrl = "https://example.com/mars-surface.jpg",
+            contentDescription = "Mars surface photo",
+            overlayText = "Sol 3654 - NAVCAM",
+        )
+    }
+}
+
+@Preview(name = "GridImageItem no overlay - Light", showBackground = true)
+@Composable
+private fun GridImageItemNoOverlayLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        GridImageItem(
+            imageUrl = "https://example.com/earth.jpg",
+            contentDescription = "Earth photo",
+        )
+    }
+}
+
+@Preview(
+    name = "GridImageItem no overlay - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun GridImageItemNoOverlayDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        GridImageItem(
+            imageUrl = "https://example.com/earth.jpg",
+            contentDescription = "Earth photo",
+        )
+    }
+}
+
+@Preview(name = "FullScreenImageViewer - Light", showBackground = true)
+@Composable
+private fun FullScreenImageViewerLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        FullScreenImageViewer(
+            imageUrl = "https://example.com/jupiter.jpg",
+            contentDescription = "Jupiter close-up",
+            onClose = {},
+            modifier = Modifier.fillMaxSize()
+        )
+    }
+}
+
+@Preview(
+    name = "FullScreenImageViewer - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun FullScreenImageViewerDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        FullScreenImageViewer(
+            imageUrl = "https://example.com/jupiter.jpg",
+            contentDescription = "Jupiter close-up",
+            onClose = {},
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }

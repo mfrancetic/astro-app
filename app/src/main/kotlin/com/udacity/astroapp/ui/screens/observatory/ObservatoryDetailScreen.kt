@@ -1,5 +1,6 @@
 package com.udacity.astroapp.ui.screens.observatory
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -361,6 +362,99 @@ private fun ObservatoryDetailScreenClosedPreview() {
             error = null,
             onNavigateBack = {},
             onRetry = {}
+        )
+    }
+}
+
+// ObservatoryDetails Previews
+@Preview(name = "Observatory Details Open - Light", showBackground = true)
+@Composable
+private fun ObservatoryDetailsOpenLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        ObservatoryDetails(
+            observatory =
+                Observatory(
+                    observatoryId = "1",
+                    observatoryName = "Griffith Observatory",
+                    observatoryAddress = "2800 E Observatory Rd, Los Angeles, CA 90027",
+                    observatoryPhoneNumber = "+1 (213) 473-0800",
+                    observatoryOpenNow = true,
+                    observatoryOpeningHours = "Tue-Fri 12pm-10pm, Sat-Sun 10am-10pm",
+                    observatoryLatitude = 34.1184,
+                    observatoryLongitude = -118.3004,
+                    observatoryUrl = "https://griffithobservatory.org/"
+                )
+        )
+    }
+}
+
+@Preview(
+    name = "Observatory Details Open - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun ObservatoryDetailsOpenDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        ObservatoryDetails(
+            observatory =
+                Observatory(
+                    observatoryId = "1",
+                    observatoryName = "Griffith Observatory",
+                    observatoryAddress = "2800 E Observatory Rd, Los Angeles, CA 90027",
+                    observatoryPhoneNumber = "+1 (213) 473-0800",
+                    observatoryOpenNow = true,
+                    observatoryOpeningHours = "Tue-Fri 12pm-10pm, Sat-Sun 10am-10pm",
+                    observatoryLatitude = 34.1184,
+                    observatoryLongitude = -118.3004,
+                    observatoryUrl = "https://griffithobservatory.org/"
+                )
+        )
+    }
+}
+
+@Preview(name = "Observatory Details Closed - Light", showBackground = true)
+@Composable
+private fun ObservatoryDetailsClosedLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        ObservatoryDetails(
+            observatory =
+                Observatory(
+                    observatoryId = "2",
+                    observatoryName = "Mount Wilson Observatory",
+                    observatoryAddress = "Mt Wilson Observatory Rd, Mt Wilson, CA 91023",
+                    observatoryPhoneNumber = "+1 (626) 440-9016",
+                    observatoryOpenNow = false,
+                    observatoryOpeningHours = "Weekends 10am-5pm (Apr-Nov)",
+                    observatoryLatitude = 34.2259,
+                    observatoryLongitude = -118.0572,
+                    observatoryUrl = "https://www.mtwilson.edu/"
+                )
+        )
+    }
+}
+
+@Preview(
+    name = "Observatory Details Closed - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun ObservatoryDetailsClosedDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        ObservatoryDetails(
+            observatory =
+                Observatory(
+                    observatoryId = "2",
+                    observatoryName = "Mount Wilson Observatory",
+                    observatoryAddress = "Mt Wilson Observatory Rd, Mt Wilson, CA 91023",
+                    observatoryPhoneNumber = "+1 (626) 440-9016",
+                    observatoryOpenNow = false,
+                    observatoryOpeningHours = "Weekends 10am-5pm (Apr-Nov)",
+                    observatoryLatitude = 34.2259,
+                    observatoryLongitude = -118.0572,
+                    observatoryUrl = "https://www.mtwilson.edu/"
+                )
         )
     }
 }

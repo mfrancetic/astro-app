@@ -1,5 +1,6 @@
 package com.udacity.astroapp.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
@@ -12,7 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.udacity.astroapp.R
+import com.udacity.astroapp.ui.theme.AstroAppTheme
 
 @Composable
 fun SearchBar(
@@ -349,4 +352,300 @@ fun FilterSummary(
 // Extension function for joining strings
 private fun List<String>.joinString(separator: String): String {
     return this.joinToString(separator)
+}
+
+// Search and Filter Components Previews
+@Preview(name = "Search Bar Empty - Light", showBackground = true)
+@Composable
+private fun SearchBarEmptyLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        SearchBar(
+            query = "",
+            onQueryChange = {},
+            onSearch = {},
+            placeholder = "Search observatories..."
+        )
+    }
+}
+
+@Preview(
+    name = "Search Bar Empty - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun SearchBarEmptyDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        SearchBar(
+            query = "",
+            onQueryChange = {},
+            onSearch = {},
+            placeholder = "Search observatories..."
+        )
+    }
+}
+
+@Preview(name = "Search Bar Filled - Light", showBackground = true)
+@Composable
+private fun SearchBarFilledLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        SearchBar(
+            query = "Griffith",
+            onQueryChange = {},
+            onSearch = {},
+            placeholder = "Search observatories..."
+        )
+    }
+}
+
+@Preview(
+    name = "Search Bar Filled - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun SearchBarFilledDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        SearchBar(
+            query = "Griffith",
+            onQueryChange = {},
+            onSearch = {},
+            placeholder = "Search observatories..."
+        )
+    }
+}
+
+@Preview(name = "Filter Chip Selected - Light", showBackground = true)
+@Composable
+private fun FilterChipSelectedLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        FilterChip(label = "Hazardous", selected = true, onSelectedChange = {})
+    }
+}
+
+@Preview(
+    name = "Filter Chip Selected - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun FilterChipSelectedDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        FilterChip(label = "Hazardous", selected = true, onSelectedChange = {})
+    }
+}
+
+@Preview(name = "Filter Chip Unselected - Light", showBackground = true)
+@Composable
+private fun FilterChipUnselectedLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        FilterChip(label = "Safe", selected = false, onSelectedChange = {})
+    }
+}
+
+@Preview(
+    name = "Filter Chip Unselected - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun FilterChipUnselectedDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        FilterChip(label = "Safe", selected = false, onSelectedChange = {})
+    }
+}
+
+@Preview(name = "Filter Chip Group - Light", showBackground = true)
+@Composable
+private fun FilterChipGroupLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        FilterChipGroup(
+            title = "Cameras",
+            options = listOf("NAVCAM", "MAST", "FHAZ", "RHAZ"),
+            selectedOptions = setOf("NAVCAM", "MAST"),
+            onSelectionChange = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Filter Chip Group - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun FilterChipGroupDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        FilterChipGroup(
+            title = "Cameras",
+            options = listOf("NAVCAM", "MAST", "FHAZ", "RHAZ"),
+            selectedOptions = setOf("NAVCAM", "MAST"),
+            onSelectionChange = {}
+        )
+    }
+}
+
+@Preview(name = "Single Select Filter Group - Light", showBackground = true)
+@Composable
+private fun SingleSelectFilterGroupLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        SingleSelectFilterGroup(
+            title = "Rover",
+            options = listOf("Curiosity", "Perseverance", "Opportunity", "Spirit"),
+            selectedOption = "Curiosity",
+            onSelectionChange = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Single Select Filter Group - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun SingleSelectFilterGroupDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        SingleSelectFilterGroup(
+            title = "Rover",
+            options = listOf("Curiosity", "Perseverance", "Opportunity", "Spirit"),
+            selectedOption = "Curiosity",
+            onSelectionChange = {}
+        )
+    }
+}
+
+@Preview(name = "Search Filter Card - Light", showBackground = true)
+@Composable
+private fun SearchFilterCardLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        SearchFilterCard(
+            searchQuery = "",
+            onSearchQueryChange = {},
+            onSearch = {},
+            title = "Search & Filter",
+            searchPlaceholder = "Search asteroids..."
+        )
+    }
+}
+
+@Preview(
+    name = "Search Filter Card - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun SearchFilterCardDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        SearchFilterCard(
+            searchQuery = "Apollo",
+            onSearchQueryChange = {},
+            onSearch = {},
+            title = "Search & Filter",
+            searchPlaceholder = "Search asteroids..."
+        )
+    }
+}
+
+@Preview(name = "Rover Filter Card - Light", showBackground = true)
+@Composable
+private fun RoverFilterCardLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        RoverFilterCard(
+            selectedRover = "Curiosity",
+            onRoverSelected = {},
+            selectedCamera = "NAVCAM",
+            onCameraSelected = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Rover Filter Card - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun RoverFilterCardDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        RoverFilterCard(
+            selectedRover = "Perseverance",
+            onRoverSelected = {},
+            selectedCamera = "MAST",
+            onCameraSelected = {}
+        )
+    }
+}
+
+@Preview(name = "Asteroid Filter Card - Light", showBackground = true)
+@Composable
+private fun AsteroidFilterCardLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        AsteroidFilterCard(hazardousOnly = true, onHazardousOnlyChange = {})
+    }
+}
+
+@Preview(
+    name = "Asteroid Filter Card - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun AsteroidFilterCardDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        AsteroidFilterCard(hazardousOnly = false, onHazardousOnlyChange = {})
+    }
+}
+
+@Preview(name = "Observatory Filter Card - Light", showBackground = true)
+@Composable
+private fun ObservatoryFilterCardLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        ObservatoryFilterCard(
+            searchRadius = 25,
+            onSearchRadiusChange = {},
+            openNowOnly = true,
+            onOpenNowOnlyChange = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Observatory Filter Card - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun ObservatoryFilterCardDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        ObservatoryFilterCard(
+            searchRadius = 50,
+            onSearchRadiusChange = {},
+            openNowOnly = false,
+            onOpenNowOnlyChange = {}
+        )
+    }
+}
+
+@Preview(name = "Filter Summary - Light", showBackground = true)
+@Composable
+private fun FilterSummaryLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        FilterSummary(
+            activeFilters = listOf("Hazardous Only", "Date: 2024-01-15", "Rover: Curiosity"),
+            onClearAll = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Filter Summary - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun FilterSummaryDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        FilterSummary(activeFilters = listOf("Open Now", "Radius: 25km"), onClearAll = {})
+    }
 }

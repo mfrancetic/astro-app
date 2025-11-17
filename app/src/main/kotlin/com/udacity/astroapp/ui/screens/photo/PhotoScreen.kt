@@ -1,5 +1,6 @@
 package com.udacity.astroapp.ui.screens.photo
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -465,6 +466,165 @@ private fun PhotoScreenSuccessPreview() {
             onShare = {},
             onFullScreenPhoto = {},
             onSharePhoto = {}
+        )
+    }
+}
+
+// PhotoContent Previews
+@Preview(name = "Photo Content - Light", showBackground = true)
+@Composable
+private fun PhotoContentLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        PhotoContent(
+            photo =
+                Photo(
+                    photoId = 1,
+                    photoTitle = "The Helix Nebula",
+                    photoDate = "2024-01-15",
+                    photoDescription =
+                        "The Helix Nebula is a large planetary nebula located in the constellation Aquarius. Also known as NGC 7293, it is one of the closest bright nebulae to Earth at a distance of about 695 light-years.",
+                    photoUrl = "https://example.com/helix-nebula.jpg",
+                    photoMediaType = "image"
+                ),
+            onShare = {},
+            onFullScreen = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Photo Content - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun PhotoContentDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        PhotoContent(
+            photo =
+                Photo(
+                    photoId = 1,
+                    photoTitle = "The Helix Nebula",
+                    photoDate = "2024-01-15",
+                    photoDescription =
+                        "The Helix Nebula is a large planetary nebula located in the constellation Aquarius. Also known as NGC 7293, it is one of the closest bright nebulae to Earth at a distance of about 695 light-years.",
+                    photoUrl = "https://example.com/helix-nebula.jpg",
+                    photoMediaType = "image"
+                ),
+            onShare = {},
+            onFullScreen = {}
+        )
+    }
+}
+
+@Preview(name = "Photo Content Video - Light", showBackground = true)
+@Composable
+private fun PhotoContentVideoLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        PhotoContent(
+            photo =
+                Photo(
+                    photoId = 2,
+                    photoTitle = "Solar Eclipse Time-Lapse",
+                    photoDate = "2024-04-08",
+                    photoDescription =
+                        "A mesmerizing time-lapse of the total solar eclipse showing the Moon's shadow sweeping across the Earth's surface. Captured from multiple vantage points.",
+                    photoUrl = "https://www.youtube.com/watch?v=example",
+                    photoMediaType = "video"
+                ),
+            onShare = {},
+            onFullScreen = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Photo Content Video - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun PhotoContentVideoDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        PhotoContent(
+            photo =
+                Photo(
+                    photoId = 2,
+                    photoTitle = "Solar Eclipse Time-Lapse",
+                    photoDate = "2024-04-08",
+                    photoDescription =
+                        "A mesmerizing time-lapse of the total solar eclipse showing the Moon's shadow sweeping across the Earth's surface. Captured from multiple vantage points.",
+                    photoUrl = "https://www.youtube.com/watch?v=example",
+                    photoMediaType = "video"
+                ),
+            onShare = {},
+            onFullScreen = {}
+        )
+    }
+}
+
+// ImageContent Previews
+@Preview(name = "Image Content - Light", showBackground = true)
+@Composable
+private fun ImageContentLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        ImageContent(
+            imageUrl = "https://example.com/andromeda-galaxy.jpg",
+            contentDescription = "The Andromeda Galaxy",
+            onFullScreen = {},
+            modifier =
+                Modifier.fillMaxWidth().height(dimensionResource(R.dimen.photo_content_height))
+        )
+    }
+}
+
+@Preview(
+    name = "Image Content - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun ImageContentDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        ImageContent(
+            imageUrl = "https://example.com/andromeda-galaxy.jpg",
+            contentDescription = "The Andromeda Galaxy",
+            onFullScreen = {},
+            modifier =
+                Modifier.fillMaxWidth().height(dimensionResource(R.dimen.photo_content_height))
+        )
+    }
+}
+
+// VideoContent Previews
+@Preview(name = "Video Content - Light", showBackground = true)
+@Composable
+private fun VideoContentLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        VideoContent(
+            videoUrl = "https://www.youtube.com/watch?v=example",
+            title = "Journey Through the Solar System",
+            onFullscreenClick = {},
+            modifier =
+                Modifier.fillMaxWidth().height(dimensionResource(R.dimen.photo_content_height))
+        )
+    }
+}
+
+@Preview(
+    name = "Video Content - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun VideoContentDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        VideoContent(
+            videoUrl = "https://www.youtube.com/watch?v=example",
+            title = "Journey Through the Solar System",
+            onFullscreenClick = {},
+            modifier =
+                Modifier.fillMaxWidth().height(dimensionResource(R.dimen.photo_content_height))
         )
     }
 }

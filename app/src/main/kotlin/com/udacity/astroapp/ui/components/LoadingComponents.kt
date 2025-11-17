@@ -1,5 +1,6 @@
 package com.udacity.astroapp.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -7,7 +8,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.udacity.astroapp.R
+import com.udacity.astroapp.ui.theme.AstroAppTheme
 
 @Composable
 fun LoadingIndicator(modifier: Modifier = Modifier, text: String? = null) {
@@ -162,5 +165,152 @@ fun FullScreenError(
                 }
             }
         }
+    }
+}
+
+// Loading Components Previews
+@Preview(name = "Loading Indicator - Light", showBackground = true)
+@Composable
+private fun LoadingIndicatorLightPreview() {
+    AstroAppTheme(themePreference = 0) { LoadingIndicator() }
+}
+
+@Preview(
+    name = "Loading Indicator - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun LoadingIndicatorDarkPreview() {
+    AstroAppTheme(themePreference = 1) { LoadingIndicator() }
+}
+
+@Preview(name = "Loading Indicator with text - Light", showBackground = true)
+@Composable
+private fun LoadingIndicatorWithTextLightPreview() {
+    AstroAppTheme(themePreference = 0) { LoadingIndicator(text = "Loading photos...") }
+}
+
+@Preview(
+    name = "Loading Indicator with text - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun LoadingIndicatorWithTextDarkPreview() {
+    AstroAppTheme(themePreference = 1) { LoadingIndicator(text = "Loading photos...") }
+}
+
+@Preview(name = "Error Card - Light", showBackground = true)
+@Composable
+private fun ErrorCardLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        ErrorCard(
+            errorMessage = "Failed to load data. Please check your internet connection.",
+            onRetry = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Error Card - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun ErrorCardDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        ErrorCard(
+            errorMessage = "Failed to load data. Please check your internet connection.",
+            onRetry = {}
+        )
+    }
+}
+
+@Preview(name = "Error Card no retry - Light", showBackground = true)
+@Composable
+private fun ErrorCardNoRetryLightPreview() {
+    AstroAppTheme(themePreference = 0) { ErrorCard(errorMessage = "An unexpected error occurred.") }
+}
+
+@Preview(
+    name = "Error Card no retry - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun ErrorCardNoRetryDarkPreview() {
+    AstroAppTheme(themePreference = 1) { ErrorCard(errorMessage = "An unexpected error occurred.") }
+}
+
+@Preview(name = "Empty State Card - Light", showBackground = true)
+@Composable
+private fun EmptyStateCardLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        EmptyStateCard(message = "No items found", actionText = "Refresh", onAction = {})
+    }
+}
+
+@Preview(
+    name = "Empty State Card - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun EmptyStateCardDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        EmptyStateCard(message = "No items found", actionText = "Refresh", onAction = {})
+    }
+}
+
+@Preview(name = "Empty State Card no action - Light", showBackground = true)
+@Composable
+private fun EmptyStateCardNoActionLightPreview() {
+    AstroAppTheme(themePreference = 0) { EmptyStateCard(message = "No results match your search") }
+}
+
+@Preview(
+    name = "Empty State Card no action - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun EmptyStateCardNoActionDarkPreview() {
+    AstroAppTheme(themePreference = 1) { EmptyStateCard(message = "No results match your search") }
+}
+
+@Preview(name = "Full Screen Loading - Light", showBackground = true)
+@Composable
+private fun FullScreenLoadingLightPreview() {
+    AstroAppTheme(themePreference = 0) { FullScreenLoading() }
+}
+
+@Preview(
+    name = "Full Screen Loading - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun FullScreenLoadingDarkPreview() {
+    AstroAppTheme(themePreference = 1) { FullScreenLoading() }
+}
+
+@Preview(name = "Full Screen Error - Light", showBackground = true)
+@Composable
+private fun FullScreenErrorLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        FullScreenError(errorMessage = "Unable to connect to the server", onRetry = {})
+    }
+}
+
+@Preview(
+    name = "Full Screen Error - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun FullScreenErrorDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        FullScreenError(errorMessage = "Unable to connect to the server", onRetry = {})
     }
 }

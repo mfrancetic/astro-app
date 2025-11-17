@@ -1,5 +1,6 @@
 package com.udacity.astroapp.ui.components
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -44,6 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -54,6 +57,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import com.udacity.astroapp.R
+import com.udacity.astroapp.ui.theme.AstroAppTheme
 import com.udacity.astroapp.utils.VideoUtils
 
 /** Composable for displaying YouTube video with embedded player */
@@ -347,5 +351,136 @@ fun FullscreenVideoDialog(videoUrl: String, onDismiss: () -> Unit) {
                 }
             }
         }
+    }
+}
+
+// Video Components Previews
+@Preview(name = "Video Controls Playing - Light", showBackground = true)
+@Composable
+private fun VideoControlsPlayingLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        VideoControls(
+            playerState = PlayerConstants.PlayerState.PLAYING,
+            onPlayPause = {},
+            onFullscreen = {},
+            isFullscreen = false,
+            onVolumeToggle = {},
+            isMuted = false
+        )
+    }
+}
+
+@Preview(
+    name = "Video Controls Playing - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun VideoControlsPlayingDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        VideoControls(
+            playerState = PlayerConstants.PlayerState.PLAYING,
+            onPlayPause = {},
+            onFullscreen = {},
+            isFullscreen = false,
+            onVolumeToggle = {},
+            isMuted = false
+        )
+    }
+}
+
+@Preview(name = "Video Controls Paused - Light", showBackground = true)
+@Composable
+private fun VideoControlsPausedLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        VideoControls(
+            playerState = PlayerConstants.PlayerState.PAUSED,
+            onPlayPause = {},
+            onFullscreen = {},
+            isFullscreen = false,
+            onVolumeToggle = {},
+            isMuted = true
+        )
+    }
+}
+
+@Preview(
+    name = "Video Controls Paused - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun VideoControlsPausedDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        VideoControls(
+            playerState = PlayerConstants.PlayerState.PAUSED,
+            onPlayPause = {},
+            onFullscreen = {},
+            isFullscreen = false,
+            onVolumeToggle = {},
+            isMuted = true
+        )
+    }
+}
+
+@Preview(name = "Video Controls Fullscreen - Light", showBackground = true)
+@Composable
+private fun VideoControlsFullscreenLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        VideoControls(
+            playerState = PlayerConstants.PlayerState.PLAYING,
+            onPlayPause = {},
+            onFullscreen = {},
+            isFullscreen = true,
+            onVolumeToggle = {},
+            isMuted = false
+        )
+    }
+}
+
+@Preview(
+    name = "Video Controls Fullscreen - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun VideoControlsFullscreenDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        VideoControls(
+            playerState = PlayerConstants.PlayerState.PLAYING,
+            onPlayPause = {},
+            onFullscreen = {},
+            isFullscreen = true,
+            onVolumeToggle = {},
+            isMuted = false
+        )
+    }
+}
+
+@Preview(name = "Video Error Content - Light", showBackground = true)
+@Composable
+private fun VideoErrorContentLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        VideoErrorContent(
+            errorMessage = "This video cannot be played",
+            modifier =
+                Modifier.fillMaxSize().height(dimensionResource(R.dimen.photo_content_height))
+        )
+    }
+}
+
+@Preview(
+    name = "Video Error Content - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun VideoErrorContentDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        VideoErrorContent(
+            errorMessage = "This video cannot be played",
+            modifier =
+                Modifier.fillMaxSize().height(dimensionResource(R.dimen.photo_content_height))
+        )
     }
 }

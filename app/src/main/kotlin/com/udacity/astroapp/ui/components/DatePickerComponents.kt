@@ -1,6 +1,7 @@
 package com.udacity.astroapp.ui.components
 
 import android.app.DatePickerDialog
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
@@ -12,7 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.udacity.astroapp.R
+import com.udacity.astroapp.ui.theme.AstroAppTheme
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -322,5 +325,220 @@ fun CompactDatePicker(
                 stringResource(R.string.select_date)
             }
         )
+    }
+}
+
+// Date Picker Components Previews
+@Preview(name = "Date Picker Button - Light", showBackground = true)
+@Composable
+private fun DatePickerButtonLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        DatePickerButton(selectedDate = "2024-01-15", onDateSelected = {})
+    }
+}
+
+@Preview(
+    name = "Date Picker Button - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun DatePickerButtonDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        DatePickerButton(selectedDate = "2024-01-15", onDateSelected = {})
+    }
+}
+
+@Preview(name = "Date Picker Button Empty - Light", showBackground = true)
+@Composable
+private fun DatePickerButtonEmptyLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        DatePickerButton(selectedDate = null, onDateSelected = {}, label = "Select Date")
+    }
+}
+
+@Preview(
+    name = "Date Picker Button Empty - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun DatePickerButtonEmptyDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        DatePickerButton(selectedDate = null, onDateSelected = {}, label = "Select Date")
+    }
+}
+
+@Preview(name = "Date Range Picker - Light", showBackground = true)
+@Composable
+private fun DateRangePickerLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        DateRangePicker(
+            startDate = "2024-01-01",
+            endDate = "2024-01-31",
+            onStartDateSelected = {},
+            onEndDateSelected = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Date Range Picker - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun DateRangePickerDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        DateRangePicker(
+            startDate = "2024-01-01",
+            endDate = "2024-01-31",
+            onStartDateSelected = {},
+            onEndDateSelected = {}
+        )
+    }
+}
+
+@Preview(name = "Date Filter Card - Light", showBackground = true)
+@Composable
+private fun DateFilterCardLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        DateFilterCard(
+            selectedDate = "2024-01-15",
+            onDateSelected = {},
+            onClearDate = {},
+            title = "Filter by Date"
+        )
+    }
+}
+
+@Preview(
+    name = "Date Filter Card - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun DateFilterCardDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        DateFilterCard(
+            selectedDate = "2024-01-15",
+            onDateSelected = {},
+            onClearDate = {},
+            title = "Filter by Date"
+        )
+    }
+}
+
+@Preview(name = "Date Filter Card Empty - Light", showBackground = true)
+@Composable
+private fun DateFilterCardEmptyLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        DateFilterCard(selectedDate = null, onDateSelected = {}, title = "Filter by Date")
+    }
+}
+
+@Preview(
+    name = "Date Filter Card Empty - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun DateFilterCardEmptyDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        DateFilterCard(selectedDate = null, onDateSelected = {}, title = "Filter by Date")
+    }
+}
+
+@Preview(name = "Date Range Filter Card - Light", showBackground = true)
+@Composable
+private fun DateRangeFilterCardLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        DateRangeFilterCard(
+            startDate = "2024-01-01",
+            endDate = "2024-01-31",
+            onStartDateSelected = {},
+            onEndDateSelected = {},
+            onClearRange = {},
+            title = "Filter by Date Range"
+        )
+    }
+}
+
+@Preview(
+    name = "Date Range Filter Card - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun DateRangeFilterCardDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        DateRangeFilterCard(
+            startDate = "2024-01-01",
+            endDate = "2024-01-31",
+            onStartDateSelected = {},
+            onEndDateSelected = {},
+            onClearRange = {},
+            title = "Filter by Date Range"
+        )
+    }
+}
+
+@Preview(name = "Quick Date Selector - Light", showBackground = true)
+@Composable
+private fun QuickDateSelectorLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        QuickDateSelector(selectedDate = "2024-01-15", onDateSelected = {})
+    }
+}
+
+@Preview(
+    name = "Quick Date Selector - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun QuickDateSelectorDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        QuickDateSelector(selectedDate = "2024-01-15", onDateSelected = {})
+    }
+}
+
+@Preview(name = "Compact Date Picker - Light", showBackground = true)
+@Composable
+private fun CompactDatePickerLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        CompactDatePicker(selectedDate = "2024-01-15", onDateSelected = {})
+    }
+}
+
+@Preview(
+    name = "Compact Date Picker - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun CompactDatePickerDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        CompactDatePicker(selectedDate = "2024-01-15", onDateSelected = {})
+    }
+}
+
+@Preview(name = "Compact Date Picker Empty - Light", showBackground = true)
+@Composable
+private fun CompactDatePickerEmptyLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        CompactDatePicker(selectedDate = null, onDateSelected = {})
+    }
+}
+
+@Preview(
+    name = "Compact Date Picker Empty - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun CompactDatePickerEmptyDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        CompactDatePicker(selectedDate = null, onDateSelected = {})
     }
 }

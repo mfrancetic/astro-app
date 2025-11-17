@@ -1,6 +1,7 @@
 package com.udacity.astroapp.ui.components
 
 import android.app.DatePickerDialog
+import android.content.res.Configuration
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -11,7 +12,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.udacity.astroapp.R
+import com.udacity.astroapp.ui.theme.AstroAppTheme
 import java.time.LocalDate
 import java.util.Calendar
 
@@ -70,4 +73,51 @@ fun MainTopAppBar(
             }
         }
     )
+}
+
+// MainTopAppBar Previews
+@Preview(name = "Top App Bar - Light", showBackground = true)
+@Composable
+private fun MainTopAppBarLightPreview() {
+    AstroAppTheme(themePreference = 0) { MainTopAppBar(title = "Astronomy Photo") }
+}
+
+@Preview(
+    name = "Top App Bar - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun MainTopAppBarDarkPreview() {
+    AstroAppTheme(themePreference = 1) { MainTopAppBar(title = "Astronomy Photo") }
+}
+
+@Preview(name = "Top App Bar with date picker - Light", showBackground = true)
+@Composable
+private fun MainTopAppBarWithDateLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        MainTopAppBar(
+            title = "Mars Photos",
+            selectedDate = LocalDate.of(2024, 1, 15),
+            maxDate = LocalDate.now(),
+            onDateSelected = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Top App Bar with date picker - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun MainTopAppBarWithDateDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        MainTopAppBar(
+            title = "Mars Photos",
+            selectedDate = LocalDate.of(2024, 1, 15),
+            maxDate = LocalDate.now(),
+            onDateSelected = {}
+        )
+    }
 }

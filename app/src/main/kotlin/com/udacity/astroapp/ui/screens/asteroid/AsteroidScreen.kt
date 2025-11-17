@@ -1,5 +1,6 @@
 package com.udacity.astroapp.ui.screens.asteroid
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -427,6 +428,99 @@ private fun AsteroidScreenSuccessPreview() {
             onRefresh = {},
             onNavigateToAsteroidDetails = {},
             onHazardousFilterChange = {}
+        )
+    }
+}
+
+// AsteroidItem Previews
+@Preview(name = "Asteroid Item Hazardous - Light", showBackground = true)
+@Composable
+private fun AsteroidItemHazardousLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        AsteroidItem(
+            asteroid =
+                Asteroid(
+                    asteroidId = 1,
+                    asteroidName = "433 Eros",
+                    asteroidDiameterMin = 16.84,
+                    asteroidDiameterMax = 34.4,
+                    asteroidApproachDate = "2024-01-20",
+                    asteroidVelocity = "24.93",
+                    asteroidIsHazardous = true,
+                    asteroidUrl = "https://example.com/asteroid/433"
+                ),
+            onClick = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Asteroid Item Hazardous - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun AsteroidItemHazardousDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        AsteroidItem(
+            asteroid =
+                Asteroid(
+                    asteroidId = 1,
+                    asteroidName = "433 Eros",
+                    asteroidDiameterMin = 16.84,
+                    asteroidDiameterMax = 34.4,
+                    asteroidApproachDate = "2024-01-20",
+                    asteroidVelocity = "24.93",
+                    asteroidIsHazardous = true,
+                    asteroidUrl = "https://example.com/asteroid/433"
+                ),
+            onClick = {}
+        )
+    }
+}
+
+@Preview(name = "Asteroid Item Safe - Light", showBackground = true)
+@Composable
+private fun AsteroidItemSafeLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        AsteroidItem(
+            asteroid =
+                Asteroid(
+                    asteroidId = 2,
+                    asteroidName = "25143 Itokawa",
+                    asteroidDiameterMin = 0.28,
+                    asteroidDiameterMax = 0.33,
+                    asteroidApproachDate = "2024-02-15",
+                    asteroidVelocity = "15.67",
+                    asteroidIsHazardous = false,
+                    asteroidUrl = "https://example.com/asteroid/25143"
+                ),
+            onClick = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Asteroid Item Safe - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun AsteroidItemSafeDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        AsteroidItem(
+            asteroid =
+                Asteroid(
+                    asteroidId = 2,
+                    asteroidName = "25143 Itokawa",
+                    asteroidDiameterMin = 0.28,
+                    asteroidDiameterMax = 0.33,
+                    asteroidApproachDate = "2024-02-15",
+                    asteroidVelocity = "15.67",
+                    asteroidIsHazardous = false,
+                    asteroidUrl = "https://example.com/asteroid/25143"
+                ),
+            onClick = {}
         )
     }
 }

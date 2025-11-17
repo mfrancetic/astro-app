@@ -1,5 +1,6 @@
 package com.udacity.astroapp.ui.screens.marsphoto
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -384,6 +385,111 @@ private fun MarsPhotoScreenSuccessPreview() {
             onRetry = {},
             onRefresh = {},
             onFullScreenPhoto = {}
+        )
+    }
+}
+
+// MarsPhotoItem Previews
+@Preview(name = "Mars Photo Item - Light", showBackground = true)
+@Composable
+private fun MarsPhotoItemLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        MarsPhotoItem(
+            marsPhoto =
+                MarsPhoto(
+                    id = 1,
+                    sol = "3654",
+                    imageUrl = "https://example.com/mars-curiosity.jpg",
+                    earthDate = "2024-01-15",
+                    camera = Camera(cameraName = "NAVCAM", cameraFullName = "Navigation Camera"),
+                    rover =
+                        Rover(
+                            roverName = "Curiosity",
+                            launchDate = "2011-11-26",
+                            landingDate = "2012-08-05"
+                        )
+                ),
+            onClick = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Mars Photo Item - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun MarsPhotoItemDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        MarsPhotoItem(
+            marsPhoto =
+                MarsPhoto(
+                    id = 1,
+                    sol = "3654",
+                    imageUrl = "https://example.com/mars-curiosity.jpg",
+                    earthDate = "2024-01-15",
+                    camera = Camera(cameraName = "NAVCAM", cameraFullName = "Navigation Camera"),
+                    rover =
+                        Rover(
+                            roverName = "Curiosity",
+                            launchDate = "2011-11-26",
+                            landingDate = "2012-08-05"
+                        )
+                ),
+            onClick = {}
+        )
+    }
+}
+
+@Preview(name = "Mars Photo Item Perseverance - Light", showBackground = true)
+@Composable
+private fun MarsPhotoItemPerseveranceLightPreview() {
+    AstroAppTheme(themePreference = 0) {
+        MarsPhotoItem(
+            marsPhoto =
+                MarsPhoto(
+                    id = 2,
+                    sol = "689",
+                    imageUrl = "https://example.com/mars-perseverance.jpg",
+                    earthDate = "2024-01-15",
+                    camera = Camera(cameraName = "MAST", cameraFullName = "Mast Camera"),
+                    rover =
+                        Rover(
+                            roverName = "Perseverance",
+                            launchDate = "2020-07-30",
+                            landingDate = "2021-02-18"
+                        )
+                ),
+            onClick = {}
+        )
+    }
+}
+
+@Preview(
+    name = "Mars Photo Item Perseverance - Dark",
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun MarsPhotoItemPerseveranceDarkPreview() {
+    AstroAppTheme(themePreference = 1) {
+        MarsPhotoItem(
+            marsPhoto =
+                MarsPhoto(
+                    id = 2,
+                    sol = "689",
+                    imageUrl = "https://example.com/mars-perseverance.jpg",
+                    earthDate = "2024-01-15",
+                    camera = Camera(cameraName = "MAST", cameraFullName = "Mast Camera"),
+                    rover =
+                        Rover(
+                            roverName = "Perseverance",
+                            launchDate = "2020-07-30",
+                            landingDate = "2021-02-18"
+                        )
+                ),
+            onClick = {}
         )
     }
 }

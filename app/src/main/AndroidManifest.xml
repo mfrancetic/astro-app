@@ -20,7 +20,7 @@
 		<activity android:name=".activities.MainActivity"
 			android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
 			android:exported="true" android:launchMode="singleTask"
-			android:theme="@style/AppTheme.NoActionBar">
+			android:theme="@style/Theme.AstroApp.Splash">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 

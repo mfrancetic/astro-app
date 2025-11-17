@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Splash screen icon following Android 12+ guidelines (432dp total, 288dp
+	visible) -->
+<layer-list
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:width="94dp" android:height="94dp"
+		android:drawable="@mipmap/ic_launcher" android:gravity="center" />
+</layer-list>

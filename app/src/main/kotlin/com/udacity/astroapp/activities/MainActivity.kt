@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.rememberNavHostEngine
@@ -68,6 +69,9 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Install splash screen
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
 
         // Initialize theme

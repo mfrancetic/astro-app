@@ -5,10 +5,14 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountTree
 import androidx.compose.material.icons.filled.Home
@@ -74,6 +78,9 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
+        // Enable edge-to-edge display
+        enableEdgeToEdge()
+
         // Initialize theme
         val sharedPreferences = getSharedPreferences(getString(R.string.pref_name), MODE_PRIVATE)
         val themeId =
@@ -127,8 +134,12 @@ class MainActivity : ComponentActivity() {
             )
 
         Scaffold(
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
             bottomBar = {
-                TabRow(selectedTabIndex = selectedTabIndex) {
+                TabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars)
+                ) {
                     tabItems.forEachIndexed { index, tabItem ->
                         Tab(
                             selected = selectedTabIndex == index,

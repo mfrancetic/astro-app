@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.devtools.ksp'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 apply plugin: 'com.diffplug.spotless'
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -23,12 +24,12 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-    compileSdk 35
+    compileSdk 36
     defaultConfig {
         resConfigs "hr", "en"
         applicationId "com.udacity.astroapp"
         minSdkVersion 26
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode 33
         versionName "1.0.1+$versionCode"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -56,12 +57,12 @@ android {
 //    }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
         freeCompilerArgs += [
             '-opt-in=kotlin.RequiresOptIn',
             '-opt-in=androidx.compose.material3.ExperimentalMaterial3Api',
@@ -71,10 +72,6 @@ android {
 
     buildFeatures {
         compose true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = '1.5.4'
     }
 
     packagingOptions {

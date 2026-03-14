@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountTree
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Satellite
@@ -133,7 +132,6 @@ class MainActivity : ComponentActivity() {
                 TabItem(stringResource(R.string.tab_daily_photo), Icons.Default.Home),
                 TabItem(stringResource(R.string.tab_asteroid), Icons.Default.Satellite),
                 TabItem(stringResource(R.string.tab_earth), Icons.Default.Public),
-                TabItem(stringResource(R.string.tab_mars), Icons.Default.AccountTree),
                 TabItem(stringResource(R.string.tab_settings), Icons.Default.Settings)
             )
 

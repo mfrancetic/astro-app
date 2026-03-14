@@ -52,6 +52,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
@@ -82,9 +85,7 @@ fun YouTubeVideoPlayer(
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
-                Lifecycle.Event.ON_PAUSE -> {
-                    player?.pause()
-                }
+                Lifecycle.Event.ON_PAUSE -> player?.pause()
                 else -> {}
             }
         }
@@ -130,7 +131,22 @@ fun YouTubeVideoPlayer(
                                     error: PlayerConstants.PlayerError
                                 ) {
                                     Log.e("YouTubePlayer", "Player error: ${error.name}")
-                                    onError("YouTube Player Error: ${error.name}")
+
+                                    if (
+                                        error ==
+                                            PlayerConstants.PlayerError
+                                                .VIDEO_NOT_PLAYABLE_IN_EMBEDDED_PLAYER ||
+                                            error == PlayerConstants.PlayerError.UNKNOWN
+                                    ) {
+                                        Log.w(
+                                            "YouTubePlayer",
+                                            "Video not playable in embedded player: $videoId"
+                                        )
+                                        // Let the native YouTube error screen handle it — it
+                                        // already has a Watch on YouTube button
+                                    } else {
+                                        onError("YouTube Player Error: ${error.name}")
+                                    }
                                 }
                             }
                         )
@@ -144,6 +160,48 @@ fun YouTubeVideoPlayer(
             modifier = modifier
         )
     }
+}
+
+/** Composable for playing direct video URLs (e.g. mp4/webm) via ExoPlayer */
+@Composable
+fun DirectVideoPlayer(
+    videoUrl: String,
+    modifier: Modifier = Modifier,
+    onError: (String) -> Unit = {}
+) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            setMediaItem(MediaItem.fromUri(videoUrl))
+            prepare()
+        }
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_PAUSE -> exoPlayer.pause()
+                Lifecycle.Event.ON_RESUME -> exoPlayer.play()
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            exoPlayer.release()
+        }
+    }
+
+    AndroidView(
+        factory = {
+            PlayerView(it).apply {
+                player = exoPlayer
+                useController = true
+            }
+        },
+    )
 }
 
 /** Video control overlay with play/pause and fullscreen buttons */

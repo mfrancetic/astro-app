@@ -47,4 +47,17 @@ object VideoUtils {
     fun isVideoContent(mediaType: String): Boolean {
         return mediaType.equals("video", ignoreCase = true)
     }
+
+    /** Normalizes any YouTube URL to an embed URL. Returns null if ID can't be extracted. */
+    fun toYouTubeEmbedUrl(url: String): String? {
+        if (url.contains("/embed/", ignoreCase = true)) return url
+        val videoId = extractYouTubeVideoId(url) ?: return null
+        return "https://www.youtube.com/embed/$videoId"
+    }
+
+    /** Returns true if the URL points to a YouTube video */
+    fun isYouTubeUrl(url: String): Boolean {
+        return url.contains("youtube.com", ignoreCase = true) ||
+            url.contains("youtu.be", ignoreCase = true)
+    }
 }

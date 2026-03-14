@@ -25,6 +25,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.Photo
+import com.udacity.astroapp.ui.components.DirectVideoPlayer
 import com.udacity.astroapp.ui.components.FullScreenPhotoDialog
 import com.udacity.astroapp.ui.components.FullscreenVideoDialog
 import com.udacity.astroapp.ui.components.MainTopAppBar
@@ -374,15 +375,18 @@ private fun VideoContent(
             }
         }
     } else {
-        YouTubeVideoPlayer(
-            videoUrl = videoUrl,
-            modifier = modifier,
-            onFullscreenClick = onFullscreenClick,
-            onError = { error ->
-                hasError = true
-                errorMessage = error
-            }
-        )
+        if (VideoUtils.isYouTubeUrl(videoUrl)) {
+            YouTubeVideoPlayer(videoUrl = videoUrl, modifier = modifier)
+        } else {
+            DirectVideoPlayer(
+                videoUrl = videoUrl,
+                modifier = modifier,
+                onError = { error ->
+                    hasError = true
+                    errorMessage = error
+                }
+            )
+        }
     }
 }
 

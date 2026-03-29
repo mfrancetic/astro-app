@@ -2,13 +2,16 @@ package com.udacity.astroapp.ui.screens.earthphoto
 
 import com.udacity.astroapp.models.EarthPhoto
 import com.udacity.astroapp.utils.DateUtils
+import com.udacity.astroapp.utils.DateUtils.isoFormatter
+import java.time.LocalDate
 
 data class EarthPhotoState(
     val isLoading: Boolean = false,
     val earthPhotos: List<EarthPhoto> = emptyList(),
     val allEarthPhotos: List<EarthPhoto> = emptyList(),
     val selectedPhoto: EarthPhoto? = null,
-    val selectedDate: String = DateUtils.todayIsoDate(),
+    val selectedDate: String = LocalDate.now().minusDays(4).format(isoFormatter),
+    val maxAvailableDate: String = LocalDate.now().minusDays(4).format(isoFormatter),
     val error: String? = null
 )
 

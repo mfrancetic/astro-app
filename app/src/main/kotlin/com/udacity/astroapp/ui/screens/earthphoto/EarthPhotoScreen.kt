@@ -85,7 +85,7 @@ fun EarthPhotoScreen(viewModel: EarthPhotoViewModel = koinViewModel()) {
                     } else {
                         null
                     },
-                maxDate = LocalDate.now(),
+                maxDate = LocalDate.parse(state.maxAvailableDate, DateTimeFormatter.ISO_LOCAL_DATE),
                 onDateSelected = { selectedDate ->
                     val dateString = selectedDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
                     viewModel.handleAction(EarthPhotoAction.SelectDate(dateString))
@@ -100,7 +100,7 @@ fun EarthPhotoScreen(viewModel: EarthPhotoViewModel = koinViewModel()) {
                 } else {
                     LocalDate.now()
                 },
-            maxDate = LocalDate.now(),
+            maxDate = LocalDate.parse(state.maxAvailableDate, DateTimeFormatter.ISO_LOCAL_DATE),
             onDateChanged = { newDate ->
                 val dateString = newDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
                 viewModel.handleAction(EarthPhotoAction.SelectDate(dateString))

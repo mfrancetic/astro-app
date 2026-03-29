@@ -3,7 +3,9 @@ package com.udacity.astroapp.repository
 import com.udacity.astroapp.data.AstroDao
 import com.udacity.astroapp.models.EarthPhoto
 import com.udacity.astroapp.utils.Constants
+import com.udacity.astroapp.utils.DateUtils.isoFormatter
 import com.udacity.astroapp.utils.QueryUtils
+import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -37,6 +39,20 @@ class EarthPhotoRepository(private val dao: AstroDao, private val queryUtils: Qu
                 }
             }
         }
+    }
+
+    suspend fun getLatestAvailableEarthPhotos(): Pair<String, List<EarthPhoto>> {
+        for (daysBack in 0..4) {
+            val date = LocalDate.now().minusDays(daysBack.toLong()).format(isoFormatter)
+            try {
+                val photos = getEarthPhotosByDate(date, forceRefresh = true)
+                if (photos.isNotEmpty()) return date to photos
+            } catch (_: Exception) {
+                // try next date
+            }
+        }
+        val fallback = LocalDate.now().minusDays(4).format(isoFormatter)
+        return fallback to emptyList()
     }
 
     suspend fun refreshEarthPhotos(dates: List<String> = emptyList()): List<EarthPhoto> {

@@ -51,8 +51,15 @@ class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository
 
         viewModelScope.launch {
             try {
-                earthPhotoRepository.getEarthPhotosByDate(state.selectedDate, forceRefresh = true)
-                reduce { state.copy(isLoading = false) }
+                val (resolvedDate, _) =
+                    earthPhotoRepository.getLatestAvailableEarthPhotos()
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                        selectedDate = resolvedDate,
+                        maxAvailableDate = resolvedDate
+                    )
+                }
             } catch (e: Exception) {
                 reduce {
                     state.copy(

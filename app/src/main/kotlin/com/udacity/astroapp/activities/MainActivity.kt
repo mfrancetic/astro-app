@@ -43,7 +43,6 @@ import com.udacity.astroapp.R
 import com.udacity.astroapp.ui.screens.NavGraphs
 import com.udacity.astroapp.ui.screens.destinations.AsteroidScreenDestination
 import com.udacity.astroapp.ui.screens.destinations.EarthPhotoScreenDestination
-import com.udacity.astroapp.ui.screens.destinations.MarsPhotoScreenDestination
 import com.udacity.astroapp.ui.screens.destinations.PhotoScreenDestination
 import com.udacity.astroapp.ui.screens.destinations.SettingsScreenDestination
 import com.udacity.astroapp.ui.theme.AstroAppTheme
@@ -173,8 +172,7 @@ class MainActivity : ComponentActivity() {
                     0 -> PhotoScreenDestination
                     1 -> AsteroidScreenDestination
                     2 -> EarthPhotoScreenDestination
-                    3 -> MarsPhotoScreenDestination
-                    4 -> SettingsScreenDestination
+                    3 -> SettingsScreenDestination
                     else -> PhotoScreenDestination
                 }
 

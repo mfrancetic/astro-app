@@ -1,10 +1,8 @@
 package com.udacity.astroapp.ui.screens.asteroid
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -46,11 +45,9 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Destination
 @Composable
-fun AsteroidScreen(
-    onNavigateToAsteroidDetails: (String) -> Unit = {},
-    viewModel: AsteroidViewModel = koinViewModel()
-) {
+fun AsteroidScreen(viewModel: AsteroidViewModel = koinViewModel()) {
     val state by viewModel.collectAsState()
+    val uriHandler = LocalUriHandler.current
 
     // Handle side effects
     viewModel.collectSideEffect { sideEffect ->
@@ -58,8 +55,7 @@ fun AsteroidScreen(
             is AsteroidSideEffect.ShowError -> {
                 // Handle error display
             }
-            is AsteroidSideEffect.NavigateToDetail ->
-                onNavigateToAsteroidDetails(sideEffect.asteroid.asteroidId.toString())
+            is AsteroidSideEffect.OpenUrl -> uriHandler.openUri(sideEffect.url)
             is AsteroidSideEffect.ShowDatePicker -> {}
         }
     }
@@ -102,7 +98,7 @@ fun AsteroidScreen(
                 state = state,
                 onRetry = { viewModel.loadAsteroids() },
                 onRefresh = { viewModel.loadAsteroids() },
-                onNavigateToAsteroidDetails = onNavigateToAsteroidDetails,
+                onSelectAsteroid = { viewModel.handleAction(AsteroidAction.SelectAsteroid(it)) },
                 onHazardousFilterChange = { showHazardousOnly ->
                     viewModel.handleAction(AsteroidAction.FilterHazardous(showHazardousOnly))
                 }
@@ -119,23 +115,13 @@ private fun AsteroidItem(asteroid: Asteroid, onClick: (Asteroid) -> Unit) {
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Date: ${asteroid.asteroidApproachDate}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-                Text(
-                    text = if (asteroid.asteroidIsHazardous) "⚠️ Hazardous" else "✅ Safe",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color =
-                        if (asteroid.asteroidIsHazardous) MaterialTheme.colorScheme.error
-                        else MaterialTheme.colorScheme.primary
-                )
-            }
+            Text(
+                text = if (asteroid.asteroidIsHazardous) "⚠️ Hazardous" else "✅ Safe",
+                style = MaterialTheme.typography.bodyMedium,
+                color =
+                    if (asteroid.asteroidIsHazardous) MaterialTheme.colorScheme.error
+                    else MaterialTheme.colorScheme.primary
+            )
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_extra_small)))
 
@@ -160,7 +146,7 @@ private fun AsteroidScreenContent(
     state: AsteroidState,
     onRetry: () -> Unit,
     onRefresh: () -> Unit,
-    onNavigateToAsteroidDetails: (String) -> Unit,
+    onSelectAsteroid: (Asteroid) -> Unit,
     onHazardousFilterChange: (Boolean) -> Unit
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
@@ -228,9 +214,7 @@ private fun AsteroidScreenContent(
                         items(state.filteredAsteroids) { asteroid ->
                             AsteroidItem(
                                 asteroid = asteroid,
-                                onClick = {
-                                    onNavigateToAsteroidDetails(asteroid.asteroidId.toString())
-                                }
+                                onClick = { onSelectAsteroid(asteroid) }
                             )
                             Spacer(
                                 modifier = Modifier.height(dimensionResource(R.dimen.spacing_small))
@@ -269,7 +253,7 @@ private fun AsteroidScreenLoadingPreview() {
             state = AsteroidState(isLoading = true),
             onRetry = {},
             onRefresh = {},
-            onNavigateToAsteroidDetails = {},
+            onSelectAsteroid = {},
             onHazardousFilterChange = {}
         )
     }
@@ -287,7 +271,7 @@ private fun AsteroidScreenErrorPreview() {
                 ),
             onRetry = {},
             onRefresh = {},
-            onNavigateToAsteroidDetails = {},
+            onSelectAsteroid = {},
             onHazardousFilterChange = {}
         )
     }
@@ -307,7 +291,7 @@ private fun AsteroidScreenEmptyPreview() {
                 ),
             onRetry = {},
             onRefresh = {},
-            onNavigateToAsteroidDetails = {},
+            onSelectAsteroid = {},
             onHazardousFilterChange = {}
         )
     }
@@ -362,7 +346,7 @@ private fun AsteroidScreenHazardousFilterPreview() {
                 ),
             onRetry = {},
             onRefresh = {},
-            onNavigateToAsteroidDetails = {},
+            onSelectAsteroid = {},
             onHazardousFilterChange = {}
         )
     }
@@ -426,7 +410,7 @@ private fun AsteroidScreenSuccessPreview() {
                 ),
             onRetry = {},
             onRefresh = {},
-            onNavigateToAsteroidDetails = {},
+            onSelectAsteroid = {},
             onHazardousFilterChange = {}
         )
     }

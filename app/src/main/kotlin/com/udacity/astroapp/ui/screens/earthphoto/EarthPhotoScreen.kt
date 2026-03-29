@@ -250,13 +250,13 @@ private fun EarthPhotoItem(earthPhoto: EarthPhoto, onClick: (EarthPhoto) -> Unit
                 modifier = Modifier.fillMaxSize()
             )
 
-            // Overlay with date
+            // Overlay with time
             Surface(
                 modifier = Modifier.fillMaxWidth().align(Alignment.BottomStart),
                 color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f)
             ) {
                 Text(
-                    text = earthPhoto.earthPhotoDateTime,
+                    text = earthPhoto.earthPhotoDateTime.substringAfter(" "),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(dimensionResource(R.dimen.spacing_small))
                 )

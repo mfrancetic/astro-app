@@ -112,7 +112,7 @@ class AsteroidViewModel(private val asteroidRepository: AsteroidRepository) :
     }
 
     private fun selectAsteroid(asteroid: Asteroid) = intent {
-        postSideEffect(AsteroidSideEffect.NavigateToDetail(asteroid))
+        postSideEffect(AsteroidSideEffect.OpenUrl(asteroid.asteroidUrl))
     }
 
     private fun filterHazardous(showHazardousOnly: Boolean) = intent {

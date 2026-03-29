@@ -15,7 +15,7 @@ data class AsteroidState(
 sealed class AsteroidSideEffect {
     data class ShowError(val message: String) : AsteroidSideEffect()
 
-    data class NavigateToDetail(val asteroid: Asteroid) : AsteroidSideEffect()
+    data class OpenUrl(val url: String) : AsteroidSideEffect()
 
     object ShowDatePicker : AsteroidSideEffect()
 }

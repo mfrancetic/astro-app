@@ -144,15 +144,6 @@ private fun PhotoContent(photo: Photo, onShare: () -> Unit, onFullScreen: () -> 
                 )
             }
 
-            photo.photoDate.let {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.padding(bottom = dimensionResource(R.dimen.spacing_medium))
-                )
-            }
-
             // Image or video content
             if (isVideo) {
                 VideoContent(

@@ -132,6 +132,13 @@ private fun SettingsContent(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
+                    text = stringResource(R.string.settings_app_author),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text(
                     text = stringResource(R.string.settings_version_label, state.appVersion),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant

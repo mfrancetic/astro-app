@@ -141,8 +141,11 @@
 	<string name="settings_about_title" translatable="false">About</string>
 	<string name="settings_app_description" translatable="false">Discover
 		space with astronomy photos, near-Earth
-		asteroids, Earth and Mars
-		images from NASA APIs.</string>
+		asteroids and Earth
+		images from
+		NASA APIs.
+	</string>
+	<string name="settings_app_author">Author: Maja Francetic Viskanic</string>
 	<string name="settings_version_label" translatable="false">Version: %1$s</string>
 
 	<!-- Screen titles -->

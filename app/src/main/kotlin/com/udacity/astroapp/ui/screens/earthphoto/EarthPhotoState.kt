@@ -1,7 +1,6 @@
 package com.udacity.astroapp.ui.screens.earthphoto
 
 import com.udacity.astroapp.models.EarthPhoto
-import com.udacity.astroapp.utils.DateUtils
 import com.udacity.astroapp.utils.DateUtils.isoFormatter
 import java.time.LocalDate
 

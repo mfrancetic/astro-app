@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrokenImage
@@ -272,7 +273,49 @@ fun FullScreenPhotoDialog(
         properties =
             DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)
     ) {
-        Box(modifier = modifier.fillMaxSize().background(Color.Black)) {
+        Column(
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .background(Color.Black)
+                    .padding(dimensionResource(R.dimen.spacing_medium))
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Share button
+                IconButton(
+                    onClick = onShare,
+                    modifier =
+                        Modifier.background(
+                            Color.Black.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(50)
+                        )
+                ) {
+                    Icon(
+                        Icons.Default.Share,
+                        contentDescription = stringResource(R.string.share),
+                        tint = Color.White
+                    )
+                }
+
+                // Close button
+                IconButton(
+                    onClick = onDismiss,
+                    modifier =
+                        Modifier.background(
+                            Color.Black.copy(alpha = 0.5f),
+                            shape = RoundedCornerShape(50)
+                        )
+                ) {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = stringResource(R.string.navigation_drawer_close),
+                        tint = Color.White
+                    )
+                }
+            }
             // Main image content
             if (!imageUrl.isNullOrBlank()) {
                 AsyncImage(
@@ -310,36 +353,6 @@ fun FullScreenPhotoDialog(
                         )
                     }
                 }
-            }
-
-            // Share button
-            IconButton(
-                onClick = onShare,
-                modifier =
-                    Modifier.align(Alignment.TopStart)
-                        .padding(dimensionResource(R.dimen.spacing_medium))
-                        .background(Color.Black.copy(alpha = 0.5f), shape = RoundedCornerShape(50))
-            ) {
-                Icon(
-                    Icons.Default.Share,
-                    contentDescription = stringResource(R.string.share),
-                    tint = Color.White
-                )
-            }
-
-            // Close button
-            IconButton(
-                onClick = onDismiss,
-                modifier =
-                    Modifier.align(Alignment.TopEnd)
-                        .padding(dimensionResource(R.dimen.spacing_medium))
-                        .background(Color.Black.copy(alpha = 0.5f), shape = RoundedCornerShape(50))
-            ) {
-                Icon(
-                    Icons.Default.Close,
-                    contentDescription = stringResource(R.string.navigation_drawer_close),
-                    tint = Color.White
-                )
             }
         }
     }

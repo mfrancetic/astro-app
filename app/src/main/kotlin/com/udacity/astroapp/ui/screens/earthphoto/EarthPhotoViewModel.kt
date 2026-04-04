@@ -51,8 +51,7 @@ class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository
 
         viewModelScope.launch {
             try {
-                val (resolvedDate, _) =
-                    earthPhotoRepository.getLatestAvailableEarthPhotos()
+                val (resolvedDate, _) = earthPhotoRepository.getLatestAvailableEarthPhotos()
                 reduce {
                     state.copy(
                         isLoading = false,
@@ -119,6 +118,9 @@ class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository
     ): List<com.udacity.astroapp.models.EarthPhoto> {
         if (date.isBlank()) return photos
 
-        return photos.filter { earthPhoto -> earthPhoto.earthPhotoDateTime.startsWith(date) }
+        return photos
+            .filter { earthPhoto -> earthPhoto.earthPhotoDateTime.startsWith(date) }
+            .sortedBy { it.earthPhotoDateTime }
+            .distinct()
     }
 }

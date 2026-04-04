@@ -251,20 +251,18 @@ fun AsteroidFilterCard(
     onHazardousOnlyChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(modifier = modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
-            Text(
-                text = stringResource(R.string.asteroid_filters),
-                style = MaterialTheme.typography.titleMedium
-            )
+    CardComponent(modifier) {
+        Text(
+            text = stringResource(R.string.asteroid_filters),
+            style = MaterialTheme.typography.titleMedium
+        )
 
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(checked = hazardousOnly, onCheckedChange = onHazardousOnlyChange)
-                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
-                Text(stringResource(R.string.filter_hazardous_only))
-            }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(checked = hazardousOnly, onCheckedChange = onHazardousOnlyChange)
+            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
+            Text(stringResource(R.string.filter_hazardous_only))
         }
     }
 }

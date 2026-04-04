@@ -42,6 +42,7 @@ import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.annotation.Destination
 import com.udacity.astroapp.R
 import com.udacity.astroapp.models.EarthPhoto
+import com.udacity.astroapp.ui.components.CardComponent
 import com.udacity.astroapp.ui.components.FullScreenPhotoDialog
 import com.udacity.astroapp.ui.components.MainTopAppBar
 import com.udacity.astroapp.ui.components.SwipeableContent
@@ -193,18 +194,26 @@ private fun EarthPhotoScreenContent(
                     }
                 }
                 state.earthPhotos.isNotEmpty() -> {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        verticalArrangement =
-                            Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
-                        horizontalArrangement =
-                            Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
-                    ) {
-                        items(state.earthPhotos) { earthPhoto ->
-                            EarthPhotoItem(
-                                earthPhoto = earthPhoto,
-                                onClick = { onFullScreenPhoto(earthPhoto) }
-                            )
+                    Column {
+                        state.earthPhotos.firstOrNull()?.earthPhotoCaption?.let { caption ->
+                            CardComponent {
+                                Text(caption, style = MaterialTheme.typography.titleMedium)
+                            }
+                        }
+
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            verticalArrangement =
+                                Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small)),
+                            horizontalArrangement =
+                                Arrangement.spacedBy(dimensionResource(R.dimen.spacing_small))
+                        ) {
+                            items(state.earthPhotos) { earthPhoto ->
+                                EarthPhotoItem(
+                                    earthPhoto = earthPhoto,
+                                    onClick = { onFullScreenPhoto(earthPhoto) }
+                                )
+                            }
                         }
                     }
                 }

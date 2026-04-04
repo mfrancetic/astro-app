@@ -3,17 +3,22 @@ package com.udacity.astroapp.ui.screens.asteroid
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -37,6 +42,8 @@ import com.udacity.astroapp.ui.components.AsteroidFilterCard
 import com.udacity.astroapp.ui.components.MainTopAppBar
 import com.udacity.astroapp.ui.components.SwipeableContent
 import com.udacity.astroapp.ui.theme.AstroAppTheme
+import com.udacity.astroapp.utils.formatDiameter
+import com.udacity.astroapp.utils.formatKmH
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import org.koin.androidx.compose.koinViewModel
@@ -109,33 +116,47 @@ fun AsteroidScreen(viewModel: AsteroidViewModel = koinViewModel()) {
 
 @Composable
 private fun AsteroidItem(asteroid: Asteroid, onClick: (Asteroid) -> Unit) {
+    val diameter =
+        "Diameter: ${asteroid.asteroidDiameterMin.formatDiameter()} - ${asteroid.asteroidDiameterMax.formatDiameter()} km"
+    val velocity = "Velocity: ${asteroid.asteroidVelocity.formatKmH()}"
+
     Card(modifier = Modifier.fillMaxWidth(), onClick = { onClick(asteroid) }) {
-        Column(modifier = Modifier.padding(dimensionResource(R.dimen.card_padding))) {
-            Text(text = asteroid.asteroidName, style = MaterialTheme.typography.headlineSmall)
+        Row {
+            Column(
+                modifier = Modifier.padding(dimensionResource(R.dimen.card_padding)).weight(1f)
+            ) {
+                Text(text = asteroid.asteroidName, style = MaterialTheme.typography.headlineSmall)
 
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_small)))
 
-            Text(
-                text = if (asteroid.asteroidIsHazardous) "⚠️ Hazardous" else "✅ Safe",
-                style = MaterialTheme.typography.bodyMedium,
-                color =
-                    if (asteroid.asteroidIsHazardous) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.primary
-            )
+                Text(
+                    text = if (asteroid.asteroidIsHazardous) "⚠️ Hazardous" else "✅ Safe",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color =
+                        if (asteroid.asteroidIsHazardous) MaterialTheme.colorScheme.error
+                        else MaterialTheme.colorScheme.primary
+                )
 
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_extra_small)))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.spacing_extra_small)))
 
-            Text(
-                text =
-                    "Diameter: ${asteroid.asteroidDiameterMin} - ${asteroid.asteroidDiameterMax} km",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+                Text(
+                    text = diameter,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
 
-            Text(
-                text = "Velocity: ${asteroid.asteroidVelocity} km",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                Text(
+                    text = velocity,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            Icon(
+                Icons.Default.ChevronRight,
+                contentDescription = stringResource(R.string.asteroid_navigate_to_details),
+                modifier =
+                    Modifier.size(dimensionResource(R.dimen.icon_extra_large))
+                        .align(Alignment.CenterVertically)
             )
         }
     }

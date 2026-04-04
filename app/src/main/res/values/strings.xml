@@ -77,6 +77,8 @@
 	<string name="asteroid_hazardous_text">Hazardous</string>
 	<string name="asteroid_not_hazardous_text">Safe</string>
 
+	<string name="asteroid_navigate_to_details">Display asteroid details</string>
+
 	<!-- ObservatoryListFragment strings -->
 	<string name="no_observatories_found">No observatories found</string>
 	<string name="observatory_open">Open now</string>
@@ -244,7 +246,6 @@
 
 	<!-- Mars Rover strings -->
 	<string name="mars_rover_filters">Mars Rover Filters</string>
-	<string name="asteroid_filters">Asteroid Filters</string>
 	<string name="observatory_filters">Observatory Filters</string>
 	<string name="search_and_filter">Search &amp; Filter</string>
 	<string name="search_radius_km">Search Radius (km)</string>

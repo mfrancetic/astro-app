@@ -252,15 +252,8 @@ fun AsteroidFilterCard(
     modifier: Modifier = Modifier
 ) {
     CardComponent(modifier) {
-        Text(
-            text = stringResource(R.string.asteroid_filters),
-            style = MaterialTheme.typography.titleMedium
-        )
-
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.card_padding)))
-
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Checkbox(checked = hazardousOnly, onCheckedChange = onHazardousOnlyChange)
+            Switch(checked = hazardousOnly, onCheckedChange = onHazardousOnlyChange)
             Spacer(modifier = Modifier.width(dimensionResource(R.dimen.spacing_small)))
             Text(stringResource(R.string.filter_hazardous_only))
         }

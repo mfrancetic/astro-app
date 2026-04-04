@@ -56,6 +56,8 @@
 	<string name="photo_video_source">Izvor: NASA</string>
 	<string name="asteroid_hazardous_text">Opasan</string>
 	<string name="asteroid_not_hazardous_text">Siguran</string>
+	<string name="asteroid_navigate_to_details">Prikaži detalje asteroida</string>
+
 	<string name="photo_next_content_description">Vidi sljedeću sliku</string>
 	<string name="photo_previous_content_description">Vidi prethodnu sliku</string>
 	<string name="photo_calendar_content_description">Izaberi datum slike</string>
@@ -192,7 +194,6 @@
 
 	<!-- Mars Rover strings -->
 	<string name="mars_rover_filters">Mars rover filtri</string>
-	<string name="asteroid_filters">Filteri asteroida</string>
 	<string name="observatory_filters">Filteri zvjezdarnica</string>
 	<string name="search_and_filter">Traži i filtrij</string>
 	<string name="search_radius_km">Radius pretrage (km)</string>

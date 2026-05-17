@@ -194,14 +194,17 @@ fun DirectVideoPlayer(
         }
     }
 
-    AndroidView(
-        factory = {
-            PlayerView(it).apply {
-                player = exoPlayer
-                useController = true
-            }
-        },
-    )
+    Box(modifier) {
+        AndroidView(
+            factory = {
+                PlayerView(it).apply {
+                    player = exoPlayer
+                    useController = true
+                }
+            },
+            modifier = Modifier.fillMaxSize().align(Alignment.Center)
+        )
+    }
 }
 
 /** Video control overlay with play/pause and fullscreen buttons */

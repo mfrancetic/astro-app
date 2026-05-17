@@ -133,10 +133,7 @@ class QueryUtils {
 
     private fun createPhotoUrl(date: String?): URL {
         val baseUri = PHOTO_BASE_URL.toUri()
-        val uriBuilder =
-            baseUri
-                .buildUpon()
-                .appendQueryParameter(API_PARAM, Secret.nasa_api_key)
+        val uriBuilder = baseUri.buildUpon().appendQueryParameter(API_PARAM, Secret.nasa_api_key)
 
         if (date != null) {
             uriBuilder.appendQueryParameter(DATE_PARAM, date)

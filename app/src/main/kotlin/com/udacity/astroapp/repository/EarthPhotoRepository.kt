@@ -3,9 +3,7 @@ package com.udacity.astroapp.repository
 import com.udacity.astroapp.data.AstroDao
 import com.udacity.astroapp.models.EarthPhoto
 import com.udacity.astroapp.utils.Constants
-import com.udacity.astroapp.utils.DateUtils.isoFormatter
 import com.udacity.astroapp.utils.QueryUtils
-import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -30,7 +28,10 @@ class EarthPhotoRepository(private val dao: AstroDao, private val queryUtils: Qu
                 cachedPhotos
             } else {
                 try {
-                    val networkPhotos = queryUtils.fetchEarthPhotosFromNetwork(if (passToNetworkRequest) date else null)
+                    val networkPhotos =
+                        queryUtils.fetchEarthPhotosFromNetwork(
+                            if (passToNetworkRequest) date else null
+                        )
                     val photosWithTimestamp =
                         networkPhotos.map { it.copy(cacheTimestamp = System.currentTimeMillis()) }
                     dao.insertEarthPhotos(photosWithTimestamp)

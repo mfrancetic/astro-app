@@ -197,7 +197,7 @@ private fun ImageContent(
             model = imageUrl,
             contentDescription = contentDescription,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
         )
     }
 }
@@ -340,7 +340,7 @@ private fun VideoContent(
                 CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
         ) {
             Column(
-                modifier = Modifier.padding(dimensionResource(R.dimen.card_padding)),
+                modifier = Modifier.fillMaxSize().padding(dimensionResource(R.dimen.card_padding)),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -367,15 +367,15 @@ private fun VideoContent(
         }
     } else {
         if (VideoUtils.isYouTubeUrl(videoUrl)) {
-            YouTubeVideoPlayer(videoUrl = videoUrl, modifier = modifier)
+            YouTubeVideoPlayer(videoUrl = videoUrl, modifier = modifier.fillMaxSize())
         } else {
             DirectVideoPlayer(
                 videoUrl = videoUrl,
-                modifier = modifier,
+                modifier = modifier.fillMaxSize(),
                 onError = { error ->
                     hasError = true
                     errorMessage = error
-                }
+                },
             )
         }
     }

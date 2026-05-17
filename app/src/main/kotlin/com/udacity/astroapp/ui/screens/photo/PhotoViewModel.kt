@@ -50,7 +50,12 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
 
         viewModelScope.launch {
             try {
-                val photo = photoRepository.getPhotoByDate(state.selectedDate, passToNetworkRequest = passToNetworkRequest, forceRefresh = true)
+                val photo =
+                    photoRepository.getPhotoByDate(
+                        state.selectedDate,
+                        passToNetworkRequest = passToNetworkRequest,
+                        forceRefresh = true
+                    )
                 reduce {
                     state.copy(
                         isLoading = false,

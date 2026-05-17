@@ -57,12 +57,12 @@ class QueryUtils {
         private const val REQUEST_METHOD = "GET"
     }
 
-    suspend fun fetchPhotoFromNetwork(date: String): Photo? =
+    suspend fun fetchPhotoFromNetwork(date: String?): Photo? =
         withContext(Dispatchers.IO) {
             try {
                 val url = createPhotoUrl(date)
                 val jsonResponse = makeHttpRequest(url)
-                parsePhotoJson(jsonResponse, date)
+                parsePhotoJson(jsonResponse)
             } catch (e: Exception) {
                 Log.e(LOG_TAG, "Error fetching photo for date: $date", e)
                 null
@@ -84,12 +84,12 @@ class QueryUtils {
             }
         }
 
-    suspend fun fetchEarthPhotosFromNetwork(date: String): List<EarthPhoto> =
+    suspend fun fetchEarthPhotosFromNetwork(date: String?): List<EarthPhoto> =
         withContext(Dispatchers.IO) {
             try {
                 val url = createEarthPhotoUrl(date)
                 val jsonResponse = makeHttpRequest(url)
-                parseEarthPhotosJson(jsonResponse, date)
+                parseEarthPhotosJson(jsonResponse)
             } catch (e: Exception) {
                 Log.e(LOG_TAG, "Error fetching Earth photos for date: $date", e)
                 emptyList()
@@ -131,16 +131,18 @@ class QueryUtils {
             }
         }
 
-    private fun createPhotoUrl(date: String): URL {
+    private fun createPhotoUrl(date: String?): URL {
         val baseUri = PHOTO_BASE_URL.toUri()
         val uriBuilder =
             baseUri
                 .buildUpon()
                 .appendQueryParameter(API_PARAM, Secret.nasa_api_key)
-                .appendQueryParameter(DATE_PARAM, date)
-                .build()
 
-        return URL(uriBuilder.toString())
+        if (date != null) {
+            uriBuilder.appendQueryParameter(DATE_PARAM, date)
+        }
+
+        return URL(uriBuilder.build().toString())
     }
 
     private fun createAsteroidUrl(startDate: String?, endDate: String?): URL {
@@ -155,11 +157,13 @@ class QueryUtils {
         return URL(uriBuilder.toString())
     }
 
-    private fun createEarthPhotoUrl(date: String): URL {
+    private fun createEarthPhotoUrl(date: String?): URL {
         val baseUri = EARTH_PHOTO_BASE_URL.toUri()
-        val uriBuilder = baseUri.buildUpon().appendPath(date).build()
-
-        return URL(uriBuilder.toString())
+        val uriBuilder = baseUri.buildUpon()
+        if (date != null) {
+            uriBuilder.appendPath(date)
+        }
+        return URL(uriBuilder.build().toString())
     }
 
     private fun createEarthPhotoImageUrl(date: String, image: String): URL {
@@ -266,7 +270,7 @@ class QueryUtils {
         return output.toString()
     }
 
-    private fun parsePhotoJson(jsonResponse: String, requestedDate: String): Photo? {
+    private fun parsePhotoJson(jsonResponse: String): Photo? {
         if (jsonResponse.isEmpty()) return null
 
         return try {
@@ -274,7 +278,7 @@ class QueryUtils {
 
             val title = jsonObject.optString("title")
             val description = jsonObject.optString("explanation")
-            val date = jsonObject.optString("date", requestedDate)
+            val date = jsonObject.optString("date")
             val url = jsonObject.optString("url")
             val hdUrl = jsonObject.optString("hdurl")
             val mediaType = jsonObject.optString("media_type", "image")
@@ -355,10 +359,7 @@ class QueryUtils {
         return asteroids
     }
 
-    private fun parseEarthPhotosJson(
-        jsonResponse: String,
-        requestedDate: String
-    ): List<EarthPhoto> {
+    private fun parseEarthPhotosJson(jsonResponse: String): List<EarthPhoto> {
         if (jsonResponse.isEmpty()) return emptyList()
 
         val earthPhotos = mutableListOf<EarthPhoto>()

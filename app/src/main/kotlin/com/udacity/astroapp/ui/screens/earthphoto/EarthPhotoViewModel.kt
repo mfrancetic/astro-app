@@ -3,7 +3,6 @@ package com.udacity.astroapp.ui.screens.earthphoto
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.astroapp.repository.EarthPhotoRepository
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.simple.intent
@@ -18,7 +17,7 @@ class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository
 
     init {
         observeEarthPhotos()
-        loadPhotos()
+        loadPhotos(passToNetworkRequest = false)
     }
 
     private fun observeEarthPhotos() = intent {
@@ -46,18 +45,37 @@ class EarthPhotoViewModel(private val earthPhotoRepository: EarthPhotoRepository
         }
     }
 
-    fun loadPhotos() = intent {
+    fun loadPhotos(passToNetworkRequest: Boolean = true) = intent {
         reduce { state.copy(isLoading = true, error = null) }
 
         viewModelScope.launch {
             try {
-                val (resolvedDate, _) = earthPhotoRepository.getLatestAvailableEarthPhotos()
-                reduce {
-                    state.copy(
-                        isLoading = false,
-                        selectedDate = resolvedDate,
-                        maxAvailableDate = resolvedDate
+                val photos =
+                    earthPhotoRepository.getEarthPhotosByDate(
+                        state.selectedDate,
+                        forceRefresh = true,
+                        passToNetworkRequest = passToNetworkRequest
                     )
+
+                if (!passToNetworkRequest && photos.isNotEmpty()) {
+                    val mostRecentDate = photos.maxOf { it.earthPhotoDateTime }.substring(0, 10)
+                    val filteredPhotos = filterByDate(photos, mostRecentDate)
+                    reduce {
+                        state.copy(
+                            isLoading = false,
+                            earthPhotos = filteredPhotos,
+                            selectedPhoto = filteredPhotos.firstOrNull(),
+                            selectedDate = mostRecentDate,
+                            maxAvailableDate = mostRecentDate,
+                        )
+                    }
+                } else {
+                    reduce {
+                        state.copy(
+                            isLoading = false,
+                            earthPhotos = photos,
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 reduce {

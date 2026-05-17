@@ -16,7 +16,8 @@ class EarthPhotoRepository(private val dao: AstroDao, private val queryUtils: Qu
 
     suspend fun getEarthPhotosByDate(
         date: String,
-        forceRefresh: Boolean = false
+        passToNetworkRequest: Boolean = true,
+        forceRefresh: Boolean = false,
     ): List<EarthPhoto> {
         return withContext(Dispatchers.IO) {
             val cachedPhotos = dao.getEarthPhotosByDate(date)
@@ -29,7 +30,7 @@ class EarthPhotoRepository(private val dao: AstroDao, private val queryUtils: Qu
                 cachedPhotos
             } else {
                 try {
-                    val networkPhotos = queryUtils.fetchEarthPhotosFromNetwork(date)
+                    val networkPhotos = queryUtils.fetchEarthPhotosFromNetwork(if (passToNetworkRequest) date else null)
                     val photosWithTimestamp =
                         networkPhotos.map { it.copy(cacheTimestamp = System.currentTimeMillis()) }
                     dao.insertEarthPhotos(photosWithTimestamp)
@@ -39,20 +40,6 @@ class EarthPhotoRepository(private val dao: AstroDao, private val queryUtils: Qu
                 }
             }
         }
-    }
-
-    suspend fun getLatestAvailableEarthPhotos(): Pair<String, List<EarthPhoto>> {
-        for (daysBack in 0..4) {
-            val date = LocalDate.now().minusDays(daysBack.toLong()).format(isoFormatter)
-            try {
-                val photos = getEarthPhotosByDate(date, forceRefresh = true)
-                if (photos.isNotEmpty()) return date to photos
-            } catch (_: Exception) {
-                // try next date
-            }
-        }
-        val fallback = LocalDate.now().minusDays(4).format(isoFormatter)
-        return fallback to emptyList()
     }
 
     suspend fun refreshEarthPhotos(dates: List<String> = emptyList()): List<EarthPhoto> {

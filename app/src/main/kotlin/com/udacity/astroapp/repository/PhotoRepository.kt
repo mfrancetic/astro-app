@@ -18,7 +18,7 @@ class PhotoRepository(
 
     fun getAllPhotos(): Flow<List<Photo>> = dao.loadAllPhotos()
 
-    suspend fun getPhotoByDate(date: String, forceRefresh: Boolean = false): Photo? {
+    suspend fun getPhotoByDate(date: String, passToNetworkRequest: Boolean = true, forceRefresh: Boolean = false): Photo? {
         return handleCacheOperation(
             repositoryName = "PhotoRepository",
             operation = "getPhotoByDate($date)",

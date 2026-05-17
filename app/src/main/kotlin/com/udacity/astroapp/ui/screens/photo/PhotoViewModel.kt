@@ -17,7 +17,7 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
 
     init {
         observePhotos()
-        loadPhotos()
+        loadPhotos(passToNetworkRequest = false)
     }
 
     private fun observePhotos() = intent {
@@ -45,12 +45,12 @@ class PhotoViewModel(private val photoRepository: PhotoRepository) :
         }
     }
 
-    fun loadPhotos() = intent {
+    fun loadPhotos(passToNetworkRequest: Boolean = true) = intent {
         reduce { state.copy(isLoading = true, error = null) }
 
         viewModelScope.launch {
             try {
-                val photo = photoRepository.getPhotoByDate(state.selectedDate, forceRefresh = true)
+                val photo = photoRepository.getPhotoByDate(state.selectedDate, passToNetworkRequest = passToNetworkRequest, forceRefresh = true)
                 reduce {
                     state.copy(
                         isLoading = false,

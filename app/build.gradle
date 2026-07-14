@@ -20,12 +20,12 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-    compileSdk 35
+    compileSdk 36
     defaultConfig {
         resConfigs "hr", "en"
         applicationId "com.udacity.astroapp"
         minSdkVersion 26
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode 33
         versionName "1.0.1+$versionCode"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -154,6 +155,21 @@ public class MainActivity extends AppCompatActivity
             fragmentId = savedInstanceState.getInt(fragmentIdKey);
             currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
         }
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                /* In phone mode, close the drawer */
+                if (!tabletSize) {
+                    if (drawer.isDrawerOpen(GravityCompat.START)) {
+                        drawer.closeDrawer(GravityCompat.START);
+                    }
+                }
+
+                currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
+                finish();
+            }
+        });
     }
 
     private void findViews() {
@@ -264,28 +280,6 @@ public class MainActivity extends AppCompatActivity
         outState.putInt(PREF_THEME, themeId);
         outState.putInt(PREF_CHECKED_THEME, checkedTheme);
         super.onSaveInstanceState(outState);
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        /* In phone mode, close the drawer */
-        if (!tabletSize) {
-            if (drawer.isDrawerOpen(GravityCompat.START)) {
-                drawer.closeDrawer(GravityCompat.START);
-            }
-        }
-
-        /* If heading back from the ObservatoryFragment, go back to the ObservatoryListFragment.
-         * If not, close the application. */
-//        if (getSupportFragmentManager().getBackStackEntryCount() > 1 && currentFragment != null &&
-//                currentFragment.toString().contains(getResources().getString(R.string.observatory_fragment_name))) {
-//            getSupportFragmentManager().popBackStack();
-//            currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
-//        } else {
-        currentFragment = getSupportFragmentManager().findFragmentById(fragmentId);
-        finish();
-//        }
     }
 
     @Override
